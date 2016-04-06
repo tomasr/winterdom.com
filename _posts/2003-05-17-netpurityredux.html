@@ -1,0 +1,30 @@
+---
+layout: post
+status: publish
+published: true
+title: ".NET Purity Redux"
+author:
+  display_name: Tomas Restrepo
+  login: tomasr
+  email: tomas@winterdom.com
+  url: http://winterdom.com/
+author_login: tomasr
+author_email: tomas@winterdom.com
+author_url: http://winterdom.com/
+wordpress_id: 922
+wordpress_url: http://winterdom.com/2003/05/netpurityredux
+date: '2003-05-17 05:10:32 +0000'
+date_gmt: '2003-05-17 05:10:32 +0000'
+categories:
+- ".NET"
+tags: []
+comments: []
+---
+<p><!--start_raw-->Scott Hanselman started a whole <a href="http:&#47;&#47;radio.weblogs.com&#47;0106747&#47;stories&#47;2003&#47;05&#47;13&#47;theMythOfnetPurity.html">".NET Purity"</a> debate a few days ago, which has prompted quite a set of responses (includind a very good one from my good friend <a href="http:&#47;&#47;dotnetweblogs.com&#47;sgentile&#47;posts&#47;7139.aspx">Sam</a>.</p>
+<p>My own personal opinion on the matter (not that anyone would care <g>) is that .NET purity matters little or nothing, as it does not, by itself, add any intrinsic value, while at the same time severly limits what you can do right now.</p></p>
+<p>If you're going to even remotely push for something like this, there are far better alternatives than .NET purity; things that will get you far more mileage in the long run.</p></p>
+<p>Like what? Well, verifiability to start with. That by itself goes a significant way towards helping you achieve a second, more interesting goal: being able to run in semi-trusted or restricted environments.</p></p>
+<p>Portability? I most certainly don't care much about it right now, and for the kind of applications *I* build, what small subset of the BCL that the ECMA standarizes is way too small to do anything useful, so it's just not worth targeting at this point.</p></p>
+<p>And .NET purity is certainly a dumb statement. Much less useless than verifiability. For example, the latter will probably allow you to get your code into, say, Yukon, while the first one may not. (Of course, I know next to nothing about yukon, but that sounds like a good possibility).</p></p>
+<p>Problem is, people talk about "pure .NET" as if it made the component instantly better. Well, guess what? It doesn't. It doesn't even make it more secure. Hell, you could write a pure .NET component in MC++ that's not verifiable and that could very easily just completely hose the GC heap beyond all recognition. How would that help you? Or why would that help me in any way trust your component?</p></p>
+<p>Remember that pure .NET code also includes full blown unmanaged pointers (yes, that's the name, and yes, you can do quite a bit with them), almost full memory access, etc.</p><!--end_raw--></p>

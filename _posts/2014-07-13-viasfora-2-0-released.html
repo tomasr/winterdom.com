@@ -1,0 +1,44 @@
+---
+layout: post
+status: publish
+published: true
+title: Viasfora 2.0 Released!
+author:
+  display_name: Tomas Restrepo
+  login: tomasr
+  email: tomas@winterdom.com
+  url: http://winterdom.com/
+author_login: tomasr
+author_email: tomas@winterdom.com
+author_url: http://winterdom.com/
+wordpress_id: 1468
+wordpress_url: http://winterdom.com/?p=1468
+date: '2014-07-13 23:59:35 +0000'
+date_gmt: '2014-07-13 23:59:35 +0000'
+categories:
+- Visual Studio
+tags: []
+comments:
+- id: 136410
+  author: Steve Cadwallader
+  author_email: Codemaid@gmail.com
+  author_url: http://www.codemaid.net
+  date: '2014-07-15 00:01:44 +0000'
+  date_gmt: '2014-07-15 00:01:44 +0000'
+  content: "In regards to enabling VS14 support interfering with other versions -
+    you're not the only one seeing that. \r\n\r\nhttp:&#47;&#47;stackoverflow.com&#47;questions&#47;24497546&#47;why-can-my-visualstudio-extension-not-be-found-in-vs-2013-gallery-search-but-in"
+---
+<p>Today I've released version 2.0 of my <a href='http:&#47;&#47;viasfora.com&#47;'>Viasfora</a> extension for Visual Studio, which supports VS2010, VS2012 and VS2013. Lots of work went into this release, not only to add some cool new features, but also to clean up the existing codebase a little bit and fix bugs reported by users.</p>
+<p>Two new features in this release extend Rainbow Braces to make it more useful:</p></p>
+<ul>
+<li>Commands to navigate from the caret position to the opening&#47;closing brace</li>
+<li>Rainbow tooltips, which allow you to quickly check the line where the matching brace is located</li><br />
+</ul></p>
+<p><a href="http:&#47;&#47;winterdom.com&#47;wp-content&#47;uploads&#47;2014&#47;07&#47;rainbow-tooltip.png"><img src="http:&#47;&#47;winterdom.com&#47;wp-content&#47;uploads&#47;2014&#47;07&#47;rainbow-tooltip.png" alt="Rainbow tooltip" width="478" height="158" class="alignnone size-full wp-image-1472" &#47;></a></p></p>
+<p>Working on Rainbow ToolTips was very interesting because I wanted to end up with something that looked similar to the preview tooltip in the map mode scrollbar in VS2013. The first problem was figuring out the right way to create the text view for the tooltip, and then making it look good. One particularly frustrating part of it was having to write a custom <code>IIntellisensePresenter</code> to avoid having a very wide border around the tooltip!</p></p>
+<p>Another significant change in this release is that I have removed the support for Visual Studio "14" CTP, which was introduced in v1.9. Unfortunately, there is problem with the Visual Studio Gallery at this time, which makes extensions 'invisible' to Visual Studio 2013 if support for VS14 is present in the manifest [1].</p></p>
+<p>Because of this, very few people running VS2013 have been able to update to v1.9 unless they explicitly went to the VS Gallery and downloaded the VSIX manually.</p></p>
+<p>Unfortunately, it is not clear if and when this problem might be fixed. In the worst case, extension developers will just have to make separate releases for VS 14 and publish them as separate extensions in the VS Gallery. This is a lot of work that, at this point, is not worth the effort for me. I will reevaluate this when VS 14 is officially released if the problem still exists.</p></p>
+<p>For now, if I get enough interest in VS 14 support, I'll figure some out of band mechanism for sharing VS14-enabled builds.</p></p>
+<p>Finally, I'd like to say that working on Viasfora has been very rewarding personally. It has given me an excellent opportunity to learn a lot about Visual Studio extensibility, and both the <a href='https:&#47;&#47;github.com&#47;madskristensen&#47;WebEssentials2013&#47;'>Web Essentials</a> and <a href='https:&#47;&#47;github.com&#47;jaredpar&#47;VsVim'>VsVim</a> sources have been extremely useful for this. I'd also like to say thanks to all my twitter contacts, not only for putting up with my frequent rants, but also for often helping me figure out how to accomplish something in VS (in particular, the feedback from <a href='https:&#47;&#47;twitter.com&#47;jaredpar'>Jared Parsons</a> was always very appreciated).</p></p>
+<p><b>[1] Disclaimer:</b> I do not know if the problem is enabling VS 14 support in the manifest, or enabling support for 4 VS versions at the same time. I also do not know what plans the team responsible for the VS Gallery has regarding the issue, or even if any exist at this point.</p></p>

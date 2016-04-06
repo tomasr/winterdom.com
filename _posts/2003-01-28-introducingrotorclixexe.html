@@ -1,0 +1,53 @@
+---
+layout: post
+status: publish
+published: true
+title: 'Introducing Rotor: clix.exe'
+author:
+  display_name: Tomas Restrepo
+  login: tomasr
+  email: tomas@winterdom.com
+  url: http://winterdom.com/
+author_login: tomasr
+author_email: tomas@winterdom.com
+author_url: http://winterdom.com/
+wordpress_id: 621
+wordpress_url: http://winterdom.com/2003/01/introducingrotorclixexe
+date: '2003-01-28 20:32:33 +0000'
+date_gmt: '2003-01-28 20:32:33 +0000'
+categories:
+- ".NET"
+tags: []
+comments:
+- id: 415
+  author: Richard Caetano
+  author_email: richard@caetano.com
+  author_url: http://www.stronglytyped.com
+  date: '2003-01-28 21:36:21 +0000'
+  date_gmt: '2003-01-28 21:36:21 +0000'
+  content: |
+    <p>oooohhh...this is soo good!</p>
+    <p>I'm glad somebody is going through the code like this...</p>
+    <p>Thanks Tomas</p>
+- id: 416
+  author: Jason Whittington
+  author_email: jasonw@develop.com
+  author_url: http://staff.develop.com/jasonw
+  date: '2003-01-29 12:21:17 +0000'
+  date_gmt: '2003-01-29 12:21:17 +0000'
+  content: |
+    <p>I hate to self-promote but there's a piece on MSDN that covers some of this too:</p>
+    <p><a href="http:&#47;&#47;msdn.microsoft.com&#47;msdnmag&#47;issues&#47;02&#47;07&#47;default.aspx" rel="nofollow">http:&#47;&#47;msdn.microsoft.com&#47;msdnmag&#47;issues&#47;02&#47;07&#47;default.aspx</a></p>
+---
+<p><!--start_raw-->I'm starting to look seriously into the rotor sources. Since they are fairly large, I thought I'd start at the begining and wade my way through deeper and deeper. I've decided to write some light comments as I go along, trying to put my thoughts in order and make sure I get it right. Don't expect anything out of this world, though... it's very likely I'll make mistakes as I learn about it, but I hope <a href="http:&#47;&#47;radio.weblogs.com&#47;0105852&#47;">my</a> <a href="http:&#47;&#47;www.dotnetremoting.cc&#47;DotNetCentric&#47;">good</a> <a href="http:&#47;&#47;www.iunknown.com&#47;">friends</a> <a href="http:&#47;&#47;www.razorsoft.net&#47;weblog&#47;">more</a> familiar with the SSCLI set me straight :)</p>
+<p>So, to begin, I decided to take a look at what the start-up tool, clix.exe, does when starting a managed application. You'll find the source for this utility in your <code>sscli\clr\src\tools\clix</code> directory.</p></p>
+<p>The magic of clix begins, of course, at its <code>main()</code> function. While long, there's not much to say about it. It basically parses the command line and calls the meaty <code>Launch()</code> function to start the application. However, there's an interesting line right at the start of main():</p></p>
+<pre><code>PAL_RegisterLibrary(L"rotor_palrt");</code></pre></p>
+<p>From looking at its Win32 implementation (located in <code>sscli\pal\win32\win32pal.c</code>), it looks as if all it did was return a handle to an already loaded module (which clix immediately discards). On the other hand, the Unix version, located in <code>sscli\pal\unix\loader\module.c</code>, does a little bit more, ending with a call to <code>LoadLibraryW()</code>, implemented a little bit lower in the same file.</p></p>
+<p>By now, you're probably asking what all this talk of the PAL is... well, the PAL, as I see it, is basically just an abstraction layer, similar to the Windows NT HAL. The PAL implements, among other things, a bunch of the basic Win32 APIs on Unix systems, so that most of the code in Rotor could remain unchanged. This is evident by the fact that most of the Win32 version of the PAL fits roughly in 8 or so files, while the Unix one has a few dozens :)</p></p>
+<p>Now, back to clix.exe, it's time to look at the <code>Launch()</code> function, whose signature is:</p></p>
+<pre><code>DWORD Launch(WCHAR* pRunTime, WCHAR* pFileName, WCHAR* pCmdLine)</code></pre></p>
+<p>The first argument, pRuntime, is the name of the managed runtime to load, which in this case is hardcoded to be the constant <code>MSCOREE_SHIM_W</code>. The exact value of this constant varies with the platform, but you can see it defined in <code>sscli\clr\src\inc\cor.h</code> starting line 135. The second and third arguments are self evident.</p></p>
+<p>Now, what <code>Launch()</code> basically does is memory-map the specified file, ensure it is a valid PE image and that it has the appropriate COR headers in place (that is, validate it is a valid managed image). Once that is done, it will load the the actual runtime engine and call into its <code>_CorExeMain2()</code> exported function to run the image.</p></p>
+<p>Next time around, I'll explore (hopefully) what it is that <code>_CorExeMain2()</code> does and how the runtime starts up.</p><br />
+<!--end_raw--></p>

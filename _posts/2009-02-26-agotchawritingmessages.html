@@ -1,0 +1,35 @@
+---
+layout: post
+status: publish
+published: true
+title: A Gotcha Writing Messages
+author:
+  display_name: Tomas Restrepo
+  login: tomasr
+  email: tomas@winterdom.com
+  url: http://winterdom.com/
+author_login: tomasr
+author_email: tomas@winterdom.com
+author_url: http://winterdom.com/
+wordpress_id: 53
+wordpress_url: http://winterdom.com/2009/02/agotchawritingmessages
+date: '2009-02-26 18:17:59 +0000'
+date_gmt: '2009-02-26 18:17:59 +0000'
+categories:
+- WCF
+tags: []
+comments: []
+---
+<p><!--start_raw-->
+<p>I&rsquo;ve been working a lot with low-level contracts in Windows Communication Foundation that send and receive raw System.ServiceModel.Channels.Message objects. These are fairly flexible, though the API can be a bit confusing.</p>
+<p>One of the things I was doing was making sure I was doing proper streaming of large messages, which in WCF relies on the XmlReader and XmlWriter classes.</p>
+<p>What is not be very obvious at first is that it is possible to receive a Message object and still do streaming: Basically when the received message is created, it takes an XmlReader that is only consumed when you ask WCF to write the message to an XmlWriter.</p>
+<p>Internally, the message will read each node from the XmlReader and write it to the XmlWriter, which works very well for the streaming. But it can also trip you sometimes, like what happened to me recently:</p>
+<p>Basically, my WCF service was receiving an streamed XML file, went up to the Message-based contract, and then I streamed the message out to a file. With some message payloads, I&rsquo;d sometimes get the following error:</p>
+<div class="codebg"><code>System.InvalidOperationException: Token Text in state EndRootElement would result in an in valid XML document. Make sure that the ConformanceLevel setting is set to ConformanceLevel.Fragment or ConformanceLevel.Auto if you want to write an XML fragment. </code></div>
+<p>I opened up the original message and as far as I could see it was perfectly well-formed XML. Until I opened the file in a hex editor and realized it had a Line Feed (\n) character right at the end after the closing tag!</p>
+<p>You can, of course, fix the error by making sure the source doesn&rsquo;t have any characters after the closing tag. However the exception also suggest another workaround which can be more useful when you don&rsquo;t control the input, like in a WCF service: Set the XmlWriter to the Fragment conformance level, which won&rsquo;t give you trouble with the extra \n at the end.</p>
+<p>Here's a simple console application that exhibits the problem:</p>
+<div class="codebg"><code><span class="Statement">using</span> System.IO;<br><span class="Statement">using</span> System.ServiceModel;<br><span class="Statement">using</span> System.ServiceModel.Channels;<br><span class="Statement">using</span> System.Xml;<br><br><span class="StorageClass">class</span> Program {<br>&nbsp;&nbsp; <span class="StorageClass">public</span>&nbsp;<span class="StorageClass">static</span>&nbsp;<span class="Type">void</span> Main() {<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span class="Type">string</span> xml = <span class="String">"<doc>
+<part1>Start</part1>
+<part2>End</part2></doc></span><span class="SpecialChar">\n</span><span class="String">"</span>;<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; MessageEncoder encoder = CreateEncoder();<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Message msg = encoder.ReadMessage(ToStream(xml), Int32.MaxValue);<br><br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span class="Exception">try</span> {<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; XmlWriterSettings <span class="Statement">set</span> = <span class="Statement">new</span> XmlWriterSettings();<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span class="Comment">&#47;&#47; Uncomment this line to avoid the exception:</span><br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span class="Comment">&#47;&#47;set.ConformanceLevel = ConformanceLevel.Fragment;</span><br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; XmlWriter xmlWriter = XmlWriter.Create(Console.Out, <span class="Statement">set</span>);<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; XmlDictionaryWriter xmlDictWriter =<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; XmlDictionaryWriter.CreateDictionaryWriter(xmlWriter);<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; msg.WriteBodyContents(xmlDictWriter);<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; xmlDictWriter.Flush();<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; } <span class="Exception">catch</span> ( Exception ex ) {<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Console.WriteLine(<span class="String">"</span><span class="SpecialChar">\n</span><span class="String">****************"</span>);<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Console.WriteLine(ex.ToString());<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Console.WriteLine(<span class="String">"****************"</span>);<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<br>&nbsp;&nbsp; }<br><br>&nbsp;&nbsp; <span class="StorageClass">static</span> Stream ToStream(String text) {<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; MemoryStream stream = <span class="Statement">new</span> MemoryStream();<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; StreamWriter writer = <span class="Statement">new</span> StreamWriter(stream);<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; writer.Write(text);<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; writer.Flush();<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; stream.Position = <span class="Number">0</span>;<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span class="Repeat">return</span> stream;<br>&nbsp;&nbsp; }<br><br>&nbsp;&nbsp; <span class="StorageClass">static</span> MessageEncoder CreateEncoder() {<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; TextMessageEncodingBindingElement tmebe =<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span class="Statement">new</span> TextMessageEncodingBindingElement();<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; tmebe.MessageVersion = MessageVersion.None;<br><br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; MessageEncoderFactory factory = tmebe.CreateMessageEncoderFactory();<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span class="Repeat">return</span> factory.Encoder;<br>&nbsp;&nbsp; }<br>}</code></div><!--end_raw--></p>

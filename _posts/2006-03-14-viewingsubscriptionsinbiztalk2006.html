@@ -1,0 +1,29 @@
+---
+layout: post
+status: publish
+published: true
+title: Viewing Subscriptions in BizTalk 2006
+author:
+  display_name: Tomas Restrepo
+  login: tomasr
+  email: tomas@winterdom.com
+  url: http://winterdom.com/
+author_login: tomasr
+author_email: tomas@winterdom.com
+author_url: http://winterdom.com/
+wordpress_id: 945
+wordpress_url: http://winterdom.com/2006/03/viewingsubscriptionsinbiztalk2006
+date: '2006-03-14 06:22:26 +0000'
+date_gmt: '2006-03-14 06:22:26 +0000'
+categories:
+- BizTalk
+tags: []
+comments: []
+---
+<p><!--start_raw--><P>In BizTalk Server 2006, the BTSSubscriptionViewer.exe tool that was in the 2004 SDK is no more. Instead, the functionality to query the subscriptions defined in the MessageBox is included in the new BizTalk Server Administration Console. To find it, do the following:</P><br />
+<OL><br />
+<LI>Open up the BizTalk Server Administration Console<br />
+<LI>Select in the left-side tree view your BizTalk group node (for example "BizTalk Group [KEPLER:BizTalkMgmtDb]" in my machine).<br />
+<LI>Click on the New Query tab that appears on the right side or use the context menu to create a new query window. In the query expression pane, select "Search For - Equals - Subscriptions", and click the Run Query button.</LI></OL><br />
+<P><IMG src="http:&#47;&#47;www.winterdom.com&#47;weblog&#47;content&#47;binary&#47;BTS06_Subscriptions_Query.png" border=0></P><br />
+<P>After that, the Query Results pane will contain all the subscriptions defined in your group's MessageBox. To find more details about a particular subscription, you can double click on it, or right click and select "Subscription Properties" from the context menu. A new dialog will pop up: the General Tab will contain some basic information about the subscription, but the most interesting information will be in the Expression tab, which contains the filter expression that defines this subscription.</P><IMG src="http:&#47;&#47;www.winterdom.com&#47;weblog&#47;content&#47;binary&#47;BTS06_Subscription_Gen.png" border=0><IMG src="http:&#47;&#47;www.winterdom.com&#47;weblog&#47;content&#47;binary&#47;BTS06_Subscription_Exp.png" border=0><!--end_raw--></p>

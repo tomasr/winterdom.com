@@ -1,0 +1,41 @@
+---
+layout: post
+status: publish
+published: true
+title: Checking Binary Dependencies in Source Control
+author:
+  display_name: Tomas Restrepo
+  login: tomasr
+  email: tomas@winterdom.com
+  url: http://winterdom.com/
+author_login: tomasr
+author_email: tomas@winterdom.com
+author_url: http://winterdom.com/
+wordpress_id: 953
+wordpress_url: http://winterdom.com/2006/10/checkingbinarydependenciesinsourcecontrol
+date: '2006-10-04 16:10:17 +0000'
+date_gmt: '2006-10-04 16:10:17 +0000'
+categories:
+- Development
+tags: []
+comments:
+- id: 672
+  author: Don Mc
+  author_email: ''
+  author_url: ''
+  date: '2006-10-04 20:52:28 +0000'
+  date_gmt: '2006-10-04 20:52:28 +0000'
+  content: |
+    I've found this article&#47;structure to be very helpful in regard to how to structure your developement tree and what to include:
+    http:&#47;&#47;www.mikebroberts.com&#47;blog&#47;archive&#47;Tech&#47;ArticlesandPapers&#47;Howtosetupa.NETDevelopmentTree.html
+---
+<p><!--start_raw-->
+<p><a href="http:&#47;&#47;codebetter.com&#47;blogs&#47;jeremy.miller&#47;">Jeremy D. Miller</a> continued his <a href="http:&#47;&#47;codebetter.com&#47;blogs&#47;jeremy.miller&#47;archive&#47;2006&#47;10&#47;02&#47;My-Gameplan-for-Starting-a-New-Project-from-Scratch.aspx">discussion</a> on getting a project running from the scratch (a fine list) with a new <a href="http:&#47;&#47;codebetter.com&#47;blogs&#47;jeremy.miller&#47;archive&#47;2006&#47;10&#47;04&#47;Check-in-all-your-binary-dependencies-into-Source-Control.aspx">post</a> on keeping all your binary dependencies as part of your solution's tree in source control.</p>
+<p>I can only agree with this statement, and it's something that's really useful. The way I usually do it is to add a top-level "references" folder to the solution that contains any pre-built assemblies we depend on for build. For example, our current project includes here several client-specific assemblies we use, <a href="http:&#47;&#47;www.ayende.com&#47;projects&#47;rhino-mocks.aspx">Rhino Mocks</a>, the Castle-Project assemblies for <a href="http:&#47;&#47;www.castleproject.org&#47;index.php&#47;Windsor_Container">Windsor</a> and several more. </p>
+<p>For large projects that contain multiple solutions, I'll put the base assemblies in there as well. For example, in one large project I was part of we had a base "framework" solution that contain a bunch of reusable components that were the basis of around 5 different big sub-projects (each one having a separate code base). What we did was build the base framework and then included the output assemblies in the References folder for each of the projects that needed them. This ensured consistency because we could be sure when building the project we always used the same build of the framework we intended. If at some point we needed to update the framework for that specific project, we just checked out and updated the binary assemblies and checked everything back in after rebuilding and running all tests.</p>
+<p>For things like NAnt and other tools, if needed, I'll create another top-level "Tools" directory containing all needed tools to work with.</p>
+<p>All of this was particularly useful when you suddently had to fix a bug found in a production version and you had to go and check out an old version of a project from source control to do so; since you were sure that whatever you got out of source control was not only consistent, but also buildable right from the get go.</p>
+<p>As Jeremy quite correctly points out, the whole point of this excercise is to have your solution's code base self-hosting and self-reliant. One unfortunate exception on this arises usually from Microsoft's tools and libraries, since they rarely are "xcopy - useful": they usually require explicitly installing via MSI and thus you usually cannot just include the necessary assemblies&nbsp;in your binary References folder (sometimes you can, and sometimes it's just not practical). The same happens for other third party controls and control suits as well. \</p>
+<p>In such a case, you can also include the necessary MSIs and installers&nbsp;in a "Pre-requisites" folder and check that into source control as well.</p>
+<div class="wlWriterSmartContent" id="d7bf807d-7bb0-458a-811f-90c51817d5c2:3d153373-c15d-4990-805b-78ea1d49e136" contenteditable="false" style="padding-right: 0px; display: inline; padding-left: 0px; padding-bottom: 0px; margin: 0px; padding-top: 0px">
+<p><span class="TagSite">Technorati:</span> <a href="http:&#47;&#47;technorati.com&#47;tag&#47;Source+Control" rel="tag" class="tag">Source Control</a>, <a href="http:&#47;&#47;technorati.com&#47;tag&#47;Dependencies" rel="tag" class="tag">Dependencies</a>, <a href="http:&#47;&#47;technorati.com&#47;tag&#47;Programming" rel="tag" class="tag">Programming</a><br &#47;><!-- StartInsertedTags: Source Control, Dependencies, Programming :EndInsertedTags --></p></div><!--end_raw--></p>

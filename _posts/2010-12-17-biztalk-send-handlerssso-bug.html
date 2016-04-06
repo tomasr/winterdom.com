@@ -1,0 +1,45 @@
+---
+layout: post
+status: publish
+published: true
+title: BizTalk Send Handlers&#47;SSO Bug?
+author:
+  display_name: Tomas Restrepo
+  login: tomasr
+  email: tomas@winterdom.com
+  url: http://winterdom.com/
+author_login: tomasr
+author_email: tomas@winterdom.com
+author_url: http://winterdom.com/
+wordpress_id: 1330
+wordpress_url: http://winterdom.com/2010/12/biztalk-send-handlerssso-bug
+date: '2010-12-17 14:57:42 +0000'
+date_gmt: '2010-12-17 14:57:42 +0000'
+categories:
+- BizTalk
+tags: []
+comments:
+- id: 1635
+  author: BizTalk Send Handlers&#47;SSO Bug?
+  author_email: ''
+  author_url: http://codebix.com/posts/post/152985/BizTalk-Send-HandlersSSO-Bug
+  date: '2010-12-17 16:24:17 +0000'
+  date_gmt: '2010-12-17 16:24:17 +0000'
+  content: "[...] specific case came up when changing the Windows User Group associated
+    with a BizTalk Host when... [full post]    Tomas Restrepo     Winterdom   biztalk
+    \           0        0        0        0        0       [...]"
+---
+<p>My good friend Carlos ran into a situation while working with one of his clients that seems to be triggering what looks like a bug in BizTalk Server 2010. The specific case came up when changing the Windows User Group associated with a BizTalk Host when that host is already associated as a Send Handler for an adapter.</p>
+<p>Apparently, when doing the change, BizTalk will correctly update the information stored in the Enterprise Single Sign-On (ENTSSO) database (SSODB) for Receive Handlers, but not with Send Handlers, which leaves the system generating errors when the host later tries to access the SSODB to access the stored adapter settings.</p>
+<p>Here&rsquo;s&#160; the repro instructions:</p>
+<ol>
+<li>Create a new BizTalk Host for the test. Let&rsquo;s name it BTTestHost. Assign to it the default BizTalk Application Users group, and then create a new Host instance. </li>
+<li>Add the BTTestHost as a send handler for an adapter; we&rsquo;ll use the FILE adapter in this example. </li>
+<li>At this point, if you' check the <code>ssodb.dbo.SSOX_ApplicationInfo</code> table, you should see an entry associated with FILE_TL_BTTestHost, so that&rsquo;s our newly created send handler. You&rsquo;ll notice that the <code>ai_admin_group_name</code> column has the value &rdquo;BizTalk Application Users&rdquo;, as expected. </li>
+<li>Now create a send port associated to the new Send Handler and test to verify everything is working correctly. </li>
+<li>Stop and delete the existing host instance. </li>
+<li>Now let&rsquo;s create a new Windows Users Group, let&rsquo;s name it &ldquo;BizTalk Test Group&rdquo;. We&rsquo;ll also create a new windows user we&rsquo;ll use to create a new host instance in a bit; and we&rsquo;ll make that user a member of BizTalk Test Group. Make sure the user is <em>not</em> a member of &ldquo;BizTalk Application Users&rdquo;. </li>
+<li>Open the properties for BTTestHost and change the associated Windows User Group, to the new &ldquo;BizTalk Test Group&rdquo;. </li>
+<li>Go ahead and create a new Host Instance, add a new Send Port associated with our Send Handler and run a test. You&rsquo;ll notice you&rsquo;ll get an error with something like <em>&ldquo;Access denied. The client user must be a member of one of the following accounts to perform this function.&rdquo; </em>(followed by a list of windows user groups). </li>
+<li>At this point, if you go back and check the <code>SSOX_ApplicationInfo</code> table again, you&rsquo;ll notice that the row FILE_TL_BTTestHost still has the same value on the <code>ai_admin_group_name</code> column referencing the original group associated with the host, not the new group we assigned to it. This causes the access denied error for the host instance, because the host user is not considered to have access to the SSODB to read the adapter settings. </li> </ol>
+<p>The ugly part is that working around this problem requires you to delete the original Send Handler and recreating it, which requires you to move all send ports already associated with it one by one.</p></p>

@@ -1,0 +1,38 @@
+---
+layout: post
+status: publish
+published: true
+title: How Pipeline Component Assemblies are Loaded
+author:
+  display_name: Tomas Restrepo
+  login: tomasr
+  email: tomas@winterdom.com
+  url: http://winterdom.com/
+author_login: tomasr
+author_email: tomas@winterdom.com
+author_url: http://winterdom.com/
+wordpress_id: 784
+wordpress_url: http://winterdom.com/2006/10/howpipelinecomponentassembliesareloaded
+date: '2006-10-06 07:02:48 +0000'
+date_gmt: '2006-10-06 07:02:48 +0000'
+categories:
+- BizTalk
+tags: []
+comments: []
+---
+<p><!--start_raw-->
+<p>One topic that sometimes causes confusion when developing custom pipeline components in BizTalk Server is how, and where, should their assemblies should be deployed and how they are loaded by BizTalk. Let's talk a little bit about it.</p>
+<p>In BizTalk Server 2004, there was only one place to deploy your custom pipeline components: The "Pipeline Components" folder on your BizTalk installation directory. Some <a href="http:&#47;&#47;www.masteringbiztalk.com&#47;blogs&#47;jon&#47;PermaLink,guid,93006d15-d636-4b0f-8018-986478d7c1bd.aspx">conflicts</a> arose because of this requirement, and made it "uncomfortable" to have components that had external dependencies on other assemblies.</p>
+<p>In BizTalk Server 2006, this restriction was lifter, and now the recommendation is: Deploy to the Pipeline Components folder on development machines only; deploy&nbsp;to the GAC. The former is really only necessary so that the design time infrastructure (i.e. the pipeline designer) works.</p>
+<p>But let's look at what actually happens when you use a custom pipeline component in a BizTalk pipeline:</p>
+<ol>
+<li>When you add the component to the pipeline, it is referenced in the .BTP file using the complete class name that implements the component as well as the partial assembly name that contains it (i.e. name only, no version&#47;culture&#47;publictoken). Usually, a project reference might be added to the assembly as well, but this is not used during compilation. (Thanks to <a href="http:&#47;&#47;www.traceofthought.net&#47;">Scott Colestock</a> for pointing this out).</li>
+<li>When the BizTalk project is compiled, a strongly types class is generated representing your custom pipeline. That class will dynamically load all pipeline components used it in, and does so by using the complete, assembly-qualified name of the component class, which does include full assembly name information. <br>Each component is loaded by a call to PipelineManager.CreateComponent() which eventually loads the component using reflection.</li></ol>
+<p>In BizTalk Server 2006, the components are loaded internally by the CreateManagedInstance() method of the internal ComponentLoader class, which does the following steps:</p>
+<ol>
+<li>If it has an explicit assembly path, it will try to use Assembly.LoadFrom() to load it. This usually doesn&rsquo;t happen, btw.</li>
+<li>It will then try to use Type.GetType() to get to the class type. If the assembly is GAC'ed or in the probing path, then this should cause the assembly to be probed and loaded in the Load context without problems. This is the case you'll usually prefer to happen in servers, as it will give you the least trouble.</li>
+<li>If that fails, BizTalk will then extract the assembly name from the qualified type name, append ".dll" to the base name and then again try to do a LoadFrom() trying to load it manually from the Pipeline Components folder.</li></ol>
+<p>One could think that perhaps a better option for the BizTalk design would've been to make the Pipeline Components folder part of the probing path for BizTalk and simply let the runtime do its thing. This is not the case, however. In any case, this wouldn't have worked because pipelines are not only used inside the BizTalk Application Hosts (i.e. BTSNTSvc.exe), but also in isolated hosts like IIS where having the Pipeline Components folder as part of the probing path is not an option.</p>
+<div class="wlWriterSmartContent" id="d7bf807d-7bb0-458a-811f-90c51817d5c2:22647b1f-759c-4080-9dc2-4964b7f67b52" contenteditable="false" style="padding-right: 0px; display: inline; padding-left: 0px; padding-bottom: 0px; margin: 0px; padding-top: 0px">
+<p><span class="TagSite">Technorati:</span> <a href="http:&#47;&#47;technorati.com&#47;tag&#47;BizTalk" rel="tag" class="tag">BizTalk</a>, <a href="http:&#47;&#47;technorati.com&#47;tag&#47;Pipelines" rel="tag" class="tag">Pipelines</a><br &#47;><!-- StartInsertedTags: BizTalk, Pipelines :EndInsertedTags --></p></div><!--end_raw--></p>

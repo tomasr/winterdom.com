@@ -1,0 +1,48 @@
+---
+layout: post
+status: publish
+published: true
+title: Causing Trouble
+author:
+  display_name: Tomas Restrepo
+  login: tomasr
+  email: tomas@winterdom.com
+  url: http://winterdom.com/
+author_login: tomasr
+author_email: tomas@winterdom.com
+author_url: http://winterdom.com/
+wordpress_id: 1203
+wordpress_url: http://winterdom.com/2009/05/causing-trouble
+date: '2009-05-11 13:11:55 +0000'
+date_gmt: '2009-05-11 13:11:55 +0000'
+categories:
+- ".NET"
+- BizTalk
+tags: []
+comments:
+- id: 771
+  author: Jonathan Moons
+  author_email: jmoons@microsoft.com
+  author_url: ''
+  date: '2009-05-14 23:53:42 +0000'
+  date_gmt: '2009-05-14 23:53:42 +0000'
+  content: You could have done an upgrade in place on BizTalk Server 2006 R2 to BizTalk
+    Server 2009. I did this with one of my VPCs and it worked no problem. Otherwise
+    you need to make sure you remove everything, dbs, sql jobs, SSIS packages, etc.
+- id: 772
+  author: Tomas Restrepo
+  author_email: tomas@winterdom.com
+  author_url: http://winterdom.com/
+  date: '2009-05-15 02:13:48 +0000'
+  date_gmt: '2009-05-15 02:13:48 +0000'
+  content: "Jonathan: Yeah, I could've done the upgrade, but I would've still liked
+    to get rid of VS2005 after that, and that was what caused the problem.\r\n\r\nFWIW,
+    I ended up reinstalling VS2008, applying SP1 again and then repairing the BizTalk
+    installation, and finally had a working VS2008. Took a long time, though."
+---
+<p>Last night I finally downloaded the RTM build of the recently released BizTalk Server 2009 and proceeded to install it on one of my dev virtual machines. Installation went without a hitch, very consistent with my experience with BizTalk installations since the 2006 release. (For what is worth, I never ran into any issues with the BTS2009 CTP installation before that either).</p>
+<p>Unfortunately, not everything went as well. This particular VM was running BizTalk 2006 R2, so before installing 2009 I uninstalled the previous installation. While at it, I also uninstalled Visual Studio 2005, given how I was only using it for BizTalk dev and wouldn&rsquo;t need it anymore on 2009.</p>
+<p>As they said, this turned out to be a not so bright idea: I just noticed this morning that the VS2005 uninstall trashed my Visual Studio 2008 installation. Trying to open C# projects wouldn&rsquo;t work anymore, complaining about the Windows Forms Visual Studio package being missing and not being able to create the compiler services and what not. </p>
+<p>This kind of thing can completely screw up your morning and make you waste hours trying to get it fixed. Seriously, guys: supporting side by side installations also means supporting the corresponding uninstall process. One without the other is pretty damn useless.</p>
+<p>I&rsquo;m reinstalling VS2008 SP1 now and hoping that will fix it. If not, guess I might as well nuke this VM from orbit and start from scratch. This is not a good way to start my day&hellip;</p></p>
+<p><b>Update:</b> Nope, reinstalling SP1 did not fix it :(</p></p>

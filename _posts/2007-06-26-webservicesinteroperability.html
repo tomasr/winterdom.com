@@ -1,0 +1,52 @@
+---
+layout: post
+status: publish
+published: true
+title: Web Services Interoperability
+author:
+  display_name: Tomas Restrepo
+  login: tomasr
+  email: tomas@winterdom.com
+  url: http://winterdom.com/
+author_login: tomasr
+author_email: tomas@winterdom.com
+author_url: http://winterdom.com/
+wordpress_id: 545
+wordpress_url: http://winterdom.com/2007/06/webservicesinteroperability
+date: '2007-06-26 19:50:26 +0000'
+date_gmt: '2007-06-26 19:50:26 +0000'
+categories:
+- ".NET"
+- Architecture
+- Web Services
+tags: []
+comments: []
+---
+<p><!--start_raw-->
+<p><a href="http:&#47;&#47;udidahan.weblogs.us&#47;">Udi Dahan</a> posted a few days ago an entry (rant?) on Web Services as an <a href="http:&#47;&#47;udidahan.weblogs.us&#47;2007&#47;06&#47;25&#47;web-services-no-magic-bullet-for-net-java-interop&#47;">interoperability option</a> between .NET and Java and the potential pitfalls in that. Based on my personal experience, I can't help but agree with him that there's still a ways to go.</p>
+<p>Now, don't get me wrong; using Web Services is still simpler in many cases than the other options available, but it's no silver bullet. More to the point, interoperability is not something you get for free; it's something you have to <em>architect, design, code and test</em> for.</p>
+<p>Here are some (random) observations on this from my own personal experience:</p>
+<p><strong>Know who your clients are and what tools they use</strong></p>
+<p>Sometimes you will have to make&nbsp;trade offs in the design of your service contract based on who your service consumers will be and what tools they are using. In an ideal world this wouldn't be necessary, but alas, that's not where we live. For example, Java tools tend to favor certain specific patterns. Or maybe your consumer will be an integration tool or maybe even a legacy platform using one of the many, lesser known SOAP stacks available. Those usually have specific restrictions.</p>
+<p>If you know your consumers will be using Java, try to find out what specific SOAP stack they are using (from the plethora available for Java) and explicitly test against it. It will be a worthwhile use of your time. If your consumers are LOB applications, modern third party packages with built-in WS support, or desktop applications (i.e. MS Office) then&nbsp;again special restrictions might apply, so try to find out before hand.</p>
+<p><strong>Understand SOAP Encoding and Messaging Patterns</strong></p>
+<p>A lot of people still don't know the difference between SOAP RPC&#47;Encoded and Document&#47;Literal. Microsoft took the initiative back in 2001&#47;2002 when the .NET ASMX stack turned on Doc&#47;Literal encoding by default (a wise move, imho), but Java toolkits took a long while to catch up. </p>
+<p>Even today, a lot of Java toolkits will default to RPC&#47;Encoded even if they support Doc&#47;Literal and, unfortunately, a lot of Java developers don't know their kits well enough to turn on the right settings. To be fair, a lot of&nbsp;.NET developers don't know how to change the encoding settings either, but we forgive them because of the sensible defaults in the platform :-)</p>
+<p><strong>Know the basics</strong></p>
+<p>Study and learn how to apply the basics of the <a href="http:&#47;&#47;www.ws-i.org&#47;deliverables&#47;workinggroup.aspx?wg=basicprofile">WS-I Basic Profile</a> in your platform of choice. Take good care in ensuring you follow the basic guidelines for service&#47;message contract design, and learn what options are available in your platform to control service and message generation.</p>
+<p>Here are some good resources to keep in mind for .NET:</p>
+<ul>
+<li><a href="http:&#47;&#47;msdn2.microsoft.com&#47;en-us&#47;library&#47;ms953974.aspx">How to Apply the Basic Profile</a></li>
+<li><a href="http:&#47;&#47;msdn2.microsoft.com&#47;en-us&#47;library&#47;ms230196.aspx">Building WS-I Basic Profile Compliant Web Services using ASP.NET 2.0</a></li></ul>
+<p><strong>Beyond the Basics</strong></p>
+<p>If you&nbsp;thought interop with plain old SOAP (POS?) could be hard, then be double wary when you get into the WS-* specs, which&nbsp;are sure to complicate things further and bring a lot of extra interop challenges. WS-Security and its related specs, in particular, can give you some nasty headaches. Some thing to watch out for:</p>
+<ul>
+<li>Again, check which toolkits and clients your consumers will be using. Make sure they support the exact protocol versions you expect to be using.</li>
+<li>Make sure you've tested interoperability using the specific protocol features you expect to use. For example, if you're using WS-Security, make sure you can interop at a basic level with the message confidentiality, message authentication options and token kinds you plan to enable.</li>
+<li>WS-Security interoperability problems, in particular, can be nasty to diagnose because most implementations throw extremely uninformative error messages that don't tell you much. Yes, even WCF falls into this trap.</li>
+<li>Watch out for interrelated specs in use. For example, when using WSE to add advanced security to your services, it would by default add a bunch of WS-Addressing stuff that caused extra interoperability issues, because there were several&nbsp;[incompatible] WS-Addressing versions. Add to this that WS-Security was a lot farther down the standardization path than WS-Addressing.</li>
+<li>Know your platform limitations: If you're using .NET 1.1, then you've got very limited options (WSE 2.0); If .NET 2.0&#47;3.0 then at least you have a much more modern WSE 3.0 and WCF options at your disposal.</li></ul>
+<p><strong>One hand giveth, the other taketh away</strong></p>
+<p>If you're using WCF, understand the choices it makes for you and how to work around them. For example, Data Contracts in WCF aim to improve interoperability by severely limiting the kind of XML structure you can use (elements only and so on). This, however, doesn't help you if you have to work with specific schemas designed by someone else (like standard industry schemas), so be ready to <a href="http:&#47;&#47;msdn2.microsoft.com&#47;en-us&#47;library&#47;ms733901.aspx">fall back</a> to the old trusty XmlSerializer.</p>
+<p>Another thing that might impact you is WCF's default behavior in generating split WSDL descriptions where the schemas are imported (and possibly other WSDL documents as well if your service elements have different namespaces); a lot of external tools choke on those service descriptions. Again, let me point to Christian Weyer's <a href="http:&#47;&#47;blogs.thinktecture.com&#47;cweyer&#47;archive&#47;2007&#47;05&#47;10&#47;414840.aspx">excellent article</a> and code sample to ease the pain of this.</p>
+<div class="wlWriterSmartContent" id="0767317B-992E-4b12-91E0-4F059A8CECA8:1c154e3e-26df-44fc-a90b-8c916942a208" contenteditable="false" style="padding-right: 0px; display: inline; padding-left: 0px; padding-bottom: 0px; margin: 0px; padding-top: 0px">Technorati tags: <a href="http:&#47;&#47;technorati.com&#47;tags&#47;Web%20Services" rel="tag">Web Services</a>, <a href="http:&#47;&#47;technorati.com&#47;tags&#47;Interop" rel="tag">Interop</a></div><!--end_raw--></p>

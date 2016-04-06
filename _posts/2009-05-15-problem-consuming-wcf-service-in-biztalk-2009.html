@@ -1,0 +1,74 @@
+---
+layout: post
+status: publish
+published: true
+title: Problem Consuming WCF Service in BizTalk 2009
+author:
+  display_name: Tomas Restrepo
+  login: tomasr
+  email: tomas@winterdom.com
+  url: http://winterdom.com/
+author_login: tomasr
+author_email: tomas@winterdom.com
+author_url: http://winterdom.com/
+wordpress_id: 1217
+wordpress_url: http://winterdom.com/2009/05/problem-consuming-wcf-service-in-biztalk-2009
+date: '2009-05-15 02:50:22 +0000'
+date_gmt: '2009-05-15 02:50:22 +0000'
+categories:
+- BizTalk
+tags: []
+comments:
+- id: 773
+  author: Ryan
+  author_email: ryancrawcour@gmail.com
+  author_url: ''
+  date: '2009-05-15 04:21:26 +0000'
+  date_gmt: '2009-05-15 04:21:26 +0000'
+  content: "That's ridiculous! especially considering it works just fine in BizTalk
+    2006 R2. Have we gone backwards?\r\n\r\nHave you logged this with the product
+    team?"
+- id: 774
+  author: Patrick Wellink
+  author_email: well0549@hotmail.com
+  author_url: ''
+  date: '2009-05-15 09:47:01 +0000'
+  date_gmt: '2009-05-15 09:47:01 +0000'
+  content: Any particular reason why you had to import it in a seperate project ?
+- id: 775
+  author: Tomas Restrepo
+  author_email: tomas@winterdom.com
+  author_url: http://winterdom.com/
+  date: '2009-05-15 12:39:25 +0000'
+  date_gmt: '2009-05-15 12:39:25 +0000'
+  content: "Ryan: Not yet. I wasn't part of the CTP program, and frankly, it was an
+    scenario I had not tried till this week anyway. Will see what I can do about reporting
+    it.\r\n\r\nPatrick: The reason is... that having it in the same project plain
+    didn't work. It appears to be a side effect of the new build process (probably
+    artifacts getting compiled in the wrong order, or something like that). So importing
+    it in a separate project was just a means to getting the WCF port&#47;schemas
+    built before the orchestration using them."
+- id: 1356
+  author: Winterdom &raquo; Blog Archive &raquo; Fix for Consuming WCF Service in
+    BTS2009
+  author_email: ''
+  author_url: http://winterdom.com/2010/04/fix-for-consuming-wcf-service-in-bts2009
+  date: '2010-04-01 13:31:06 +0000'
+  date_gmt: '2010-04-01 13:31:06 +0000'
+  content: "[...] hotfix has been released for the BizTalk Server 2009 developer tools
+    that should fix the problem I mentioned a few months ago with referencing WCF
+    services within the same BizTalk project as the orchestration that uses [...]"
+---
+<p><b>Update:</b> I've been told now that the hotfix in <a href='http:&#47;&#47;support.microsoft.com&#47;kb&#47;979153'>KB979153</a> should correct this problem.</p></p>
+<p>I&rsquo;m posting this one problem I ran into this week so I don&rsquo;t forget about it. The scenario was as follows:</p>
+<p>We had an existing, working WCF service. Most of the operations in the service contract were not using explicit data contracts as input parameters; instead they were just using primitives (such as an operation taking a string as an argument), though data contracts were used for the response messages.</p>
+<p>We were trying to consume this service from an orchestration in BizTalk Server 2009 RTM, so we added the reference using the <a href="http:&#47;&#47;msdn.microsoft.com&#47;en-us&#47;library&#47;bb226552.aspx">WCF Service Consuming Wizard</a>. This worked fine. All the schemas were correctly imported and new multi-part messages were defined for the input and output messages. Schemas were also created for the inputs and outputs.</p>
+<p>The problem came when trying to actually populate the parameters of the input multi-part messages. In this case, this needs to be done by creating the input message with all the arguments using the right schema (which we had) and then assigning that message into the <code>parameters</code> part of the input multi-part message that would be actually sent to the send port.</p>
+<p><img style="border-bottom: 0px; border-left: 0px; display: inline; border-top: 0px; border-right: 0px" title="bts09wcferror" border="0" alt="bts09wcferror" src="http:&#47;&#47;winterdom.com&#47;wp-content&#47;uploads&#47;2009&#47;05&#47;bts09wcferror.png" width="683" height="146" &#47;> </p>
+<p>The error was that the Orchestration Compiler (or Visual Studio) for that matter didn&rsquo;t seem to recognize the <code>parameters</code> part in the message. Though it would pop up in Intellisense in an expression shape, any attempt to actually assign a value to it would cause an error about the assignment expression being invalid (because it doesn&rsquo;t recognize the part).</p>
+<p><img style="border-bottom: 0px; border-left: 0px; display: inline; border-top: 0px; border-right: 0px" title="bts09wcferror2" border="0" alt="bts09wcferror2" src="http:&#47;&#47;winterdom.com&#47;wp-content&#47;uploads&#47;2009&#47;05&#47;bts09wcferror2.png" width="611" height="74" &#47;> </p>
+<p></p>
+<p></p>
+<p>I immediately went back to a BizTalk 2006 R2 installation and, sure enough, I was able to do this in minutes and have it working. So far, I had failed to find anything in the docs, the readme or on searches around the neck, but I was sure it had to be something relatively harmless. Well, just so I can find it easier next time:</p>
+<p>The workaround is to import your WCF service metadata into a separate BizTalk 2009 project, then go and change the generated Port Types and Multi-Part Message Types so that they are have public visibility, and then add a reference to the new project from the one containing your orchestration. Then it will compile and work just fine.</p>
+<p>Annoying little bug, isn&rsquo;t it?</p></p>

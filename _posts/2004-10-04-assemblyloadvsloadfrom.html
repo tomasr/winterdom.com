@@ -1,0 +1,24 @@
+---
+layout: post
+status: publish
+published: true
+title: Assembly.Load() vs. LoadFrom()
+author:
+  display_name: Tomas Restrepo
+  login: tomasr
+  email: tomas@winterdom.com
+  url: http://winterdom.com/
+author_login: tomasr
+author_email: tomas@winterdom.com
+author_url: http://winterdom.com/
+wordpress_id: 205
+wordpress_url: http://winterdom.com/2004/10/assemblyloadvsloadfrom
+date: '2004-10-04 16:24:04 +0000'
+date_gmt: '2004-10-04 16:24:04 +0000'
+categories:
+- ".NET"
+tags: []
+comments: []
+---
+<p><!--start_raw-->Jon Flanders posts here about a problem he diagnosed recently about Assembly.LoadFrom() and Assembly.Load() behaving differently. The issue he basically ran into is that Load() and LoadFrom() load the assembly into different contexts (the Load Context and the LoadFrom Context, respectively).</p>
+<p>Suzanne Cook has a most excellent explanation of <a href="http:&#47;&#47;blogs.msdn.com&#47;suzcook&#47;archive&#47;2003&#47;05&#47;29&#47;57143.aspx">binding contexts</a> on her blog, as well as a <a href="http:&#47;&#47;blogs.msdn.com&#47;suzcook&#47;archive&#47;2003&#47;06&#47;13&#47;57180.aspx">few</a> <a href="http:&#47;&#47;blogs.msdn.com&#47;suzcook&#47;archive&#47;2003&#47;09&#47;19&#47;57248.aspx">related</a> <a href="http:&#47;&#47;blogs.msdn.com&#47;suzcook&#47;archive&#47;2004&#47;08&#47;04&#47;208232.aspx">topics</a>. Be sure to check it out.</p><!--end_raw--></p>

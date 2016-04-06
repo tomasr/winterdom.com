@@ -1,0 +1,44 @@
+---
+layout: post
+status: publish
+published: true
+title: Event Activities and Persistent Subscriptions
+author:
+  display_name: Tomas Restrepo
+  login: tomasr
+  email: tomas@winterdom.com
+  url: http://winterdom.com/
+author_login: tomasr
+author_email: tomas@winterdom.com
+author_url: http://winterdom.com/
+wordpress_id: 823
+wordpress_url: http://winterdom.com/2006/10/eventactivitiesandpersistentsubscriptions
+date: '2006-10-16 08:11:14 +0000'
+date_gmt: '2006-10-16 08:11:14 +0000'
+categories:
+- ".NET"
+- WinFX
+- Workflow
+tags: []
+comments: []
+---
+<p><!--start_raw-->
+<p>I've talked in&nbsp;<a href="http:&#47;&#47;www.winterdom.com&#47;weblog&#47;2006&#47;02&#47;28&#47;WFEventActivities1.aspx">past</a> <a href="http:&#47;&#47;www.winterdom.com&#47;weblog&#47;2006&#47;03&#47;05&#47;WFEventActivities2.aspx">entries</a> about event-driven activities (those implementing IEventActivity) in Windows Workflow Foundation and how to implement them. I discovered most of this stuff by going over all the samples available and a lot of spelunking around using Reflector while trying to create my <a href="http:&#47;&#47;www.winterdom.com&#47;weblog&#47;2006&#47;03&#47;03&#47;MSMQWorkflowActivitiesV1.aspx">MsmqActivities</a> for WF. However, a recent <a href="http:&#47;&#47;forums.microsoft.com&#47;MSDN&#47;ShowPost.aspx?PostID=806136&amp;SiteID=1">question</a> on the WF forums made me aware of a&nbsp;significant bug&nbsp;in my implementation.</p>
+<p>Let me try to describe from the beginning what the problem is:</p>
+<p><img style="border-right: 0px; border-top: 0px; border-left: 0px; border-bottom: 0px" height="249" src="http:&#47;&#47;www.winterdom.com&#47;weblog&#47;content&#47;binary&#47;WindowsLiveWriter&#47;EventActivitiesandPersistentSubscription_737A&#47;Listen%5B11%5D.png" width="287" align="right" border="0"> Normally, an event activity when used in an event context (say in one branch of a ListenActivity) works roughly like this:</p>
+<ol>
+<li>The ListenActivity will right at the beginning call the IEventActivity.Subscribe() method in your event activity forcing it to initialize any subscriptions needed. Normally this involves notifying a runtime service that the activity is interested in a given event and creating a WorkflowQueue for the notification.</li>
+<li>When the event occurs,&nbsp;the runtime service notifies the activities involved through the corresponding WorkflowQueue. This causes the IActivityEventListener<QueueEventArgs>.OnEvent() method of the ListenActivity to be called (since it is the one that subscribed to the event), which in turn asks our activity to execute (because it is the one that fired the event first).</li>
+<li>After this, the ListenActivity will call our IEventActivity.Unsubscribe() method to unsibscribe from our event (regardless of whether we triggered the event in the first place). Usually, this means we'll go out to the underlying runtime service to ask it to remove the subscription and delete the WorkflowQueue we were using.</li></ol>
+<p>At any point in time during this process the workflow engine might decide to unload our workflow instance from memory and persist it using a configured persistence service (such as the built-in SqlWorkflowPersistenceService). In a lot of scenarios this will work correctly, because the WorkflowRuntime handles the persistence of the most important items: It will persist the workflow state and the state of each of the created activities (including our own). As part of this it will also "remember" which WorkflowQueues had been created and will even persist any contents of those queues, which is why anything you put on a WorkflowQueue&nbsp;should to&nbsp;be serializable.</p>
+<p>Looking at this&nbsp;with my own MsmqActivities, I noticed that&nbsp;if the host process hosting the workflow engine was kept alive, everything worked just fine, even if the individual workflow instances were unloaded and reloaded. However, if the hosting process was terminated after the workflow instances where unloaded from memory and it was started again (thus loading any persisted workflow instances), things might not work right. Specifically if the&nbsp;hosting process went down&nbsp;<em>after</em> IEventActivity.Subscribe() had been called but before the MsmqListenerService had received the message on the queue it was subscribed to, then when the workflow instance was loaded again by the runtime it wouldn't work because the message would never arrive.</p>
+<p>Looking at this problem in detail, here's what I think is happening:</p>
+<ul>
+<li>The workflow persistence services are aware of workflow instances, activities and workflow queues, but they really have no clue about any other runtime services such activities might depend on. In other words, they are not aware of any persistence requirements of the runtime services a given workflow instance is actively using.</li>
+<li>Under normal circumstances, the IEventActivity.Subscribe() method will only be called once by the event context for your activity instance. So, even if it had been called prior to the workflow instance being unloaded, it <em>won't be called again</em> when it is loaded into memory again.<br>This actually makes a lot of sense if you think about it, because the runtime is already aware of the&nbsp;WorkflowQueues&nbsp;created and event handlers attached as a result of the original subscription (since it is taken care of by the persistence services).</li></ul>
+<p>The biggest issue by far, though, is how the MsmqListenerService itself works. The MsmqListenerService actually takes proactive action when it is notified of a subscription being created by the MsmqReceiveActivity, by creating a listener for the MSMQ Queue the activity wants to receive a message from. This is not something that is required by all event activities (the built-in activities are pretty passive in this respect), though I believe it will be a common requirement.</p>
+<p>When the hosting process is shutdown, all MSMQ Listeners are removed from memory alongside everything else.&nbsp;Because the MsmqListenerService didn't have any built-in persistence mechanism, when the WorkflowRuntime was spawned again, all persisted workflow instances were loaded again but the MsmqListenerService was a "clean slate", with no knowledge of any subscriptions that had been created on the previous incarnation!</p>
+<p>Based on this facts, it is my conclusion that if your event activities interact with their runtime services in such a way that the services&nbsp;need to keep track of subscriptions created on their end,&nbsp;you will need&nbsp;to provide your own persistence&nbsp;mechanism and store&nbsp;so that they "survive" across host restarts. I have already implemented a basic persistence mechanism for my MsmqActivities to keep track of which subscriptions have been created and which&nbsp;MSMQ Queues it needs to listen to and use that information to respawn the queue listeners when the workflow engine is started. So far, it seems to be working correctly.</p>
+<p>I'll discuss the implementation in more detail in a few days when I'm ready to release the updated package.</p>
+<div class="wlWriterSmartContent" id="d7bf807d-7bb0-458a-811f-90c51817d5c2:54bfd091-71a6-4a9e-ba30-55cc3afada8d" contenteditable="false" style="padding-right: 0px; display: inline; padding-left: 0px; padding-bottom: 0px; margin: 0px; padding-top: 0px">
+<p><span class="TagSite">Technorati:</span> <a href="http:&#47;&#47;technorati.com&#47;tag&#47;Windows+Workflow+Foundation" rel="tag" class="tag">Windows Workflow Foundation</a>, <a href="http:&#47;&#47;technorati.com&#47;tag&#47;WF" rel="tag" class="tag">WF</a>, <a href="http:&#47;&#47;technorati.com&#47;tag&#47;MSMQ" rel="tag" class="tag">MSMQ</a><br &#47;><!-- StartInsertedTags: Windows Workflow Foundation, WF, MSMQ :EndInsertedTags --></p></div><!--end_raw--></p>

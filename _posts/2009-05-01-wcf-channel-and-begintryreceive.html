@@ -1,0 +1,32 @@
+---
+layout: post
+status: publish
+published: true
+title: WCF Channel and BeginTryReceive
+author:
+  display_name: Tomas Restrepo
+  login: tomasr
+  email: tomas@winterdom.com
+  url: http://winterdom.com/
+author_login: tomasr
+author_email: tomas@winterdom.com
+author_url: http://winterdom.com/
+wordpress_id: 1179
+wordpress_url: http://winterdom.com/?p=1179
+date: '2009-05-01 10:15:55 +0000'
+date_gmt: '2009-05-01 10:15:55 +0000'
+categories:
+- WCF
+tags: []
+comments: []
+---
+<p>I'm going over some WCF custom transport channels I had worked on recently and noticed something that made me suspicious right away that something was wrong: Using my custom channel listener, only a single message would be processed at a time, even though several messages were being fed to WCF.</p></p>
+<p>That something was wrong became more evident when I started messing around with the <a href='http:&#47;&#47;msdn.microsoft.com&#47;en-us&#47;library&#47;ms731193.aspx'>concurrency and instancing</a> modes and realized that while they were being obeyed, it didn't change message processing at all.</p></p>
+<p>Now, WCF has some pretty important options for throttling message processing on the service side, which are configurable through the <a href='http:&#47;&#47;msdn.microsoft.com&#47;en-us&#47;library&#47;system.servicemodel.description.servicethrottlingbehavior.aspx'>ServiceThrottling</a> behavior. Wanting to confirm my fears, I started tweaking the <a href='http:&#47;&#47;msdn.microsoft.com&#47;en-us&#47;library&#47;system.servicemodel.description.servicethrottlingbehavior.maxconcurrentinstances.aspx'>MaxConcurrentInstances</a> setting and noticed that indeed, it didn't seem to make any difference.</p></p>
+<p>Something interesting happened then: I rebuild my test service class implementation to use the <a href='http:&#47;&#47;msdn.microsoft.com&#47;en-us&#47;library&#47;ms731177.aspx'>Async pattern</a> instead, and what happened? Multiple messages started being processed concurrently, in accordance with the settings I had put into the InstanceContextMode and the <code>ServiceThrottlingBehavior</code>. Obviously, something was wrong my channel listener implementation!</p></p>
+<p>Digging further, and after a bunch of different tests and lots of <code>printf</code> debugging, I found out what the problem was:</p></p>
+<p>In my tests, I was using a normal <code>ServiceHost</code> to run my custom channel and the test service implementation. The way the host interacts with the channels is such that WCF was eventually using the <code>BeginTryReceive()</code> and <code>EndTryReceive()</code> methods to receive the messages that were queued in the channels. All that implementation was working perfectly, except for a single detail:</p></p>
+<p>The code that handled dispatching any waiters that had called <code>BeginTryReceive()</code>, was firing all the notifications using the same thread. That means that the dispatcher was waking up all waiters by going through the waiter list and calling the corresponding <code>AsyncCallback</code> for each one synchronously.</p></p>
+<p>This, turns out, is a big mistake: It essentially causes WCF to invoke your service implementation using a single thread, thus causing the behavior I was seeing of only seeing one message processed at a time. Changing the service to use the async pattern pretty much meant that WCF would pick up the message call the service and be able to pick up another message right away, making the issue go away (at least up to a point). That's why I was seeing different behaviors between the two modes.</p></p>
+<p>The solution was simply to make sure the dispatcher would delegate notifying each waiter to a thread pool task, thus making each one independent.</p></p>
+<p>Thinking about this after the fact, I can see this should've been just obvious from the start, and was a really stupid mistake on my part. However, I can't help but wonder if the WCF model gives way too much responsability to the underlying channel. Just look how a simple mistake here can make the transport channel completely change the WCF execution model and make all the throttling go all wrong.</p></p>

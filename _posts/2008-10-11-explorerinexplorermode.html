@@ -1,0 +1,71 @@
+---
+layout: post
+status: publish
+published: true
+title: Explorer in Explorer Mode
+author:
+  display_name: Tomas Restrepo
+  login: tomasr
+  email: tomas@winterdom.com
+  url: http://winterdom.com/
+author_login: tomasr
+author_email: tomas@winterdom.com
+author_url: http://winterdom.com/
+wordpress_id: 273
+wordpress_url: http://winterdom.com/2008/10/explorerinexplorermode
+date: '2008-10-11 08:41:44 +0000'
+date_gmt: '2008-10-11 08:41:44 +0000'
+categories:
+- PowerShell
+tags: []
+comments:
+- id: 202
+  author: James
+  author_email: ender2025@gmail.com
+  author_url: http://ender2025.myopenid.com/
+  date: '2008-10-12 08:35:01 +0000'
+  date_gmt: '2008-10-12 08:35:01 +0000'
+  content: |
+    Try 'invoke-item -path .' or 'ii .'
+    James
+- id: 203
+  author: Hal Rottenberg
+  author_email: hal@halr9000.com
+  author_url: http://halr9000.com
+  date: '2008-10-12 15:24:07 +0000'
+  date_gmt: '2008-10-12 15:24:07 +0000'
+  content: |
+    If James hadn't said that I was going to.  :)
+- id: 204
+  author: Tomas Restrepo
+  author_email: tomas@winterdom.com
+  author_url: http://winterdom.com/
+  date: '2008-10-13 06:29:10 +0000'
+  date_gmt: '2008-10-13 06:29:10 +0000'
+  content: |
+    Thanks guys! Yes, it occurred to me later on that I could just "execute" the path and get the right behavior, but, to be honest, getting the right explorer parameters was a challenge I wanted to get done :) (I'm still not 100% sure why the above works while "&#47;e,`"$loc`"" didn't).
+- id: 205
+  author: Jason Archer
+  author_email: jasonmarcher@gmail.com
+  author_url: ''
+  date: '2008-10-13 10:21:04 +0000'
+  date_gmt: '2008-10-13 10:21:04 +0000'
+  content: |
+    Never have used that command, thanks for sharing (I always used "start .").  Strangely enough, both these commands worked without errors:
+    $loc = "."
+    explorer "&#47;e,"$loc""
+    explorer "&#47;e,`"$loc`""
+- id: 206
+  author: Tomas Restrepo
+  author_email: tomas@winterdom.com
+  author_url: http://winterdom.com/
+  date: '2008-10-13 11:00:10 +0000'
+  date_gmt: '2008-10-13 11:00:10 +0000'
+  content: |
+    Jason: Yes, that works for me if $loc doesn't have spaces in it. That's when it breaks for me.
+---
+<p><!--start_raw-->
+<p>I tend to fire up Windows Explorer instances from my prompt very often, either on the current directory or in other spots. I was pretty used to using the <code>&ldquo;explorer &#47;e,
+<path>&rdquo;</code> command from CMD.EXE but I never had figured out exactly how to use it on PowerShell and have it work reliably: Paths with spaces always caused it to open the default documents folder instead.</p>
+<p>Finally sat down and played with it until I got it right:</p>
+<div class="codebg"><code><span class="Comment"># open explorer in this directory</span><br><span class="Keyword">function</span>&nbsp;<span class="Function">exp</span>(<span class="Type">[string]</span>&nbsp;<span class="Identifier">$loc</span> = <span class="String">'.'</span>) {<br>&nbsp;&nbsp; explorer <span class="String">"&#47;e,"</span><span class="Identifier">$loc</span><span class="String">""</span><br>} </code></div><!--end_raw--></p>

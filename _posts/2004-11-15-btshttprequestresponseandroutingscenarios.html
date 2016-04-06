@@ -1,0 +1,27 @@
+---
+layout: post
+status: publish
+published: true
+title: BTS HTTP Request&#47;Response and routing scenarios
+author:
+  display_name: Tomas Restrepo
+  login: tomasr
+  email: tomas@winterdom.com
+  url: http://winterdom.com/
+author_login: tomasr
+author_email: tomas@winterdom.com
+author_url: http://winterdom.com/
+wordpress_id: 319
+wordpress_url: http://winterdom.com/2004/11/btshttprequestresponseandroutingscenarios
+date: '2004-11-15 17:26:30 +0000'
+date_gmt: '2004-11-15 17:26:30 +0000'
+categories:
+- BizTalk
+tags: []
+comments: []
+---
+<p><!--start_raw-->Last week, while trying a few things at work with BizTalk server, we managed to get something up and running that I hadn't quite seen explicitly presented anywhere: using BTS as a router on an HTTP Request&#47;Response escenario.</p>
+<p align="center"><img src="http:&#47;&#47;www.winterdom.com&#47;weblog&#47;images&#47;HttpRouter.gif"&#47;></p></p>
+<p>Basically, it consisted of an Request&#47;Response Receive Port hosting an HTTP Request Location that received an XML document and routed it accoding to one of the fields in the document's envelope to one of nine send ports.</p></p>
+<p>Each send port just had the HTTP adapter configured in a Solicit&#47;Response pattern and a set of filters that checked for a particular value of a promoted property. Besides having this, the only configuration we had was the pipelines: A custom receive pipeline on the receive location and the XMLTransmit pipeline in the send port, with the use of the passthrough pipelines in the rest of the cases.</p></p>
+<p>Once I got this configured correctly, it just started working: the document received would be routed to one send port, and the response was directly delivered to the original sender. Quite cool to know this is possible; albeit not very useful in practice since it was just slow as hell ;)</p><!--end_raw--></p>

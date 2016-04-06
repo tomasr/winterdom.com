@@ -1,0 +1,56 @@
+---
+layout: post
+status: publish
+published: true
+title: Harry Pierson on BizTalk
+author:
+  display_name: Tomas Restrepo
+  login: tomasr
+  email: tomas@winterdom.com
+  url: http://winterdom.com/
+author_login: tomasr
+author_email: tomas@winterdom.com
+author_url: http://winterdom.com/
+wordpress_id: 716
+wordpress_url: http://winterdom.com/2007/01/harrypiersononbiztalk
+date: '2007-01-18 15:44:58 +0000'
+date_gmt: '2007-01-18 15:44:58 +0000'
+categories:
+- BizTalk
+- Workflow
+tags: []
+comments: []
+---
+<p><!--start_raw-->
+<p></p>
+<p><a href="http:&#47;&#47;devhawk.net&#47;">Harry Pierson</a> talked a bit about the stuff he's learning on BizTalk Server in <a href="http:&#47;&#47;devhawk.net&#47;2007&#47;01&#47;18&#47;Morning+Coffee+12.aspx">Morning Coffee 12</a> entry (btw, loving them, keep it up!). Looks like he's attending a great class with <a href="http:&#47;&#47;www.pluralsight.com&#47;blogs&#47;matt&#47;">Matt Milner</a>. A few comments that sparked my interest: </p>
+<p>Harry says that conceptually BizTalk hasn't changed all that much since the 2000&#47;2002 days.&nbsp;I'm not sure I'd agree, but that would depend on what he means by "conceptually" :-) </p>
+<p>I'd say that from an architecture point of view, the the change between 2002 and 2004 was a very significant one, requiring you to adapt to a lot of new stuff.&nbsp;Here's why I feel this way: </p>
+<ul>
+<li>The orchestration engine was pretty much rewritten. The designer by itself is a great improvement, but it's far more than that:</li>
+<ul>
+<li>There's no more interpreted XLANG, now we have XLANG&#47;s</li>
+<li>Orchestrations (*.odx) are compiled down to C# and then to MSIL.</li>
+<li>Now we have a pretty powerful correlation mechanism as well as convoys.</li>
+<li>Native .NET support (it is .NET after all!)</li></ul>
+<li>The messaging model changed significantly:</li>
+<ul>
+<li>Most of the terminology changed. Remember channels, AICs and Receive Functions?</li>
+<li>The messaging model is now mostly symmetrical, unlike in 2000&#47;2002 where the send and receive sides were&nbsp;very different.</li>
+<li>The pipeline model is far nicer (have I mentioned I love pipelines? they're fantastic!).</li>
+<li>The adapter framework. Sure beats down anything we had in 2000&#47;2002! Writing adapters is still hard, but writing them in .NET is far easier. Application Integration Components (AIC) were a kludge, anyway.</li></ul>
+<li>New features:</li>
+<ul>
+<li>Enterprise Single Sign-On</li>
+<li>Business Activity Monitoring: Don't disregard the power of BAM, it's one of the coolest features in BizTalk and coming soon to WCF and WF thanks to the new BAM interceptors for WCF and WF in BizTalk 2006 R2.</li>
+<li>Business Rules Engine</li></ul></ul>
+<p>Maybe it's just me, but I do consider that the change between 2002 and 2004 to be very significant and a much needed improvement. But I'd agree that from some points of view, yes, BizTalk is still BizTalk (e.g. you still use it for the same and a lot of the usage scenarios haven't changed at a conceptual level). Personally, I consider understanding the BizTalk architecture an absolute must for any BizTalk developer, and as you can see, I get all excited talking about it :-)</p>
+<p>Harry also mentioned something I've heard a lot of people say: that the Pub&#47;Sub engine in the BizTalk MessageBox was mostly useful for messaging-only scenarios. I agree that's what it might seem so at first but just to reinforce what Matt said in the class: The Message Box really is the heart of BizTalk and the Pub&#47;Sub engine in it is exactly what gives it that power! </p>
+<p>So let me briefly enumerate just why the Pub&#47;Sub engine is extremely relevant to orchestrations in BizTalk: </p>
+<ul>
+<li>The Pub&#47;Sub engine processes any message that comes into BizTalk, and that includes messages that fire orchestration instances. Even when you do the simplest Port to Orchestration bindings, subscriptions are still created&#47;evaluated&#47;matched in the MessageBox to enable the processing to happen.</li>
+<li>The MessageBox message store, which as Harry correctly points out, can be thought of (to a degree) as a set of queues, coupled with the Pub&#47;Sub engine gives BizTalk some pretty powerful features. One of them is the capability to balance processing loads between multiple BizTalk processing servers in a single BizTalk Group.<br><br>Basically the idea is that you can have a single BizTalk Host with multiple instances (example, instances HA and HB in servers A and B respectively) and when a message is received and fires an orchestration instance, then BizTalk might start some of those instances in server A and other in server B. That's something you get mostly for free with BizTalk (though you still need to know how to take advantage of it and how to architect for it).</li>
+<li>Direct Binding: <a href="http:&#47;&#47;www.winterdom.com&#47;weblog&#47;CommentView,guid,3c5d9db1-f563-40d5-a5cf-b4458376dc11.aspx">Direct binding</a> exposes the Pub&#47;Sub model in the MessageBox to Orchestrations like no other binding model does. It allows you to create orchestrations that are not bound to a physical receive or send port but rather that directly subscribe or publish messages to the MessageBox. This gives you a lot of power and flexibility in how orchestrations connect to each other and how they connect to ports because it allows you to use them and harness the full flexibility offered by the Pub&#47;Sub engine. </li>
+<li>Correlation Sets: A correlation basically gives you the ability to route an incoming message into an existing orchestration instance (i.e. one already up waiting for it), instead of always firing a new instance. When you initialize a Correlation Set what essentially happens under the covers is that a new&nbsp;temporary subscription is created (called an Instance Subscription), so the Pub&#47;Sub engine is pretty important for this aspect as well.<br><br>This is actually one of the aspects that I find more lacking in the current Windows Workflow Foundation implementation, and it's the lack of a reusable, generic correlation engine. There is a basic correlation support for the HandleExternalEvent and InvokeExternalMethod activities, but it's not really very reusable. This means pretty much every developer creating custom IEventActivity implementations needs to build their own correlation mechanism if its needed, and it can be quite a bit of work, specially if you need to make it work&nbsp;across a farm of machines hosting the workflows (BizTalk already does this for you thanks to the Message Box architecture).</li></ul>
+<p>Hopefully this makes it more obvious just how important the Pub&#47;Sub engine in the Message Box is to BizTalk Orchestrations! Did I mention I love this stuff?</p>
+<div class="wlWriterSmartContent" id="0767317B-992E-4b12-91E0-4F059A8CECA8:379b47a0-0930-48c1-b60f-6fb7c4aa82ff" contenteditable="false" style="margin: 0px; padding: 0px; display: inline;">Technorati tags: <a href="http:&#47;&#47;technorati.com&#47;tags&#47;BizTalk%20Server" rel="tag">BizTalk Server</a>, <a href="http:&#47;&#47;technorati.com&#47;tags&#47;WF" rel="tag">WF</a>, <a href="http:&#47;&#47;technorati.com&#47;tags&#47;Windows%20Workflow%20Foundation" rel="tag">Windows Workflow Foundation</a>, <a href="http:&#47;&#47;technorati.com&#47;tags&#47;BTS" rel="tag">BTS</a></div><!--end_raw--></p>

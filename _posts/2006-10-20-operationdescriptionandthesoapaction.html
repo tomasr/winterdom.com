@@ -1,0 +1,47 @@
+---
+layout: post
+status: publish
+published: true
+title: OperationDescription and the SOAP Action
+author:
+  display_name: Tomas Restrepo
+  login: tomasr
+  email: tomas@winterdom.com
+  url: http://winterdom.com/
+author_login: tomasr
+author_email: tomas@winterdom.com
+author_url: http://winterdom.com/
+wordpress_id: 250
+wordpress_url: http://winterdom.com/2006/10/operationdescriptionandthesoapaction
+date: '2006-10-20 21:15:03 +0000'
+date_gmt: '2006-10-20 21:15:03 +0000'
+categories:
+- WCF
+- WinFX
+- Web Services
+tags: []
+comments: []
+---
+<p><!--start_raw-->
+<p>Yesterday I <a href="http:&#47;&#47;forums.microsoft.com&#47;MSDN&#47;ShowPost.aspx?PostID=845305&amp;SiteID=1">posted</a> a question on the Windows Communication Foundation forums about how to get the SOAP Action associated with a given operation when all I had was the OperationDescription for it. I had been looking for a while and had not been able to make the connection. Here's what I asked:</p><br />
+<blockquote>
+<p><em>Is there an easy way to get an operation's SOAP Action when all you have is the OperationDescription representing the method? </em></p>
+<p><em>Here's the scenario I'm looking at: I have a custom service behavior that injects a custom IDispatchMessageInspector into several of the endpoints of the service. That part works just fine. </em> </p>
+<p>However, when I get to the AfterReceiveRequest() method, all I have in hand is the request message, from which all I know is the SOAP Action it contains, and what I really need is the name of the operation it maps to. I can get the System.ServiceModel.Description.ServiceDescription object directly in my service behavior and pass that to my message interceptor, and from there on I could easily get at the OperationDescription objects for all endpoints&#47;contracts associated with the service. </em> </p>
+<p>So, on one hand I have easy access to the action, and on the other easy access to the operation name, and I'd like to connect them together. Since the OperationDescription doesn't include the action, I know I could get it by manually looking for the [OperationContract] attribute on the BeginMethod, but that would be rather bothersome and I guess imply replicating the code in the internal NamingHelper.GetMessageAction(), which I'd rather not do. </em> </p>
+<p>Any other ideas?</p></blockquote>
+<p>Brian McNamara was s kind enough to answer my question with a few options and things to watch out for: </p><br />
+<blockquote>
+<p>You can get the Action&#47;ReplyAction out of an OperationDescription by using </p>
+<p>&nbsp;&nbsp;&nbsp; od.Messages[0].Action</p>
+<p>&nbsp;&nbsp;&nbsp; od.Messages[1].Action</p>
+<p>assuming that 'od' is the OperationDescription.</p>
+<p>Note that if the operation is one-way, only Messages[0] will be populated (Messages[1] will cause an out-of-bound exception).</p>
+<p>(Beware that this approach of correlating messages to operations only works if you are using the default IDispatchOperationSelector (which dispatches based on action).&nbsp; If someone plus in their own custom IDispatchOperationSelector, then the logic of using the action to determine the operation may be incorrect.) </p>
+<p>(Note also that if you have a duplex contract (a ServiceContract with a CallbackContract), there may be up to two operations with the same action - one in each direction.&nbsp; od.Messages[0].Direction will tell you if this operation is a normal operation (MessageDirection.Input) or a callback operation (MessageDirection.Output).)</p></blockquote>
+<p>Many thanks to Brian for&nbsp;his help! If you're wondering why I'm reposting it here, well that's easy: it will make it easier for me to find it whenever I need it again :-) </p>
+<p> </p>
+<div class="wlWriterSmartContent" id="d7bf807d-7bb0-458a-811f-90c51817d5c2:bf6d1202-5554-432a-be20-800357c51348" style="margin: 0px; padding: 0px; display: inline;" contenteditable="false">
+<p><span class="TagSite">Technorati:</span> <a href="http:&#47;&#47;technorati.com&#47;tag&#47;Windows+Communication+Foundation" rel="tag" class="tag">Windows Communication Foundation</a>, <a href="http:&#47;&#47;technorati.com&#47;tag&#47;WCF" rel="tag" class="tag">WCF</a>, <a href="http:&#47;&#47;technorati.com&#47;tag&#47;WCF+Extensibility" rel="tag" class="tag">WCF Extensibility</a><br><!-- StartInsertedTags: Windows Communication Foundation, WCF, WCF Extensibility :EndInsertedTags --></p></div>
+<p></p><br />
+<!--end_raw--></p>

@@ -1,0 +1,67 @@
+---
+layout: post
+status: publish
+published: true
+title: Boo Syntax for Vim
+author:
+  display_name: Tomas Restrepo
+  login: tomasr
+  email: tomas@winterdom.com
+  url: http://winterdom.com/
+author_login: tomasr
+author_email: tomas@winterdom.com
+author_url: http://winterdom.com/
+wordpress_id: 119
+wordpress_url: http://winterdom.com/2007/03/boosyntaxforvim
+date: '2007-03-25 18:48:42 +0000'
+date_gmt: '2007-03-25 18:48:42 +0000'
+categories:
+- ".NET"
+- Tools
+tags: []
+comments:
+- id: 1253
+  author: swiftcoder
+  author_email: swiftcoder@gmail.com
+  author_url: http://swiftcoder.wordpress.com
+  date: '2009-12-07 02:46:09 +0000'
+  date_gmt: '2009-12-07 02:46:09 +0000'
+  content: "Thanks for that, just what I needed starting out with Boo.\r\n\r\nDon't
+    forget to run this through dos2unix before installing under Linux or Mac - vim
+    chokes on the dos format for some reason."
+- id: 1741
+  author: Philip Peterson
+  author_email: carniojack424@gmail.com
+  author_url: http://ironmagma.com/
+  date: '2011-06-18 02:05:04 +0000'
+  date_gmt: '2011-06-18 02:05:04 +0000'
+  content: Could you put a formal license on it please, so you or I could put it on
+    github (or a similar place) for active development&#47;revision?
+- id: 1751
+  author: Tomas Restrepo
+  author_email: tomas@winterdom.com
+  author_url: http://winterdom.com/
+  date: '2011-07-03 02:58:17 +0000'
+  date_gmt: '2011-07-03 02:58:17 +0000'
+  content: "@Philip: Honestly, I'm not sure what license to give it given how old
+    this is and how much I borrowed from the default syntax files!"
+- id: 21027
+  author: Slevin
+  author_email: Kipkoechmathew@gmail.com
+  author_url: ''
+  date: '2013-08-16 17:51:05 +0000'
+  date_gmt: '2013-08-16 17:51:05 +0000'
+  content: Can't believe this was first posted in 207. I thought boo made its first
+    appearance in 209. Thanks for the script btw. It's cool to know that there are
+    guys interested in Boo.
+---
+<p><!--start_raw-->
+<p>While working through the Boo code in&nbsp;JanRain's OpenID library, I got tired of looking at a colorless screen. It's easy to forget how much of a difference syntax highlighting does!</p>
+<p>Seeing as how I'm using Vim as my current external editor of choice, I looked around to see if I could find a syntax file for Boo, but didn't find any in the <a href="http:&#47;&#47;www.vim.org&#47;search.php">usual</a> <a href="http:&#47;&#47;www.google.com&#47;">places</a>. So, based on a the info <a href="http:&#47;&#47;boo.codehaus.org&#47;">here</a> and a few sample Boo files, I came up with my own. It's somewhat tricky to get right, but I borrowed heavily from the builtin Python, C# and Ruby scripts to came up with a simple, though usable script. </p>
+<p>Here's a screenshot showing the results:</p>
+<p><a href="http:&#47;&#47;www.winterdom.com&#47;weblog&#47;content&#47;binary&#47;WindowsLiveWriter&#47;BooSyntaxforVim_1049B&#47;BooInVim%5B2%5D.png" atomicselection="true"><img style="border-right: 0px; border-top: 0px; border-left: 0px; border-bottom: 0px" height="480" src="http:&#47;&#47;www.winterdom.com&#47;weblog&#47;content&#47;binary&#47;WindowsLiveWriter&#47;BooSyntaxforVim_1049B&#47;BooInVim_thumb.png" width="517" border="0"></a> </p>
+<p>Not bad, if I may say so myself, given as how I had not tried this in years :-). I'm sure there are hundreds of problems, but it does the trick for now. I'm still missing a decent indentation script, though... </p>
+<p>If anyone wants it, the script can be downloaded from <a href="http:&#47;&#47;www.winterdom.com&#47;misc&#47;vimsyntax&#47;boo.vim">here</a>. Just save it to&nbsp;the syntax directory of your Vim installation and configure your file associations with something like:</p>
+<p>:au BufNewFile,BufRead *.boo setf boo </p>
+<p>Enjoy!</p>
+<div class="wlWriterSmartContent" id="0767317B-992E-4b12-91E0-4F059A8CECA8:5a141e74-83b6-4ffa-af44-4b0dc98ad3d4" contenteditable="false" style="padding-right: 0px; display: inline; padding-left: 0px; padding-bottom: 0px; margin: 0px; padding-top: 0px">Technorati tags: <a href="http:&#47;&#47;technorati.com&#47;tags&#47;Boo" rel="tag">Boo</a>, <a href="http:&#47;&#47;technorati.com&#47;tags&#47;Vim" rel="tag">Vim</a>, <a href="http:&#47;&#47;technorati.com&#47;tags&#47;Text%20Editors" rel="tag">Text Editors</a></div><!--end_raw--></p>

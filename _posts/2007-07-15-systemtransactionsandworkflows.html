@@ -1,0 +1,90 @@
+---
+layout: post
+status: publish
+published: true
+title: System.Transactions and Workflows
+author:
+  display_name: Tomas Restrepo
+  login: tomasr
+  email: tomas@winterdom.com
+  url: http://winterdom.com/
+author_login: tomasr
+author_email: tomas@winterdom.com
+author_url: http://winterdom.com/
+wordpress_id: 351
+wordpress_url: http://winterdom.com/2007/07/systemtransactionsandworkflows
+date: '2007-07-15 14:07:36 +0000'
+date_gmt: '2007-07-15 14:07:36 +0000'
+categories:
+- ".NET"
+- Architecture
+- Workflow
+tags: []
+comments:
+- id: 263
+  author: Mark Johnson
+  author_email: burstingfist@hotmail.com
+  author_url: ''
+  date: '2007-07-16 09:39:12 +0000'
+  date_gmt: '2007-07-16 09:39:12 +0000'
+  content: |
+    On our current project, the requirement was that workflows be entirely transactional.  These are long running statemachine workflows.  The following are the steps required:
+    1) Use ManualWorkflowSchedulerService
+    2) By default WF does not flow in ambient transactions, so a custom TransactionService (a double dictionary keyed by thread and instanceID) must be used.  Set the Transaction.Current in the service for the current thread before invoking an event on the workflow.
+    3) Exceptions do not flow out of the WF runtime, so a custom exception service is required (very similar to the transaction service) to re-throw exceptions after an event is raised on the workflow.
+    4) The default SqlWorkflowPersistenceService must be customized (Reflector works good) to set 'Enlist=true' (this is required for loading workflow instance so it is part of the same transaction to prevent deadlocks)
+    5) Create a base activity that all activities should derive from.  This simply creates a TransactionScope (using the transaction stored in the TransactionService for the thread and instance) and calls the derived class's 'DoExecute' method.
+    6) Instance.Unload must occur after firing an event and within the same TransactionScope
+    If any exception occurs during an Activity's Execute method, the transaction is rolled back and the State Machine is returned to it's original state.  This setup will allow any number of events to be invoked on any number of Workflow Instances within the same transaction.  A transaction is only valid on the thread it was created (at least the way we built it).
+    Even though the workflow is long running (many years), each activity must execute before the transaction times out (3 minutes in our case)
+- id: 264
+  author: Mark Johnson
+  author_email: burstingfist@hotmail.com
+  author_url: ''
+  date: '2007-07-16 09:59:11 +0000'
+  date_gmt: '2007-07-16 09:59:11 +0000'
+  content: |
+    Need to clarify that the time span from one Event handler to the next, must be less than the transaction timeout.  Obviously this is a significant constraint if your workflow has many complex activities between EventHandlers.  But it seems to me like workflows are mostly waiting for input from external actors and the activities themselves should execute in a reasonable timeframe.
+    Anothe Caveat:  The default TransactionScopeActivity will stop working correctly.  This could be overcome be creating a custom TransactionScopeActivity or by further modification to the custom SqlWorkflowPersistenceService.
+- id: 265
+  author: Tomas Restrepo
+  author_email: tomas@winterdom.com
+  author_url: http://www.winterdom.com/weblog/
+  date: '2007-07-16 11:24:45 +0000'
+  date_gmt: '2007-07-16 11:24:45 +0000'
+  content: |
+    Mark: That's certainly a testament to the power and flexibility of WF. It sure looks like you've successfully customized it to work exactly how you want to, in a pretty cool way!
+    Not all projects, however, can undertake fairly big customizations of the workflow hosting infrastructure such as yours, and even then, circumstances may prevent them from using your specific approach.
+- id: 129535
+  author: Raymond Loo Yee Chin
+  author_email: raymondlooyc.91@hotmail.com
+  author_url: ''
+  date: '2014-04-16 15:45:58 +0000'
+  date_gmt: '2014-04-16 15:45:58 +0000'
+  content: hi, I very interested what have Mark said which is "the transaction is
+    rolled back and the State Machine is returned to it&rsquo;s original state" but
+    I am not cleave enough to understand actually how it done it code. I am new in
+    window workflow and currently I facing issue to handle network lost causing partial
+    data lost and workflow termination. May I have a sample or article for reference
+    and details?
+---
+<p><!--start_raw-->
+<p><a href="http:&#47;&#47;codebetter.com&#47;blogs&#47;scott.bellware&#47;">Scott Bellware</a> discusses some interesting things here regarding <a href="http:&#47;&#47;codebetter.com&#47;blogs&#47;scott.bellware&#47;archive&#47;2007&#47;07&#47;15&#47;165623.aspx">transactions and extensibility hooks</a> and even considering Ruby on Rails as a web front end. I'll ignore the Ruby thing, but I do want to talk about his comments on transactions and workflows.</p>
+<p>If I understand right, Scott is basically providing a way to extend his application through user-defined workflows that are executed at specific and controlled extensibility points. This is a very cool scenario for WF that enables very interesting possibilities.</p>
+<p>His concern, however, seems to center around controlling what happens when one of those user-defined workflows fails, to ensure the entire system is not left in an inconsistent state. This is certainly a valid concern, but it is one that I feel isn't quite as simple to solve as simply "use transactions".</p>
+<p>Let's take WF out of the picture for a moment and assume we were using a good old code-based extensibility model (or even a script-based one). Even with the help of System.Transactions and distributed transactions, there's really no way to guarantee that whatever code users of the system put into the extensibility hooks would still work correctly in the event of failure. This revolves around the fundamental fact that there's no guarantee that whatever is put in there is even <em>transaction-aware</em>. Granted, there's a big chance that code put in there is indeed transaction aware, but that's only because a lot of what comes directly into the core .NET framework is tightly integrated in itself. Indeed, for all you know, the user might have even explicitly bring out his operations out of the transactional context (for example using "Enlist=false" in his connection strings).</p>
+<p>So even if you wrapped your extensibility hooks with a transaction scope built with System.Transactions, there's no guarantee that a transaction rollback will really bring the system to a consistent state. That's a constant danger with extensible systems, and one that it is not easily addressed. If you've noticed, most framework facilities focused on extensibility only concern themselves with the security problems, but not with extension behavior in the general sense.</p>
+<p>This fundamental issue doesn't really get any better just because your extensions are now written as workflows. Indeed, it can become a bit more complicated. To me, using System.Transactions with WF Workflows used in this matter doesn't really make much sense, for several reasons:</p>
+<ol>
+<li>Yes, WF supports System.Transactions (indeed this is what a TransactionScope activity&nbsp;uses underneath), but the same danger exists of someone using an activity that's not transaction-aware.</li>
+<li>Wrapping the entire workflow in a System.Transactions transaction limits substantially what the user can do&nbsp;with the extension workflows. Are you willing to restrict your users to running only short-lived, simple workflows? </li></ol>
+<p>The second one is to me the most significant one, because putting that restriction in place limits substantially the power of WF for these scenarios, particularly when you allow workflow persistence and tracking as part of your application extensibility.</p>
+<p>The one benefit that WF gives you over code-based extensibility for handling errors is indeed mentioned by Scott: Compensations. This is a very powerful mechanism, particularly for long running workflows, and can certainly be leveraged by extension workflows to put the system back into a consistent state. </p>
+<p>In the end, just like with code-based extensibility, you still need to put guidelines in place to make sure users extending your system do so in such a way that they don't jeopardize the behavior and consistency of the entire system, but even with&nbsp;WF, it is still hard to put those guidelines in executable form.</p>
+<p>In some cases, however, WF can indeed make it easier, if you're willing to live with some restrictions. For example, here are some ideas to think about to improve your chances:</p>
+<ol>
+<li><em>Restrict the vocabulary:</em> WF can be extended through the use of custom Activities. Ideally, you will have devised a set of custom activities specific to your problem domain that the users can use to compose their extension workflows. If you're willing to restrict users a bit, and your activity set is complex enough, consider putting restrictions in place so that users can only compose extension workflows using a set of activities you've "approved" (those on your own set and some basic flow control ones, for example). This won't be a perfect model, but can improve the chances that users don't extend the system incorrectly, and can easily be done.</li>
+<li><em>Use validators:</em> Take advantage of WF's ActivityValidators to enforce rules on your extension workflows. If you've also restricted the vocabulary, you can certainly take advantage of domain=specific knowledge to write the validation rules. For example, if you've got an UpdateXXX activity, you could validate that it always is used within a TransactionScope activity.</li>
+<li><em>Create templates</em> your users can use to get started writing extension workflows. Ideally, make these into top-level workflow activities your users can derive from. So, for example, you could have users create a workflow derived from InsuranceExtensionWorkflowActivity instead of a simple SequenceWorkflowActivity, Your base workflow could also have custom validators enforcing, for example, that a global compensation flow is implemented by the users (if necessary).</li></ol>
+<p>None of these are foolproof, but they can improve the odds in your favor when used correctly.</p>
+<div class="wlWriterSmartContent" id="0767317B-992E-4b12-91E0-4F059A8CECA8:7bac4d50-8050-4621-8da0-abef09cf2021" contenteditable="false" style="padding-right: 0px; display: inline; padding-left: 0px; padding-bottom: 0px; margin: 0px; padding-top: 0px">Technorati tags: <a href="http:&#47;&#47;technorati.com&#47;tags&#47;Windows%20Workflow%20Foundation" rel="tag">Windows Workflow Foundation</a></div><!--end_raw--></p>

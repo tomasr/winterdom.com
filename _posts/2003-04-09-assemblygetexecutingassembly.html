@@ -1,0 +1,23 @@
+---
+layout: post
+status: publish
+published: true
+title: Assembly.GetExecutingAssembly()
+author:
+  display_name: Tomas Restrepo
+  login: tomasr
+  email: tomas@winterdom.com
+  url: http://winterdom.com/
+author_login: tomasr
+author_email: tomas@winterdom.com
+author_url: http://winterdom.com/
+wordpress_id: 817
+wordpress_url: http://winterdom.com/2003/04/assemblygetexecutingassembly
+date: '2003-04-09 20:09:20 +0000'
+date_gmt: '2003-04-09 20:09:20 +0000'
+categories:
+- ".NET"
+tags: []
+comments: []
+---
+<p><!--start_raw-->BradA <a href="http:&#47;&#47;blogs.gotdotnet.com&#47;BradA&#47;permalink.aspx&#47;a4d3c087-55b4-438d-839a-297f7f81faf3">points out</a> the use of Assembly.GetExecutingAssembly().Location to find out the path to the executable. One thing to watch out for is that Assembly.GetExecutingAssembly() can return null under some conditions. Off the top of my head, this very likely will happen if you're not running in the default appdomain, or your process was not started by a managed exe.... <!--end_raw--></p>

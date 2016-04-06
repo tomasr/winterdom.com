@@ -1,0 +1,42 @@
+---
+layout: post
+status: publish
+published: true
+title: Vantive and Attachments
+author:
+  display_name: Tomas Restrepo
+  login: tomasr
+  email: tomas@winterdom.com
+  url: http://winterdom.com/
+author_login: tomasr
+author_email: tomas@winterdom.com
+author_url: http://winterdom.com/
+wordpress_id: 201
+wordpress_url: http://winterdom.com/2005/09/vantiveandattachments
+date: '2005-09-08 05:23:53 +0000'
+date_gmt: '2005-09-08 05:23:53 +0000'
+categories:
+- Development
+tags: []
+comments:
+- id: 151
+  author: Mike Humes
+  author_email: info@queplix.com
+  author_url: http://www.queplix.com
+  date: '2006-06-06 19:26:37 +0000'
+  date_gmt: '2006-06-06 19:26:37 +0000'
+  content: |
+    The commercial version of the Vantive attachment extraction tool is available now from queplix.com.
+    They also have the trial version I believe. This company sells a complete Vantive and Peoplesoft replacement package, which I think allows to reverse engineer your Vantive or PS application (even customized) in J2EE in like few days and this is an open source project. Check it out.
+---
+<p><!--start_raw-->On one of the projects we are working on, there was a need to integrate with Vantive (aka Peoplesoft), which was to be done by using a connector to access the CRM's Oracle database. All fine and good.</p>
+<p>However, we did ran into a nasty issue: Attachments. As it turns out, Vantive allows the users to attach documents (say, a word document or an excel spreadsheet) to things like service orders. As part of the integration process we were building, we needed to grab the file location (path) of the file that had been attached and send it as part of a message to another application. So we had to dive into Vantive, only to find that the SW_ATTACHMENT table contained the links and attachments, allright, but not in the way we expected it.</p></p>
+<p>The problem is, what Vantive stores in the table is not just the original path to the file, since it also allows the user to embed the actual document besides just linking to it. As it turns out, what Vantive actually stores is a BLOB containing an <a href="http:&#47;&#47;msdn.microsoft.com&#47;library&#47;en-us&#47;stg&#47;stg&#47;about_structured_storage.asp?frame=true">OLE Structured Storage</a> file (and using one of the older OLE formats as a Compound File I believe).</p></p>
+<p>We spent some days breaking up the BLOBS to see how we could manipulate them, and finally ended up doing something like this yesterday, which works, sort of:</p></p>
+<ul>
+<li>Extract the BLOB from the database and save it to a temporary file</li>
+<li>Use <a href="http:&#47;&#47;msdn.microsoft.com&#47;library&#47;en-us&#47;stg&#47;stg&#47;stgopenstorage.asp?frame=true">StgOpenStorage()</a> to crack it open and get a reference to <a href="http:&#47;&#47;msdn.microsoft.com&#47;library&#47;en-us&#47;stg&#47;stg&#47;istorage.asp">IStorage</a> to manipulate it</li>
+<li>Look for a stream called "\x1Ole10Native" within the storage, and then open it using <a href="http:&#47;&#47;msdn.microsoft.com&#47;library&#47;en-us&#47;stg&#47;stg&#47;istorage_openstream.asp">IStorage::OpenStream()</a></li>
+<li>Read the contents of the stream into a buffer, and then look for the byte sequence {0x01 0x00 0x01 0x00}. If we find it, then just after it we can read the rest of the stream as an UTF-7 encoded string. This is the path to the linked file.</li><br />
+</ul></p>
+<p>In all honesty, this sounds like a fairly brutal hack, but it does the trick for now and only took a few hours to discover :). The problem mostly is that we are not very familiar with structured storage of exactly how Vantive packed the data in it, so, if anyone has any tips that could helps us clean up the code (like what the significance of the "\x1Ole10Native" stream is, or what the format of it is), I'd appreciate it.</p><!--end_raw--></p>

@@ -1,0 +1,35 @@
+---
+layout: post
+status: publish
+published: true
+title: Messaging or RPC replied
+author:
+  display_name: Tomas Restrepo
+  login: tomasr
+  email: tomas@winterdom.com
+  url: http://winterdom.com/
+author_login: tomasr
+author_email: tomas@winterdom.com
+author_url: http://winterdom.com/
+wordpress_id: 809
+wordpress_url: http://winterdom.com/2003/04/messagingorrpcreplied
+date: '2003-04-07 18:40:32 +0000'
+date_gmt: '2003-04-07 18:40:32 +0000'
+categories:
+- Web Services
+tags: []
+comments: []
+---
+<p><!--start_raw--><a href="http:&#47;&#47;www.pinetree-tech.com&#47;weblog&#47;">Justin</a> makes some really good points (and question) on his <a href="http:&#47;&#47;pinetree-tech.com&#47;weblog&#47;archives&#47;2003&#47;04&#47;07.shtml#messaging_or_rpc">comments</a> on SOAP WebServices. I'd like to reply to some of them, and take the opportunity to ask a few more questions of my own.</p>
+<p>Justin asks whether my example is really messaging. Well, probably not; but that was something, quite frankly, that didn't matter to me at that point, as all I wanted to do was examine how XML serialization was working behind the covers.</p></p>
+<p>However, Justin goes on and says that it just "Looks like an RPC call to me - GetCustomer". I agree. In essence, it is. The reason I make this assertion is that while doing all of this, I realised a few things. The first one is that I really like ASP.NET's SoapParameterStyle.Bare with Document&#47;Literal services. The second one is that I believe SOAPAction is a poor substitute to working based on the URI and&#47;or the message headers&#47;contents. And the third one is that a Bare message that takes no argument just downright looks stupid with an empty soap:Body!</p></p>
+<p>Now, I would be inclined to believe that a more Restful approach, using HTTP GET as Justin suggests, would be more appropriate in this case, and it certainly sounds very nice. However, now I can't take advantage of some other cool SOAP-things, like WS-Security [1].</p></p>
+<p>Justin makes a very interesting point on putting a verb on a message is wrong. I'm not quite sure how I feel about it, yet. On one level, what he says really resonates with me. Perhaps a more valid request message would've been thought out (and it's trivial to customize using ASP.NET). However, a more interesting question is how does a request such as this (with basically no incoming message data), which is obviously of a very request-response, synchronous nature, fit within the whole messaging&#47;SOAP architecture? What would be the best way to model such interactions? [2] I must admit to being a little confused about this, so any enlightment would be appreciated.</p></p>
+<p>Then, there is, of course, the whole sync vs. async debate. Humor me, and allow me to complain for a little bit. I keep hearing how messaging enables asynchronisity and how cool that is. Well, duh! Of course it does, it's a natural fit. I don't think most people are concerned about that. Where most people get stuck (me included, sometimes) is either a) designing things in such a way that they fit naturally into the async paradigm, and b) understanding messaging in a synchronous request&#47;response schenario. I don't think many people have addressed this topic in a comprehensive manner. Morten makes a good case for asynchronicity in an <a href="http:&#47;&#47;morty.info&#47;blog&#47;2003&#47;3.aspx#section-56695844-ddd9-47af-aac0-4a4b59c3da2c">earlier post</a>, by the way.</p></p>
+<p>One example of all of this is the famous Message Bus-based architecture, where layers and systems communicate through a message bus using messaging. It's a pretty cool architecture, certainly, but the places where I've seen it described just baffle me. For once, they often present it in the context of architecting a Web Application, where the UI most of the time requires fast, request&#47;response (yes, very RPC-ish indeed) interactions with other layers of the system. Yet, they quite clearly show the presentation layer doing all its work through the message bus. OK, someone, please, let me know how that works, because I sure as hell can't see how it could possibly work better for the most common operations in a web application. Of course, some operations in this scenario will fit quite nicely going through the message bus, but not the majority of them (which are basically retrieve information to display to the user and making simple updates)</p></p>
+<p>As for full asynchronous messaging, that's definitely something I want, and where I expect SOAP and XML Web Services to play a big part. They're not fully yet, there, though, mostly because of the error processing model [3], where things like retries, transactions, etc. are not quite there [4]. In this scenario, for local operations, I still believe things like MSMQ are a very attractive option to HTTP-based Web Services (especially if you can use soap messages through it!). Right now, one possible option to make your async-style webservices more robust, using transactional queuing systems underneath can certainly be another attractive option (I imagine something like a SOAP HTTP-listener dumping received documents into a transactional queue where some listener service picks them up in another transaction). I expect, though, that things like <a href="http:&#47;&#47;msdn.microsoft.com&#47;webservices&#47;understanding&#47;gxa&#47;default.aspx?pull=&#47;library&#47;en-us&#47;dnglobspec&#47;html&#47;ws-rm-exec-summary.asp">Reliable Messaging</a> and <a href="http:&#47;&#47;msdn.microsoft.com&#47;ws&#47;2002&#47;08&#47;wstx&#47;">Transactions</a> in web services will make some of this unnecessary, and bring much needed.</p></p>
+<p>[1] HTTP-Authentication just doesn't cut it, sometimes....<br&#47;><br />
+[2] The opposite case (a pure submit document operation) is, otoh, quite naturally mapped to SOAP with document&#47;literal.<br&#47;><br />
+[3] What can I say? I'm a pessimist, I expect everything to fail :) <br&#47;><br />
+[4] Not that I have all that much against HTTP, but ensuring reliability in the face of network&#47;system failures does require you to do a bunch of things by hand right now even to provide for the most basic reliability assurances (such as retries and queuing).</p><br />
+<!--end_raw--></p>

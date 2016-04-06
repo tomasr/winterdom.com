@@ -1,0 +1,43 @@
+---
+layout: post
+status: publish
+published: true
+title: ServicedComponents
+author:
+  display_name: Tomas Restrepo
+  login: tomasr
+  email: tomas@winterdom.com
+  url: http://winterdom.com/
+author_login: tomasr
+author_email: tomas@winterdom.com
+author_url: http://winterdom.com/
+wordpress_id: 898
+wordpress_url: http://winterdom.com/2002/08/servicedcomponents
+date: '2002-08-27 19:48:00 +0000'
+date_gmt: '2002-08-27 19:48:00 +0000'
+categories:
+- Enterprise Services
+tags: []
+comments:
+- id: 617
+  author: Ingo Rammer
+  author_email: rammer@sycom.at
+  author_url: http://www.dotnetremoting.cc/dotnetcentric
+  date: '2002-09-05 13:56:12 +0000'
+  date_gmt: '2002-09-05 13:56:12 +0000'
+  content: |
+    <p>No other comments but 100% ACK.</p>
+    <p>-Ingo</p>
+---
+<p><!--start_raw-->Justin does a pretty good job of <a href="http:&#47;&#47;pinetree-tech.com&#47;weblog&#47;archives&#47;2002&#47;08&#47;27.shtml#servicedcomponent_usage">wondering</a> about the use of ServicedComponents in .NET. I'd like to make a couple on comments on it, though:</p>
+<p>I fully agree with Justin that using COM+ (and thus, ServicedComponent) in .NET has more or less fairly limited advantages, in particular, declarative transactions. Quite frankly, I don't care much for the role-based security settings in COM+, as I always found it a little bit restrictive, so I prefer quite a bit more the .NET version of it.</p></p>
+<p>I think that blindly going to ServicedComponent is the wrong way to go. I'd argue that most people used COM+ for the wrong reasons. I've seen too many times VB developers putting all their components in COM+ just because they wanted to access them remotely (poor's man remoting, if you ask me), but never actually using any of the actual COM+ services. A complete waste. So going to COM+ is way overkill for most simple projects. Let's face it: your typical intranet application really doesn't need COM+.</p></p>
+<p>However, I still think COM+ has lots to offer to complex enterprise-level applications, but even so, one should think very carefully about going that way. My main concern is that correctly introducing COM+ into an application (and particularly a .NET application), implies some heavy architectural decisions and changes. You should be fully prepared to deal with the consecuences.</p></p>
+<p>I must admit, though, that, right now, we're faced with this very topic on our current project, and it hasn't been an easy one. I currently think we'll be needing COM+ soon enough, but we have managed to build a lot of functionality without actually using it, which is pretty cool. In particular, it seems we'll really need to get in shape with distributed transactions, and if you're using SQL Server and the SqlClient provider, there's just not much other way to go right now.</p></p>
+<p>My current thinking on all of this is:</p></p>
+<ul>
+<li>Avoid COM+ unless you actually need its services. If you actually need them, make sure you use them right (yes, reading "Transactional COM+" is actually required; go get it).</li>
+<li>If you must use COM+ in .NET applications, try to stick with library applications if you can. There are some pretty cool benefits (including performance) to sticking with the in-proc scenario.</li>
+<li>Be <i>very</i> aware of the life-cycle implications of mixing managed, ServicedComponent-derived classes with COM+ services.</li><br />
+</ul></p>
+<p>If anyone has any other advices, love to hear them :)</p><!--end_raw--></p>

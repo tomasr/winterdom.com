@@ -1,0 +1,36 @@
+---
+layout: post
+status: publish
+published: true
+title: Frans Bouma on M
+author:
+  display_name: Tomas Restrepo
+  login: tomasr
+  email: tomas@winterdom.com
+  url: http://winterdom.com/
+author_login: tomasr
+author_email: tomas@winterdom.com
+author_url: http://winterdom.com/
+wordpress_id: 996
+wordpress_url: http://winterdom.com/2008/11/fransboumaonm
+date: '2008-11-05 05:27:57 +0000'
+date_gmt: '2008-11-05 05:27:57 +0000'
+categories:
+- Oslo
+tags: []
+comments: []
+---
+<p><!--start_raw-->
+<p><a href="http:&#47;&#47;weblogs.asp.net&#47;fbouma&#47;">Frans Bouma</a> posted an <a href="http:&#47;&#47;weblogs.asp.net&#47;fbouma&#47;archive&#47;2008&#47;11&#47;05&#47;designing-a-language-is-hard-and-m-won-t-change-that.aspx">entry about</a> Oslo&rsquo;s M, and if I&rsquo;m reading it right, he is highly skeptical about it actually making creating Domain Specific Languages (DSLs) any easier.</p>
+<p>In part, Frans has a point. Yes, it is true that writing a good, complex language is hard. Yes, there&rsquo;s a bunch of compiling-writing stuff that isn&rsquo;t exactly trivial. And yet, this isn&rsquo;t necessarily the point.</p>
+<p>There are a couple of places where I don&rsquo;t fully agree with Frans:</p>
+<p>Yes, writing a complex, full featured language is hard. But writing a simplified grammar can get you a long way towards simplifying certain class of problems, and I do think there&rsquo;s a lot you could do if the right tools where there for you. Because, let&rsquo;s face it, most compiler writing tools suck.</p>
+<p>The second part is that while Frans talks about M in general, in reality he&rsquo;s only referring to a single part of it: MGrammar. There&rsquo;s a lot more to M than just writing DSLs, and I thought it was important to bring this up.</p>
+<p>The third and final part is that, well, it&rsquo;s not clear if Frans has actually tried to use the M stuff. I&rsquo;ve been playing a bit with MGrammar since the PDC and I have definitely been very impressed so far with how much you can do even without knowing much about writing compilers or formal grammars. </p>
+<p>The way that MGrammar grammar&rsquo;s (pardon the redundancy!) are writing is actually fairly intuitive most of the time, and the built-in conflict resolution rules actually seem to work well in the samples I&rsquo;ve tried so far. So in that sense it is definitely a lot nicer than many compiler writing tools.</p>
+<p>I also liked very much liked how you separate the parsing aspects of things (i.e. defining the grammar) and how actually doing something with the parsed stuff is a secondary step (and one you can actually tackle after that if you want). It&rsquo;s very clean and works well in many cases. It also means that MGrammar is easy to use if you only want to parse some [unstructured] data and do something with it; and not necessarily &ldquo;execute it&rdquo;.</p>
+<p>And finally, there are a couple of hidden gems that I thought can really make a difference once all the tooling is there. For example, I love how you can annotate your grammar to be case-insensitive with a simple attribute:</p>
+<div class="codebg"><code>module DLR {<br>&nbsp;&nbsp;&nbsp; @{CaseSensitive[false]}<br>&nbsp;&nbsp;&nbsp; language ToyScript { </code></div>
+<p>Or even annotate token definitions with colorization information that Intellipad picks up and uses right away:</p>
+<div class="codebg"><code>@{Classification["Keyword"]}<br>final token Print = 'print'; </code></div>
+<p>In short, I agree with Frans that if you&rsquo;re looking into creating a full, complex language, then yes, MGrammar by itself won&rsquo;t make much of a difference. But I do think it shows a lot of promises for the slightly lower-hanging fruit of many simpler DSLs by making it easier to get started writing the grammar and seeing it work right away.</p><!--end_raw--></p>

@@ -1,0 +1,102 @@
+---
+layout: post
+status: publish
+published: true
+title: Formatting Source Code For Blog Posts
+author:
+  display_name: Tomas Restrepo
+  login: tomasr
+  email: tomas@winterdom.com
+  url: http://winterdom.com/
+author_login: tomasr
+author_email: tomas@winterdom.com
+author_url: http://winterdom.com/
+wordpress_id: 477
+wordpress_url: http://winterdom.com/2008/02/formattingsourcecodeforblogposts
+date: '2008-02-07 14:35:43 +0000'
+date_gmt: '2008-02-07 14:35:43 +0000'
+categories:
+- Blogging
+- Tools
+tags: []
+comments:
+- id: 336
+  author: Wes Haggard
+  author_email: ''
+  author_url: http://weblogs.asp.net/whaggard
+  date: '2008-02-07 08:09:08 +0000'
+  date_gmt: '2008-02-07 08:09:08 +0000'
+  content: |
+    If you use Windows Live Writer you should really get the CodeHtmler Live Writer Plugin. It allows you to customize pretty much everything about the formatting and best of all it is persisted so you don't need to re-customize everytime. You can find it at http:&#47;&#47;www.codeplex.com&#47;CodeHtmler, the complete source is there as well so if there is something you don't like by all means ask for it or contribute to the project.
+- id: 337
+  author: DevHawk
+  author_email: harry@devhawk.net
+  author_url: http://devhawk.net
+  date: '2008-02-07 08:33:46 +0000'
+  date_gmt: '2008-02-07 08:33:46 +0000'
+  content: |
+    +1 on CodeHTMLer's WLW plugin. I recently added F# support as well as custom font support, so I could choose Consolas or Lucida Console instead of Courier for my code snippets.
+    Of course, we could just fix dasBlog's RSS feed so that it respected whitespace correctly!
+- id: 338
+  author: Gustavo Duarte
+  author_email: first@duartes.org
+  author_url: http://duartes.org/gustavo
+  date: '2008-02-11 23:47:59 +0000'
+  date_gmt: '2008-02-11 23:47:59 +0000'
+  content: |
+    Hi Tomas,
+    I'm the guy who wrote Iris, and I'd be up for writing the code to do what you need (since it's a pretty common need). After all, it was so much work parsing the Vim syntax files, evaluating Vim expressions, and converting Vim regex to .NET, that it seems a waste not to go the last mile and write a simple formatter class. :)
+    So, if you had to specify a formatter exactly, what would it do? From what you said in the post, it sounds like I'd have to:
+    1. Convert spaces&#47;tabs to &amp;nbsp
+    2. Use <font> for color, and <i &#47;>, <u>, <b &#47;>, etc for font style, text decoration and weight
+    3. Not use pre
+    Anything else? Here are some questions I have:
+    A. Do you care about line numbers?
+    B. If so, how important is it for users to be able to copy and paste without being bothered by the line numbers?
+    C. Are there any other 'structural' aspects you'd like to see in the HTML? What should the code be wrapped in?
+    D. If the highlighter took a Visual Studio config file as input for a Color Scheme, would that help?
+    cheers,
+    Gustavo
+- id: 339
+  author: Tomas Restrepo
+  author_email: tomas@winterdom.com
+  author_url: http://www.winterdom.com/weblog/
+  date: '2008-02-12 05:04:16 +0000'
+  date_gmt: '2008-02-12 05:04:16 +0000'
+  content: |
+    Hi Gustavo! Actually thanks for posting the tool. Yes, indeed those would be some of the ideas I'd have. As for line numbers, I don't use them so they're not really a concern. I don't think supporting VS config files would be strictly necessary; the support for colorschemes there seems to do the trick already (though some people might find it useful; not sure).
+- id: 1758
+  author: Talha Ashfaque
+  author_email: tjaank@gmail.com
+  author_url: http://www.codeshode.com/
+  date: '2011-07-23 09:23:36 +0000'
+  date_gmt: '2011-07-23 09:23:36 +0000'
+  content: "Excellent.\r\nI have 2 similar post:\r\nhttp:&#47;&#47;www.codeshode.com&#47;2011&#47;07&#47;format-source-code-for-blogging-tool.html\r\nhttp:&#47;&#47;www.codeshode.com&#47;2010&#47;06&#47;format-my-source-code-for-blogging.html"
+- id: 4430
+  author: Maverik
+  author_email: gnegi05@gmail.com
+  author_url: ''
+  date: '2012-12-03 15:21:41 +0000'
+  date_gmt: '2012-12-03 15:21:41 +0000'
+  content: "Nice post..\r\nAlso found a nice eclipse plugin to directly copy code
+    as HTML from eclipse IDE.\r\n\r\nhttp:&#47;&#47;java-sample-program.blogspot.com&#47;2012&#47;12&#47;copy-as-html-eclipse-plugin.html"
+---
+<p><!--start_raw-->
+<p>I've struggled quite a bit over the past few months trying to come up with a good way of including code snippets in my blog posts. The problem, of course, is making the code look good both when browsing the website as well as in the RSS feed. It's not the <a href="http:&#47;&#47;www.winterdom.com&#47;weblog&#47;2006&#47;09&#47;10&#47;PostingCodeQuestion.aspx">first time</a> I've ran into this issue, either.</p>
+<p>As I've <a href="http:&#47;&#47;www.winterdom.com&#47;weblog&#47;2007&#47;11&#47;14&#47;dasBlogRSSAndWhitespace.aspx">mentioned</a> in the past, one of the things making it hard is my blog engine, as the dasBlog build I'm currently running doesn't properly respect whitespace in the original HTML code. Because of this, posting code is a big pain in the neck, as you need to format the code in HTML manually since using good old
+<pre><code></code></pre> tags will render the code unreadable in the RSS feed.</p>
+<p>Beyond just having the spacing and indentation right, there's also the matter of posting syntax highlighting. There are several options I've tried over the years:</p>
+<ul>
+<li><a href="http:&#47;&#47;www.jtleigh.com&#47;people&#47;colin&#47;software&#47;CopySourceAsHtml&#47;">CopySourceAsHtml</a>: This is an OK tool, though I've had to build a custom build to make it work on my machine (which has some weird clipboard issues at times; not sure why). I'm not 100% satisfied with it, though. For one thing, it generates pretty ugly HTML. It's also not very useful for posting code in a language not supported by Visual Studio itself, which I occasionally do (example: PowerShell snippets). </li>
+<li><a href="http:&#47;&#47;puzzleware.net&#47;codehtmler&#47;default.aspx">CodeHTMLer</a>: An online site for converting code snippets to HTML, supporting a bit more languages than CopySourceAsHtml. I've used this one extensively, and it usually does a good job, provided I explicitly check the "convert whitespace" option as well as "Inline Tags" for formatting. You don't get much choice in how the code is formatted, though. I believe there's a Windows Live Writer plugin based on this somewhere, but I always forget where so it's more convenient for me to just use the web application. </li>
+<li><a href="http:&#47;&#47;code.google.com&#47;p&#47;syntaxhighlighter&#47;">Syntaxhighlighter</a>: A Javascript Library for formatting code snippets. Looks nifty, but only usable on the website and not RSS feeds, I think. It also seems to rely heavily </li>
+<li><a href="http:&#47;&#47;duartes.org&#47;iris&#47;highlight.html">Iris</a>: This is an interesting project, based on the VIM syntax highlighting. It actually does a pretty good job, though I haven't tried using it yet directly on my blog. The Ajax interface is slick, though there's also a version you can download to use on your own desktop. It only seems to support using CSS for the syntax highlighting, though. </li>
+<li><a href="http:&#47;&#47;www.vim.org&#47;htmldoc&#47;syntax.html#:TOhtml">TOhtml</a>: I've also been experimenting lately with using Vim's :TOhtml command. This can actually provide very nice HTML if you set up the right options, and given the breath of syntaxes supported by Vim, you can pretty much use it to pretty print almost any code snippet you can think of.       <br &#47;>Another nicety of TOhtml is that it will use the colors in your selected Vim colorcheme, so the generated HTML looks exactly like it does in Vim. It can also generate the formatting using CSS or inline tags.       <br &#47;>As a sample, this is what I used in my last <a href="http:&#47;&#47;www.winterdom.com&#47;weblog&#47;2008&#47;02&#47;06&#47;HaveScriptWillBackup.aspx">PowerShell post</a>, with the options html_use_css, html_no_pre and use_xhtml. The color scheme I was was using was the black variant of the recently updated <a href="http:&#47;&#47;www.vim.org&#47;scripts&#47;script.php?script_id=1464">moria</a> scheme, aided by <a href="http:&#47;&#47;www.peterprovost.org&#47;">Peter Provost</a>'s excellent PowerShell <a href="http:&#47;&#47;www.vim.org&#47;scripts&#47;script.php?script_id=1327">syntax files</a>. </li> </ul>
+<p>I'm sure there are many other options out there. I know there are some very nice plugins for other blogging platforms (like wordpress, from what I've been reading), but for obvious reasons that's not very useful.</p>
+<p>Another issue that can be a bit bothersome with code formatting is the choice between using CSS rules or using inline tags. </p>
+<p>In an ideal world, using CSS rules would be much more preferred, particularly if you can keep them in an external CSS file. One obvious benefit of this is that if you later decide to change your formatting preferences, your color scheme, or simply change your blog's layout and colors and want your code to match them, it becomes a whole lot easier (though this isn't all that possible for someone like me with 6 years of past blog posts with all kinds of code formatting used).</p>
+<p>The downside of using CSS is that it's pretty much a website-only option, so it's not very useful for formatting code in your RSS feed. At least, my experience has been that most RSS generators and&#47;or consumers will strip any inline CSS rules found in blog posts (this was, in fact, what happened to my last PowerShell post mentioned above).</p>
+<p>I know of no way to easily reference an external CSS for this, but if anyone knows of a way, I'd sure appreciate knowing about it!</p>
+<p>So that pretty much leaves, for now, the only option of not using
+<pre> tags and resorting to inline tags. Yuck! So, what's the secret sauce others are using for this?</p>
+<div class="wlWriterSmartContent" id="scid:0767317B-992E-4b12-91E0-4F059A8CECA8:30ef505a-ed3c-4cf5-8dfc-60c7a5335f46" style="padding-right: 0px; display: inline; padding-left: 0px; padding-bottom: 0px; margin: 0px; padding-top: 0px">Technorati tags: <a href="http:&#47;&#47;technorati.com&#47;tags&#47;Blogging" rel="tag">Blogging</a>, <a href="http:&#47;&#47;technorati.com&#47;tags&#47;Source%20Code" rel="tag">Source Code</a></div> <hints id="hah_hints"></hints><!--end_raw--></p>

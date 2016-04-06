@@ -1,0 +1,38 @@
+---
+layout: post
+status: publish
+published: true
+title: Failed Message Routing and Send Ports
+author:
+  display_name: Tomas Restrepo
+  login: tomasr
+  email: tomas@winterdom.com
+  url: http://winterdom.com/
+author_login: tomasr
+author_email: tomas@winterdom.com
+author_url: http://winterdom.com/
+wordpress_id: 956
+wordpress_url: http://winterdom.com/2007/07/failedmessageroutingandsendports
+date: '2007-07-15 10:59:08 +0000'
+date_gmt: '2007-07-15 10:59:08 +0000'
+categories:
+- BizTalk
+tags: []
+comments: []
+---
+<p><!--start_raw-->
+<p>I'm putting this one here just in case I forget about it again:</p>
+<p>BizTalk Server 2006 introduced a very nice feature called <a href="http:&#47;&#47;msdn2.microsoft.com&#47;en-US&#47;library&#47;aa578516.aspx">Failed Message Routing</a>. This is usually enabled on Receive Ports&nbsp;to allow the developer to handle failed inbound messages through BizTalk itself, as it allows the failed message to be routed to another port or a dedicated error handling Orchestration. This is a very cool feature you can use to deal with messages that fail processing during the receive pipeline processing or that matched no active subscriptions on the message box.</p>
+<p>However, BizTalk 2006 also supports Failed Message Routing on Send Ports! The option to enable them is hidden in the "Transport Advanced Options" section of the Send Port Properties dialog:</p>
+<p><a href="http:&#47;&#47;www.winterdom.com&#47;weblog&#47;content&#47;binary&#47;WindowsLiveWriter&#47;FailedMessageRoutingandSendPorts_AAB7&#47;SendPortFMR.png" atomicselection="true"><img style="border-right: 0px; border-top: 0px; border-left: 0px; border-bottom: 0px" height="480" alt="SendPortFMR" src="http:&#47;&#47;www.winterdom.com&#47;weblog&#47;content&#47;binary&#47;WindowsLiveWriter&#47;FailedMessageRoutingandSendPorts_AAB7&#47;SendPortFMR_thumb.png" width="593" border="0"></a></p>
+<p>This option provides an alternative to the use of delivery notifications in a BIzTalk Orchestration, with the following advantages:</p>
+<ol>
+<li>It doesn't force an orchestration to wait until retries have been exhausted for the delivery notification, so the sending orchestration can still do other work.</li>
+<li>It allows the error condition to be handled in an asynchronous fashion</li>
+<li>It is a good replacement for delivery notifications in messaging-only scenarios.</li></ol>
+<p>A few things to watch out for:</p>
+<ol>
+<li>The message is only routed after all retries configured on the send port have been exhausted.</li>
+<li>You can combine Failed Message Routing with Delivery Notifications; the orchestration will gets it's notification and the failed message will still be routed.</li>
+<li>Like with Delivery Notifications, failed message routing will only happen if <strong>both</strong> the primary and secondary transports fail delivery.</li></ol>
+<div class="wlWriterSmartContent" id="0767317B-992E-4b12-91E0-4F059A8CECA8:21b98336-88c9-49cd-a9b8-6a15363dee0c" contenteditable="false" style="padding-right: 0px; display: inline; padding-left: 0px; padding-bottom: 0px; margin: 0px; padding-top: 0px">Technorati tags: <a href="http:&#47;&#47;technorati.com&#47;tags&#47;BizTalk" rel="tag">BizTalk</a></div><!--end_raw--></p>

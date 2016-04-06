@@ -1,0 +1,103 @@
+---
+layout: post
+status: publish
+published: true
+title: Preventing an Activity from being a Child of Itself
+author:
+  display_name: Tomas Restrepo
+  login: tomasr
+  email: tomas@winterdom.com
+  url: http://winterdom.com/
+author_login: tomasr
+author_email: tomas@winterdom.com
+author_url: http://winterdom.com/
+wordpress_id: 600
+wordpress_url: http://winterdom.com/2006/10/preventinganactivityfrombeingachildofitself
+date: '2006-10-01 09:49:20 +0000'
+date_gmt: '2006-10-01 09:49:20 +0000'
+categories:
+- WinFX
+- Workflow
+tags: []
+comments: []
+---
+<p><!--start_raw-->
+<p>Someone asked an interesting question on the Windows Workflow Foundation forums regarding how to prevent a custom&nbsp;composite activity from being a direct&#47;indirect child of itself, similar to how the TransactionScopeActivity does. However, he wanted to be able to control this in the WF designer, and not just using a custom activity validator like the TransactionScopeActivity does.</p></p>
+<p>After looking a bit, I came to the conclusion that there's no 100% sure way of doing this using the current WF designer bits. The problem is that basically you get pretty good notifications in a composite activity designer when something happens to your children, but very little in the way of what happens further down the activity tree. That said, you can control some of the most common scenarios directly, and leave some corner cases to an ActivityValidator.</p></p>
+<p>In particular, one can fairly easily cover the following scenarios:</p></p>
+<ol>
+<li>You can prevent the user from adding a direct child of the same type<br />
+</li>
+<li>You can prevent the user from copy-pasting&#47;dragging a direct composite activity child that contains an activity of the same as a direct&#47;indirect child (i.e. you can prevent the user from dragging a sequence activity containing one of your activities into your activity).<br />
+</li>
+<li>You can prevent an instance of your activity being added anywhere there's an activity of the same type as a parent&#47;grandparent.</li></ol></p>
+<p>Here's a sample ActivityDesigner that covers these three scenarios tied to a sample activity called ParentActivity:</p></p>
+<div class='codebg'><code><span class="StorageClass">public</span>&nbsp;<span class="StorageClass">class</span>&nbsp;ParentActivityDesigner : SequenceDesigner<br &#47;><br />
+{<br &#47;><br />
+&nbsp;&nbsp; <span class="Comment">&#47;&#47;&#47;</span><span class="Comment">&nbsp;</span><span class="Function"><</span><span class="Statement">summary</span><span class="Function">></span><br &#47;><br />
+&nbsp;&nbsp; <span class="Comment">&#47;&#47;&#47;</span><span class="Comment">&nbsp;Verify that the activities</span><br &#47;><br />
+&nbsp;&nbsp; <span class="Comment">&#47;&#47;&#47;</span><span class="Comment">&nbsp;being inserted are not and don't contain</span><br &#47;><br />
+&nbsp;&nbsp; <span class="Comment">&#47;&#47;&#47;</span><span class="Comment">&nbsp;a ParentActivity as a child.</span><br &#47;><br />
+&nbsp;&nbsp; <span class="Comment">&#47;&#47;&#47;</span><span class="Comment">&nbsp;</span><span class="Identifier"></</span><span class="Statement">summary</span><span class="Identifier">></span><br &#47;><br />
+&nbsp;&nbsp; <span class="Comment">&#47;&#47;&#47;</span><span class="Comment">&nbsp;</span><span class="Function"><</span><span class="Statement">param</span><span class="Function">&nbsp;</span><span class="Type">name</span>=<span class="String">"insertLocation"</span><span class="Function">></span><span class="Identifier"></</span><span class="Statement">param</span><span class="Identifier">></span><br &#47;><br />
+&nbsp;&nbsp; <span class="Comment">&#47;&#47;&#47;</span><span class="Comment">&nbsp;</span><span class="Function"><</span><span class="Statement">param</span><span class="Function">&nbsp;</span><span class="Type">name</span>=<span class="String">"activitiesToInsert"</span><span class="Function">></span><span class="Identifier"></</span><span class="Statement">param</span><span class="Identifier">></span><br &#47;><br />
+&nbsp;&nbsp; <span class="Comment">&#47;&#47;&#47;</span><span class="Comment">&nbsp;</span><span class="Function"><</span><span class="Statement">returns</span><span class="Function">></span><span class="Identifier"></</span><span class="Statement">returns</span><span class="Identifier">></span><br &#47;><br />
+&nbsp;&nbsp; <span class="StorageClass">public</span>&nbsp;<span class="StorageClass">override</span>&nbsp;<span class="Type">bool</span>&nbsp;CanInsertActivities(HitTestInfo insertLocation,<br &#47;><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;System.Collections.ObjectModel.ReadOnlyCollection<Activity> activitiesToInsert)<br &#47;><br />
+&nbsp;&nbsp; {<br &#47;><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="Type">bool</span>&nbsp;canDo = <span class="Statement">base</span>.CanInsertActivities(insertLocation, activitiesToInsert);<br &#47;><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="Type">bool</span>&nbsp;contains = ContainsParentActivity(activitiesToInsert);<br &#47;><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="Repeat">return</span>&nbsp;canDo &amp;&amp; !contains;<br &#47;><br />
+&nbsp;&nbsp; }<br &#47;><br />
+&nbsp;<br &#47;><br />
+&nbsp;<br &#47;><br />
+&nbsp;&nbsp; <span class="StorageClass">private</span>&nbsp;<span class="Type">bool</span>&nbsp;ContainsParentActivity(IEnumerable<Activity> activities)<br &#47;><br />
+&nbsp;&nbsp; {<br &#47;><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="Type">bool</span>&nbsp;found = <span class="Constant">false</span>;<br &#47;><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="Repeat">foreach</span>&nbsp;( Activity act <span class="Statement">in</span>&nbsp;activities )<br &#47;><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{<br &#47;><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span class="Conditional">if</span>&nbsp;( act <span class="Statement">is</span>&nbsp;ParentActivity )<br &#47;><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;found = <span class="Constant">true</span>;<br &#47;><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span class="Conditional">else</span><br &#47;><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br &#47;><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;CompositeActivity composite = act <span class="Statement">as</span>&nbsp;CompositeActivity;<br &#47;><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="Conditional">if</span>&nbsp;( composite != <span class="Constant">null</span>&nbsp;)<br &#47;><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{<br &#47;><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; found = ContainsParentActivity(composite.Activities);<br &#47;><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<br &#47;><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<br &#47;><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span class="Conditional">if</span>&nbsp;( found )<br &#47;><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="Repeat">return</span>&nbsp;<span class="Constant">true</span>;<br &#47;><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<br &#47;><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="Repeat">return</span>&nbsp;<span class="Constant">false</span>;<br &#47;><br />
+&nbsp;&nbsp; }<br &#47;><br />
+&nbsp;<br &#47;><br />
+&nbsp;&nbsp; <span class="Comment">&#47;&#47;&#47;</span><span class="Comment">&nbsp;</span><span class="Function"><</span><span class="Statement">summary</span><span class="Function">></span><br &#47;><br />
+&nbsp;&nbsp; <span class="Comment">&#47;&#47;&#47;</span><span class="Comment">&nbsp;Verify that in the parent chain where</span><br &#47;><br />
+&nbsp;&nbsp; <span class="Comment">&#47;&#47;&#47;</span><span class="Comment">&nbsp;we are going to be inserted there isn't any</span><br &#47;><br />
+&nbsp;&nbsp; <span class="Comment">&#47;&#47;&#47;</span><span class="Comment">&nbsp;other ParentActivity anywhere</span><br &#47;><br />
+&nbsp;&nbsp; <span class="Comment">&#47;&#47;&#47;</span><span class="Comment">&nbsp;</span><span class="Identifier"></</span><span class="Statement">summary</span><span class="Identifier">></span><br &#47;><br />
+&nbsp;&nbsp; <span class="Comment">&#47;&#47;&#47;</span><span class="Comment">&nbsp;</span><span class="Function"><</span><span class="Statement">param</span><span class="Function">&nbsp;</span><span class="Type">name</span>=<span class="String">"parentActivityDesigner"</span><span class="Function">></span><span class="Identifier"></</span><span class="Statement">param</span><span class="Identifier">></span><br &#47;><br />
+&nbsp;&nbsp; <span class="Comment">&#47;&#47;&#47;</span><span class="Comment">&nbsp;</span><span class="Function"><</span><span class="Statement">returns</span><span class="Function">></span><span class="Identifier"></</span><span class="Statement">returns</span><span class="Identifier">></span><br &#47;><br />
+&nbsp;&nbsp; <span class="StorageClass">public</span>&nbsp;<span class="StorageClass">override</span>&nbsp;<span class="Type">bool</span>&nbsp;CanBeParentedTo(CompositeActivityDesigner parentActivityDesigner)<br &#47;><br />
+&nbsp;&nbsp; {<br &#47;><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="Type">bool</span>&nbsp;canDo = <span class="Statement">base</span>.CanBeParentedTo(parentActivityDesigner);<br &#47;><br />
+&nbsp;<br &#47;><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Activity parent = parentActivityDesigner.Activity;<br &#47;><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="Repeat">while</span>&nbsp;( parent != <span class="Constant">null</span>&nbsp;)<br &#47;><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{<br &#47;><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span class="Conditional">if</span>&nbsp;( parent <span class="Statement">is</span>&nbsp;ParentActivity )<br &#47;><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="Repeat">return</span>&nbsp;<span class="Constant">false</span>;<br &#47;><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; parent = parent.Parent;<br &#47;><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<br &#47;><br />
+&nbsp;<br &#47;><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="Repeat">return</span>&nbsp;canDo;<br &#47;><br />
+&nbsp;&nbsp; }<br &#47;><br />
+}<br />
+</code></div></p>
+<p>The code is fairly simple. We override the CanInsertActivities() method to check if any of the activities the user is trying to insert as a child of ourselves is a ParentActivity. However, we also go one step further and check if any of those activities contain directly or indirectly a child of type ParentActivity. With this, we cover scenarios 1 and 2 described above.</p></p>
+<p><a href="http:&#47;&#47;www.winterdom.com&#47;weblog&#47;content&#47;binary&#47;WindowsLiveWriter&#47;PreventinganActivityfrombeingaChildofIts_9561&#47;WF_ParentCheck3.png" atomicselection="true"><img style="border-width: 0px;" src="http:&#47;&#47;www.winterdom.com&#47;weblog&#47;content&#47;binary&#47;WindowsLiveWriter&#47;PreventinganActivityfrombeingaChildofIts_9561&#47;WF_ParentCheck_thumb1.png" align="left" border="0" height="181" width="300"></a>We also override CanBeParentedTo(), which allows us to cover scenario 3. by simply walking upwards on the activity tree (starting at the insert point) until we either get to the root or we find a ParentActivity (in which case we simply say no thanks).</p></p>
+<p>&nbsp;One particular scenario that is not covered by this, however, is a more complex case of scenario 2 above, and that's when the sequence is not being inserted as a direct child, but as an indirect child, such as inserting it into a sequence activity which is a child of our activity. The screenshot on the side shows this scenario, which is basically dragging the bottom sequence activity (which contains parentActivity2) into the sequence activity contained in parentActivity1 above. That sounds more complicated than it really is :-)</p>
+<p></p></p>
+<div class="wlWriterSmartContent" id="d7bf807d-7bb0-458a-811f-90c51817d5c2:00492b97-0e77-4275-a428-a8f2e08695e2" contenteditable="false" style="margin: 0px; padding: 0px; display: inline;">
+<p><span class="TagSite">Technorati:</span> <a class="tag" href="http:&#47;&#47;technorati.com&#47;tag&#47;WF" rel="tag">WF</a>, <a class="tag" href="http:&#47;&#47;technorati.com&#47;tag&#47;Windows+Workflow+Foundation" rel="tag">Windows Workflow Foundation</a>, <a class="tag" href="http:&#47;&#47;technorati.com&#47;tag&#47;ActivityDesigner" rel="tag">ActivityDesigner</a><br><!-- StartInsertedTags: WF, Windows Workflow Foundation, ActivityDesigner :EndInsertedTags --></p></div><!--end_raw--></p>

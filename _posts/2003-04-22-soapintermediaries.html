@@ -1,0 +1,52 @@
+---
+layout: post
+status: publish
+published: true
+title: SOAP Intermediaries
+author:
+  display_name: Tomas Restrepo
+  login: tomasr
+  email: tomas@winterdom.com
+  url: http://winterdom.com/
+author_login: tomasr
+author_email: tomas@winterdom.com
+author_url: http://winterdom.com/
+wordpress_id: 895
+wordpress_url: http://winterdom.com/2003/04/soapintermediaries
+date: '2003-04-22 21:37:30 +0000'
+date_gmt: '2003-04-22 21:37:30 +0000'
+categories:
+- Web Services
+tags: []
+comments:
+- id: 613
+  author: Fumiaki Yoshimatsu
+  author_email: fumiaki_y@hotmail.com
+  author_url: http://www24.brinkster.com/fumiaki/blog/blog.aspx
+  date: '2003-04-25 01:10:01 +0000'
+  date_gmt: '2003-04-25 01:10:01 +0000'
+  content: |
+    <p>In case you haven't noticed (I'm pretty sure you haven't because it is not famous), I wrote a blog entry about your second question.  Check it out if you are curious.</p>
+- id: 614
+  author: Drew Robbins
+  author_email: drew@drewby.com
+  author_url: http://drewby.net
+  date: '2003-04-28 17:43:36 +0000'
+  date_gmt: '2003-04-28 17:43:36 +0000'
+  content: |
+    <p>You've done a great job of describing some of the same concerns&#47;questions that I have had. I've wondered with the WSE if its actually a requirement that the SOAP originator insert WS-Routing headers or if I'm doing something incorrectly.  I'd rather have a router transparently intercept the message and build the WS-Routing headers dynamically at that point. Of course, the originator could put in WS-Routing headers, but it shouldn't be a requirement.</p>
+---
+<p><!--start_raw-->I've been trying to get my head around how the whole SOAP Processing Model works (specially in <a href="http:&#47;&#47;www.w3.org&#47;TR&#47;2002&#47;CR-soap12-part1-20021219&#47;">v1.2</a>), while at the same time trying to digest <a href="http:&#47;&#47;msdn.microsoft.com&#47;webservices&#47;understanding&#47;gxa&#47;default.aspx?pull=&#47;library&#47;en-us&#47;dnglobspec&#47;html&#47;ws-routing.asp">WS-Routing</a> and the concept of SOAP Intermediaries.</p>
+<p>Most makes sense right from the start, but there are a few things I'm still not completely clear on. Any comments would be appreciated as usual (hey, we're here to learn, aren't we?):</p></p>
+<ul>
+<li>Pretty much all examples of WS-Routing I've seen seem to imply static routing, where the initial sender has full knowledge <i>a priori</i> of the "Network Topology". Is this really the only model supported? (Section 3.4 of the WS-Routing spec would suggest no, but I'm not entirely sure).
+<p>My main concern for this is that I believe that, to be throughly useful, routing should be as transparent as possible to the application; even to the point that any clients should be allowed to be oblivious to the fact that routing might happen. Here, I'm thinking something similar to how MSMQ 3.0 routing model hides routing details from the queue client. I have not seen any WS-Routing implementations that do this, and instead explicit coding seems to be required on the client to support routing right now.</p><br />
+</li></p>
+<li>Both the SOAP Intermediaries and WS-Routing Intermediaries model, plus the whole SOAP roles+processing-model thingie seem to imply (at least from my rather very basic understanding of the subject) that the initial sender knows who the ultimate receiver is, which might be more evident by the <i>no "to"-element rewrite</i> requirement for WS-Routing Intermediaries. Perhaps I'm wrong about this.
+<p>One of my concerns for this is whether this would permit (and how) the common concept of external gateways (no, not ws-routing gateways, I'll talk about those in a minute), that receive messages coming from some exterior boundary, and route them to internal endpoints. Of course, this whole question depends on whether the endpoint referenced in the "to" element is supposed to be the same one as the ultimate receiver or not.</p><br />
+</li></p>
+<li>What exactly is the difference between WS-Routing intermediaries and WS-Routing Gateways, and, indeed, why make a distinction at all? It just feels kinda artificial to me. The WS-Routing spec says that a WS-Routing Gateway can <i>"act as a gateway into a foreign protocol environment"</i>. It also indicates that a WS-Routing Intermediary might <i>also</i> be a WS-Routing Gateway (who comes up with such long names, for pete's sake?), so it must follow all WS-Routing Intermediary's rules (including the no-to-rewriting-rule). However, it also says that if a WS-Routing receiver rewrites the to-element would only be considered a WS-Routing Gateway, not an intermediary. And to top it all, it also says that an intermediary that uses different protocol bindings on its two ends would not be considered a Gateway!
+<p>Question No. 2332332: where does this discussion leave a WS-Receiver that rewrites the to-element and yet does not use different protocols on either side? It is clearly not a Gateway, but neither an intermediary? Am I the only one that finds all this somewhat confusing?</p><br />
+</li><br />
+</ul></p>
+<p>OK, enough ranting and questioning for today :)</p><!--end_raw--></p>

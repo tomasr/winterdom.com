@@ -1,0 +1,96 @@
+---
+layout: post
+status: publish
+published: true
+title: Inside Regsvcs.exe
+author:
+  display_name: Tomas Restrepo
+  login: tomasr
+  email: tomas@winterdom.com
+  url: http://winterdom.com/
+author_login: tomasr
+author_email: tomas@winterdom.com
+author_url: http://winterdom.com/
+wordpress_id: 965
+wordpress_url: http://winterdom.com/2002/10/insideregsvcsexe
+date: '2002-10-17 19:34:01 +0000'
+date_gmt: '2002-10-17 19:34:01 +0000'
+categories:
+- ".NET"
+tags: []
+comments:
+- id: 678
+  author: Kenny Inggs
+  author_email: kenny.inggs@20twenty.com
+  author_url: ''
+  date: '2004-02-17 11:20:12 +0000'
+  date_gmt: '2004-02-17 11:20:12 +0000'
+  content: |
+    <p>Hi Tomas, </p>
+    <p>I am really stuck with an issue here and was hoping you might be able to comment. I am trying to deploy a .NET assembly using the System.EnterpriseServices.RegistrationHelper class, but get the following error:</p>
+    <p>System.EnterpriseServices.RegistrationException: Could not install type library 'c:\vss\orange\binaries\Orange.Framework.Configuration.tlb' into application '20twenty'.</p>
+    <p> </p>
+    <p>Server stack trace: </p>
+    <p>   at System.EnterpriseServices.RegistrationDriver.InstallTypeLibrary_W2K(ApplicationSpec spec)</p>
+    <p>   at System.EnterpriseServices.RegistrationDriver.InstallTypeLibrary(ApplicationSpec spec)</p>
+    <p>   at System.EnterpriseServices.RegistrationDriver.InstallAssembly(RegistrationConfig regConfig, Object obSync)</p>
+    <p>   at System.EnterpriseServices.RegistrationHelperTx.InstallAssemblyFromConfig(RegistrationConfig& regConfig, Object sync)</p>
+    <p>   at System.Runtime.Remoting.Messaging.Message.Dispatch(Object target, Boolean fExecuteInContext)</p>
+    <p>   at System.Runtime.Remoting.Messaging.StackBuilderSink.SyncProcessMessage(IMessage msg, Int32 methodPtr, Boolean fExecuteInContext)</p>
+    <p> </p>
+    <p>Exception rethrown at [0]: </p>
+    <p>   at System.EnterpriseServices.RegistrationThreadWrapper.PropInstallResult()</p>
+    <p>   at System.EnterpriseServices.RegistrationHelper.InstallAssemblyFromConfig(RegistrationConfig& regConfig)</p>
+    <p>   at System.EnterpriseServices.RegistrationHelper.InstallAssembly(String assembly, String& application, String partition, String& tlb, InstallationFlags installFlags)</p>
+    <p>   at System.EnterpriseServices.RegistrationHelper.InstallAssembly(String assembly, String& application, String& tlb, InstallationFlags installFlags)</p>
+    <p>   at InstallStuff.Form1.InstallCOMStuff() in C:\Poes-Pas\InstallStuff\Form1.vb:line 277</p>
+    <p><br &#47;>
+    The exact same component registers fine through regsvcs. </p>
+    <p>The line of code that I use to attempt the registration is as follows:<br &#47;>
+    RegistrationHelper.InstallAssembly(AssemblyName, ExistingApplicationName, TlbName, EnterpriseServices.InstallationFlags.Default)<br &#47;>
+    AssemblyName = Full path & filename of DLL, <br &#47;>
+    ExistingApplicationName = &ldquo;20twenty&rdquo; &ndash; this application exists<br &#47;>
+    TlbName = Nothing</p>
+    <p>I&rsquo;ve been battling with this issue for hours now L</p>
+    <p>Literally any comments will be much appreciated, <br &#47;>
+    Regards, <br &#47;>
+    Kenny</p>
+---
+<p><!--start_raw-->Just out of curiosity, I decided to sniff around and see how Regscvs.exe does it's work to register an assembly in a COM+ application. While this information is probably not very useful to anyone, I'm posting here a few interesting snippets of what I found:</p>
+<ul>
+<li>Regsvcs is just a driver around the <code>System.EnterpriseServices.RegistrationHelper</code> class. This class is esentially a wrapper that ensures that all registration is done from a thread in an appropriate apartment, while the actual registration work is done inside the RegistrationDriver class (the entry point to this class is the <code>InstallAssembly()</code> method). </li>
+<li>First thing It does is create a TLB if it's needed, which is done through the <code>RegistrationDriver::GenerateTypeLibrary()</code> method, which is, of course, done through the <code>TypeLibConverter</code> class in the <code>System.Runtime.InteropServices</code> namespace.</li>
+<li>All Custom attributes implemented in <code>System.EnterpriseServices</code> for COM+ registration have private implementations of the <code>System.EnterpriseServices.IConfigurationAttribute</code> interface. All the basic catalog registration is driven through this interface. In essence, a great deal of the work of the <code>RegistrationDriver</code> is simply to iterate through collections of types to extract this attributes and call the <code>IConfigurationAttribute</code> methods on them at the appropriate time.</li>
+<li>The interface has the following declaration:
+<pre class="codes"><code><br />
+interface IConfigurationAttribute<br />
+{<br />
+bool IsValidTarget(string s);<br />
+bool Apply(Hashtable info);<br />
+bool AfterSaveChanges(Hashtable info);<br />
+}<br />
+</code></pre><br />
+</li></p>
+<li>The first method called is <code>IsValidTarget()</code>, which should return true if the registration<br />
+attribute can deal with the specified kind of object, which is identified in COM+ terms with a string.<br />
+So for example, here are some possible values:</p>
+<ul>
+<li>"Application": The object representing the COM+ application object being created.</li>
+<li>"Component": The object representing the COM+ component being registered.</li>
+<li>"Method": The method of the component&#47;interface being processed.</li><br />
+</ul><br />
+</li></p>
+<li>Both of the other two methods of <code>IConfigurationAttribute</code> interface take a Hashtable as an argument,<br />
+in which keys are strings, and values are instances of types that implement the<br />
+<code>ICatalogObject</code> interface. As you've probably guessed by now, common keys in<br />
+the Hashtable are the three strings presented above ("Application", "Component", "Method").</li></p>
+<li>The <code>Apply()</code> method is where most of the work actually occurs. Most attribute classes simply<br />
+get the appropriate <code>ICatalogObject</code> instance out of the Hashtable and call <code>SetValue()</code> on it<br />
+to configure a particular property in the COM+ Catalog, so it's actually quite straightforward.</li></p>
+<li>The <code>AfterSaveChanges()</code> method is, from what I can tell, basically a way to<br />
+provide for two-step registrations. Most attibutes simply don't do anything in this method (In fact, I couldn't find any<br />
+attribute that actually takes advantage of this method in v1.0 of the framework.).</li><br />
+</ul></p>
+<p>Keep in mind, of course, that all of this stuff is completely undocumented, and very likely to change in future<br />
+versions of the framework...</p><br />
+<!--end_raw--></p>

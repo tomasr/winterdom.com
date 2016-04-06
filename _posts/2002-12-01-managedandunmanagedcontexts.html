@@ -1,0 +1,26 @@
+---
+layout: post
+status: publish
+published: true
+title: Managed and Unmanaged Contexts
+author:
+  display_name: Tomas Restrepo
+  login: tomasr
+  email: tomas@winterdom.com
+  url: http://winterdom.com/
+author_login: tomasr
+author_email: tomas@winterdom.com
+author_url: http://winterdom.com/
+wordpress_id: 1035
+wordpress_url: http://winterdom.com/2002/12/managedandunmanagedcontexts
+date: '2002-12-01 09:21:40 +0000'
+date_gmt: '2002-12-01 09:21:40 +0000'
+categories:
+- Enterprise Services
+tags: []
+comments: []
+---
+<p><!--start_raw-->To approach our current EnterpriseServices&#47;COM+ discussion in a somewhat different director, let me ask a question that's been nagging me for a while now. Perhaps someone knows the answer or can point me towards some documentation (online, book, whatever).</p>
+<p><i>What exactly is the relation, and the interactions between, unmanaged and managed contexts?</i> Now, I do know the basics, but not much more. Managed contexts are very undocumented, and I'm not sure I know much about them (I'd particularly like to understand when and why they are created by the runtime), but how they relate to unmanaged contexts is even more misterious (to me, at least).</p></p>
+<p>So, for example, as I understand it, a ContextBoundObject-derived object will be bound to a managed context, while a ServicedComponent-derived object is furthermore constrained to be bound to an unmanaged COM+ context. However, that's doesn't say all that much. For example, is there always a managed context for every unmanaged context? Or can an unmanaged context contain multiple managed contexts? Or are managed ContextBoundObject-derived objects <i>context-agile</i> with respect to unmanaged contexts?</p></p>
+<p>As you see, this is a topic I find confusing, and would love to understand it in greater detail...</p><!--end_raw--></p>

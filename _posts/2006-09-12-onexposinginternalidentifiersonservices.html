@@ -1,0 +1,36 @@
+---
+layout: post
+status: publish
+published: true
+title: On Exposing Internal Identifiers on Services
+author:
+  display_name: Tomas Restrepo
+  login: tomasr
+  email: tomas@winterdom.com
+  url: http://winterdom.com/
+author_login: tomasr
+author_email: tomas@winterdom.com
+author_url: http://winterdom.com/
+wordpress_id: 212
+wordpress_url: http://winterdom.com/2006/09/onexposinginternalidentifiersonservices
+date: '2006-09-12 08:03:01 +0000'
+date_gmt: '2006-09-12 08:03:01 +0000'
+categories:
+- Architecture
+- Web Services
+tags: []
+comments: []
+---
+<p><!--start_raw-->
+<p>Pretty much every application uses some sort of identifiers to keep track of things around; Services are no different, really, most of the time. Sometimes, those IDs will need to be externalized across service boundaries.</p>
+<p>One key point to keep in mind, though, is that <em>if you do decide to externalize those IDs they should be regarded by any consumer as opaque entities</em>, and you'll want to clearly specify what the semantic meaning of those IDs are regarding your service operations: What do they identify? what can they be used for? Should they only be regarded as informational data with no strings attached? and so on.</p>
+<p>However, a different thing altogether can come back and bite you if you're not careful: Datatypes. What is the data type of those&nbsp;identifiers you're externalizing through your services? Are you externalizing the identifier datatype as well?&nbsp;For example,&nbsp;if you have a guid as your ID, do you expose it from your service typed as a guid? </p>
+<p>If you expose identifiers in such a way that they may get used in both directions (i.e. requests to your services and responses from it), then it can be quite convenient to expose the data type as well, as many tools (including ASP.NET WebServices and WCF) can do the type validation work and reject messages with invalid data.&nbsp;Sometimes, however, it might be preferrable to <em>make&nbsp;identifiers more opaque by exposing them as a&nbsp;less-constrained datatype</em> that allows you some flexibility and extensibility towards the future, like a string, for example, even if that's not the real underlying datatype of the identifier. We ran into such a case last week when working on extending a service we had built for one of our clients earlier this year.</p>
+<p>The scenario we had was like this: The original service we built received some requests to do some business level operations. As part of those requests, the consumer would send along a request ID which was completely opaque to our service (it was, in fact, a string), as we didn't want to constraint what kind of ID generation mechanism the consumer used. This was pretty important because the service was built with interoperability in mind and it would have multiple consumers implemented using different technologies.</p>
+<p>As part of the response, our service would reply with a new identifier, this time one controlled by the service itself that basically said "hey, this requests you sent me, I'm going to keep track of it using this new identifier of my own" (we called this a ConfirmationID). With both the consumer and service IDs in place, a pretty good&nbsp;base&nbsp;was in place to make it easier to reconcile the set of transactions done by a given consumer over a period of time (again something pretty important for anything that deals with money one way or another). All of this actually worked very nicely.</p>
+<p>A couple of weeks ago we started to build new extensions and a front-end intermediary for the service so that we could support a new consumer brought by the business with a new and important business&nbsp;deal&nbsp;our client was working on.From a high-level view, everything was fine and dandy. While the protocols were different, the basic semantics of all the operations involved were pretty much covered by our existing service without too much fuzz. </p>
+<p>One sticky problem, however,&nbsp;was that&nbsp;the ConfirmationIDs&nbsp;our service gave out had been "strongly-typed" on the service contract (WSDL) as 32-bit integers, which they were. In fact, they were generated on the database we recorded transactions on an identity column! On hindsight this was less than optimal. Even though consumers could still treat our ConfirmationIDs as opaque references, they now could do what we didn't force them to do on their own idenfiers: constraint us, and that's what happens. The new consumer that was brought in had a legacy protocol that restricted confirmation IDs to just 6 characters, using only [0-9A-Z]. Now we had to find a way to connect those two together.</p>
+<p>The optimal solution would've been to just pump out IDs from our service in a manner more compliant with the restriction the new client had in (because of the way those IDs are used). However, by having left the service contract specify the ConfirmationID datatype as a 32-bit integer value, this would not have been possible without breaking existing clients (a very big deal). Hindsight is always 20&#47;20, or so they say, and it applied to our dilemma just right: had we hidden our real ID datatype, this would not have been a problem, as we could've fixed this with a simple internal change that didn't affect the service interface in a bad way.</p>
+<p>Fortunately, we were able to work around this without actually having to affect the service itself, but it's still a bit more painful than what I would've liked. Basically, we took advantage of the fact that&nbsp;a six character string using the [0-9A-Z] element set could encode far more values than a regular 32-bit signed integer (positive numbers only, of course). We then were able to generate a 6-char string by just encoding our original ConfirmationID on a base-36 number system (which was fully reversible and easy to calculate).&nbsp;</p>
+<div class="wlWriterSmartContent" id="d7bf807d-7bb0-458a-811f-90c51817d5c2:66212012-2f2c-4942-97ee-6f55eed7267b" contenteditable="false" style="padding-right: 0px; display: inline; padding-left: 0px; padding-bottom: 0px; margin: 0px; padding-top: 0px">
+<p><span class="TagSite">Technorati:</span> <a href="http:&#47;&#47;technorati.com&#47;tag&#47;Architecture" rel="tag" class="tag">Architecture</a>, <a href="http:&#47;&#47;technorati.com&#47;tag&#47;Web+Services" rel="tag" class="tag">Web Services</a>, <a href="http:&#47;&#47;technorati.com&#47;tag&#47;Services" rel="tag" class="tag">Services</a>, <a href="http:&#47;&#47;technorati.com&#47;tag&#47;Service+Orientation" rel="tag" class="tag">Service Orientation</a><br &#47;><!-- StartInsertedTags: Architecture,Web Services,Services,Service Orientation :EndInsertedTags --></p></div><!--end_raw--></p>

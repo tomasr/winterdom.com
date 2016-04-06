@@ -1,0 +1,47 @@
+---
+layout: post
+status: publish
+published: true
+title: Xubuntu 8.04 Installed
+author:
+  display_name: Tomas Restrepo
+  login: tomasr
+  email: tomas@winterdom.com
+  url: http://winterdom.com/
+author_login: tomasr
+author_email: tomas@winterdom.com
+author_url: http://winterdom.com/
+wordpress_id: 949
+wordpress_url: http://winterdom.com/2008/04/xubuntu804installed
+date: '2008-04-26 09:55:29 +0000'
+date_gmt: '2008-04-26 09:55:29 +0000'
+categories:
+- Linux
+tags: []
+comments:
+- id: 665
+  author: DM
+  author_email: ''
+  author_url: ''
+  date: '2008-05-01 19:46:19 +0000'
+  date_gmt: '2008-05-01 19:46:19 +0000'
+  content: |
+    Ok, this is a stupid question, but how do you change the screen resolution of the virtual box &#47; xubuntu?
+- id: 666
+  author: Tomas Restrepo
+  author_email: tomas@winterdom.com
+  author_url: http://www.winterdom.com/weblog/
+  date: '2008-05-01 19:52:51 +0000'
+  date_gmt: '2008-05-01 19:52:51 +0000'
+  content: |
+    Not as stupid, I struggled with the same thing. Basically you need to tell X that you have a different monitor that supports higher resolutions. I remember fixing it through the UI in xubuntu 7.10, but couldn't find it later on on 8..04, so ended up just editing xorg.conf to add new resolutions in the Display section.
+---
+<p><!--start_raw-->
+<p>Ubuntu 8.04 (Hardy Heron) came out this week, and I downloaded it right away via torrent. I decided to go this time with <a href="http:&#47;&#47;xubuntu.org&#47;">Xubuntu</a>, which uses <a href="http:&#47;&#47;www.xfce.org&#47;">XFCE</a> as the desktop environment instead of the regular Gnome or KDE based editions.</p>
+<p><a href="http:&#47;&#47;www.winterdom.com&#47;weblog&#47;content&#47;binary&#47;WindowsLiveWriter&#47;Xubuntu8.04Installed_A25F&#47;Xubuntu804_2.jpg"><img style="border: 0px none ;" alt="Xubuntu804" src="http:&#47;&#47;www.winterdom.com&#47;weblog&#47;content&#47;binary&#47;WindowsLiveWriter&#47;Xubuntu8.04Installed_A25F&#47;Xubuntu804_thumb.jpg" width="640" border="0" height="400"></a> <br></p>
+<p>I had already fooled around with XFCE before and found it to be an excellent desktop environment overall, and much more lightweight than both Gnome and KDE. I was also using Xubuntu 7.10 already on a virtual machine on my Vista box using <a href="http:&#47;&#47;www.virtualbox.org&#47;">Virtual Box</a> [1] and it worked very well for my needs (which I admit are fairly basic).</p>
+<p>As expected, installation went very well. The only problem I had during installation was that my data drive (a partition I mount my &#47;home in) ended up getting formatted accidentally. I should've paid more attention during partitioning! Fortunately, there was nothing there that was irreplaceable.</p>
+<p>After installation, I proceeded to do some tweaking and customization, and enabled the ATI restricted X11 driver using Driver Manager. This time, it worked flawlessly right out of the box, and suspend seems to be working correctly without having to fool around with it at all.</p>
+<p>I then went ahead and installed some of the tools I use more often on Linux, like Vim, gnome-terminal, tofromdos and all the samba tools. I now have to install ruby, mono, Open Office (probably), Virtual Box and a few others, but those can wait a bit, as the Canonical servers were still getting hammered pretty hard yesterday. They seem a lot better today, so maybe I'll get some of that installed later on.</p>
+<p>Overall, I am very pleased with the experience so far!</p>
+<p><strong>[1]</strong> I turned to Virtual Box for a couple of reasons: It runs Linux very nicely, unlike Virtual PC, which just sucks at that. I had also been using Virtual Box on a Linux host, and worked very nicely there as well (and seamless mode for Windows-based guests is very nice!).</p><!--end_raw--></p>

@@ -1,0 +1,40 @@
+---
+layout: post
+status: publish
+published: true
+title: ASP.NET SiteMenu and custom SiteMapProviders
+author:
+  display_name: Tomas Restrepo
+  login: tomasr
+  email: tomas@winterdom.com
+  url: http://winterdom.com/
+author_login: tomasr
+author_email: tomas@winterdom.com
+author_url: http://winterdom.com/
+wordpress_id: 481
+wordpress_url: http://winterdom.com/2006/05/aspnetsitemenuandcustomsitemapproviders
+date: '2006-05-29 11:16:11 +0000'
+date_gmt: '2006-05-29 11:16:11 +0000'
+categories:
+- ASP.NET
+tags: []
+comments:
+- id: 341
+  author: Richard Shaw
+  author_email: ''
+  author_url: ''
+  date: '2006-06-29 09:20:41 +0000'
+  date_gmt: '2006-06-29 09:20:41 +0000'
+  content: |
+    Thanks for this.  I've been trying to fix this for a couple of days
+- id: 342
+  author: Joshua
+  author_email: jpoehls@zduck.com
+  author_url: ''
+  date: '2006-10-03 04:28:19 +0000'
+  date_gmt: '2006-10-03 04:28:19 +0000'
+  content: |
+    You are a lifesaver, thank you!!
+---
+<p><!--start_raw-->If you're building an ASP.NET 2.0 site that uses the SiteMenu control with a custom SiteMapProvider implementation as the underlying data source, take care how you populate the properties of the SiteMapNode objects you return from your custom SiteMapProvider class. While trying to fix some code here I noticed that the selected (i.e. current) menu item was not being marked correctly in the generated HTML, and eventually tracked down the problem to using an incorrect value in the SiteMapNode.Key property.<br><br>It seems that the MenuItem implementation of IHierachicalData.Path property returns the value of the Key property of the underlying SiteMapNode object it was created from (during databinding), instead of the Url of the node, but during databinding, the SiteMenu control compares the Url of the current page (i.e. the current node in the SiteMapProvider) to the IHierarchicalData.Path implementation of each databound menu item to determine which one is the selected one. If the Key property of the SiteMapNode does not match its Url, then it doesn't work.<br>
+<p></p><!--end_raw--></p>

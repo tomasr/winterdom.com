@@ -1,0 +1,63 @@
+---
+layout: post
+status: publish
+published: true
+title: Custom PropPages in Adapter Configuration
+author:
+  display_name: Tomas Restrepo
+  login: tomasr
+  email: tomas@winterdom.com
+  url: http://winterdom.com/
+author_login: tomasr
+author_email: tomas@winterdom.com
+author_url: http://winterdom.com/
+wordpress_id: 176
+wordpress_url: http://winterdom.com/2007/10/customproppagesinadapterconfiguration
+date: '2007-10-22 13:58:20 +0000'
+date_gmt: '2007-10-22 13:58:20 +0000'
+categories:
+- BizTalk
+tags: []
+comments:
+- id: 122
+  author: Nick Heppleston
+  author_email: nick@modhul.com
+  author_url: http://www.modhul.com
+  date: '2007-10-23 04:04:14 +0000'
+  date_gmt: '2007-10-23 04:04:14 +0000'
+  content: |
+    Tomas,
+    This is something I've been interested in ever since the initial release of 2006, but never really had the time (or inclination) to go digging around.
+    Looking forward to seeing how you get on developing a 'nice' config UI!
+    Nick.
+---
+<p><!--start_raw-->
+<p>OK, time to post some technical content again :-)</p>
+<p>If you've used BizTalk server 2004&#47;2006, you've probably seen the configuration dialog where you enter the adapter-specific settings on a send port or receive location. Have you noticed how some adapters simply have a property grid with values, while others have a full-blown set of custom property pages with custom dialogs? Ever wondered why?</p>
+<p><a href="http:&#47;&#47;www.winterdom.com&#47;weblog&#47;content&#47;binary&#47;WindowsLiveWriter&#47;CustomPropPagesinAdapterConfiguration_CD1A&#47;Adapter1_2.png"><img style="border-right: 0px; border-top: 0px; border-left: 0px; border-bottom: 0px" height="240" alt="Adapter1" src="http:&#47;&#47;www.winterdom.com&#47;weblog&#47;content&#47;binary&#47;WindowsLiveWriter&#47;CustomPropPagesinAdapterConfiguration_CD1A&#47;Adapter1_thumb.png" width="213" align="left" border="0"></a> The standard property-grid based settings dialog is provided by the BizTalk Adapter Framework by default, all you need to do have your adapter's MgmtClass provide the proper XML Schema (XSD) that defines the adapter options. </p>
+<p>In a lot of ways this is very good, as it makes adding design-time configuration support for your adapters very easy, and, while it might not be the best looking UI ever, it is fairly usable and fairly standard, so it works fairly well.</p>
+<p>Even more, the adapter framework provides you some useful ways to extend this model, with, for example, custom value editors for specific properties. There's good documentation on this on the BizTalk Documentation on creating adapters, which can be found <a href="http:&#47;&#47;msdn2.microsoft.com&#47;en-us&#47;library&#47;aa548029.aspx">here</a>.</p>
+<p><a href="http:&#47;&#47;www.winterdom.com&#47;weblog&#47;content&#47;binary&#47;WindowsLiveWriter&#47;CustomPropPagesinAdapterConfiguration_CD1A&#47;Adapter2_2.png"><img style="border-right: 0px; border-top: 0px; border-left: 0px; border-bottom: 0px" height="240" alt="Adapter2" src="http:&#47;&#47;www.winterdom.com&#47;weblog&#47;content&#47;binary&#47;WindowsLiveWriter&#47;CustomPropPagesinAdapterConfiguration_CD1A&#47;Adapter2_thumb.png" width="213" align="right" border="0"></a> Other adapters, however, have a completely different configuration UI. A good example of this is the standard FILE adapter, which has several different options and two property pages. This is a lot more usable, but it does mean a lot more work on the part of the developer (after all, you get the regular UI almost for free!). </p>
+<p>Some people have asked me recently how you could do this for your own adapters, and I really didn't have a good answer for that (that is, I had no clue!). If you look at the BizTalk documentation you'll notice that there's virtually no discussion of this topic whatsoever. I also realized that the custom UI dialogs are used almost exclusively by unmanaged adapters: FILE, SMTP, Receive Side HTTP, and so on. </p>
+<p>Unmanaged adapter development is something supported in BizTalk right from 2004, but I can't say I know anyone doing it except Microsoft itself. It's also noteworthy that no&nbsp; where on the documentation is the topic of unmanaged adapter development explicitly covered, and&nbsp; certainly the design-time configuration aspect isn't even mentioned. So I was under the impression that both topics were related somehow.</p>
+<p><strong>Managed Adapters can have custom configuration UIs</strong></p>
+<p>As it turns out, however, it <em>is</em> possible for a regular, managed adapter to have it's own custom adapter configuration design-time experience in BizTalk 2006 R2, though it isn't very obvious how to do it. </p>
+<p>I first realized this when I noticed that all the WCF adapters in BizTalk Server 2006 R2 had custom dialogs [1]. Looking a bit deeper I realized that the HTTP send-side adapter also had one, but the HTTP adapter is a rare beast in the sense that the receive-side adapter is unmanaged (an ISAPI extension, actually), while the send-side adapter is managed (built on top of System.Net.HttpWebRequest). Because of this, the management infrastructure for both receive and send side adapters is unmanaged, so it doesn't really count.</p>
+<p><em><strong>Sidebar:</strong> I haven't seen a way in BizTalk 2006&#47;4 to support this yet. In particular, the interface used in R2 to support this is not even available in previous versions, and as far as I can see, unmanaged adapters implement this in a completely different way, using IPropertyPage and IPropertyPageSite, I think.</em></p>
+<p>So, how does the WCF adapter do it? I haven't traced yet all the details necessary, but looking a bit with reflector and poking in the registry revealed some interesting details. Here are some things that might get you started if you decide to try this for yourself:</p>
+<p><em>MgmtClass</em>: Apparently you still need a MgmtClass for your adapter that implements <a href="http:&#47;&#47;msdn2.microsoft.com&#47;en-us&#47;library&#47;ms974229.aspx">IAdapterConfig</a> (and likely <a href="http:&#47;&#47;msdn2.microsoft.com&#47;en-us&#47;library&#47;ms974238.aspx">IAdapterConfigValidation</a> as well). However, your implementation of IAdapterConfig.GetConfigSchema() can simply return null, as it isn't apparently relevant.</p>
+<p><em>Custom UI:</em> You implement your custom UI by implementing a class that provides BizTalk a way to load&#47;save your adapter settings as well as provide it with the information to create your custom dialog:</p>
+<ul>
+<li>It needs to implement the Microsoft.BizTalk.Admin.IPropertyPageFrame interface [2]. This interface has a single <a href="http:&#47;&#47;uat.technet.microsoft.com&#47;en-us&#47;library&#47;microsoft.biztalk.admin.ipropertypageframe.showpropertyframe.aspx">ShowPropertyFrame()</a> method which gets handed the HWND of the window you should use as your custom dialog parent (so that you can show it in modal form).</li>
+<li>It needs to implement IPersistPropertyBag. Apparently, however, you need to implement it in two variations: Microsoft.BizTalk.Admin.IPersistPropertyBag as well as Microsoft.BizTalk.ExplorerOM.IPersistPropertyBag. This is probably done to support both the management console as well as the older BizTalk Explorer inside Visual Studio. This is used to both load&#47;save the adapter configuration as well as some other stuff I'm not quite sure about yet.</li>
+<li>It needs to be visible to COM and registered in the registry with a proper GUID you can reference.</li></ul>
+<p><em>Registry Settings:</em> For your custom UI class to be used by BizTalk, you need to add a few new values in your adapter's Registry key:</p>
+<ul>
+<li>ReceiveLocation_PageProv: This will be the GUID of the class implementing IPropertyPageFrame for the receive-side of your adapter.</li>
+<li>TransmitLocation_PageProv: This will be the GUID of the class implementing IPropertyPageFrame for the send-side of your adapter. </li>
+<li>InboundProtocol_PageProv: This will be the GUID of the class implementing IPropertyPageFrame for the receive handler configuration.</li>
+<li>OutboundProtocol_PageProv:This will be the GUID of the class implementing IPropertyPageFrame for the send handler configuration.</li></ul>
+<p>I'm in the process of trying this now and I'll let you how it works.</p>
+<p><strong>[1]</strong> Actually, the WCF adapter creates it's own model internally to handle the custom configuration UI on top of the original extensibility model in the adapter framework, which is then leveraged by all the WCF built-in adapters and custom WCF adapters.</p>
+<p><strong>[2]</strong> This one is defined in the copy of Microsoft.BizTalk.Admin.dll that's in the GAC, which, oddly enough, is different from the Microsoft.BizTalk.Admin.Dll that can be found in the BizTalk installation folder.</p>
+<div class="wlWriterSmartContent" id="scid:0767317B-992E-4b12-91E0-4F059A8CECA8:85a8410f-af52-4ad2-9cf2-e1ebfe4a3988" style="padding-right: 0px; display: inline; padding-left: 0px; padding-bottom: 0px; margin: 0px; padding-top: 0px">Technorati tags: <a href="http:&#47;&#47;technorati.com&#47;tags&#47;BizTalk%20Server%202006%20R2" rel="tag">BizTalk Server 2006 R2</a>, <a href="http:&#47;&#47;technorati.com&#47;tags&#47;BizTalk%20Adapters" rel="tag">BizTalk Adapters</a></div><!--end_raw--></p>

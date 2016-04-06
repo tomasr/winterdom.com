@@ -1,0 +1,67 @@
+---
+layout: post
+status: publish
+published: true
+title: SQL Adapter Trouble Explained
+author:
+  display_name: Tomas Restrepo
+  login: tomasr
+  email: tomas@winterdom.com
+  url: http://winterdom.com/
+author_login: tomasr
+author_email: tomas@winterdom.com
+author_url: http://winterdom.com/
+wordpress_id: 690
+wordpress_url: http://winterdom.com/2005/04/sqladaptertroubleexplained
+date: '2005-04-26 15:57:02 +0000'
+date_gmt: '2005-04-26 15:57:02 +0000'
+categories:
+- BizTalk
+tags: []
+comments:
+- id: 469
+  author: Anonymous
+  author_email: ''
+  author_url: ''
+  date: '2006-04-05 07:03:59 +0000'
+  date_gmt: '2006-04-05 07:03:59 +0000'
+  content: |
+    I had a similar error that caused me fits.  I was using BTSDeploy with a binding file to deploy a project and getting the 0x80131500 error message.  The credentials in the binding file were correct, I could connect to the SQL database, and I could create the port manually.  The binding file continued to fail.  It ended up being that the SQL cluster to which the port was pointing had failed over, but the DTC had not failed with it.
+- id: 470
+  author: Will
+  author_email: will.struthers@lbhf.gov.uk
+  author_url: ''
+  date: '2006-05-31 10:39:02 +0000'
+  date_gmt: '2006-05-31 10:39:02 +0000'
+  content: |
+    This problem for me was caused by too restrictive DTC settings. Reducing security allowed all the ports to bind successfully.
+    Start | Control Panel | Admin Tools | Component Services
+    Component Services | Computers | Right click My Computer and select Properties.
+    Select Security Configuration on the MSDTC tab.
+    I allowed inbound and outbound communication with no authentication.
+- id: 471
+  author: Stefan
+  author_email: malti@itsconsulting.fr
+  author_url: http://www.itsconsulting.Fr
+  date: '2007-02-12 07:33:47 +0000'
+  date_gmt: '2007-02-12 07:33:47 +0000'
+  content: |
+    Thank you Will,
+    I red many posts, and you are the only one who provided the right solution
+    Regards,
+    Stefan
+---
+<p><!--start_raw-->I spent all morning today with a coworker at one of our clients diagnosing a problem deploying a BizTalk Server 2004 solution on a test environment. The problem in question was that when running BTSDeploy.exe on the binding file that contained all the send and receive port definitions, it kept failing when trying to create a Send Port that used the SQL adapter with the following error message:</p>
+<pre><code>Error: Failed updating Binding information.<br />
+BindingException: Could not validate TransportTypeData or Address properties<br />
+for Primary Transport of Send Port '
+<port name here>'.<br />
+Exception from HRESULT: 0x80131500<br />
+</code></pre></p>
+<p>We looked everywhere to see where the error was coming from. First, I checked the biding file to see if the TransportTypeData element contained a valid value, and after a lot of checking we concluded it was indeed correct. Then we checked that the user had access to the SQL Server database the port referenced; it had. We also checked that all servers had network transactions enabled (they were all Windows Server 2003 machines), and found out that the SQL Server machine didn't have that, so we fixed it, but we still couldn't create the ports.</p></p>
+<p>We also found <a href="http:&#47;&#47;support.microsoft.com&#47;?kbid=843543">this</a> KB article that referenced this error message and went ahead and applied BizTalk SP1 as well (which we hadn't done yet). The scenario referenced in the KB article wasn't exactly the same one as ours (and indeed it wasn't), but it didn't hurt to try, anyway.</p></p>
+<p>Now, in this particular case, the setup consisted of two physical machines; let's call them A and B. A had all the BizTalk databases and was also running a virtual machine on VPC (A1) which ran BizTalk Server itself. B had SQL Server installed with the remote DB referenced by the problematic Send Port, but also had a virtual machine running on it on VPC that had other stuff not directly relevant.</p></p>
+<p>After much checking, we finally diagnosed the problem. A1 was not seeing B (nor B1) through the network, though it could see every other machine out there. However, A could see B fine. We also noted that B1 couldn't access A or A1 either, but B could see A fine! So we checked network settings, changed IP addresses, everything, and it didn't help.</p></p>
+<p>In desperation, we just switch off virtual machine A1 and voila! B1 now could see machine A on the network. This was the clue we needed and after checking, we realized that somewhow, A1 and B1 (the two virtual machines) had ended up configured with the same MAC addresses on the virtual network cards, so they would conflict with one another. We just switch off the machines and then changed the MAC address by hand editing the .VMC file for the machines, and, once that was done, the problem went away and we BTSDeploy ran successfully creating all ports.</p></p>
+<p>So, the first lesson of today is: <i>When creating SQL adapters, always make sure that you can access the database server correctly;</i> it will save you a lot of grief.</p></p>
+<p>The second lesson here is that BizTalk could make it a lot easier to diagnose the situation. The problem here is that it is not evident that the SQL adapter will actually try to connect to the databse when you create the port, so it was not obvious first-hand that this was the cause of the problem. Also, HRESULT 0x80131500 is a very generic error code, meaning just COR_E_EXCEPTION. In other words, all it tells you is that something deep down the guts of what BTSDeploy was doing threw a managed exception, but it doesn't actually go ahead and tell you the exception's error message, and it also doesn't leave anything in the machine's event log one can use to diagnose the issue. This is something I would definitely like to see improved in future versions of the product.</p><!--end_raw--></p>

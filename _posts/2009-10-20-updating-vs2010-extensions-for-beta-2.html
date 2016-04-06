@@ -1,0 +1,89 @@
+---
+layout: post
+status: publish
+published: true
+title: Updating VS2010 Extensions for Beta 2
+author:
+  display_name: Tomas Restrepo
+  login: tomasr
+  email: tomas@winterdom.com
+  url: http://winterdom.com/
+author_login: tomasr
+author_email: tomas@winterdom.com
+author_url: http://winterdom.com/
+wordpress_id: 1295
+wordpress_url: http://winterdom.com/2009/10/updating-vs2010-extensions-for-beta-2
+date: '2009-10-20 19:11:25 +0000'
+date_gmt: '2009-10-20 19:11:25 +0000'
+categories:
+- Visual Studio
+tags: []
+comments:
+- id: 1170
+  author: Eddie
+  author_email: eddiegroves@gmail.com
+  author_url: ''
+  date: '2009-10-21 00:12:08 +0000'
+  date_gmt: '2009-10-21 00:12:08 +0000'
+  content: Loved your last 'review' on Beta 1 - can we expect something similar for
+    Beta 2?
+- id: 1171
+  author: Tomas Restrepo
+  author_email: tomas@winterdom.com
+  author_url: http://winterdom.com/
+  date: '2009-10-21 02:11:46 +0000'
+  date_gmt: '2009-10-21 02:11:46 +0000'
+  content: Hopefully, but need to spend a little bit more time with it first :)
+- id: 1172
+  author: Thomas
+  author_email: th.gugler@gmail.com
+  author_url: ''
+  date: '2009-10-21 07:01:34 +0000'
+  date_gmt: '2009-10-21 07:01:34 +0000'
+  content: "does not work on beta2 ..?\r\n=> The project type is not supported by
+    this installation.\r\n\r\n(VS2010 v.10.0.21006.1 B2Rel)"
+- id: 1173
+  author: Tomas Restrepo
+  author_email: tomas@winterdom.com
+  author_url: http://winterdom.com/
+  date: '2009-10-21 12:24:01 +0000'
+  date_gmt: '2009-10-21 12:24:01 +0000'
+  content: "@Thomas: Like with beta 1, you need the VS2010 SDK to be able to build
+    extensions. Should be available already as well (I know it's in MSDN 'cause that's
+    where I got it from)"
+- id: 1174
+  author: Winterdom &raquo; Blog Archive &raquo; One More Update to KeywordClassifier
+  author_email: ''
+  author_url: http://winterdom.com/2009/10/one-more-update-to-keywordclassifier
+  date: '2009-10-22 16:24:15 +0000'
+  date_gmt: '2009-10-22 16:24:15 +0000'
+  content: "[...] just committed some updates changes to my KeywordClassifier extension
+    for Visual Studio 2010 Beta [...]"
+- id: 1190
+  author: Zuhaib
+  author_email: zuhaib@zuhaib.in
+  author_url: http://www.zuhaib.in/
+  date: '2009-10-30 09:54:41 +0000'
+  date_gmt: '2009-10-30 09:54:41 +0000'
+  content: Please release your Visual Studio 2010 Theme .. it looks really nice
+- id: 2714
+  author: Updating Visual Studio Extensions &#47;&#47; Winterdom
+  author_email: ''
+  author_url: http://winterdom.com/2012/07/updating-visual-studio-extensions
+  date: '2012-07-01 16:50:41 +0000'
+  date_gmt: '2012-07-01 16:50:41 +0000'
+  content: "[...] this particular case, I focused on two of my extensions: KeywordClassifier
+    and BetterXml. Both of them rely on the same mechanism, which was layering an
+    [...]"
+---
+<p>Now that Visual Studio 2010 Beta 2 is out, I&rsquo;ve spent some time updating the <a href="http:&#47;&#47;winterdom.com&#47;2009&#47;06&#47;classifier-sample-update">editor</a> <a href="http:&#47;&#47;winterdom.com&#47;2009&#47;06&#47;current-line-highlighting-for-vs2010">extensions</a> I created for VS2010 using the new extensibility model so that they work with Beta 2. The changes needed haven&rsquo;t been very extensive, but they were not obvious at first.</p>
+<p>Here&rsquo;s a list of the most important changes that were required:</p>
+<ol>
+<li>The IEnvironment interface is gone, and this affected a few signatures of methods in the extensibility interfaces.</li>
+<li>The [VsCatalogName] attribute is also gone, and needed to be removed from the assembly.</li>
+<li>The *.vsixmanifest file now needs to be always named source.extension.vsixmanifest, and it needs to be added to your VS project with the action set to &ldquo;None&rdquo;. Otherwise, you will get a build error.</li>
+<li>The schema for the VSIX manifest file has changed, so I had to update it by hand. Most changes aren&rsquo;t too big, mostly the case of elements and attributes. I did get stuck a bit here after incorrectly changing my <Components&#47;> section, but <a href="http:&#47;&#47;twitter.com&#47;noahsmark&#47;status&#47;5022178964">@noahsmark</a> helped me get it resolved. Thanks!</li> </ol>
+<p>Other than this, the process has been mostly straightforward.</p>
+<p>You can get the updated code for my KeywordClassifier extension from the <a href="http:&#47;&#47;github.com&#47;tomasr&#47;KeywordClassifier">GitHub repository</a>. Here&rsquo;s a screenshot of how it looks like in the new beta:</p>
+<p><a href="http:&#47;&#47;winterdom.com&#47;wp-content&#47;uploads&#47;2009&#47;10&#47;KeywordExt.png"><img style="border-bottom: 0px; border-left: 0px; display: inline; border-top: 0px; border-right: 0px" title="KeywordExt" border="0" alt="KeywordExt" src="http:&#47;&#47;winterdom.com&#47;wp-content&#47;uploads&#47;2009&#47;10&#47;KeywordExt_thumb.png" width="587" height="480" &#47;></a> </p>
+<p>I&rsquo;ve also updated the code of my LineAdornments extension, and the updated code is in the <a href="http:&#47;&#47;github.com&#47;tomasr&#47;LineAdornments">GitHub repository</a> as well. Unfortunately, I seem to have hit an issue with this one that I haven&rsquo;t managed to resolve successfully yet, which I&rsquo;ll mention on another post.</p></p>

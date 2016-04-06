@@ -1,0 +1,30 @@
+---
+layout: post
+status: publish
+published: true
+title: Developing Distributed Services
+author:
+  display_name: Tomas Restrepo
+  login: tomasr
+  email: tomas@winterdom.com
+  url: http://winterdom.com/
+author_login: tomasr
+author_email: tomas@winterdom.com
+author_url: http://winterdom.com/
+wordpress_id: 159
+wordpress_url: http://winterdom.com/2005/08/developingdistributedservices
+date: '2005-08-05 05:48:46 +0000'
+date_gmt: '2005-08-05 05:48:46 +0000'
+categories:
+- Development
+tags: []
+comments: []
+---
+<p><!--start_raw-->I'm glad <a href="http:&#47;&#47;pluralsight.com&#47;blogs&#47;johncj&#47;archive&#47;2005&#47;08&#47;04&#47;13855.aspx">someone</a> <a href="http:&#47;&#47;samgentile.com&#47;blog&#47;archive&#47;2005&#47;08&#47;04&#47;31892.aspx">else</a> brings this to the table. <a href="http:&#47;&#47;pluralsight.com&#47;blogs&#47;johncj&#47;">John Cavnar-Johnson</a> puts it very nicely, and I totally agree with this.</p>
+<p>This is a topic I have to battle constantly both within our organization and with our customers on our consulting sessions. I've said it in the <a href="http:&#47;&#47;www.winterdom.com&#47;weblog&#47;archives&#47;000464.html">past</a> and I'll say it again: many people fail to grasp the difference between RPC and Message Orientation in WebServices and other platforms because the programming models created by the tool are totally RPC oriented in nature! Believe me, most people don't really grasp the subtleties involved in how the programming model completely warps their point of view and understanding of the underlying technology.</p></p>
+<p>I'll also say a few other things on this:</p></p>
+<ul>
+<li>I'd like to add one other Guidance to John's excellent list: If you have to use ASMX, use <a href="http:&#47;&#47;www.thinktecture.com&#47;Resources&#47;Software&#47;WSContractFirst&#47;default.html">this</a>.</li>
+<li>BizTalk does have it right. As <a href="http:&#47;&#47;pluralsight.com&#47;blogs&#47;aaron&#47;default.aspx">Aaron</a> has <a href="http:&#47;&#47;pluralsight.com&#47;blogs&#47;aaron&#47;archive&#47;2005&#47;04&#47;25&#47;7729.aspx">mentioned</a> in the past, the BizTalk model is completely contract and message oriented. However, even BTS does a few things in a quirky manner :) Did you know that when you add a Web Reference to an external WebService from your BTS Project, BTS actually generates a client-side proxy class for the service, which the SOAP Send Adapter calls underneath? This has caused <a href="http:&#47;&#47;groups-beta.google.com&#47;group&#47;microsoft.public.biztalk.orchestration&#47;browse_frm&#47;thread&#47;1a9b7a9a14cf0331">problems </a> for quite a <a href="http:&#47;&#47;groups-beta.google.com&#47;group&#47;microsoft.public.biztalk.general&#47;browse_frm&#47;thread&#47;80bde69d65e90c85">few</a> and it is very un-message-oriented-like...</li>
+<li>Indigo... well, what can I say. Is the programming model Indigo (WCF, whatever) proposes better than ASMX? Yes. Very much. The way DataContracts are specified is easy, and the way it relates to the underlying schema is very nice. However: do I believe most people will grasp the subtle difference from this to the old ASMX&#47;XmlSerializer way of doing it? No. In that sense, I do fear we might not be making quite that bit of forward movement. I also believe that with all the other protocol support Indigo does, it does muddy things somewhat because it is a far more complex environment, in that sense (even though the programming model is easy).</li><br />
+</ul><!--end_raw--></p>

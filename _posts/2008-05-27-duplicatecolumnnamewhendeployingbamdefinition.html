@@ -1,0 +1,31 @@
+---
+layout: post
+status: publish
+published: true
+title: Duplicate Column Name When Deploying BAM Definition
+author:
+  display_name: Tomas Restrepo
+  login: tomasr
+  email: tomas@winterdom.com
+  url: http://winterdom.com/
+author_login: tomasr
+author_email: tomas@winterdom.com
+author_url: http://winterdom.com/
+wordpress_id: 87
+wordpress_url: http://winterdom.com/2008/05/duplicatecolumnnamewhendeployingbamdefinition
+date: '2008-05-27 09:54:47 +0000'
+date_gmt: '2008-05-27 09:54:47 +0000'
+categories:
+- BizTalk
+tags: []
+comments: []
+---
+<p><!--start_raw-->
+<p>I've been playing around a bit with Business Activity Monitoring in BizTalk Server 2006 R2 and ran into a problem deploying a BAM definition XML file I had just created in Excel.</p>
+<p>When I tried to deploy the definition, I'd get an error similar to this one:</p>
+<div class="codebg"><code>Deploying Activity... Done.     <br &#47;>Deploying View... ERROR: The BAM deployment failed.      <br &#47;>Encountered error while executing command on SQL Server "NEWTON".      <br &#47;>Column names in each table must be unique. Column name 'abc_id' in table 'bam_AbcEvents_Dim_abc' is specified more than once. </code></div>
+<p>I checked my BAM definition several files (even checking IDs on the raw XML) and couldn't find any duplicates of this field. However, after struggling for about 15 minutes with it, I nailed it down: The problem was how I named a dimension!</p>
+<p>I had an item defined in my activity named 'abc_id'. When I created my view, I created a custom dimension that combined 'abc_id' with another item and named it 'abc'. That seemed like a proper way to name it. </p>
+<p>Problem is, when you try to deploy this, the activity tables will be created correctly, but bomb when creating the dimension table for 'abc', because bm.exe will try to create an artificial identity column for the dimension called 'abc_id'. That's how you end up with an apparent duplicate column error!~</p>
+<p><strong>The solution:</strong> rename your dimension in your view definition.</p>
+<div class="wlWriterSmartContent" id="scid:0767317B-992E-4b12-91E0-4F059A8CECA8:8a5d43f7-19aa-402c-b7d4-e595c680733d" style="padding-right: 0px; display: inline; padding-left: 0px; padding-bottom: 0px; margin: 0px; padding-top: 0px">Technorati tags: <a href="http:&#47;&#47;technorati.com&#47;tags&#47;BizTalk%20Server%202006%20R2" rel="tag">BizTalk Server 2006 R2</a>, <a href="http:&#47;&#47;technorati.com&#47;tags&#47;BAM" rel="tag">BAM</a></div><!--end_raw--></p>

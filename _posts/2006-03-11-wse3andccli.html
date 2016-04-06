@@ -1,0 +1,34 @@
+---
+layout: post
+status: publish
+published: true
+title: WSE3 and C++&#47;CLI
+author:
+  display_name: Tomas Restrepo
+  login: tomasr
+  email: tomas@winterdom.com
+  url: http://winterdom.com/
+author_login: tomasr
+author_email: tomas@winterdom.com
+author_url: http://winterdom.com/
+wordpress_id: 296
+wordpress_url: http://winterdom.com/2006/03/wse3andccli
+date: '2006-03-11 10:04:09 +0000'
+date_gmt: '2006-03-11 10:04:09 +0000'
+categories:
+- ".NET"
+- Web Services
+tags: []
+comments:
+- id: 226
+  author: latch
+  author_email: latch@sysint.biz
+  author_url: http://www.sysint.biz
+  date: '2006-07-14 07:30:36 +0000'
+  date_gmt: '2006-07-14 07:30:36 +0000'
+  content: |
+    Hi,
+    I'm comfortable with using WSE3 but am having to get involved in the procurement of an appropriate certificate to use in a live system. How would you do this and what do you ask for? Verisign seems to offer a certificate that has client authentication and mail. When I use this the wse3 wizard in visual studio complains because there is no data encryption key. Can you help?
+---
+<p><!--start_raw-->C++&#47;CLI and WSE3<br><br><a href="http:&#47;&#47;msdn.microsoft.com&#47;webservices&#47;webservices&#47;building&#47;wse&#47;default.aspx">WSE3</a> brings some very welcomed upgrades to WSE, including MTOM and WS-Security 1.1 support to the .NET Framework v2.0. For those of you interested in this, you might want to know that most of WSE3 (at least all the features I've personally tried) works just fine with <a href="http:&#47;&#47;msdn.microsoft.com&#47;visualc&#47;homepageheadlines&#47;ecma&#47;">C++&#47;CLI</a>, though you won't find much samples or documentation on this.<br><br>However, the support in WSE3 for this is pretty much non-existant. Be aware that the WSE Settings Wizards&#47;Add-Ins in Visual Studio 2005 do not work for C++&#47;CLI projects (neither service nor client). Also, <a href="http:&#47;&#47;forums.microsoft.com&#47;MSDN&#47;ShowPost.aspx?PostID=252426&amp;SiteID=1">WseWsdl3.exe doesn't really support C++&#47;CLI</a> either. If you use it to generate a WSE proxy for a regular WebService (with the &#47;type:WebClient and &#47;language:CPP options), it won't fail, but it will only generate a regular SoapHttpClientProtocol-derived proxy class, and won't generate the WebServiceClientProtocol-derived one, like it does for C# and VB.NET. In other words, if you specify &#47;language:CPP, WseWsdl3.exe will simply invoke wsdl.exe underneath.<br><br>If you're comfortable writing WSE code directly and creating policy and configuration files by hand, though, you can make full use of the functionality in WSE both for clients and services created with C++&#47;CLI. Normally you'll just use wsdl.exe or the regular Add Web Reference wizard (which does work on C++&#47;CLI projects, btw) and then modify the generated code by hand to add WSE support to it.<br><br>This kind of thing, I believe, is one of the significant hurdles that cause C++ developers pain when trying C++&#47;CLI. The Visual C++ team put a huge effort in creating the new language and supporting it in Visual Studio 2005. While it's not perfect, it is certainly orders of magnitude better than the old MC++ syntax. However, C++ developers adopting it can find themselves in a bit of trouble because many other teams in Microsoft working on frameworks and libraries for .NET explicitly decide not to support C++ as a working language (this happens both inside the .NET&#47;DevDiv teams as well as outside). I certainly hope this improves in the future, though I'm not very hopeful on the matter.
+<p></p><!--end_raw--></p>

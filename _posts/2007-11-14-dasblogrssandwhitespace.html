@@ -1,0 +1,65 @@
+---
+layout: post
+status: publish
+published: true
+title: dasBlog, RSS and Whitespace
+author:
+  display_name: Tomas Restrepo
+  login: tomasr
+  email: tomas@winterdom.com
+  url: http://winterdom.com/
+author_login: tomasr
+author_email: tomas@winterdom.com
+author_url: http://winterdom.com/
+wordpress_id: 172
+wordpress_url: http://winterdom.com/2007/11/dasblogrssandwhitespace
+date: '2007-11-14 07:36:32 +0000'
+date_gmt: '2007-11-14 07:36:32 +0000'
+categories:
+- Blogging
+tags: []
+comments:
+- id: 112
+  author: Damien Guard
+  author_email: damien@envytech.co.uk
+  author_url: http://damieng.com
+  date: '2007-11-14 08:00:39 +0000'
+  date_gmt: '2007-11-14 08:00:39 +0000'
+  content: |
+    I was using Subtext but felt I needed more features faster than Subtext was delivering and needed to get off my home ADSL server which would melt as soon as I wrote anything interesting.
+    I decided to go with Wordpress which, as a .NET loving PHP disliking developer, was a little hard to swallow but I haven't looked back.  There are a large amount of themes and plugins available to do whatever you want and the admin interface is very easy to use.
+    Migrating wasn't too much of a problem as I was now using Apache and so a handful of lines in the .htaccess and a tweak to the permalink format took care of preserving the links.
+    Migrating the data wasn't too tricky - Wordpress supports a variety of import formats although the easiest option is probably just to write a program or script that pulls out the entries from SQL Server into Wordpress's own format and thus preserve comments complete with email addresses and ip's which are not normally displayed.
+    [)amien
+- id: 113
+  author: Tomas Restrepo
+  author_email: tomas@winterdom.com
+  author_url: http://www.winterdom.com/weblog/
+  date: '2007-11-14 08:09:29 +0000'
+  date_gmt: '2007-11-14 08:09:29 +0000'
+  content: |
+    Thanks for the response, Damien. Yes, I've heard very good things about wordpress, but I was under the impression they only offered the hosted service. Guess I was wrong ;)
+    I wonder if it's possible to run it on windows (I think my host supports PHP on win32), as I'd rather not have to switch hosting platforms at this time (I have a bunch of other things running on asp.net here). I do hear what you say about apache and .htaccess, as it is indeed a great feature. I guess I could always write yet another httpmodule to force things around, but it's always a drag ;).
+    As for importing stuff, I can always write a utility that reads dasBlog's xml files (I've done it already in the past, so it shouldn't be too bad). Is the wordpress format documented anywhere? or do they use mysql or other database engine?
+- id: 114
+  author: Steven Rockarts
+  author_email: stevenrockarts@gmail.com
+  author_url: http://www.stevenrockarts.com/blog
+  date: '2007-11-16 22:22:03 +0000'
+  date_gmt: '2007-11-16 22:22:03 +0000'
+  content: |
+    Are you using the copy source as html plugin? If you are I found Dustin Campbell's post on the subject helpful http:&#47;&#47;diditwith.net&#47;2007&#47;09&#47;19&#47;HowIFormatCodeForTheWebAndRSSFeeds.aspx
+- id: 115
+  author: Tomas Restrepo
+  author_email: tomas@winterdom.com
+  author_url: http://www.winterdom.com/weblog/
+  date: '2007-11-17 06:31:43 +0000'
+  date_gmt: '2007-11-17 06:31:43 +0000'
+  content: |
+    Steven: Yes, I've seen that page, but, frankly, the last thing I want to is to have to go through a ten step manual procedure just to post a couple of code samples! Actually, this was just the first time I've tried using CopySourceAsHtml; for years I had tried and it never worked (and still doesn't work very reliably; there's something about the combination of vista + vpc2007 + winserver2K3R2 that screws the clipboard badly).
+    The problem, however, isn't with CopySourceAsHtml; it's how dasBlog generates the RSS feed: it will break whitespace, for example by removing extra spaces at the beginning of a line, or removing line breaks altogether, *just* on the RSS feed (not on the HTML generated), and that will break most code formatting tools out there completely. Heck, even doing something as simple as putting a simple piece of code inside <pre><code></code></pre> tag breaks pretty badly!
+---
+<p><!--start_raw-->
+<p>Does anyone know why the heck dasBlog insists on screwing up whitespace in a post when generating the RSS Feed? It preserves it correctly when it writes out the feed's HTML, but generates RSS that simply removes it at random places, and it's usually the reason why code samples get screwed up so badly. Is there any workaround for this? Anyone else considers this a problem?</p>
+<p>Frankly, I'm starting to seriously consider moving to a new blog engine; though I haven't done any tests to see which one would be a good replacement (any recommendations?). I'm not looking forward to a migration, though, and not sure yet that I can provide a way to keep existing URLs intact...</p>
+<div class="wlWriterSmartContent" id="scid:0767317B-992E-4b12-91E0-4F059A8CECA8:a2e1446c-d4b3-4663-85a7-fbcab31165fc" style="padding-right: 0px; display: inline; padding-left: 0px; padding-bottom: 0px; margin: 0px; padding-top: 0px">Technorati tags: <a href="http:&#47;&#47;technorati.com&#47;tags&#47;dasBlog" rel="tag">dasBlog</a></div><!--end_raw--></p>

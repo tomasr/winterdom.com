@@ -1,0 +1,91 @@
+---
+layout: post
+status: publish
+published: true
+title: MSMQ, BizTalk and Delivery Notifications
+author:
+  display_name: Tomas Restrepo
+  login: tomasr
+  email: tomas@winterdom.com
+  url: http://winterdom.com/
+author_login: tomasr
+author_email: tomas@winterdom.com
+author_url: http://winterdom.com/
+wordpress_id: 233
+wordpress_url: http://winterdom.com/2005/10/msmqbiztalkanddeliverynotifications
+date: '2005-10-03 18:43:03 +0000'
+date_gmt: '2005-10-03 18:43:03 +0000'
+categories:
+- BizTalk
+tags: []
+comments:
+- id: 173
+  author: Gregory Van de Wiele
+  author_email: gregory@eai.be
+  author_url: http://geekswithblogs.net/gwiele
+  date: '2006-01-03 03:40:32 +0000'
+  date_gmt: '2006-01-03 03:40:32 +0000'
+  content: |
+    <p>This was certainly useful to me. Nice post.</p>
+    <p>I have tested ACKS and NACKS with MSMQT (<a href="http:&#47;&#47;geekswithblogs.net&#47;gwiele&#47;archive&#47;2004&#47;09&#47;20&#47;11380.aspx)." rel="nofollow">http:&#47;&#47;geekswithblogs.net&#47;gwiele&#47;archive&#47;2004&#47;09&#47;20&#47;11380.aspx).</a></p>
+    <p>Thanks.</p>
+---
+<p><!--start_raw-->People usually treat MSMQ as if it provided, on it's own, magical reliable messaging features, when the reality is that all MSMQ does is provide a <i>best effort</i> mechanism when sending a message to a [remote] queue (albeit a really good one, in general). So, people don't usually bother implementing mechanisms to deal with the [rare] cases when MSMQ is indeed incapable of sending a message, but in an integration scenario, with a tool like BizTalk, this might actually be required sometimes.</p>
+<p>Craig Neuwirt recently asked in the public BizTalk newsgroups the following question: <i>"Is it possible to get DeliveryNotificationExceptions when using the MSMQ<br />
+Adapter?  If so how?"</i>. I had been pondering about this for a while, so I decided to try to respond it in more detail here, as the answer turned out to be far more complicated than I originally thought.</p></p>
+<p>The basic answer is Yes, and no. Yes, it works, but not as one would normally expect, particularly if one has experience using this feature with the MSMQT adapter.</p></p>
+<p>The problem here is that all the MSMQ[C] adapter does is send the message over to a local send queue handled by the local MSMQ queue manager (particularly if the queue you're sending to is remote, since this is how MSMQ works). As far as I know, if the adapter cannot do that, a delivery notification exception should be raised.</p></p>
+<p>However, as it turns out, that rarely happens. The reason is that the MSMQ queue manager will gladly take a message from the MSMQ Adapter, and the adapter will think that the submission was succesfull. It's only later on in time that the MSMQ <i>queue manager</i> might realize the message cannot be sent, because, for example, it specifies a non existant queue as the destination, or because the machine it was to be sent to never came online or doesn't exist. By the time this happens, BizTalk will have already continued happily on it's way running the orchestration instance, thinking the message was indeed succesfully sent.</p></p>
+<p>So, the way to get around this, unfortunately means doing a lot more MSMQ stuff. MSMQ has mechanisms in place to deal with this kind of situation; namely: admin queues, message expiration and send acks&#47;nacks. You can ask the MSMQ adapter to use these features by setting the appropriate properties in the send port configuration, or through the appropriate message context properties.</p></p>
+<p>Basically, what you would do is ask MSMQ to, say, notify you if the message is not delivered to the destination queue (or even if the message has not been read from the queue by the receiving application) before a certain ammount of time has passed (i.e. by the time the message expiration is reached). This notification is done by the MSMQ queue manager by just resending the original message to the admin queue you specified when the message was sent. A property in the message on the admin queue will tell you the reason it ended up there. You can then just, for example, have biztalk pick up that message from there by just using an MSMQ receive location and then do either correlations or separate orchestrations to deal with the error.</p></p>
+<p>Obviously, if you are looking at delivery notifications, you might be wondering how this helps you achieve what you wanted from the start: Pausing the orchestration instance until the message was correctly delivered! You can still do that, by just doing the same thing, but also asking MSMQ to give you Positive ACK messages that tell you that the message was indeed sucessfully delivered to the destination queue before it expired.</p></p>
+<h2>The implementation</h2></p>
+<p>Given this, I set out to build a sample that illustrated how to send a message to an Message Queue and request both positive and negative acknowledgements to check that the message reached the queue... or not. It turned out more complicated than I expected it to be, though nothing 100% impossible to achieve.</p></p>
+<p>This basic sample just does this:</p></p>
+<ol>
+<li>Receive an XML message through a File Receive location.</li>
+<li>An orchestration receives the message and sends it to a Send Port configured to use the MSMQ adapter. The Send port is configured to ask MSMQ for both positive and negative acknowledgements that the message reached the queue (or not), but not for receive acks (in other words, we care that the message reaches the destination queue, not that it is read by an application). The port also is configured with a message timeout of 10 seconds, so the NACK will be generated if the message cannot be delivered before that (this is critical for it to work).
+<p>The exact port configuration is like this:</p></p>
+<ul>
+<li><i>Acknowledgement Type: </i>This is the kind of acknowledgement you want MSMQ to give you, and maps to the AcknowledgementTypes enumeration in the System.Messaging namespace. We configure it to FullReachQueue.</li>
+<li><i>Administration Queue: </i> This is the path of the queue we want MSMQ to send the ACK&#47;NACK messages, in our case ".\Private$\MSMQDNADMINQUEUE".</li>
+<li>
+<li>Timeout and Timeout Unit:</li> This is the time to live of the message (the time to message expiration). We configure it as 10 seconds.</li><br />
+</ul><br />
+</li></p>
+<li>The orchestration waits for a corresponding ACK&#47;NACK message to be routed to it from the corresponding MSMQ Administrative queue via a correlation.</li>
+<li>When the ACK&#47;NACK notification is received from the admin queue, the message prints a message to the Debug Stream (which you can read using DebugView or whatever) telling if the message was sent or not.</li><br />
+</ol></p>
+<p><img src="http:&#47;&#47;www.winterdom.com&#47;weblog&#47;images&#47;MsmqDeliveryNotifOrch.jpg"&#47;></p></p>
+<p>This sounds much simpler than what it really is. The first problem that appears is how to correlate the ACK&#47;NACK message back to the orchestration instance that sent the message. MSMQ provides a mechanism for this, in the form of the CorrelationId property of the message: Basically, what happens is that the ACK&#47;NACK message will have in the CorrelationId property the ID MSMQ (not biztalk) assigned to the original message when you sent it. Unfortunately, doing this is complicated, because of the way biztalk works, or, at least, I didn't find a clean way of doing it using standard correlations sets.</p></p>
+<p>The easiest way to workaround this (and the one the samples shows) is to, instead, correlate on another unique and shared property of the messages, and the simplest one is to use the message label. We do this by simply creating a new message to send to MSMQ and setting the MSMQ.Label property to a unique value (a guid) for the orchestration instance. We then initialize a correlation set (created on top of the MSMQ.Label property) when sending the message to MSMQ and then following it when receiving the ACK&#47;NACK message from the administration queue.</p></p>
+<p>There is a problem with this, however, and is that the MSMQ adapter doesn't promote the MSMQ.Label property, it just writes it to the message context. Because of this, you can't use it for routing, and thus the correlation set we just configured will not work. To workaround this, we need to create a new custom pipeline component that promotes the property, and then use this component in a custom receive pipeline associated with the Receive Location we configured for the Administration Queue. I provide a sample component to do this in the <b>MsmqPropertyPromotionComponent</b> project. All it actually does is this:</p></p>
+<pre><code>public IBaseMessage Execute(IPipelineContext context, IBaseMessage msg)<br />
+{<br />
+MSMQ.Label labelProp = new MSMQ.Label();<br />
+object obj = msg.Context.Read(labelProp.Name.Name, labelProp.Name.Namespace);<br />
+string label = obj as string;<br />
+if ( label != null )<br />
+{<br />
+msg.Context.Promote(labelProp.Name.Name, labelProp.Name.Namespace, label);<br />
+}<br />
+return msg;<br />
+}<br />
+</code></pre></p>
+<p>With that out of the way, a second problem appears: When MSMQ generates a <i>Negative Acknowledgement</i> message, the body of the message will actually contain the body of the original message it couldn't sent. This is great. However, when it generates a <i>Positive Acknowledgement</i> message, the body is 0 bytes long (i.e. empty). This means that if you receive the ACK&#47;NACK message using the standard XmlDisassembler component you'll fault in the ACK case, which is certainly not what we intended!</p></p>
+<p>To work around this we configure the orchestration to receive just an XmlDocument from the administration queue, instead of a typed message from a given schema. This allows us to handle the case where the message body is empty correctly!</p></p>
+<p>The third, and though issue, once you receive the ACK&#47;NACK message, is how to know if it meant the message was succesfully sent or not. MSMQ provides a mechanism for this based on the Class (PROPID_M_CLASS) property of the message. Basically, you can check this property to see if it meant the message is a positive acknowledgement (in which case it will be either MQMSG_CLASS_ACK_REACH_QUEUE or MQMSG_CLASS_ACK_RECEIVE) or a negative one (every other value).</p></p>
+<p>Unfortunately, the MSMQ adapter doesn't expose this message property as part of the message context in BizTalk, which is a pity. What I do in the sample is use a fairly ugly hack: I take advantage of the fact that ACK messages have a 0-byte length body! For this, I created a helper component (in the MessageHelperComponent project) that simply checks the length of the body:</p></p>
+<pre><code>public class MessageHelper<br />
+{<br />
+public static bool IsEmpty(XLANGPart part)<br />
+{<br />
+Stream stream = (Stream)part.RetrieveAs(typeof(Stream));<br />
+bool isEmpty = stream.Length == 0;<br />
+stream.Close();<br />
+return isEmpty;<br />
+}<br />
+}<br />
+</code></pre></p>
+<p>If the message is a NACK notification, you can further dig into the MSMQ.Acknowledge property in the message's Context to see what kind of error actually happened.</p></p>
+<p>I hope this information can be useful to someone, and, if you find a better option, please do let me know! You can download the sample meanwhile <a href="http:&#47;&#47;www.winterdom.com&#47;dev&#47;bts&#47;MsmqDeliveryNotifications.zip">here</a>.</p><!--end_raw--></p>

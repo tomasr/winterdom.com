@@ -1,0 +1,106 @@
+---
+layout: post
+status: publish
+published: true
+title: Console2 and x64
+author:
+  display_name: Tomas Restrepo
+  login: tomasr
+  email: tomas@winterdom.com
+  url: http://winterdom.com/
+author_login: tomasr
+author_email: tomas@winterdom.com
+author_url: http://winterdom.com/
+wordpress_id: 548
+wordpress_url: http://winterdom.com/2008/09/console2andx64
+date: '2008-09-18 06:58:48 +0000'
+date_gmt: '2008-09-18 06:58:48 +0000'
+categories:
+- Tools
+- C++
+tags: []
+comments:
+- id: 369
+  author: Ben Hoffstein
+  author_email: ben@hoffstein.net
+  author_url: http://hoffstein.myvidoop.com/
+  date: '2008-09-19 07:35:56 +0000'
+  date_gmt: '2008-09-19 07:35:56 +0000'
+  content: |
+    That's great.  I have been very eager to use Console2 on my Vista x64 machine.  Any chance you'd be willing to share the binary somewhere?
+- id: 370
+  author: Tomas Restrepo
+  author_email: tomas@winterdom.com
+  author_url: http://winterdom.com/
+  date: '2008-09-19 08:08:23 +0000'
+  date_gmt: '2008-09-19 08:08:23 +0000'
+  content: |
+    I don't want to get in trouble for redistributing it publicly; I'd be much happier if the author managed to work around the issue (I may try when I have a bit more time to prepare a proper fix and share it).
+    However, send me an email and I'll send you a copy.
+- id: 371
+  author: Steven Harman
+  author_email: steveharman@gmail.com
+  author_url: http://stevenharman.net
+  date: '2008-09-19 22:18:36 +0000'
+  date_gmt: '2008-09-19 22:18:36 +0000'
+  content: |
+    Tomas,
+    I think the license would actually allow you to redistribute the modified code and binaries... and it might also be a good idea to submit a bug report (and your hack as a possible patch) at the Console2 site.
+    Just a suggestion - b&#47;c I'd love to get ahold of a working copy of Console2 for x64 :)
+- id: 372
+  author: Jason West
+  author_email: jlwestsr@gmail.com
+  author_url: http://blog.wezbiz.net
+  date: '2008-10-14 07:48:51 +0000'
+  date_gmt: '2008-10-14 07:48:51 +0000'
+  content: |
+    Same here.  Have Vista now and would love to get Console2 running on it.  Any chance you could post the bin for download?  If not, then see if you could submit your work back to the project at SourceForge.net so that they may publish it for download.
+- id: 373
+  author: Tomas Restrepo
+  author_email: tomas@winterdom.com
+  author_url: http://winterdom.com/
+  date: '2008-10-14 17:21:19 +0000'
+  date_gmt: '2008-10-14 17:21:19 +0000'
+  content: |
+    Jason: I'm not going to post it; but feel free to send me an email and I'll send you a copy of my compiled binaries.
+- id: 374
+  author: tradsud
+  author_email: kgroke@gmail.com
+  author_url: http://www.groke.org/blog
+  date: '2008-11-05 13:10:57 +0000'
+  date_gmt: '2008-11-05 13:10:57 +0000'
+  content: |
+    Thomas, thank you! I've used Console for years, and with my new machine was severely missing it. With your post I was able to get it up and running again. Thanks for taking the time to share!
+    I've also posted the compiled exe on my blog if anyone else want's to take advantage of it:
+    <a href="http:&#47;&#47;groke.org&#47;blog&#47;?p=75" rel="nofollow">http:&#47;&#47;groke.org&#47;blog&#47;?p=75</a>
+- id: 1550
+  author: Upgrade and Zenburn the Console Window &laquo; Thoughtful Code
+  author_email: ''
+  author_url: http://thoughtfulcode.wordpress.com/2010/08/08/upgrade-and-zenburn-the-console-window/
+  date: '2010-08-08 19:51:54 +0000'
+  date_gmt: '2010-08-08 19:51:54 +0000'
+  content: "[...] by CSRSS while providing a richer user environment. I gave up on
+    this thing when I started using Vista x64 because it was broken. It has matured
+    a lot since then and the latest beta works great with Windows 7 [...]"
+---
+<p><!--start_raw-->
+<p>I <a href="http:&#47;&#47;winterdom.com&#47;weblog&#47;2008&#47;08&#47;23&#47;Console200140.aspx">recently mentioned</a> that version 2.00b140 of the great <a href="http:&#47;&#47;sourceforge.net&#47;project&#47;showfiles.php?group_id=43764&amp;package_id=36333">Console</a> utility had come out. Eddie Velasquez commented on that post that, unfortunately, Console didn't work correctly on Windows x64. </p>
+<p>I had the opportunity to verify this during the last week. Console2 runs, but all text drawn on the console is invisible, which makes it a bit hard to read :-). I looked around the web, and although a few people mentioned seeing the same problem, no one offered any solutions. So I decided to take a look.</p>
+<p>I installed Visual C++ 2008 on my x64 machine, downloaded the Console2 source code package and went hunting around for all dependencies needed to actually build it, which took a couple of hours. Off the top of my head, you need:</p>
+<ul>
+<li>The <a href="http:&#47;&#47;www.boost.org&#47;">boost</a> libraries </li>
+<li>The <a href="http:&#47;&#47;wtl.sourceforge.net&#47;">Windows Template Library</a> (WTL) </li>
+<li>The <a href="http:&#47;&#47;freeimage.sourceforge.net&#47;">FreeImage</a> libraries </li>
+<li>A bunch of isolated WTL extensions found all over the place that I don't even remember. </li> </ul>
+<p>After a bit of tweaking the project files, I was able to build an x86 version of the code and started looking around the code to see where the problem might be. I checked a few things, like:</p>
+<ul>
+<li>Was it possible that it was interacting incorrectly with the underlying system console and not picking up the text colors? Nope. Debugger showed me it was indeed picking up the right color for each character drawn. </li>
+<li>Was it possible that it was mapping colors incorrectly? nope, not that either. </li>
+<li>Was it possible it was drawing the text in the wrong locations? Didn't seem to be that either, as you could even copy paste the text from Console correctly, and the caret seemed to be at the right location either. </li>
+<li>Could the off-screen surfaces be somehow invalid? Nope, a few calls to <a href="http:&#47;&#47;msdn.microsoft.com&#47;en-us&#47;library&#47;ms533266(VS.85).aspx">GetDeviceCaps()</a> showed it had all the correct number of planes and bits per pixel that you'd expect. </li> </ul>
+<p>After a few hours of tinkering, I was able to narrow it down to one issue: the use of the AlphaBlend() function when blitting between the off-screen and on-screen surfaces. In fact, I'm fairly confident that the issue Console2 is running into is the same one described on this <a href="http:&#47;&#47;www.eggheadcafe.com&#47;software&#47;aspnet&#47;32268587&#47;textout-to-a-32bit-bitma.aspx">newsgroup post</a>. Unfortunately, that didn't seem to point to a good workaround for the issue.</p>
+<p>Now, my GDI programming isn't very fresh on my mind, and frankly, I didn't want to sit around for a long time trying to get this fixed. However, I was able to make a quick change to the code that would make it work. The changes are setting up the BlendFunction for AlphaBlend slightly different.</p>
+<p>The change I did was around line 1979, changing the setup before AlphaBlend like this:</p>
+<div class="codebg"><code>blendFn.BlendOp&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160; = AC_SRC_OVER;     <br &#47;>blendFn.BlendFlags&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160; = <span class="Number">0</span>;      <br &#47;>blendFn.SourceConstantAlpha&#160;&#160; = <span class="Number">255</span>;      <br &#47;>blendFn.AlphaFormat&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160; = AC_SRC_OVER; </code></div>
+<p>Now, to be honest, this is just a hack, but it does the trick for now, using ClearType for font rendering and even alpha transparency on the entire window. I was not able (at least not in my quick look at the code) to fix the code path that gets executed when you're using an image as the console background, since that actually does require full alpha-blending to render the right output.</p>
+<p>So it's not a great fix, but it means I can use Console2 on my x64 box now, which is good enough for me at this point. YMMV.</p><!--end_raw--></p>

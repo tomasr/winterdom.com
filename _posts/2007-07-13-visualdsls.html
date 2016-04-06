@@ -1,0 +1,52 @@
+---
+layout: post
+status: publish
+published: true
+title: Visual DSLs
+author:
+  display_name: Tomas Restrepo
+  login: tomasr
+  email: tomas@winterdom.com
+  url: http://winterdom.com/
+author_login: tomasr
+author_email: tomas@winterdom.com
+author_url: http://winterdom.com/
+wordpress_id: 265
+wordpress_url: http://winterdom.com/2007/07/visualdsls
+date: '2007-07-13 05:43:29 +0000'
+date_gmt: '2007-07-13 05:43:29 +0000'
+categories:
+- ".NET"
+- Architecture
+tags: []
+comments:
+- id: 195
+  author: Juha-Pekka Tolvanen
+  author_email: jpt@metacase.com
+  author_url: http://www.metacase.com/blogs/jpt
+  date: '2007-07-16 00:27:45 +0000'
+  date_gmt: '2007-07-16 00:27:45 +0000'
+  content: |
+    Hi Thomas,
+    The two problems of visual DSLs you mentioned are not necessarily valid at all. Why? In most successfull cases of visual DSLs (see e.g. http:&#47;&#47;www.dsmforum.org&#47;cases.html) the languages are built by the company that directly uses them. They can therefore fully control the language structure and code generation. So if you find a limitation in the language you (or an experienced developer in your company) can fix it. With proper tooling you can then share the modified language and update automatically older models so that other developers just continue their work.
+    Juha-Pekka
+    PS. When it comes to the name of Software Factories I agree. In addition the term was already used by Japanese during 80's for a bit different thing. Instead OOPSLA has been running workshops since 2001 with the name Domain-Specific Modeling (http:&#47;&#47;www.dsmforum.org&#47;DSMworkshops.html).
+- id: 196
+  author: Tomas Restrepo
+  author_email: tomas@winterdom.com
+  author_url: http://www.winterdom.com/weblog/
+  date: '2007-07-16 06:14:56 +0000'
+  date_gmt: '2007-07-16 06:14:56 +0000'
+  content: |
+    Juha,
+    I'm not saying the problems could not be fixed; indeed they can. What I'm saying is that even with the sample problems I mentioned fixed, I still believe visual DSLs are just one way to represent the language, and it's not necessarily the most productive one in all situations. I personally find text-driven languages to be more productive in the long run (all the more so when coupled with good visual alternatives), and they also have the added benefit of being able to support all the rich tools we already have in the development world for text manipulation (like decent diff tools, which I find an essential requirement).
+---
+<p><!--start_raw-->
+<p>Scott Bellware wrote yesterday on disambiguating fluent interfaces (aka APIs) from domain-specific languages. Rant aside it's an interesting read. Something, however, gave me a chuckle: Scott says:</p><br />
+<blockquote>
+<p>"At some point in the near future, Microsoft will tell the .NET mainstream that DSL's are visual, that they are drag-and-drop, and that they require a new <a href="http:&#47;&#47;msdn2.microsoft.com&#47;en-us&#47;vstudio&#47;aa718368.aspx">plug-in to Visual Studio</a> in order to make them and use them."</p></blockquote>
+<p>Hummmm..... sorry to say this Scott, but they already did a couple of years ago :-). I&nbsp;<em>think</em> it started with the whole Software Factories [1] idea that Microsoft pushed some time ago. </p>
+<p>I must say, though, that I don't hold any grudges to the idea of Visual DSLs. In fact, they can be very useful tools both to create and visualize software. The problem appears when a) they are <em>not</em> the most productive way of working either because of limitations in the visual language itself, or b) because of poor implementation. The Windows Workflow Foundation Designer&nbsp;strikes me as an example of a concept where the visual thing works very well, though it has an unfortunate implementation (it's slow as molasses, almost unbearable to use at times!).</p>
+<p>For many of these tools, what I'd really like to have is the best of both worlds: Having a visual experience can be very useful, but having a productive, effective and efficient <em>textual dsl</em> is, to me, a core requirement. Despite what some people might think, writing text is still a far more efficient means of writing software <em>if</em> you have the right language at your disposal.</p>
+<p><strong>[1]</strong> I think the Software Factories idea has some good merits as a conceptual concept and vision, but it was unfortunately named (and I believe the term has made substantial damage to our software industry, by the way).</p>
+<div class="wlWriterSmartContent" id="0767317B-992E-4b12-91E0-4F059A8CECA8:43e1467c-e9b9-403d-b7f2-8210083b589e" contenteditable="false" style="padding-right: 0px; display: inline; padding-left: 0px; padding-bottom: 0px; margin: 0px; padding-top: 0px">Technorati tags: <a href="http:&#47;&#47;technorati.com&#47;tags&#47;Domain%20Specific%20Languages" rel="tag">Domain Specific Languages</a>, <a href="http:&#47;&#47;technorati.com&#47;tags&#47;DSL" rel="tag">DSL</a></div><!--end_raw--></p>

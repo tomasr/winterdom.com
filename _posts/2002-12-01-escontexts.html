@@ -1,0 +1,36 @@
+---
+layout: post
+status: publish
+published: true
+title: Es Contexts
+author:
+  display_name: Tomas Restrepo
+  login: tomasr
+  email: tomas@winterdom.com
+  url: http://winterdom.com/
+author_login: tomasr
+author_email: tomas@winterdom.com
+author_url: http://winterdom.com/
+wordpress_id: 1041
+wordpress_url: http://winterdom.com/2002/12/escontexts
+date: '2002-12-01 12:57:36 +0000'
+date_gmt: '2002-12-01 12:57:36 +0000'
+categories:
+- Enterprise Services
+tags: []
+comments:
+- id: 734
+  author: Clemens Vasters
+  author_email: clemensv@newtelligence.com
+  author_url: http://radio.weblogs.com/0108971/
+  date: '2002-12-02 03:30:33 +0000'
+  date_gmt: '2002-12-02 03:30:33 +0000'
+  content: |
+    <p>I can't remember that I heard that the unmanaged context will ever merge with THE managed context as we know it. If you look at the relevant COM+ patent and compare that against what the Remoting context has to offer, it becomes quickly apparent that the unmanaged context has more functional depth and therefore can't be mapped onto the managed context as it is existing today. So, I would rather say that using the managed context today is a risky thing in terms of future compatibility and one should consider that MS pulled the docs on that going from Beta2 to RTM. </p>
+    <p>Hint: Try implementing "IsContextOK" with two ContextAttributes correctly so that both work and you'll know where the managed context has its limits. Next excercise: make that context flow.</p>
+---
+<p><!--start_raw-->Adrian Bateman pointed me towards <a href="http:&#47;&#47;www.gotdotnet.com&#47;team&#47;xmlentsvcs&#47;espaper.aspx">this great article</a> on EnterpriseServices. It covers a lot of details, although it doesn't fully answer my questions. I wanted, however, to point out one part of the document I think is particularly dangerous. It reads:</p>
+<p><quote>"When the root object gets created, the associated unmanaged context is created and associated with the current thread. When a call to the child objects is made, since they are not associated with an unmanaged context, no COM+ context change is needed, hence the thread still maintains the roots unmanaged context id. When a child object calls on resource managers, the resource managers will in turn extract the unmanaged context from the thread executing the child object, which is the root objects unmanaged context. Relying on this is dangerous and in future versions the unmanaged context may merge with the managed context and therefore the child objects will be associated with a potentially different managed context; the resource managers will not pick up the root objects context. Therefore, upgrading to a new version of .NET could break code that depends on this type of behavior.<br />
+"</quote></p></p>
+<p>The implications of the last part of this paragraph are huge, and if that ever happened, my opinion would be that it would seriously hinder EnterpriseServices in .NET, and make it much more complex and problematic to use. In other words, I most definitely would <i>not</i> like having to make <i>almost all</i> my classes ServicedComponent-derived.</p></p>
+<p>There's hope, however. A couple of weeks ago, a discussion on this topic popped up on the <a href="news:&#47;&#47;microsoft.public.dotnet.framework.component_services">microsoft.public.dotnet.framework.component_services</a> newsgroup, where Craig Critchley, from MS, talked about this topic. You can read the relevant comments <a href="http:&#47;&#47;groups.google.com&#47;groups?safe=images&amp;ie=UTF-8&amp;oe=UTF-8&amp;as_umsgid=uBEbot3hCHA.2544@tkmsftngp11&amp;lr=&amp;hl=en">here</a>, <a href="http:&#47;&#47;groups.google.com&#47;groups?safe=images&amp;ie=UTF-8&amp;oe=UTF-8&amp;as_umsgid=OLr2Oe4hCHA.1308@tkmsftngp11&amp;lr=&amp;hl=en">here</a> and <a href="http:&#47;&#47;groups.google.com&#47;groups?safe=images&amp;ie=UTF-8&amp;oe=UTF-8&amp;as_umsgid=eDHenhriCHA.1616@tkmsftngp10&amp;lr=&amp;hl=en">here</a>. His answers also helped answer some of my questions (although I think I don't  fully understand what's going on, yet).</p><!--end_raw--></p>

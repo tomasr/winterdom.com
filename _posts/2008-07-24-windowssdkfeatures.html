@@ -1,0 +1,67 @@
+---
+layout: post
+status: publish
+published: true
+title: Windows SDK Features
+author:
+  display_name: Tomas Restrepo
+  login: tomasr
+  email: tomas@winterdom.com
+  url: http://winterdom.com/
+author_login: tomasr
+author_email: tomas@winterdom.com
+author_url: http://winterdom.com/
+wordpress_id: 850
+wordpress_url: http://winterdom.com/2008/07/windowssdkfeatures
+date: '2008-07-24 06:17:24 +0000'
+date_gmt: '2008-07-24 06:17:24 +0000'
+categories:
+- ".NET"
+- Development
+tags: []
+comments: []
+---
+<p><!--start_raw-->
+<p>The Windows SDK Team blog has posted <a href="http:&#47;&#47;blogs.msdn.com&#47;windowssdk&#47;archive&#47;2008&#47;07&#47;23&#47;what-new-windows-sdk-features-do-you-want.aspx">an open question</a> about some potential features of future SDK releases and is gathering our opinions about it. I'd like to comment a bit on them and provide some feedback.</p>
+<p>There are 9 areas the team is looking for feedback on. Let's consider each one:</p><br />
+<blockquote>
+<p>1. A new, small download of &#8220;Core SDK&#8221; components is made available to customers, with only the basics.&#160; What components should be included in this product in addition to the Windows headers and libraries?</p> </blockquote>
+<p>I think the idea of offering smaller download options is a good one overall, and one that a lot of people (myself included) have asked for a number of times in the past. It's true that the special web downloader&#47;installer we had in the past allowed you to download just parts of the SDK, but it just didn't work sometimes at all, and it was too rigorous in enforcing dependencies that might, or might have not, applied to your specific needs.</p>
+<p>However, I disagree on what the contents of the "Core SDK" should be. To me, the most important part of the SDK nowadays is not the Windows headers&#47;libraries, but the SDK tools. Hence, I want the minimum download option to be just the tools. The headers&#47;libraries package should be built on top of the tools package, not the other way around (which is what has happened some times in the past).</p>
+<p>My justification for this is that the SDK tools package today is very relevant to all SDK users; both .NET and Win32&#47;64 developers. The headers&#47;libraries package, however, is only relevant most of the time to the second camp.</p><br />
+<blockquote>
+<p>2. PowerShell Build environment. The Windows SDK would include a script similar to SetEnv that users could run, which will set up an SDK build environment under PowerShell.</p> </blockquote>
+<p>I've already said in the past I think this is an <a href="http:&#47;&#47;www.winterdom.com&#47;weblog&#47;2008&#47;03&#47;13&#47;PowerShellAndTheWindowsSDK.aspx">excellent idea</a>, which I fully support. For now, I make do with my own <a href="http:&#47;&#47;www.winterdom.com&#47;weblog&#47;2008&#47;03&#47;13&#47;DevEnvironmentForPowerShell.aspx">custom version</a> tailored to some particular needs of my dev environment.</p><br />
+<blockquote>
+<p>3. Quick method to install &#8220;only .NET&#8221; or &#8220;only Win32&#8221; components.&#160; For example, Win32 developers could quickly choose to receive only Win32 resources in the documents, tools, samples, etc.&#160; Developers focused on managed code could choose to receive only .NET Framework resources in the documents, tools, samples, etc.</p> </blockquote>
+<p>I guess this might be a good choice for many people, but to be honest, it's not one I'd particularly use much.</p><br />
+<blockquote>
+<p>4. Improvements to documentation: better Table of Contents, better filters, search, etc.</p> </blockquote>
+<p>Improved documentation is always welcome. The table of contents is the main entry point into it for a lot of people, so organizing it better would definitely be beneficial. </p>
+<p>As for the rest, search and filtering really depends a lot on the underlying medium that hosts the documentation itself (the offline help viewer or the online MSDN site), so not sure what the SDK team can actually do to address those issues.</p>
+<p>On the face of this, I'd say just focus on improving the content itself.</p>
+<p>This does remind me of something: The current local help viewer MSDN uses (and many of the dev-side tools) is not something I'm particularly fan of. I was around when the original HtmlHelp engine was introduced and replaced the old Infoviewer that MSDN&#47;Technet used, and was one of those that complained a lot about it.</p>
+<p>I now long for the good old days of HtmlHelp. For example, I've seen the BizTalk SDK docs (which usually ship in the current help technology) in the old HtmlHelp format, and damn, it was way better&#47;faster than what we have now. That sucks.</p><br />
+<blockquote>
+<p>5. Improvements to documentation: integrate<b><i> </i></b>the SDK docs with MSDN docs.</p> </blockquote>
+<p>We've had integration between the SDK docs into the MSDN docs in the past. In fact, I'm somewhat surprised it isn't now (I haven't installed either MSDN or the SDK docs in years!). </p>
+<p>I used to think this was a good idea; I'm not so sure anymore. Two things come to mind:</p>
+<ul>
+<li>MSDN is already huge, and somewhat bloated. Adding the SDK docs on top isn't going to improve the situation. In fact, considering point 4 above, integrating them is going to make search and filtering them even harder&#47;worse.</li>
+<li>The MSDN&#47;SDK docs integration we had in the past had one significant flaw, in my humble opinion: It tried to integrate the SDK table of contents into separate sections in the MSDN TOC. So if you opened the standalone SDK help, you'd see all the SDK content grouped together, but if you launched the MSDN docs, there wasn't a single place in the TOC where the entire SDK content was hanged of. Annoying as hell.</li> </ul>
+<p>The second point, in particular, brings up one question: Do we really want them <em>integrated</em>, or merely accessible from a single place?</p><br />
+<blockquote>
+<p>6. Ship a new<b><i> &#8220;</i></b>Tools Explorer&#8221; to group the tools and provide a more friendly and efficient way for users to search and use the SDK tools.</p> </blockquote>
+<p>Not interested. Keep the SDK lean and mean and get it back into shape.</p><br />
+<blockquote>
+<p>7. Ship a new<b><i> &#8220;</i></b>Samples Explorer&#8221; to group the samples and provide a more friendly and efficient way for users to search and use the SDK samples.</p> </blockquote>
+<p>Not interested on an offline tool for this. I think there might be some use for this as an <em>online</em> tool where I could look for a sample and quickly get the code just for that specific sample, instead of having to download the entire SDK samples package (which is huge) to find it.</p><br />
+<blockquote>
+<p>8. Windows SDK in non-Visual studio IDEs. Provide additional support for other IDEs, such as Windows SDK integration with non-Microsoft development environments, links to Windows SDK documentation from within other IDEs (Eclipse, IBM VisualAge for C++, Borland&#8217;s C++ Builder), among other possible integration scenarios.</p> </blockquote>
+<p>Haven't been using them at all, so I'm not qualified to really talk about it. I do believe that, for the most part, the SDK should be completely independent of VS and should be usable in a standalone fashion.</p><br />
+<blockquote>
+<p>9. Create a new Download portal with SDK &#8216;nuggets&#8217; so that you can download small packages &#8211; perhaps a popular tool or file that shipped broken or was missing from a released SDK.</p> </blockquote>
+<p>Might be a good idea, but if you're going to do it; do it right and stick with it. The SDK has seen as many changes in installer&#47;downloaders as name changes, and it's a drag. </p>
+<p>Don't get me wrong, it's OK to change installers if they bring a significant improvement to the SDK <em>user</em>, but I've never really found that obvious during the several last installer changes. I'm sure each one might have improved something for the SDK team, but from where I'm sitting, it's just been an annoyance to me without bringing any benefits. </p>
+<p>It does bring up the question of just what exactly the SDK needs an installer for, besides just registering environment variables and creating the start menu entries...</p>
+<div class="wlWriterSmartContent" id="scid:0767317B-992E-4b12-91E0-4F059A8CECA8:d3c05b8e-b90f-4547-a343-79988aee20f0" style="padding-right: 0px; display: inline; padding-left: 0px; padding-bottom: 0px; margin: 0px; padding-top: 0px">Technorati tags: <a href="http:&#47;&#47;technorati.com&#47;tags&#47;Windows%20SDK" rel="tag">Windows SDK</a></div><!--end_raw--></p>

@@ -1,0 +1,81 @@
+---
+layout: post
+status: publish
+published: true
+title: Trying out Resharper 5.0
+author:
+  display_name: Tomas Restrepo
+  login: tomasr
+  email: tomas@winterdom.com
+  url: http://winterdom.com/
+author_login: tomasr
+author_email: tomas@winterdom.com
+author_url: http://winterdom.com/
+wordpress_id: 1322
+wordpress_url: http://winterdom.com/2010/04/trying-out-resharper-5-0
+date: '2010-04-14 22:30:48 +0000'
+date_gmt: '2010-04-14 22:30:48 +0000'
+categories:
+- Tools
+- Visual Studio
+tags: []
+comments:
+- id: 1394
+  author: Rich
+  author_email: rcil2003@hotmail.com
+  author_url: ''
+  date: '2010-04-15 01:29:10 +0000'
+  date_gmt: '2010-04-15 01:29:10 +0000'
+  content: "I do think the 'Find Usage' command in R# is a lot better than 'Find References'.
+    I like 'Go To Base' and 'Go To Inheritor'. I also like the way it shows potential
+    null references and unused variables.\r\n\r\nBUT With very large source files
+    R# can slow the system down so much it's unusable. It also litters your project
+    with temp files.\r\n\r\nI got my copy of the 2008 version through work, but now
+    I'm in a new job I don't think I'll be paying my own money for the 2010 version."
+- id: 1395
+  author: Tomas Restrepo
+  author_email: tomas@winterdom.com
+  author_url: http://winterdom.com/
+  date: '2010-04-15 02:07:15 +0000'
+  date_gmt: '2010-04-15 02:07:15 +0000'
+  content: "@Rich: I agree some of the other features are nice. Personally, all I
+    really care about is code navigation, the test runner and sometimes the refactoring
+    stuff (can't use it a lot of times, though). I don't have any interest at all
+    in the other stuff, and the formatting&#47;style stuff is totally useless for
+    me.\r\n\r\nAs for performance, I actually haven't had that much problem with it
+    *except* for how much it slows VS from loading sometimes and project load time;
+    that's really my concern there."
+- id: 1423
+  author: Pinaki
+  author_email: pinaki@live.com
+  author_url: http://pinakig.blogspot.com
+  date: '2010-04-19 06:57:12 +0000'
+  date_gmt: '2010-04-19 06:57:12 +0000'
+  content: I find myself actually more productive by *NOT* using R#. It is too damn
+    slow, and yes, it hinders my coding, and thinking process. IMHO, R# just spoils
+    the whole art of coding, and trying to understand what the heck you are coding.
+- id: 1487
+  author: Jeff Ferguson
+  author_email: jeffrey.ferguson@gmail.com
+  author_url: http://geekswithblogs.net/JeffFerguson/Default.aspx
+  date: '2010-05-13 14:27:40 +0000'
+  date_gmt: '2010-05-13 14:27:40 +0000'
+  content: I've been working in .NET for ten years now, and only started using R#
+    this year on my current project (the rest of the team has used it for a while
+    now). It's interesting stuff, but I'm not sure that I couldn't live without it.
+    I've been fine all of this time without it.
+---
+<p>There are many .NET developers that can&rsquo;t live without <a href="http:&#47;&#47;www.jetbrains.com&#47;resharper&#47;">Jetbrain&rsquo;s R#</a> product. I&rsquo;m not really one of them. Don&rsquo;t get me wrong, I like the idea of R# and some of the features it offers, it&rsquo;s just that it could be so much better if it didn&rsquo;t keep getting in my way!</p>
+<p>Let&rsquo;s get something out of the way before I dive into what I&rsquo;d like to see improved in R#: I bought my own R# license out of my own money. I do think it&rsquo;s a fairly reasonably priced product for all the features it offers.</p><br />
+<h2>Improvements I&rsquo;d like to see</h2>
+<ul>
+<li><strong>More modularity:</strong> I work in a fairly specific environment where some of the tools R# provides don&rsquo;t help at all, and in fact, I don&rsquo;t need them or want them in my way.      <br &#47;>Hence, I&rsquo;d love to see top-level options to turn off broad features. Right now pretty much only two features have this: IntelliSense and Code Analysis. I&rsquo;d love to see the same for things like code formatting and the like.</li>
+<li><strong>Better options for saving&#47;sharing settings:</strong> It&rsquo;s a pain in the neck to configure R# after installing it (or keeping it configured after that). The Options dialog is a mess, and there are way too many settings and no easy way (that I can find) to export your settings to a file I can save and keep around for later installations.      <br &#47;>Yes, I&rsquo;m aware that R# saves its settings in an external XML file you can save, but it&rsquo;s stored some place I can never remember, gets overwritten and messed up all the time when running multiple VS options at the same time and I always forget to fish it out before dumping a VM or something, so it&rsquo;s as if it was never there.      <br &#47;>Just give me a way to export&#47;import settings; that&rsquo;s a lot easier to live with.</li>
+<li><strong>Unit Testing:</strong> I&rsquo;m rather happy using the test runner in R#, use it all the time. However, it would be really nice if there was a way to set it up so that the Debug option worked for mixed managed&#47;unmanaged solutions.      <br &#47;>Right now, the Debug option only enables the managed debugger, but I also work with lots of code that includes managed tests over a mixture of managed and unmanaged C++ code and to debug that I always have to use the NUnit test runner instead.</li> </ul><br />
+<h2>Things that just piss me off</h2>
+<p>There are a few things that I can&rsquo;t stand when using R#, however; to the point where I have to disable it just to get any work done without losing my mind:</p>
+<ul>
+<li><strong>Crashes:</strong> R# 4.5 was notoriously unstable. It would crash all the freaking time for me. R# 5.0 seems better on VS2010, but not on VS2008 to the point where the simplest reproducible crash that R# 4.5 would cause is still present in 5.0. Here&rsquo;s just an example: Launch a new, empty VS2008 instance (with no auto-project opening or anything), then drag a C# file from explorer to VS. Watch VS crash and burn.</li>
+<li><strong>Stop messing with ViEmu:</strong> I&rsquo;m a long time user of <a href="http:&#47;&#47;www.viemu.com&#47;">ViEmu</a>, absolutely love it. However, R# often messes with ViEmu on VS2008, in particularly with the keyboard handling. The one that always causes me trouble is firing a new empty VS2008 instance and loading a solution that contains <em>only</em> unmanaged C++ projects, where R# shouldn&rsquo;t even get involved, and watch the keyboard go all crazy on you.      <br &#47;>Only way to work when this happens is to disable the R# add-in temporarily, which is really annoying. I know people love R#, but for me ViEmu >>> R#. Mess with ViEmu and it&rsquo;s you that&rsquo;s getting canned.</li>
+<li><strong>Smarter Settings:</strong> Given my concerns about making it easier to export&#47;import my R# settings, and my desire to disable code formatting, it&rsquo;s not surprising this is an issue for me.      <br &#47;>See, I already have all my VS code formatting rules properly configured and persisted in my .VSSETTINGS file. Install VS again and in seconds its there. Install R# and instead of defaulting its own code formatting rules to my existing VS settings, it applies its own coding conventions. That&rsquo;s just disrespectful and annoying, to be honest.</li> </ul>
+<p>Anyway, let&rsquo;s see how life with R# 5.0 goes. So far, the VS2010 integration seems nice, but I will still be primarily a VS2008 user for a long time, so it sucks a lot that stability there hasn&rsquo;t improved.   </p></p>

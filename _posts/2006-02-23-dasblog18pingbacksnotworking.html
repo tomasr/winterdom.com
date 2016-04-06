@@ -1,0 +1,77 @@
+---
+layout: post
+status: publish
+published: true
+title: DasBlog 1.8 Pingbacks not working
+author:
+  display_name: Tomas Restrepo
+  login: tomasr
+  email: tomas@winterdom.com
+  url: http://winterdom.com/
+author_login: tomasr
+author_email: tomas@winterdom.com
+author_url: http://winterdom.com/
+wordpress_id: 765
+wordpress_url: http://winterdom.com/2006/02/dasblog18pingbacksnotworking
+date: '2006-02-23 06:28:47 +0000'
+date_gmt: '2006-02-23 06:28:47 +0000'
+categories:
+- Blogging
+tags: []
+comments:
+- id: 511
+  author: Paul Ballard
+  author_email: Paul.Ballard@Rochester-Consulting.com
+  author_url: http://weblogs.asp.net/PaulBallard
+  date: '2006-03-05 20:15:01 +0000'
+  date_gmt: '2006-03-05 20:15:01 +0000'
+  content: |
+    You and I must have been having the exact same weekend.  I spent most of mine putting up a ThinkJot&#47;Dasblog blog site and I had the exact same problems.  Here is how I solved them.
+    I solved the IOException issue by adding Network Service to the list of users with Read&#47;Write permissions to the siteconfig, logs, and content directories.  The key seems to be to make sure the ID of the identity that the application pool is using has rights, which in my case wasn't ASPNET.
+    I also had a problem with the admin links not showing up.  That turned out to be because the site was attempting to use the ASPNetRoleProvider, which DasBlog doesn't use.  You can turn that off in the ASP.NET Configuration tab in the properties window for your blog's virtual directory.
+    Hope this helps,
+    Paul Ballard
+---
+<p><!--start_raw--><span class="postbody">After my dasBlog 1.8 installation, I noticed<br />
+that it doesn't seem to be able to handle pingbacks. Well, actually it<br />
+accepts the pingback just fine from the remote server, generates the<br />
+notification email correctly, but fails to save it to the<br />
+.dayfeedback.xml file. <br><br />
+<br><br />
+Instead, I see this in dasBlog event log:<br />
+<br><br />
+<br><font color="#ff0000">Error:<br />
+<br><br />
+System.IO.IOException: DasBlog.Util.FileUtils: Error accessing<br />
+d:\websites\winterdomcom\Weblog\content\2006-02-21.dayfeedback.xml,<br />
+perhaps it is in use by another process?<br />
+<br>at<br />
+newtelligence.DasBlog.Util.FileUtils.InternalAssertIfNull(FileStream<br />
+file, String name) in C:\Dev\DasBlog<br />
+CE\source\newtelligence.DasBlog.Util\FileUtils.cs:line 104<br />
+<br>at newtelligence.DasBlog.Util.FileUtils.OpenForWrite(String<br />
+fileName) in C:\Dev\DasBlog<br />
+CE\source\newtelligence.DasBlog.Util\FileUtils.cs:line 35<br />
+<br>at newtelligence.DasBlog.Runtime.DayExtra.Save(DataManager data)<br />
+in C:\Dev\DasBlog<br />
+CE\source\newtelligence.DasBlog.Runtime\DayExtra.cs:line 231<br />
+<br>at<br />
+newtelligence.DasBlog.Runtime.BlogDataServiceXml.InternalAddTracking(Tracking<br />
+tracking) in C:\Dev\DasBlog<br />
+CE\source\newtelligence.DasBlog.Runtime\BlogDataService.cs:line 1425<br />
+<br>at<br />
+newtelligence.DasBlog.Runtime.BlogDataServiceXml.TrackingHandler() in<br />
+C:\Dev\DasBlog<br />
+CE\source\newtelligence.DasBlog.Runtime\BlogDataService.cs:line 1448<br />
+<br><br />
+while processing Unhandled Exception from TrackingHandler.<br />
+</font><br><br />
+<br><br />
+<br>The specified .dayfeedback.xml file does not get created, actually,<br />
+so I don't think locking is the problem here. Also, everything else<br />
+(including comments and entries) get written correctly to the same<br />
+directory, so I'm not sure it is a permissions issue.<br />
+<br><br />
+<br><br />
+Any ideas?</span>
+<p></p><!--end_raw--></p>

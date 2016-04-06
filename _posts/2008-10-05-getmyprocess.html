@@ -1,0 +1,41 @@
+---
+layout: post
+status: publish
+published: true
+title: get-myprocess
+author:
+  display_name: Tomas Restrepo
+  login: tomasr
+  email: tomas@winterdom.com
+  url: http://winterdom.com/
+author_login: tomasr
+author_email: tomas@winterdom.com
+author_url: http://winterdom.com/
+wordpress_id: 923
+wordpress_url: http://winterdom.com/2008/10/getmyprocess
+date: '2008-10-05 08:44:15 +0000'
+date_gmt: '2008-10-05 08:44:15 +0000'
+categories:
+- PowerShell
+tags: []
+comments:
+- id: 638
+  author: Andy Schneider
+  author_email: andy@get-powershell.com
+  author_url: http://get-powershell.com
+  date: '2008-10-06 10:21:41 +0000'
+  date_gmt: '2008-10-06 10:21:41 +0000'
+  content: |
+    Just a quick note. There is a built-in variable called $pid which is the Process ID for the current PowerShell session.
+    3 >  gps -id $pid
+    Handles  NPM(K)    PM(K)      WS(K) VM(M)   CPU(s)     Id ProcessName
+    -------  ------    -----      ----- -----   ------     -- -----------
+    478      34    68536      69360   619     8.17   5972 powershell
+    4 >  [diagnostics.process]::GetCurrentProcess()
+    Handles  NPM(K)    PM(K)      WS(K) VM(M)   CPU(s)     Id ProcessName
+    -------  ------    -----      ----- -----   ------     -- -----------
+    472      34    63688      64436   619     8.22   5972 powershell
+---
+<p><!--start_raw-->
+<p>Silly little helper PowerShell function that I&rsquo;ve been finding useful lately when doing some debugging:</p>
+<div class="codebg"><code><span class="Comment"># get our own process information</span><br><span class="Keyword">function</span>&nbsp;<span class="Function">get-myprocess</span> {<br>&nbsp;&nbsp; <span class="Type">[diagnostics.process]</span>::GetCurrentProcess()<br>} </code></div><!--end_raw--></p>

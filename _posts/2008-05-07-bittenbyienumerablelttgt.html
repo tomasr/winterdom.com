@@ -1,0 +1,52 @@
+---
+layout: post
+status: publish
+published: true
+title: Bitten by IEnumerable<T>
+author:
+  display_name: Tomas Restrepo
+  login: tomasr
+  email: tomas@winterdom.com
+  url: http://winterdom.com/
+author_login: tomasr
+author_email: tomas@winterdom.com
+author_url: http://winterdom.com/
+wordpress_id: 302
+wordpress_url: http://winterdom.com/2008/05/bittenbyienumerablelttgt
+date: '2008-05-07 05:53:12 +0000'
+date_gmt: '2008-05-07 05:53:12 +0000'
+categories:
+- ".NET"
+tags: []
+comments:
+- id: 227
+  author: Oran
+  author_email: odennison@gmail.com
+  author_url: http://orand.blogspot.com
+  date: '2008-05-07 09:39:48 +0000'
+  date_gmt: '2008-05-07 09:39:48 +0000'
+  content: |
+    When using C# 3.0 features, thinking in a functional style (no side effects allowed) helps identify these kinds of situations sooner.
+- id: 228
+  author: Tomas Restrepo
+  author_email: tomas@winterdom.com
+  author_url: http://www.winterdom.com/weblog/
+  date: '2008-05-07 09:42:34 +0000'
+  date_gmt: '2008-05-07 09:42:34 +0000'
+  content: |
+    Oran: I agree. This particular function *had* side effects, and that was obviously the problem (though on the other side, the side effects were more important than the iteration itself).
+    I ended up splitting it into two separate methods, which solved the issue. My point was that because of how the compiler&#47;runtime executed the code noticing this was harder than it should've been.
+---
+<p><!--start_raw-->
+<p>Yesterday I was working on some fairly complex code involving some LINQ to SQL, lots of generics (with some reflection generously sprinkled on top) and some extension methods to complete the cake.</p>
+<p>Most was working as expected, until I ran into a little snag. I had one line of code looking a bit like this:</p>
+<div class="codebg"><code>DoSomething<span class="Operator"><</span>MyType<span class="Operator">></span><span class="Operator">(</span>someCollection<span class="Operator">);</span> </code></div>
+<p>When I ran my NUnit tests, it appeared as if <code>DoSomething()</code> had never been executed. I knew that <code>someCollection</code> had some items in it, so I was pretty surprised. I fired up a debugger, put a breakpoint in the first line in of <code>DoSomething</code> and execute the code. No dice, the breakpoint wasn't even hit.</p>
+<p>So I went one step further and put a breakpoint just at the call to <code>DoSomething</code>. The breakpoint got hit, pressed F11 (step into) and.... it went right to the next line without stepping into the method. What was up with that?</p>
+<p>After scratching my head a lot, I realized it had been me being clever that caused the problem. See, <code>DoSomething</code> was basically a <code>map</code> of sorts, defined somewhat like this:</p>
+<div class="codebg"><code>IEnumerable<span class="Operator"><</span>T<span class="Operator">></span> DoSomething<span class="Operator"><</span>T<span class="Operator">>(</span>IEnumerable list<span class="Operator">)</span>&#160;<span class="Operator">{</span>       <br &#47;>&#160;&#160; <span class="Repeat">foreach</span>&#160;<span class="Operator">(</span> var obj <span class="Repeat">in</span> list <span class="Operator">)</span>       <br &#47;>&#160;&#160;&#160;&#160;&#160; yield <span class="Statement">return</span> obj<span class="Operator">.</span>Map<span class="Operator"><</span>T<span class="Operator">>();</span>       <br &#47;><span class="Operator">}</span> </code></div>
+<p>Can you spot the problem?</p>
+<p>I had created the method so that I could reuse the transformed object stream after the mapping, just in case I needed it. However, on this particular use I was making of the method I was disregarding the return and was simply interested in getting the internal function called for each item in the collection.</p>
+<p>This turned out to be a really bad idea, because the way the C# compiler generates the code for this is pretty smart: It's completely pipelined&#47;streamed, such that you <em>need to consume the returned <code>IEnumerable<T></code> object</em>. If you don't, then the collection provider never gets iterated on, and thus, nothing happened.</p>
+<p>In hindsight, this should've been pretty obvious, and it's a very natural behavior, if you think about it. I should've been able to pick it up sooner, but I admit the debugger behavior surprised me a bit.</p>
+<div class="wlWriterSmartContent" id="scid:0767317B-992E-4b12-91E0-4F059A8CECA8:93841ac0-b455-4477-94d2-0f97e7cf72e8" style="padding-right: 0px; display: inline; padding-left: 0px; padding-bottom: 0px; margin: 0px; padding-top: 0px">Technorati tags: <a href="http:&#47;&#47;technorati.com&#47;tags&#47;LINQ" rel="tag">LINQ</a>, <a href="http:&#47;&#47;technorati.com&#47;tags&#47;C#" rel="tag">C#</a>, <a href="http:&#47;&#47;technorati.com&#47;tags&#47;.NET" rel="tag">.NET</a>, <a href="http:&#47;&#47;technorati.com&#47;tags&#47;Generics" rel="tag">Generics</a></div><!--end_raw--></p>

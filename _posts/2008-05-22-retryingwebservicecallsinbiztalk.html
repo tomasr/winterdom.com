@@ -1,0 +1,54 @@
+---
+layout: post
+status: publish
+published: true
+title: Retrying Web Service Calls in BizTalk
+author:
+  display_name: Tomas Restrepo
+  login: tomasr
+  email: tomas@winterdom.com
+  url: http://winterdom.com/
+author_login: tomasr
+author_email: tomas@winterdom.com
+author_url: http://winterdom.com/
+wordpress_id: 900
+wordpress_url: http://winterdom.com/2008/05/retryingwebservicecallsinbiztalk
+date: '2008-05-22 05:44:23 +0000'
+date_gmt: '2008-05-22 05:44:23 +0000'
+categories:
+- BizTalk
+- WCF
+tags: []
+comments:
+- id: 875
+  author: Pandu
+  author_email: pshinde85@in.com
+  author_url: ''
+  date: '2009-06-08 16:15:07 +0000'
+  date_gmt: '2009-06-08 16:15:07 +0000'
+  content: "Hi..good implmentation..\r\ncan i have the code for implementation ..\r\nplease...\r\n\r\nthanks"
+- id: 1716
+  author: Balaji
+  author_email: mail_dbalaji@yahoo.com
+  author_url: ''
+  date: '2011-05-13 19:48:27 +0000'
+  date_gmt: '2011-05-13 19:48:27 +0000'
+  content: "This looks to be good code.\r\nCan i have the code for implementation
+    .."
+---
+<p><!--start_raw-->
+<p>BizTalk Server has some pretty strong facilities for making a "best effort" at ensuring message delivery, by using the automatic retry facilities available to BizTalk Send Ports.</p>
+<p>This functionality is available when calling Web Services as well either with the WCF or SOAP adapters, and it's very useful. However, it's not always enough by itself.</p>
+<p>One such scenario comes up when the Web Service you're calling does not return SOAP Faults when it fails, but instead returns some kind of status&#47;result indicator as part of a normal response message. In that case, the SOAP&#47;WCF adapter can't tell on its own that the service call failed and retry it as necessary.</p>
+<p>There are a few ways you can deal with this.</p>
+<p>For example, you can handle retries manually from an orchestration, using a Loop shape to call the service, check the result and retry the call as necessary. It's not complex (though a bit cumbersome) and in many scenarios works very well.</p>
+<p>Unfortunately, this isn't an option if you are in a messaging-only scenario, or have complex routing rules leading to the service invocation (common with direct-binding scenarios).</p>
+<p>One possible workaround for this if you're using the WCF Adapter in R2 that I've been experimenting lately with is to use the WCF-Custom adapter and configure a custom Endpoint Behavior that adds an <a href="http:&#47;&#47;msdn.microsoft.com&#47;en-us&#47;library&#47;system.servicemodel.dispatcher.iclientmessageinspector.aspx">IClientMessageInspector</a> implementation that checks the response message and transforms it to a fault if it indicates.</p>
+<p><a href="http:&#47;&#47;www.winterdom.com&#47;weblog&#47;content&#47;binary&#47;WindowsLiveWriter&#47;RetryingWebServiceCallsinBizTalk_12B9B&#47;BTSWCFFault_7.png"><img style="border-right: 0px; border-top: 0px; border-left: 0px; border-bottom: 0px" height="260" alt="BTSWCFFault" src="http:&#47;&#47;www.winterdom.com&#47;weblog&#47;content&#47;binary&#47;WindowsLiveWriter&#47;RetryingWebServiceCallsinBizTalk_12B9B&#47;BTSWCFFault_thumb_2.png" width="484" border="0" &#47;></a> </p>
+<p>A few things to keep in mind if you decide to try this:</p>
+<ol>
+<li>For your behavior to be listed on the BizTalk Administration console, you'll need to implement a <a href="http:&#47;&#47;msdn.microsoft.com&#47;en-us&#47;library&#47;system.servicemodel.configuration.behaviorextensionelement.aspx">BehaviorExtensionElement</a> for it, deploy it to the GAC and register it in machine.config (or at least this was the way I did it). </li>
+<li>Inside your <code>IClientMessageInspector.AfterReceiveReply()</code> implementation, you might need to create a buffered copy of the message and return a new Message instance built from it to the WCF Adapter runtime; otherwise BizTalk might not be able read the message because you've already consumed it and it will be in the closed state by then. </li>
+<li>Make sure you leave the "Propagate Fault Message" option unchecked; otherwise your fault will just be submitted to BizTalk as a regular message and won't cause the send port to retry the call. </li> </ol>
+<p>My friend <a href="http:&#47;&#47;blogs.devdeo.com&#47;carlos.medina&#47;">Carlos</a> suggested that another way to deal with this issue (particularly if you're not using the WCF adapter) might be by building a custom pipeline component and using it in a receive pipeline configured in the Send Port. The component would then read the response from the Web Service and throw an exception to force a failure during the response processing if necessary, thus causing the entire exchange to fail. I haven't tried this myself, but sounds like another useful idea!</p>
+<div class="wlWriterSmartContent" id="scid:0767317B-992E-4b12-91E0-4F059A8CECA8:3dbe659c-835b-491b-8b43-21d06bcbbb79" style="padding-right: 0px; display: inline; padding-left: 0px; padding-bottom: 0px; margin: 0px; padding-top: 0px">Technorati tags: <a href="http:&#47;&#47;technorati.com&#47;tags&#47;BizTalk%20Server%202006%20R2" rel="tag">BizTalk Server 2006 R2</a>, <a href="http:&#47;&#47;technorati.com&#47;tags&#47;WCF" rel="tag">WCF</a>, <a href="http:&#47;&#47;technorati.com&#47;tags&#47;Web%20Services" rel="tag">Web Services</a></div><!--end_raw--></p>

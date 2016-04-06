@@ -1,0 +1,30 @@
+---
+layout: post
+status: publish
+published: true
+title: FixEncoding Pipeline Component v1.0.0.1
+author:
+  display_name: Tomas Restrepo
+  login: tomasr
+  email: tomas@winterdom.com
+  url: http://winterdom.com/
+author_login: tomasr
+author_email: tomas@winterdom.com
+author_url: http://winterdom.com/
+wordpress_id: 386
+wordpress_url: http://winterdom.com/2006/09/fixencodingpipelinecomponentv1001
+date: '2006-09-04 19:10:18 +0000'
+date_gmt: '2006-09-04 19:10:18 +0000'
+categories:
+- BizTalk
+tags: []
+comments: []
+---
+<p><!--start_raw-->
+<p>I've just uploaded an updated version of my <a href="http:&#47;&#47;www.winterdom.com&#47;weblog&#47;2006&#47;01&#47;31&#47;FixMessageEncodingCustomPipelineComponentSample.aspx">FixEncoding</a> custom pipeline component for BizTalk 2006 (an update for the BizTalk 2004 version is in the works); you can download it from <a href="http:&#47;&#47;www.winterdom.com&#47;dev&#47;bts&#47;EncodingComponent.zip">here</a>.</p>
+<p>This update is about making the component useful in Send pipelines. The original version only set the Charset property of the Body part of the message, which is used by the Xml and Flat File disassemblers as one possible way to infer the encoding of an incoming message when probing and disassembling it, and that works fine.</p>
+<p>However, send pipelines work in a different way: Both the Flat File and Xml Assembler components will ignore the Body Part's Charset property value, and instead will use the encoding specified in the component properties. The problem with this is that the list of encodings to choose from in the Pipeline Designer for both components is severely limited, even though the underlying .NET encoding facilities (which in turn are partially based on the built-in Operating System facilities) support quite a bit more.</p>
+<p>My FixEncoding component, however, didn't have that issue and would allow you to choose any encoding supported by .NET and the Operating System with no problem. However, since it only sets the Body Part's Charset property, trying to use it in a send pipeline wasn't very useful.</p>
+<p>Both the Flat File and Xml Assembler components do support another way of selecting the desired component: using the XMLNorm.TargetCharset context property of the message being sent. You can usually set this directly from an orchestration when creating the message, but this is inconvinient, and not very reusable. Besides, this really is the kind of thing that is much cleanly done at the pipeline level.</p>
+<p>This updated version of the FixEncoding component now contains a second pipeline component: The SetEncodingComponent. It works just like the FixEncoding component except that it's for use in Send Pipelines and it writes the XMLNorm.TargetCharset property to the message context. You should use it in the Pre-Assemble stage of any send pipeline, and remember to set the TargetCharset of any assembler component to "(None)" so it doesn't&nbsp;override the encoding you choose on the SetEncoding component</p>
+<p>Hope you find it useful!</p><!--end_raw--></p>

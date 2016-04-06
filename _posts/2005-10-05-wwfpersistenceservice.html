@@ -1,0 +1,30 @@
+---
+layout: post
+status: publish
+published: true
+title: WWF Persistence Service
+author:
+  display_name: Tomas Restrepo
+  login: tomasr
+  email: tomas@winterdom.com
+  url: http://winterdom.com/
+author_login: tomasr
+author_email: tomas@winterdom.com
+author_url: http://winterdom.com/
+wordpress_id: 239
+wordpress_url: http://winterdom.com/2005/10/wwfpersistenceservice
+date: '2005-10-05 16:17:13 +0000'
+date_gmt: '2005-10-05 16:17:13 +0000'
+categories:
+- WinFX
+- Workflow
+tags: []
+comments: []
+---
+<p><!--start_raw--><a href="http:&#47;&#47;weblogs.asp.net&#47;gsusx&#47;">Jesus Rodriguez</a> has a cool article on the WWF <a href="http:&#47;&#47;weblogs.asp.net&#47;gsusx&#47;archive&#47;2005&#47;10&#47;05&#47;426699.aspx">Persistence Service</a>. It's pretty interesting to read about these basic services provided by the WWF runtime.</p>
+<p>Reading this, two questions come to mind which don't seem to be directly addressed in the article:</p></p>
+<ol>
+<li>If code external to the workflow calls Unload() on the workflow instance to force it to serialize, what exactly happens? Does the runtime wait until a "safe" point is reached before it actually pauses the instance and serializes it (which is what I would expect), or does it yank it from memory right away? Is the answer is the first, then what kind of activities are considered safe, and can this be controlled, and does Unload() wait until the instance is actually serialized?</li>
+<li>If you set WorkflowRuntime.UnloadOnIdle to true, are workflow instances always serialized as soon as an idle state (whatever that means) is reached, or does it wait a while before this actually happens? What I'm asking here, in essence, is if optimizations are included to avoid doing too many serialization&#47;deserializations if the wait is not gonna be short. Heck, one point to ask here, as well, is if Serialization == workflow pause (i.e. does it work like similar to BizTalk's orchestration dehydration) or if it just means that the state was saved on a given state but the workflow instance might keep running right away (i.e. just a persistence point).</li><br />
+</ol></p>
+<p>All of these questions seem, to me, quite interesting because they help highlight just exactly what runtime guarantees the WWF runtime can actually make regarding the state of the workflow instances and it's reliability and recoverability, and just how much a work will developers working with <i>just</i> WWF have to do to help the core runtime provide a robust environment for running certain kinds of business flows (particularly if they are long running, which almost all real workflows are, in my short experience).</p><!--end_raw--></p>

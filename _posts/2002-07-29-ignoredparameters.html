@@ -1,0 +1,45 @@
+---
+layout: post
+status: publish
+published: true
+title: Ignored Parameters
+author:
+  display_name: Tomas Restrepo
+  login: tomasr
+  email: tomas@winterdom.com
+  url: http://winterdom.com/
+author_login: tomasr
+author_email: tomas@winterdom.com
+author_url: http://winterdom.com/
+wordpress_id: 856
+wordpress_url: http://winterdom.com/2002/07/ignoredparameters
+date: '2002-07-29 19:36:48 +0000'
+date_gmt: '2002-07-29 19:36:48 +0000'
+categories:
+- ".NET"
+tags: []
+comments:
+- id: 570
+  author: Terrence
+  author_email: nixerman@yahoo.com
+  author_url: http://codaland.blogspot.com
+  date: '2002-07-29 22:10:38 +0000'
+  date_gmt: '2002-07-29 22:10:38 +0000'
+  content: |
+    <p>Great article. Saved me a lot of time (I was going to write one just like it). Keep up the good work!</p>
+    <p>- T</p>
+---
+<p><!--start_raw-->Sam Ruby says in his <a href="http:&#47;&#47;radio.weblogs.com&#47;0101679&#47;stories&#47;2002&#47;07&#47;29&#47;expectMore.html"><b>Expect More</b></a> article: <i>"With the current version of ASP.NET, in both the doc&#47;lit and rpc&#47;enc cases, the unnecessary parameter is simply ignored .... I am going to try to make the case that this is exactly what should be done, as it provides for precisely the level of loose coupling that made the web successful in the first place."</i></p>
+<p>I find this comment very interesting for a couple of reasons. First, I agree with Sam that this makes sense in a loose coupled world. Second, this can also provide some pretty painful debugging and head scratching (wondering why your argument's are being ignored?)</p></p>
+<p>Now, I won't claim to be as expert as Sam on this, but I certainly have an opinion. And this humble servant happens not to fully agree with some of the things Sam says in his otherwise very enlightening article.</p></p>
+<p>Sam says: <i>"Now imagine what would happen if you needed to extend this interface."</i>. Sam describes what he thinks are good rules  for such an extension to ocurr. However, I don't think that's entirely the way to go. I think published interfaces <i>should</i> be in essence immutable, and Sam's rules suffer, imho, from two nasty problems:</p></p>
+<ul>
+<li>Rule 1: <i>Provide reasonable defaults for missing values</i>. Ahh, reasonable. What exactly is that again? Indeed, what is one to consider reasonable defaults? The problem with defaults in this context is that they are strictly dictated by the service implementation. Sam mentions in his article the possibility of having multiple servers implementing the same interface, but, alas, as he correctly points out those defaults are <i>not</i> part of the interface definition.
+<p>To me, this means that instead of loose coupling, you get the opposite. Consider Sam's example of a missing repeat argument. Now, he assumes a default of 0, as that's ASP.NET's default. What happens when someone implementing that interface chooses 1 as the default value? The client's expected behavior of the service, no matter how you look at it, is broken.</p></p>
+<p>Ahh, 1 is not a reasonable default value, you say? Just who exactly is the one who ought to dictate what a reasonable default value is supposed to be? Unless mandated by spec, it's pretty much a loosing proposition. Here's another twist: What happens when the same server changes the default used? Client's broken, too. If the interface itself is not immutable, why should the default's value be?</p></p>
+<p>So here's Tomas Rule 1: Unless default values are part of the public interface, and immutable, forget about them.</p><br />
+</li></p>
+<li>Rule 2: <i>to ignore any extra elements that are received</i>: Humm... let me see. So in this case, if a client expecting a newer implementation calls into a server containing the old implementation (with fewer arguments), he gets unexpected behavior, too. You see, the call in itself might succeed, but that doesn't mean the information returned is any good to the client. And what's worse, you now made it <i>harder</i> for the client to figure out that's not what he wanted. That's good exactly how?<br />
+</li><br />
+</ul></p>
+<p>I don't know... perhaps I just don't get it. In many ways, I agree with <a href="http:&#47;&#47;radio.weblogs.com&#47;0108971&#47;">Clemens</a> that semantics are needed. OOP realized that long ago, that sintactic interfaces just don't cut it... behavior is just as much part of the interface. Then again, this is just my humble opinion... If someone is willing to smack me in the head long enough to make me understand, I'll promise to listen carefully and be "reasonable" about it :)</p><!--end_raw--></p>

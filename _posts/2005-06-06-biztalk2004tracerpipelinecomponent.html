@@ -1,0 +1,50 @@
+---
+layout: post
+status: publish
+published: true
+title: BizTalk 2004 Tracer Pipeline Component
+author:
+  display_name: Tomas Restrepo
+  login: tomasr
+  email: tomas@winterdom.com
+  url: http://winterdom.com/
+author_login: tomasr
+author_email: tomas@winterdom.com
+author_url: http://winterdom.com/
+wordpress_id: 93
+wordpress_url: http://winterdom.com/2005/06/biztalk2004tracerpipelinecomponent
+date: '2005-06-06 16:32:35 +0000'
+date_gmt: '2005-06-06 16:32:35 +0000'
+categories:
+- BizTalk
+tags: []
+comments:
+- id: 59
+  author: Juan
+  author_email: jpiacquadio@sjm.com
+  author_url: ''
+  date: '2006-04-06 11:07:45 +0000'
+  date_gmt: '2006-04-06 11:07:45 +0000'
+  content: |
+    InterchangeID does not exist.
+---
+<p><!--start_raw-->I've just uploaded to my website a sample custom pipeline component for BizTalk Server 2004 that can be used to trace message contents as they flow through pipelines. To install it, just copy the assembly into your BizTalk installation's Pipeline Components directory, and add it to the VS.NET toolbox by right clicking on it and selecting the "Choose Items" option.</p>
+<p>To use the component, just add it to a pipeline stage (it's a general component, so you should be able to add it to any stage), and configure the TracePath property. The value should be a path (including file name) where to save messages, and you can should use macros to ensure file names are unique (it does not support appending to files yet). Supported macros are:</p></p>
+<ul>
+<li>%MessageID%</li>
+<li>%InboundTransportType%</li>
+<li>%OutboundTransportType%</li>
+<li>%ReceivePortName%</li>
+<li>%InterchangeID%</li>
+<li>%datetime%</li>
+<li>%datetime.tz%</li>
+<li>%time%</li>
+<li>%time.tz%</li><br />
+</ul></p>
+<p>This is the first pipeline component I create, so obviously I'm still groping all of this. A few caveats apply:</p></p>
+<ol>
+<li>The component basically calls GetOriginalDataStream() and replaces it with a custom stream that writes the contents as they are read into a secondary stream (the trace file). While I do try to ensure the stream stops tracing as soon as the message is read completely once, things might not work as expected if the pipeline seeks around the stream instead of reading it sequentially. This is something I hope to fix eventually, though..</li>
+<li>I had some trouble getting the MessageID property out of the message on receive pipelines. Basically, I expected to be able to read the BTS.MessageID property out of the message context, but, as it turns out, that was always missing, so I settle for just using msg.MessageID :)</li><br />
+</ol></p>
+<p>One thing I realized from writing this is that writing pipeline components is, in general, just as easy as I expected. The downside (same as with writing adapters) is that starting writing the new component takes a while because there is just so much boilerplate to write... there's definitely room for improvement here by writing a few helper base&#47;utility classes.</p></p>
+<p>So, if you're still interested by this point, you can get the code <a href="http:&#47;&#47;www.winterdom.com&#47;dev&#47;bts&#47;TracerComponent.zip">here</a>.</p><!--end_raw--></p>

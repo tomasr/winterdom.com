@@ -1,0 +1,69 @@
+---
+layout: post
+status: publish
+published: true
+title: Schema Conformance
+author:
+  display_name: Tomas Restrepo
+  login: tomasr
+  email: tomas@winterdom.com
+  url: http://winterdom.com/
+author_login: tomasr
+author_email: tomas@winterdom.com
+author_url: http://winterdom.com/
+wordpress_id: 344
+wordpress_url: http://winterdom.com/2003/06/schemaconformance
+date: '2003-06-05 07:50:44 +0000'
+date_gmt: '2003-06-05 07:50:44 +0000'
+categories:
+- Web Services
+tags: []
+comments:
+- id: 252
+  author: Chris Brooks
+  author_email: cbrooks@corillian.com
+  author_url: http://www.chrisbrooks.org
+  date: '2003-06-05 22:49:35 +0000'
+  date_gmt: '2003-06-05 22:49:35 +0000'
+  content: |
+    <p>I saw both Clemens and Dare speak today, and it was very eye-opening.  Dare took us half the way, showing a reasonable why to intercept in the WS pipeline to enforce schema validation.  Clemens brought us home by showing how we can declaratively (in code, not XML schema) achieve the same effect.  Clemens' model will be very appealing for those that prefer code-driven schema and WS design.</p>
+- id: 253
+  author: Dare Obasanjo
+  author_email: kpako@yahoo.com
+  author_url: http://www.kuro5hin.org/user/Carnage4Life/diary
+  date: '2003-06-05 16:01:53 +0000'
+  date_gmt: '2003-06-05 16:01:53 +0000'
+  content: |
+    <p>You should have attended my talk. It was all about enabling ASP.NET web services to validate the incoming message according to the schema in the WSDL document.</p>
+---
+<p><!--start_raw--></p>
+<p>
+<font size="2">Yesterday, at the end of <a href="http:&#47;&#47;www.computerzen.com">Scott</a>'s<br />
+talk, someone asked whether the ASP.NET Web Services Infrastructure did Schema validation<br />
+of incoming SOAP Messages according to the schema defined in the WSDL types section<br />
+(or imported schemas in the WSDL). I happen to think this is a pretty interesting<br />
+question, actually. My first reaction was to say "No, it doesn't" (ok, I actually<br />
+went ahead and said it). But then, <a href="http:&#47;&#47;c2.com&#47;cgi&#47;wiki?ChrisBrooks">Chris<br />
+Brooks</a> said something that left me thinking. He agreed it didn't actually do validation,<br />
+but some sort of check was done, in the sense that if your WebMethod's code executed,<br />
+then something about the incoming message was right: it was enough for the XmlSerializer<br />
+to reconstruct the WebMethod arguments and do the call.</font><br />
+</p></p>
+<p>
+<font size="2">I thought this was an interesting idea. Certainly, one could consider<br />
+this some sort of very light, very superficial validation. But perhaps "Schema Conformance"<br />
+would be a better term: One could say that the incoming message "conforms" to the<br />
+specified schema, in the sense that there is a one-way transformation that can be<br />
+done from the incoming data to the WebMethod's arguments. That transformation will<br />
+possibly include taking advantage of nullable types (in this case, I actually mean<br />
+passing null for a reference type-argument), default values for value types, etc.</font><br />
+</p></p>
+<p>
+<font size="2">It's actually much more interesting if you even consider that some<br />
+specific types can "conform" to almost any possible schema representing the expected<br />
+incoming message schema, such as XmlNode.</font><br />
+</p></p>
+<p>
+<font size="2">PS: I'm writing this as I watch <a href="http:&#47;&#47;radio.weblogs.com&#47;0108971&#47;">Clemens</a> talk<br />
+about his Aspect Oriented Work :)</font><br />
+</p><!--end_raw--></p>

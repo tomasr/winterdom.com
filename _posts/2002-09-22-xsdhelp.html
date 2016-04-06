@@ -1,0 +1,84 @@
+---
+layout: post
+status: publish
+published: true
+title: XSD Help
+author:
+  display_name: Tomas Restrepo
+  login: tomasr
+  email: tomas@winterdom.com
+  url: http://winterdom.com/
+author_login: tomasr
+author_email: tomas@winterdom.com
+author_url: http://winterdom.com/
+wordpress_id: 932
+wordpress_url: http://winterdom.com/2002/09/xsdhelp
+date: '2002-09-22 11:25:33 +0000'
+date_gmt: '2002-09-22 11:25:33 +0000'
+categories:
+- XML
+tags: []
+comments:
+- id: 655
+  author: Jason
+  author_email: jason@injektilo.org
+  author_url: http://injektilo.org/
+  date: '2002-09-22 12:18:03 +0000'
+  date_gmt: '2002-09-22 12:18:03 +0000'
+  content: |
+    <p>This is untested but I think it will get you what you want:</p>
+    <p><xsd:choice><br &#47;>
+    <xsd:sequence><br &#47;>
+    <xsd:element ref="from" &#47;><br &#47;>
+    <xsd:element ref="to" minOccurs="0" &#47;><br &#47;>
+    </xsd:sequence><br &#47;>
+    <xsd:element ref="to" &#47;><br &#47;>
+    <xsd:choice><br &#47;>
+    </p>
+- id: 656
+  author: Jason
+  author_email: jason@injektilo.org
+  author_url: http://injektilo.org/
+  date: '2002-09-22 12:20:02 +0000'
+  date_gmt: '2002-09-22 12:20:02 +0000'
+  content: |
+    <p>Oops.</p>
+    <p><xsd:choice><br &#47;>
+    &nbsp;&nbsp;<xsd:sequence><br &#47;>
+    &nbsp;&nbsp;&nbsp;&nbsp;<xsd:element ref="from" &#47;><br &#47;>
+    &nbsp;&nbsp;&nbsp;&nbsp;<xsd:element ref="to" minOccurs="0" &#47;><br &#47;>
+    &nbsp;&nbsp;</xsd:sequence><br &#47;>
+    &nbsp;&nbsp;<xsd:element ref="to" &#47;><br &#47;>
+    </xsd:choice><br &#47;>
+    </p>
+- id: 657
+  author: Bhisham Asnani
+  author_email: Bhishama@hrsa.gov
+  author_url: ''
+  date: '2002-12-17 12:01:08 +0000'
+  date_gmt: '2002-12-17 12:01:08 +0000'
+  content: |
+    <p>Sir,</p>
+    <p>Actually, I have similar kind of problem.</p>
+    <p>I am trying to bulkload a XML file into the database using XSD.</p>
+    <p>But I require a condition.<br &#47;>
+    The tags are as follows</p>
+    <p>&#60;SpecialTopic selected="False" SpecialTopicID="1" GrantNumberID= "1" &#47;&#62;</p>
+    <p>&#60;SpecialTopic selected="True" SpecialTopicID="1" GrantNumberID="1" &#47;&#62;</p>
+    <p>I want to upload SpecialTopicID and GrantNumberID attribute of the tags based on the value of the<br &#47;>
+    selected attribute.<br &#47;>
+    If the value of the selected attribute is "True" then I want to bulk load SpecialTopicID and GrantNumberID otherwise I don't.</p>
+    <p>I would greatly appreciate it if someone could help me with the xsd.</p>
+    <p>Thanks,</p>
+    <p>Bhisham Asnani</p>
+---
+<p><!--start_raw-->I was fooling around a few days ago, writing an <a href="http:&#47;&#47;www.w3.org&#47;XML&#47;Schema#dev">Xml Schema</a> for an XML configuration file for a personal project I'm working on, and ran into something I don't know how to describe in XSD.... well, actually I'm not even sure it is entirely possible.</p>
+<p>Basically, I wanted to have a section of the file contain something like this:</p></p>
+<pre class="codes"><code><condition><br />
+<from>some string</from><br />
+<to>some other string</to><br />
+</condition><br />
+</code></pre></p>
+<p>The problem was that as I wanted it to be, the condition element could conain either the <code>from</code> element, the <code>to</code> element, or both, but at least one of the had to be present.</p></p>
+<p>So, obviously, I know how to use <code>minOccurs</code> and <code>maxOccurs</code>, but that would only allow me to specify the frst condition, but not make it so that at least one of them was present. Neither did I find a way to do it using <code>xsd:choose</code> and friends.</p></p>
+<p>So, is it possible to do, and if so, how? I'd appreciate any tips you could offer (and a pointer to the XSD spec section that makes it possible, if you're able to provide one)!</p><!--end_raw--></p>

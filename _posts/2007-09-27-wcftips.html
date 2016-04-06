@@ -1,0 +1,27 @@
+---
+layout: post
+status: publish
+published: true
+title: WCF Tips
+author:
+  display_name: Tomas Restrepo
+  login: tomasr
+  email: tomas@winterdom.com
+  url: http://winterdom.com/
+author_login: tomasr
+author_email: tomas@winterdom.com
+author_url: http://winterdom.com/
+wordpress_id: 1044
+wordpress_url: http://winterdom.com/2007/09/wcftips
+date: '2007-09-27 17:59:15 +0000'
+date_gmt: '2007-09-27 17:59:15 +0000'
+categories:
+- WCF
+tags: []
+comments: []
+---
+<p><!--start_raw-->
+<p>My good friend <a href="http:&#47;&#47;samgentile.com&#47;blogs&#47;samgentile&#47;">Sam Gentile</a> pointed me to David Pallmann's set of <a href="http:&#47;&#47;davidpallmann.spaces.live.com&#47;blog&#47;cns!E95EF9DC3FDB978E!257.entry?_c=BlogPart">WCF tips</a>. Lots of good stuff in there, and I found myself agreeing with most of the stuff David brought up.</p>
+<p>One that particularly resonated with me was <a href="http:&#47;&#47;davidpallmann.spaces.live.com&#47;blog&#47;cns!E95EF9DC3FDB978E!260.entry?_c=BlogPart">Tip #4</a> on default settings. One of my biggest gripes with svcutil.exe is that it generates a default client-side proxy configuration that is fairly useless, because it initializes all binding properties explicitly with values that are too small to be useful in many cases. What's worse, you may not realize the consequences of this during initial testing and may only notice the problem later on. In particular, message size and encoding quotas have default values that are too small.</p>
+<p>Actually, I'll go one step further and say that a lot of these security quota settings make little sense for service consumers. However, you do want to configure them properly for services themselves (though the default values might still be too small for most scenarios), as they can help you protect against denial of service kind of attacks, or simply protect you from handling requests larger than your service can chew.</p>
+<div class="wlWriterSmartContent" id="scid:0767317B-992E-4b12-91E0-4F059A8CECA8:029e26aa-5620-46bc-861d-8a5f4bbfd74d" style="padding-right: 0px; display: inline; padding-left: 0px; padding-bottom: 0px; margin: 0px; padding-top: 0px">Technorati tags: <a href="http:&#47;&#47;technorati.com&#47;tags&#47;Windows%20Communication%20Foundation" rel="tag">Windows Communication Foundation</a></div><!--end_raw--></p>

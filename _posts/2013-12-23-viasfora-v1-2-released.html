@@ -1,0 +1,26 @@
+---
+layout: post
+status: publish
+published: true
+title: Viasfora v1.2 Released
+author:
+  display_name: Tomas Restrepo
+  login: tomasr
+  email: tomas@winterdom.com
+  url: http://winterdom.com/
+author_login: tomasr
+author_email: tomas@winterdom.com
+author_url: http://winterdom.com/
+wordpress_id: 1393
+wordpress_url: http://winterdom.com/?p=1393
+date: '2013-12-23 02:15:31 +0000'
+date_gmt: '2013-12-23 02:15:31 +0000'
+categories:
+- Visual Studio
+tags: []
+comments: []
+---
+<p><a href="http:&#47;&#47;viasfora.com&#47;">Viasfora</a> version 1.2 has been released! Most of the work on this released went into significantly improving the performance of the extension, particularly around Rainbow Parentheses and the Keyword Classifier.</p>
+<p>One of the issues that I ran into was that when both features were enabled, they could interact in ways that would easily  kill performance, particularly causing the C# editor to blink the highlight on some words, which was not a good thing. Another big challenge was the JavaScript editor, which, because of how it parses JS (in VS2010, in particular), it becomes very sensitive on anything that forces tag updates.</p></p>
+<p>Much of the extra performance work went into improving the lexing code to extract braces when the document changes. I'm still not terribly happy with the current code, but it seems to be holding up for now. Two of the things that improved this the most are keeping a list of all the braces found and then only doing partial invalidation when the document changes, and also providing a quick way to look up ranges of braces based on the document lines. Still lots of room for improvement here!</p></p>
+<p>As for new features? Rainbow parentheses is now supported on VB (often asked about!). Initial support for F# is also provided, but I am sure the default set of F# keywords I chose for this version could use some improvement. If you're an F# fan, let me know of any suggestions!.</p>

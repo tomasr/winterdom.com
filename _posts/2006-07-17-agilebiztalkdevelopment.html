@@ -1,0 +1,26 @@
+---
+layout: post
+status: publish
+published: true
+title: Agile BizTalk Development
+author:
+  display_name: Tomas Restrepo
+  login: tomasr
+  email: tomas@winterdom.com
+  url: http://winterdom.com/
+author_login: tomasr
+author_email: tomas@winterdom.com
+author_url: http://winterdom.com/
+wordpress_id: 169
+wordpress_url: http://winterdom.com/2006/07/agilebiztalkdevelopment
+date: '2006-07-17 13:27:46 +0000'
+date_gmt: '2006-07-17 13:27:46 +0000'
+categories:
+- BizTalk
+- Development
+- Architecture
+tags: []
+comments: []
+---
+<p><!--start_raw--><a href="http:&#47;&#47;codebetter.com&#47;blogs&#47;gregyoung&#47;default.aspx">Greg Young</a> started an <a href="http:&#47;&#47;codebetter.com&#47;blogs&#47;gregyoung&#47;archive&#47;2006&#47;07&#47;13&#47;147347.aspx">interesting discussion</a> about Unit Testing BizTalk solutions; some good things to consider are brought on. In general, I agree with Greg that testing BizTalk solutions isn't always easy, in particular because of dependencies and because of the level at which BizTalk solutions are created (it is certainly a higher abstraction level than regular C# code, for example). That, and the fact that the BizTalk engines are fairly complex constructs, make it harder to test pieces of your solution in isolation, though it is by no means impossible.<br><br>One point I wanted to take back from the discussion is Greg's comment that testing Schemas isn't much of a problem and you're probably going to get those on integration testing. That is true if you're dealing with simple schemas, but if you're creating complex Flat File schemas and doing things like debatching and a few of the other advanced things that BizTalk schemas support, then being able to test your schemas in isolation in a repeatable, automated fashion is a real blessing. Whether you want to call this unit testing or not is open for debate, I'm sure, but it is a good thing none the less.<br><br>At a higher level, Greg does bring a pretty significant question about whether it is possible to do Agile development when using BizTalk. I'd sat it is certainly harder than in other disciplines and with other tools, but not necessarily because of the tool itself. One of the real issues here is the fact that Application Integration (particularly on big projects) requires a somewhat larger investent in Architecture up-front, because of the complexity of the issues involved and sometimes because integration projects are composed of three or more providers (i.e. different companies) collaborating with the customer to implement the required solution. This does require that you have a more significant shared understanding of the problem at hand up-front and that some key issues are covered right from the start.<br><br>Notice I'm not advocating a waterfall model, I'm just saying that some serious understanding needs to be done at the start to ensure everyone is working towards the same goal. There are many ways you can this done, without bringing the whole project to a stop while the entire requirement analysis is done. For example, this initial phase is a great time to prototype&nbsp; parts of the solution, create initial versions of shared schemas, and explore potential solutions to some of the issues the project has.<br><br>On some of the integration projects I've worked on doing this has been a key to the success of the project, even allowing us to work after that in a far more agile fashion while minimizing dependencies and even allowing us to complete the BizTalk part of the solution well in advanced to other parts of the whole integration project. <br><br>I'm looking forward to exploring if some of the <a href="http:&#47;&#47;www.agilearchitect.org&#47;agile&#47;index.asp">Agile Architecture</a> ideas can be used to make this initial part of the project more dynamic, as well.<br><br><br>
+<p></p><!--end_raw--></p>

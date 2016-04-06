@@ -1,0 +1,107 @@
+---
+layout: post
+status: publish
+published: true
+title: BTSReset
+author:
+  display_name: Tomas Restrepo
+  login: tomasr
+  email: tomas@winterdom.com
+  url: http://winterdom.com/
+author_login: tomasr
+author_email: tomas@winterdom.com
+author_url: http://winterdom.com/
+wordpress_id: 114
+wordpress_url: http://winterdom.com/2005/07/btsreset
+date: '2005-07-01 18:28:14 +0000'
+date_gmt: '2005-07-01 18:28:14 +0000'
+categories:
+- BizTalk
+tags: []
+comments: []
+---
+<p><!--start_raw-->During this week, I overheard a couple of guys mentioning how nice it would be to have a BTSReset tool, just like there is an iisreset one (sorry Mattias, didn't catch your last name, and I'm terrible with names anyway).</p>
+<p>So, during a few minutes of boredom I went ahead and put together one, and here's the code (it's really simple thanks to the BTS WMI object model):</p></p>
+<pre><code><br />
+&#47;&#47;<br />
+&#47;&#47; BTSReset.cs<br />
+&#47;&#47;<br />
+&#47;&#47; Author:<br />
+&#47;&#47;    Tomas Restrepo (tomasr@mvps.org)<br />
+&#47;&#47;<br />
+using System;<br />
+using System.Management;<br />
+namespace Winterdom.BizTalk.Utilities<br />
+{<br />
+&#47;&#47;&#47;<br />
+<summary>
+&#47;&#47;&#47; Command line application that can stop,<br />
+&#47;&#47;&#47; start or restart the BizTalk Application<br />
+&#47;&#47;&#47; hosts on the local machine.<br />
+&#47;&#47;&#47; </summary><br />
+class BtsResetApp<br />
+{<br />
+[Flags]<br />
+enum Options<br />
+{<br />
+Stop = 0x01,<br />
+Start = 0x10,<br />
+Reset = Stop | Start<br />
+}<br />
+public static void Main(string[] args)<br />
+{<br />
+Options opts = Options.Reset;<br />
+if ( args.Length == 0 ) {<br />
+opts = Options.Reset;<br />
+} else if ( args[0] == "stop" ) {<br />
+opts = Options.Stop;<br />
+} else if ( args[0] == "start" ) {<br />
+opts = Options.Start;<br />
+} else {<br />
+PrintUsage();<br />
+return;<br />
+}<br />
+ProcessOptions(opts);<br />
+}<br />
+private static void ProcessOptions(Options opts)<br />
+{<br />
+EnumerationOptions enumOptions = new EnumerationOptions();<br />
+enumOptions.ReturnImmediately = false;<br />
+ManagementObjectSearcher searcher = new ManagementObjectSearcher (<br />
+"root\\MicrosoftBizTalkServer",<br />
+"Select * from MSBTS_HostInstance where HostType=1",<br />
+enumOptions<br />
+);<br />
+if ( (opts &amp; Options.Stop) != 0 )<br />
+{<br />
+foreach ( ManagementObject inst in searcher.Get() )<br />
+{<br />
+if ( (UInt32)inst["ServiceState"] != 1 ) {<br />
+Console.WriteLine("Stopping {0}...", inst["HostName"]);<br />
+inst.InvokeMethod("Stop", null);<br />
+}<br />
+}<br />
+}<br />
+if ( (opts &amp; Options.Start) != 0 )<br />
+{<br />
+foreach ( ManagementObject inst in searcher.Get() )<br />
+{<br />
+if ( (UInt32)inst["ServiceState"] == 1 ) {<br />
+Console.WriteLine("Starting {0}...", inst["HostName"]);<br />
+inst.InvokeMethod("Start", null);<br />
+}<br />
+}<br />
+}<br />
+searcher.Dispose();<br />
+}<br />
+private static void PrintUsage()<br />
+{<br />
+Console.WriteLine("usage: btsreset.exe [start | stop]");<br />
+Console.WriteLine("   no arguments = restart all host instances");<br />
+Console.WriteLine("   start = start all stopped host instances");<br />
+Console.WriteLine("   stop = stop all started host instances");<br />
+}<br />
+} &#47;&#47; class BtsResetApp<br />
+} &#47;&#47; namespace Winterdom.BizTalk.Utilities<br />
+</code></pre></p>
+<p>Enjoy!</p><!--end_raw--></p>

@@ -1,0 +1,63 @@
+---
+layout: post
+status: publish
+published: true
+title: Enhancing ps1.vim
+author:
+  display_name: Tomas Restrepo
+  login: tomasr
+  email: tomas@winterdom.com
+  url: http://winterdom.com/
+author_login: tomasr
+author_email: tomas@winterdom.com
+author_url: http://winterdom.com/
+wordpress_id: 778
+wordpress_url: http://winterdom.com/2009/03/enhancingps1vim
+date: '2009-03-04 19:22:30 +0000'
+date_gmt: '2009-03-04 19:22:30 +0000'
+categories:
+- PowerShell
+- Vim
+tags: []
+comments:
+- id: 525
+  author: David Mohundro
+  author_email: drmohundro@gmail.com
+  author_url: http://davidmohundro.myopenid.com/
+  date: '2009-03-05 06:43:54 +0000'
+  date_gmt: '2009-03-05 06:43:54 +0000'
+  content: |
+    Nice! I had added support for the multi-line comments to my version, but the string interpolation support makes this one far better. Thanks!
+- id: 1271
+  author: Winterdom &raquo; Blog Archive &raquo; Minor Update to PowerShell Syntax
+    for Vim
+  author_email: ''
+  author_url: http://winterdom.com/2010/01/minor-update-to-powershell-syntax-for-vim
+  date: '2010-01-29 03:27:22 +0000'
+  date_gmt: '2010-01-29 03:27:22 +0000'
+  content: "[...] was kind enough to point out a small missing thing in the expressions
+    for built-in variables in my modified syntax file for PowerShell scripts for Vim.
+    I&rsquo;ve now updated the syntax file in my github repository [...]"
+- id: 2054
+  author: Peter Provost
+  author_email: peter.provost@microsoft.com
+  author_url: http://www.peterprovost.org/blog
+  date: '2012-03-07 03:33:27 +0000'
+  date_gmt: '2012-03-07 03:33:27 +0000'
+  content: "The vim-ps1 plugin now lives up on GitHub, so grab it there. It is pathogen-ready,
+    so very easy to drop into your vim configutation. Tomas has forked it to get me
+    his changes, so if anyone has any more, let me know.\r\n\r\nhttps:&#47;&#47;github.com&#47;PProvost&#47;vim-ps1"
+---
+<p><!--start_raw-->
+<p>I use the excellent <a href="http:&#47;&#47;www.vim.org&#47;scripts&#47;script.php?script_id=1327">ps1.vim</a> script originally written by <a href="http:&#47;&#47;www.peterprovost.org&#47;blog&#47;post&#47;Updated-PowerShell-Syntax-File-for-vim.aspx">Peter Provost</a> to provide syntax highlighting for PowerShell scripts in Vim, and I&rsquo;ve been very happy with it in general. However, PowerShell V2 is coming with a few extra syntax enhancements and there were always a couple minor issues that bugged me with the existing syntax.</p>
+<p>So I spent some time adding a few extensions to ps1.vim to improve some of this. The changes include:</p>
+<ul>
+<li>Support for Block Comments (<code><#&hellip;#></code>)
+<li>Highlighting documentation &ldquo;tags&rdquo; in comments (things like <code>.Synopsis</code>, <code>.Parameter</code> and so forth).
+<li>Highlighting variable usage in &ldquo;&rdquo; strings, as well as string interpolations
+<li>Highlighting special characters in strings (<code>`n</code>, <code>`r</code> and so on).
+<li>Highlighting for hex numbers
+<li>Different highlighting for Booleans (<code>$false</code>, <code>$true</code>), known constants (<code>$null</code>) and other built-in variables.</li></ul>
+<p>I&rsquo;ve committed the <a href="http:&#47;&#47;github.com&#47;tomasr&#47;dotfiles&#47;blob&#47;36baff086bccc2a3388574c055bbe159e7fb7574&#47;.vim&#47;syntax&#47;ps1.vim">updated ps1.vim</a> script to my <a href="http:&#47;&#47;github.com&#47;tomasr&#47;dotfiles&#47;tree&#47;master">dotfiles repository</a>. Here&rsquo;s a small sample of what the changes look like:</p>
+<p><img title="ps1vim" style="border-right: 0px; border-top: 0px; display: inline; border-left: 0px; border-bottom: 0px" height="407" alt="ps1vim" src="http:&#47;&#47;winterdom.com&#47;weblog&#47;content&#47;binary&#47;WindowsLiveWriter&#47;Enhancingps1.vim_13A9F&#47;ps1vim_3.png" width="557" border="0"></p>
+<p>It&rsquo;s not much, but I think it&rsquo;s going to be useful.</p><!--end_raw--></p>

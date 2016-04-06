@@ -1,0 +1,150 @@
+---
+layout: post
+status: publish
+published: true
+title: WCF Configuration Complexity
+author:
+  display_name: Tomas Restrepo
+  login: tomasr
+  email: tomas@winterdom.com
+  url: http://winterdom.com/
+author_login: tomasr
+author_email: tomas@winterdom.com
+author_url: http://winterdom.com/
+wordpress_id: 378
+wordpress_url: http://winterdom.com/2007/02/wcfconfigurationcomplexity
+date: '2007-02-12 05:33:50 +0000'
+date_gmt: '2007-02-12 05:33:50 +0000'
+categories:
+- WCF
+- WinFX
+- Web Services
+tags: []
+comments:
+- id: 276
+  author: Scott Seely
+  author_email: sseelyat@catalystss.com
+  author_url: http://blogs.catalystss.com/blogs/Scott_Seely/
+  date: '2007-02-12 10:54:41 +0000'
+  date_gmt: '2007-02-12 10:54:41 +0000'
+  content: |
+    When using config, all this is very confusing. I typically recommend that people DON'T edit these by hand but use the WCF Configuration Editor instead. If you have the SDK installed, VS will let you right click on the config file and choose "Edit WCF Configuration". This reduces the complexity immensely and allows you to get to the settings of interest much faster.
+- id: 277
+  author: bryan costanich
+  author_email: bryancostanich@hotmail.com
+  author_url: ''
+  date: '2007-04-21 18:24:07 +0000'
+  date_gmt: '2007-04-21 18:24:07 +0000'
+  content: |
+    i can't believe this. this should have never been designed this way. it's completely non-intuitive and it goes against basic xml design rules. they should have looked at the WSE for design inspiration, because at least that is understandable.
+    for that matter the whole WCF framework is just bizarre. i'm surprised that they missed the mark as far as they did in fact. yeah, there are legitimate gripes with a lot of stuff that was released in 1.0 and 2.0, but 3.0 is just a cluster.
+- id: 844
+  author: Santosh
+  author_email: jamispeaks@gmail.com
+  author_url: ''
+  date: '2009-05-28 13:52:18 +0000'
+  date_gmt: '2009-05-28 13:52:18 +0000'
+  content: "very informative article clearly explaining whats the purpose of binding,
+    behavior, end points.\r\n\r\nMe too was using WCF service for 2 years without
+    ever understanding&#47;caring what configuring each end point.behavior unless
+    I ran into a problem, which I used to find the solution through the forums as
+    you mentioned"
+- id: 1249
+  author: Nap
+  author_email: napoleon-tan@assign.co.jp
+  author_url: ''
+  date: '2009-12-04 11:28:41 +0000'
+  date_gmt: '2009-12-04 11:28:41 +0000'
+  content: I was wondering, I created a WCF service but on the client side, I used
+    the wizard to create a web reference to consume the service. Since the web reference
+    is a different way to consume the service than pure WCF, I do not have any configuration
+    set to the app.config. I do have a Web_Reference folder that has lots of stuff
+    which I am not aware of. what they do.
+- id: 1552
+  author: NUC
+  author_email: sadsad@sdfdf.com
+  author_url: ''
+  date: '2010-08-19 22:00:40 +0000'
+  date_gmt: '2010-08-19 22:00:40 +0000'
+  content: en un ambiente de produccion robusto WCF es muy molesto de configurar
+- id: 1582
+  author: Pavan
+  author_email: pavan.gayakwad@gmail.com
+  author_url: http://www.srushti-soft.com
+  date: '2010-10-02 08:54:03 +0000'
+  date_gmt: '2010-10-02 08:54:03 +0000'
+  content: "Is there a way to configure WCF serivce to respond requests only coming
+    from specified domain?\r\nFor example, I host a WCF service and assume it is accessible
+    as \"www.abc.com&#47;myservice.svc\". Now the client from www.xyz.com should only
+    able refer and call methods on this service where as service request coming from
+    any other site should not be served."
+- id: 1583
+  author: Tomas Restrepo
+  author_email: tomas@winterdom.com
+  author_url: http://winterdom.com/
+  date: '2010-10-02 14:05:28 +0000'
+  date_gmt: '2010-10-02 14:05:28 +0000'
+  content: "@Pavan: There are no build in functions for that, but in some cases, it
+    is possible to write an extension that will perform that check and return a fault
+    in that case. A custom IDispatchMessageInspector would likely be a good candidate
+    for this."
+---
+<p><!--start_raw-->
+<p>Windows Communication Foundation supports a pretty extensive XML configuration schema in your app.config or web.config file to configure both service providers and service consumers as an alternative to using code to set things up.</p>
+<p>This is a good thing in most respects. What causes problems for people getting into WCF is that the WCF is <em>too configurable: </em>It supports a huge set of settings and the configuration schema isn't really very intuitive, and it's not particularly hierarchical in nature, which makes its XML syntax complicate things further. One just has to look at the figure <a href="http:&#47;&#47;msdn2.microsoft.com&#47;en-us&#47;library&#47;ms731734.aspx">here</a> to want to sit down and cry.</p>
+<p>Instead of using the XML hierarchical nature to represent a service or client configuration, the WCF configuration schema is based on keys (identifiers) and references, similar to how you'd do it in a relational database. Lets separate the different&nbsp;concepts in the configuration schema and view it as a set of related elements. We'll only concentrate on the core elements here.</p>
+<p>The server configuration looks a bit like this:</p>
+<p><img height="281" src="http:&#47;&#47;www.winterdom.com&#47;weblog&#47;content&#47;binary&#47;WindowsLiveWriter&#47;WCFConfiguration_104A2&#47;WcfServerConfig14.png" width="432"> </p>
+<p>The core concept here is that a Service contains a set of endpoints. An entire service can <em>reference</em> a set of predefined service behaviors (configured under behaviors&#47;serviceBehaviors), and each endpoint can reference a set of predefined endpoint behaviors (configured under behaviors&#47;endpointBehaviors).&nbsp;Each endpoint can reference a predefined binding configuration, unless it is OK with the default settings for the used binding (which will probably be the case).</p>
+<p>A client configuration is somewhat similar:</p>
+<p><img height="281" src="http:&#47;&#47;www.winterdom.com&#47;weblog&#47;content&#47;binary&#47;WindowsLiveWriter&#47;WCFConfiguration_104A2&#47;WcfClientConfig.png" width="432">&nbsp;</p>
+<p>The most important difference here is that a client configuration doesn't specify service behaviors (not needed), but otherwise it is pretty similar. </p>
+<p>As I&nbsp;mentioned earlier on, each "reference" shown in the figures above are made using keys. For example, when you define a set of endpoint behaviors, you give it a unique name using the "name" attribute, and then use that name in the "behaviorConfiguration" attribute of the <endpoint&#47;> element to tell WCF that you want to apply those behaviors to this endpoint. Basically, having&nbsp;elements named this way allows you to reuse them: you can apply a given set of endpoint behavior configurations to multiple endpoints and so on.</p>
+<div><font color="blue"><</font><font color="maroon">services</font><font color="blue">></font> <br>&nbsp;&nbsp;&nbsp;<font color="blue"><</font><font color="maroon">service</font>&nbsp;<font color="red">name</font>="<font color="blue">VoucherService</font>"&nbsp;<font color="red">behaviorConfiguration</font>="<font color="blue">voucherServiceBehaviors</font>"<font color="blue">></font> <br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<font color="blue"><</font><font color="maroon">endpoint</font>&nbsp;<font color="red">contract</font>="<font color="blue">IVoucherService</font>"&nbsp;<font color="red">binding</font>="<font color="blue">wsHttpBinding</font>"&nbsp; <br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<font color="red">bindingConfiguration</font>="<font color="blue">voucherServiceBinding</font>"&#47;<font color="blue">></font> <br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<font color="blue"><</font><font color="maroon">endpoint</font>&nbsp;<font color="red">contract</font>="<font color="blue">IMetadataExchange</font>"&nbsp;<font color="red">binding</font>="<font color="blue">mexHttpBinding</font>"&nbsp;<font color="red">address</font>="<font color="blue">mex</font>"&#47;<font color="blue">></font> <br>&nbsp;&nbsp;&nbsp;<font color="blue"><</font>&#47;<font color="maroon">service</font><font color="blue">></font> <br><font color="blue"><</font>&#47;<font color="maroon">services</font><font color="blue">></font> <br><font color="blue"><</font><font color="maroon">behaviors</font><font color="blue">></font> <br>&nbsp;&nbsp;&nbsp;<font color="blue"><</font><font color="maroon">serviceBehaviors</font><font color="blue">></font> <br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<font color="blue"><</font><font color="maroon">behavior</font>&nbsp;<font color="red">name</font>="<font color="blue">voucherServiceBehaviors</font>"<font color="blue">></font> <br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<font color="blue"><</font><font color="maroon">serviceMetadata</font>&nbsp;<font color="red">httpGetEnabled</font>="<font color="blue">true</font>"&#47;<font color="blue">></font> <br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<font color="blue"><</font><font color="maroon">serviceDebug</font>&nbsp;<font color="red">includeExceptionDetailInFaults</font>="<font color="blue">true</font>"&#47;<font color="blue">></font> <br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<font color="blue"><</font>&#47;<font color="maroon">behavior</font><font color="blue">></font> <br>&nbsp;&nbsp;&nbsp;<font color="blue"><</font>&#47;<font color="maroon">serviceBehaviors</font><font color="blue">></font> <br><font color="blue"><</font>&#47;<font color="maroon">behaviors</font><font color="blue">></font> <br></div>
+<p>It really isn't all that complicated, though sometimes, the samples out there don't make it easier for a new developer to understand it by giving stuff confusing names. For example, if you name your service behaviors set "ServiceBehaviors" then you end up later on with stuff like:</p>
+<pre class="csharpcode"><span class="kwrd"><</span><span class="html">service</span> <span class="attr">name</span><span class="kwrd">="myservice"</span> <span class="attr">behaviorConfiguration</span><span class="kwrd">="ServiceBehaviors"</span><span class="kwrd">&#47;></span></pre></p>
+<style type="text&#47;css">.csharpcode, .csharpcode pre<br />
+{<br />
+font-size: small;<br />
+color: black;<br />
+font-family: consolas, "Courier New", courier, monospace;<br />
+background-color: #ffffff;<br />
+&#47;*white-space: pre;*&#47;<br />
+}<br />
+.csharpcode pre { margin: 0em; }<br />
+.csharpcode .rem { color: #008000; }<br />
+.csharpcode .kwrd { color: #0000ff; }<br />
+.csharpcode .str { color: #006080; }<br />
+.csharpcode .op { color: #0000c0; }<br />
+.csharpcode .preproc { color: #cc6633; }<br />
+.csharpcode .asp { background-color: #ffff00; }<br />
+.csharpcode .html { color: #800000; }<br />
+.csharpcode .attr { color: #ff0000; }<br />
+.csharpcode .alt<br />
+{<br />
+background-color: #f4f4f4;<br />
+width: 100%;<br />
+margin: 0em;<br />
+}<br />
+.csharpcode .lnum { color: #606060; }<br />
+</style></p>
+<p>which for a new guy is probably more confusing than needed. I'm guilty of doing this in my own code quite a bit, but it's an habit I should really learn to avoid.</p></p>
+<p>Truth be told, service&#47;client, endpoint and&nbsp;even behavior configuration are not that bad. Each one has a fair set of attributes&#47;elements that you can configure, and the number of attributes you'll use normally is more or less manageable. The only reason service&#47;endpoint behaviors might seem complex is because there are a number of them, each with its own options, and because of how the extensibility mechanism for custom behaviors work. I've <a href="http:&#47;&#47;www.winterdom.com&#47;weblog&#47;2006&#47;10&#47;02&#47;CustomWCFBehaviorsThroughAppConfig.aspx">talked about</a> this last part before, so I won't repeat it here.</p></p>
+<p><strong>Bindings</strong></p></p>
+<p>I'd say that by far the most complicated part of WCF configuration is dealing with Bindings. The built-in bindings in WCF each&nbsp;has a rather large set of configurable options, some common among them, and a lot of others specific to each binding. For example, here's a typical configuration for the WSHttpBinding, which would be a very common choice for WCF services:</p></p>
+<div><font color="blue"><</font><font color="maroon">bindings</font><font color="blue">></font> <br>&nbsp;&nbsp;&nbsp;<font color="blue"><</font><font color="maroon">wsHttpBinding</font><font color="blue">></font> <br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<font color="blue"><</font><font color="maroon">binding</font>&nbsp;<font color="red">name</font>="<font color="blue">voucherServiceBinding</font>"&nbsp;<font color="red">closeTimeout</font>="<font color="blue">00:01:00</font>" <br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<font color="red">openTimeout</font>="<font color="blue">00:01:00</font>"&nbsp;<font color="red">receiveTimeout</font>="<font color="blue">00:10:00</font>"&nbsp;<font color="red">sendTimeout</font>="<font color="blue">00:01:00</font>" <br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<font color="red">bypassProxyOnLocal</font>="<font color="blue">false</font>"&nbsp;<font color="red">transactionFlow</font>="<font color="blue">false</font>"&nbsp;<font color="red">hostNameComparisonMode</font>="<font color="blue">StrongWildcard</font>" <br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<font color="red">maxBufferPoolSize</font>="<font color="blue">524288</font>"&nbsp;<font color="red">maxReceivedMessageSize</font>="<font color="blue">65536</font>" <br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<font color="red">messageEncoding</font>="<font color="blue">Text</font>"&nbsp;<font color="red">textEncoding</font>="<font color="blue">utf-8</font>"&nbsp;<font color="red">useDefaultWebProxy</font>="<font color="blue">true</font>" <br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<font color="red">allowCookies</font>="<font color="blue">false</font>"<font color="blue">></font> <br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<font color="blue"><</font><font color="maroon">readerQuotas</font>&nbsp;<font color="red">maxDepth</font>="<font color="blue">32</font>"&nbsp;<font color="red">maxStringContentLength</font>="<font color="blue">8192</font>"&nbsp;<font color="red">maxArrayLength</font>="<font color="blue">16384</font>" <br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<font color="red">maxBytesPerRead</font>="<font color="blue">4096</font>"&nbsp;<font color="red">maxNameTableCharCount</font>="<font color="blue">16384</font>"&nbsp;&#47;<font color="blue">></font> <br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<font color="blue"><</font><font color="maroon">reliableSession</font>&nbsp;<font color="red">ordered</font>="<font color="blue">true</font>"&nbsp;<font color="red">inactivityTimeout</font>="<font color="blue">00:10:00</font>" <br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<font color="red">enabled</font>="<font color="blue">false</font>"&nbsp;&#47;<font color="blue">></font> <br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<font color="blue"><</font><font color="maroon">security</font>&nbsp;<font color="red">mode</font>="<font color="blue">None</font>"<font color="blue">></font> <br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<font color="blue"><</font><font color="maroon">transport</font>&nbsp;<font color="red">clientCredentialType</font>="<font color="blue">Windows</font>"&nbsp;<font color="red">proxyCredentialType</font>="<font color="blue">None</font>" <br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<font color="red">realm</font>="<font color="blue"></font>"&nbsp;&#47;<font color="blue">></font> <br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<font color="blue"><</font><font color="maroon">message</font>&nbsp;<font color="red">clientCredentialType</font>="<font color="blue">Windows</font>"&nbsp;<font color="red">negotiateServiceCredential</font>="<font color="blue">true</font>" <br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<font color="red">establishSecurityContext</font>="<font color="blue">true</font>"&nbsp;&#47;<font color="blue">></font> <br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<font color="blue"><</font>&#47;<font color="maroon">security</font><font color="blue">></font> <br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<font color="blue"><</font>&#47;<font color="maroon">binding</font><font color="blue">></font> <br>&nbsp;&nbsp;&nbsp;<font color="blue"><</font>&#47;<font color="maroon">wsHttpBinding</font><font color="blue">></font> <br><font color="blue"><</font>&#47;<font color="maroon">bindings</font><font color="blue">></font> <br></div></p>
+<p>You just have to look at this to realize that this stuff is&nbsp;just way too much for any&nbsp;normal person to remember.&nbsp;Fortunately, you don't have to configure all those options as there are sensible default values for some of them. </p></p>
+<p>What is complex about all this? It's not just that there are a <em>lot</em> of options to configure; it's that most developers will have <em>no clue what sensible values for many of these parameters are</em>!. Let's be honest about it. Take reader quotas for example. How many people know right of the bat what value they should configure for the maxNameTableCharCount&nbsp;parameter for the service they just created? No? Then let's look at the <a href="http:&#47;&#47;msdn2.microsoft.com&#47;en-gb&#47;library&#47;system.xml.xmldictionaryreaderquotas.maxnametablecharcount.aspx">documentation</a>, by all means:</p></p>
+<blockquote>
+<p><em>"</em><a><em>This quota limits the total number of characters in strings that are atomized in the NameTable for the reader. When strings are atomized they are inserted into a NameTable and never removed. This can cause the buildup of large amounts of character data in a NameTable. This quota places a limit on how much data can be buffered in the reader's NameTable.</em></a><em>"</em></p></blockquote></p>
+<p>I don't know about you, but after reading that, I feel I got a pretty good explanation of what WCF does with that setting underneath, <em>but I still have no clue as to what to do with it or how to derive a good value to set it to</em>. </p></p>
+<p>My point here is not to trash the WCF documentation, by all means. My point here is that a lot of the configurable options in WCF are fairly obscure, and most people will just leave that to whatever default value is given to it by the infrastructure. Most importantly, a lot of people <em>won't</em> want to understand that, and just leave happily ignorant about them until they run into some fairly obscure error at runtime, ask in the forums, and someone tells them to just change the corresponding obscure setting.</p></p>
+<p>It's fantastic that WCF allows us to configure even very low level options such as these, but I sure which they could've been exposed in a way that was less <em>in my face</em>. This might be a personal choice, but I really don't want to have to deal with some of this options on a day to day basis, and, to be honest, for a lot of them I don't need&#47;want to have to configure them on an endpoint-by-endpoint basis. I may be in the minority though.</p></p>
+<p><strong>Client vs. Server</strong></p></p>
+<p>Another thing that complicates some of this stuff is that in a lot of the configuration there's no difference between client and server options. Take bindings, for example: You esentially configure the same set of options for a binding on the server and client side. However, some of those options are not stuff a client would usually want to configure or even be forced to configure.</p></p>
+<p>Consider reader quotas: On the server side, these are very important as they help&nbsp;protect your server from malicious clients that might want to attack your services by sending very large sets of data embedded in the requests. You'd normally increase these quotas if you know that your service requires you to accept larger requests. That's good.</p></p>
+<p>But, consider the client: Here, reader quotas are normally not something you care about because you're the one initiating the operation, and a client should normally just accept whatever the service responds and deal with it. Sure, it's important for the client to protect itself and it will normally do that by ensuring it is connecting only to trusted services. It's just inconvinient to have to have to manipulate a bunch of settings just because the service is returning more than 64KB of data (which I'd say it's pretty common). </p></p>
+<p>It's important to note, however, that&nbsp;because of the presence of duplex contracts in WCF, some of these settings will also affect how the client behaves as a "service" when getting invoked on the other way around.</p></p>
+<p><strong>Conclusion</strong></p></p>
+<p>The WCF configuration schema allows you very fine grained configuration of your services and clients. That granularity comes with a price, however: a more complex schema and a bit more work for the developer to understand what the available options mean and how to use them correctly.</p></p>
+<div class="wlWriterSmartContent" id="0767317B-992E-4b12-91E0-4F059A8CECA8:1987f414-2872-4e6e-b49d-2a6f35ef0bcc" contenteditable="false" style="padding-right: 0px; display: inline; padding-left: 0px; padding-bottom: 0px; margin: 0px; padding-top: 0px">Technorati tags: <a href="http:&#47;&#47;technorati.com&#47;tags&#47;Windows%20Communication%20Foundation" rel="tag">Windows Communication Foundation</a>, <a href="http:&#47;&#47;technorati.com&#47;tags&#47;WCF" rel="tag">WCF</a></div><!--end_raw--></p>

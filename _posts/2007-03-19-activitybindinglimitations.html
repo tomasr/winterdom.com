@@ -1,0 +1,37 @@
+---
+layout: post
+status: publish
+published: true
+title: Activity Binding Limitations
+author:
+  display_name: Tomas Restrepo
+  login: tomasr
+  email: tomas@winterdom.com
+  url: http://winterdom.com/
+author_login: tomasr
+author_email: tomas@winterdom.com
+author_url: http://winterdom.com/
+wordpress_id: 403
+wordpress_url: http://winterdom.com/2007/03/activitybindinglimitations
+date: '2007-03-19 13:27:04 +0000'
+date_gmt: '2007-03-19 13:27:04 +0000'
+categories:
+- Workflow
+tags: []
+comments: []
+---
+<p><!--start_raw-->
+<p>One of the core features of Windows Workflow Foundation that enables authoring workflows in a declarative fashion [1] is activity binds, which enable you to connect inputs of one activity with the outputs of another (or properties of the workflow itself), saving the developer from having to write custom code to move data from one step of the workflow to another manually.</p>
+<p>Activity Binding is actually a pretty powerful feature and works fine in many cases. Unfortunately, it also has a few limitations. One of the limitations is the very basic support for binding against items in a collection.</p>
+<p>To clarify, you can most certainly bind a property of an activity that has a collection type (say, a List<T>) to an property of another activity of the same type. However, there's no easy way to bind, say,&nbsp;a property of an activity of type System.String to a specific item in the collection exposed by another activity's property (for example, binding it to the fourth item in the list). </p>
+<p>One thing that surprised me a bit a couple of days ago was that, actually, the core ActivityBind class almost supports this, it's just not exposed through the Workflow designer in Visual Studio. For example, if Activity a exposes a property of type Dictionary<string, string>, you can bind a System.String property against it with an expression such as this:</p>
+<p>Activity=DictionaryWorkflow, Path=<strong>Phones["Mary"]</strong></p>
+<p>Notice how the last part actually especifies the exact item against which to bind. While a cool trick, this isn't nearly as useful as it may appear at first since a) it requires the user to manually and carefully edit the binding expression in the Properties window in the designer, bypassing the Activity Bind dialog and b) it's hardcoded. </p>
+<p>One could imagine an extended support for this kind of operation having the ability to allow the indexer to be represented by&nbsp;a nested&nbsp;activity binding expression, though it's not clear yet to me how that would work out. Don't expect something like that anytime soon, btw.</p>
+<p>The way I've worked around this limitation in the past has been to create my custom activity that needs the binding with two different dependency properties: One of a collection type, and one of the type of the indexer to bind. This way I can bind the collection property itself directly to the entire collection, and in the second property specify the item I want to extract the value for. In the example above, my custom activity would have two properties then: 1) PhoneDirectory and 2) PersonsName. Using those two at runtime the activity would have all the information needed available.</p>
+<p>This works very well, but it's less explicit, it requires writing more code, and worse, does not work if you have to work with an existing activity you can't modify. In the latter case, I've sometimes used wrapper adapter activities, but it can be quite a bit of work (depending on the complexity of the activity being wrapped) just to get this functionality.</p>
+<p><strong>Dynamic Properties</strong></p>
+<p>A second limitation in the current activity binding mechanism is one I've already heard a few people complain about: You can't bind against a dynamic property. This means that if you have a custom activity that exposes a pseudo property at design time by implementing IDynamicPropertyTypeProvider and a custom activity designer, there's no way (at least that I've found) to bind a property in a different activity against it.&nbsp;</p>
+<p>Or at least, if there is, I haven't found&nbsp;a way to get this to work. Surprinsingly enough, you can do the opposite with attached dependency properties, though the syntax is a bit more awkward (and it does indeed subvert the mechanism a bit).</p>
+<p>[1] Not that this is any easy at all to do in many cases with WF...</p>
+<div class="wlWriterSmartContent" id="0767317B-992E-4b12-91E0-4F059A8CECA8:0fe7e9d9-9ead-424c-b17a-c01602ca2d3e" contenteditable="false" style="padding-right: 0px; display: inline; padding-left: 0px; padding-bottom: 0px; margin: 0px; padding-top: 0px">Technorati tags: <a href="http:&#47;&#47;technorati.com&#47;tags&#47;Windows%20Workflow%20Foundation" rel="tag">Windows Workflow Foundation</a></div><!--end_raw--></p>

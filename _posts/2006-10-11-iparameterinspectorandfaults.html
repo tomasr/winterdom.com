@@ -1,0 +1,52 @@
+---
+layout: post
+status: publish
+published: true
+title: IParameterInspector and Faults
+author:
+  display_name: Tomas Restrepo
+  login: tomasr
+  email: tomas@winterdom.com
+  url: http://winterdom.com/
+author_login: tomasr
+author_email: tomas@winterdom.com
+author_url: http://winterdom.com/
+wordpress_id: 461
+wordpress_url: http://winterdom.com/2006/10/iparameterinspectorandfaults
+date: '2006-10-11 17:14:24 +0000'
+date_gmt: '2006-10-11 17:14:24 +0000'
+categories:
+- WCF
+- WinFX
+tags: []
+comments:
+- id: 322
+  author: John
+  author_email: ''
+  author_url: http://JohnRitsema.com/blog
+  date: '2007-01-19 12:41:59 +0000'
+  date_gmt: '2007-01-19 12:41:59 +0000'
+  content: |
+    Any idea how to determine if an exception was thrown from within your inspector?
+- id: 323
+  author: Tomas Restrepo
+  author_email: tomas@winterdom.com
+  author_url: http://www.winterdom.com/weblog/
+  date: '2007-01-19 18:11:46 +0000'
+  date_gmt: '2007-01-19 18:11:46 +0000'
+  content: |
+    John: I never found a way to do so. I ended up switching to message inspectors as a workaround for my particular need.
+- id: 1541
+  author: Lance
+  author_email: lancecontreras@gmail.com
+  author_url: ''
+  date: '2010-07-22 15:43:07 +0000'
+  date_gmt: '2010-07-22 15:43:07 +0000'
+  content: how about in validate ? dispatchOperation.Fault, will this help determine
+    if I had exceptions during calls?
+---
+<p><!--start_raw-->
+<p>One thing I didn't mention in my <a href="http:&#47;&#47;www.winterdom.com&#47;weblog&#47;2006&#47;09&#47;27&#47;IParameterInspectorInWCF.aspx">past</a> <a href="http:&#47;&#47;www.winterdom.com&#47;weblog&#47;2006&#47;09&#47;28&#47;IParameterInspectorAndOneWayOperations.aspx">articles</a> about the IParameterInspector in Windows Communication Foundation is how it behaves when an operation returns a fault (throws an exception). The answer is: It doesn't. </p>
+<p>When the operation faults, the AfterCall() method in your parameter inspector will never be called.</p>
+<div class="wlWriterSmartContent" id="d7bf807d-7bb0-458a-811f-90c51817d5c2:483efe00-9597-4d74-9c4d-330e848bf963" contenteditable="false" style="padding-right: 0px; display: inline; padding-left: 0px; padding-bottom: 0px; margin: 0px; padding-top: 0px">
+<p><span class="TagSite">Technorati:</span> <a href="http:&#47;&#47;technorati.com&#47;tag&#47;Windows+Communication+Foundation" rel="tag" class="tag">Windows Communication Foundation</a>, <a href="http:&#47;&#47;technorati.com&#47;tag&#47;WCF" rel="tag" class="tag">WCF</a>, <a href="http:&#47;&#47;technorati.com&#47;tag&#47;WCF+Extensibility" rel="tag" class="tag">WCF Extensibility</a><br &#47;><!-- StartInsertedTags: Windows Communication Foundation, WCF, WCF Extensibility :EndInsertedTags --></p></div><!--end_raw--></p>

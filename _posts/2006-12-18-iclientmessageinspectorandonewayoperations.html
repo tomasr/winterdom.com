@@ -1,0 +1,32 @@
+---
+layout: post
+status: publish
+published: true
+title: IClientMessageInspector and OneWay Operations
+author:
+  display_name: Tomas Restrepo
+  login: tomasr
+  email: tomas@winterdom.com
+  url: http://winterdom.com/
+author_login: tomasr
+author_email: tomas@winterdom.com
+author_url: http://winterdom.com/
+wordpress_id: 279
+wordpress_url: http://winterdom.com/2006/12/iclientmessageinspectorandonewayoperations
+date: '2006-12-18 08:53:28 +0000'
+date_gmt: '2006-12-18 08:53:28 +0000'
+categories:
+- QuickCounters
+- WCF
+- WinFX
+tags: []
+comments: []
+---
+<p><!--start_raw-->
+<p>A while ago I talked a bit about Windows Communication Foundation's IParameterInspector extensibility and how it was <a href="http:&#47;&#47;www.winterdom.com&#47;weblog&#47;2006&#47;09&#47;28&#47;IParameterInspectorAndOneWayOperations.aspx">affected by One-Way operations</a> on the server and client side. Just so you're aware, the IClientMessageInspector has the same issues as IParameterInspector on the client side; that is, the AfterReceiveReply() method will never be called for OneWay methods. </p>
+<p>I'm working currently on implementing client-side proxy instrumentation in WCF for QuickCounters, and to work around this limitation, here's what I'm currently doing:</p>
+<ol>
+<li>While&nbsp;constructing my IClientMessageInspector implementation, I build a&nbsp;map of operations from the endpoint ContractDescription (which I get from the IEndpointBehavior implementation). Here I take note of which operations are OneWay.</li>
+<li>When BeforeSendRequest() is called, I check the operations map, and if it is a message for a OneWay operation, then I immediate free the necessary resources, to avoid leaking them because AfterReceiveReply()&nbsp;won't be called.</li></ol>
+<p>This does imply that instrumentation for one-way operations on the client side will be a little weaker (certainly more so than for the server side), but it will stll be useful and reduced functionality was expected anyway because the client side has no way to detect faults, for example.</p>
+<div class="wlWriterSmartContent" id="0767317B-992E-4b12-91E0-4F059A8CECA8:225d62a8-4e67-4fc6-980e-6d6ca26d896d" contenteditable="false" style="padding-right: 0px; display: inline; padding-left: 0px; padding-bottom: 0px; margin: 0px; padding-top: 0px">Technorati tags: <a href="http:&#47;&#47;technorati.com&#47;tags&#47;Windows%20Communication%20Foundation" rel="tag">Windows Communication Foundation</a>, <a href="http:&#47;&#47;technorati.com&#47;tags&#47;WCF" rel="tag">WCF</a>, <a href="http:&#47;&#47;technorati.com&#47;tags&#47;WCF%20Extensibility" rel="tag">WCF Extensibility</a>, <a href="http:&#47;&#47;technorati.com&#47;tags&#47;QuickCounters" rel="tag">QuickCounters</a></div><!--end_raw--></p>

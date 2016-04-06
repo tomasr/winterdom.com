@@ -1,0 +1,28 @@
+---
+layout: post
+status: publish
+published: true
+title: BTS 2004 Atomic Scopes in Orchestrations and DTC Transactions
+author:
+  display_name: Tomas Restrepo
+  login: tomasr
+  email: tomas@winterdom.com
+  url: http://winterdom.com/
+author_login: tomasr
+author_email: tomas@winterdom.com
+author_url: http://winterdom.com/
+wordpress_id: 431
+wordpress_url: http://winterdom.com/2005/01/bts2004atomicscopesinorchestrationsanddtctransactions
+date: '2005-01-12 07:42:21 +0000'
+date_gmt: '2005-01-12 07:42:21 +0000'
+categories:
+- BizTalk
+tags: []
+comments: []
+---
+<p><!--start_raw-->One interesting bit to remember about the use of atomic scopes in orchestrations is their relation with MSDTC (Distributed Transaction Coordinator) transactions. Usually, you'll use a scope configured with an atomic-type transaction when you want to ensure ACID semantics on the actions contained within the scope <a href="#bts_atom1">[1]</a>.</p>
+<p>What is not very obvious is that atomic transaction scopes in BizTalk 2004 do not imply DTC transactions; not necessarily, at least. By default, an atomic scope will not use a DTC Transaction; instead, the BizTalk Orchestration engine will ensure ACID semantics on changes to messages and variables manipulated inside the scope. Also, it will cause Receive and Send Shapes to delay their corresponding operations until the transaction has been commited, as well as delay the start of an orchestration (though a Start Orchestration shape) until that point.  I might be wrong about this, of course, since I obviously don't have inside information about how it works in detail.</p></p>
+<p>However, a atomic scope might lead to the generation of a DTC transaction if, from within the scope, you make a direct call to a COM+ component that requires a transaction. In that case, the orchestration engine will ask the DTC for a new transaction, set up a new transactional COM+ context, and invoke the component from there.</p></p>
+<p>It is important to understand that this means the COM+ component needs to be invoked directly by the orchestration (using an Expression Shape). If you call a non-configured (non-COM+) component in your orchestration and from there call the COM+ component, you're on your own buddy. </p></p>
+<p>The reason I post this is because this is one tidbit I sometimes forget myself, and assume, wrongly, that atomic scope == DTC Transaction.</p></p>
+<p><a name="bts_atom1"></a><b>[1]</b> This is just one of the uses of an atomic scope. The other common use is to ensure the orchestration engine doesn't dehydrate the orchestration instance while within the scope, thus making it useful to contain variables of types that are not serializable. It is also necessary to use atomic scopes when using the Call Rules Shape in an orchestration.</p><!--end_raw--></p>

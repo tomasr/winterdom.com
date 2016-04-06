@@ -1,0 +1,65 @@
+---
+layout: post
+status: publish
+published: true
+title: Quiet in Here
+author:
+  display_name: Tomas Restrepo
+  login: tomasr
+  email: tomas@winterdom.com
+  url: http://winterdom.com/
+author_login: tomasr
+author_email: tomas@winterdom.com
+author_url: http://winterdom.com/
+wordpress_id: 911
+wordpress_url: http://winterdom.com/2009/04/quietinhere
+date: '2009-04-15 22:41:06 +0000'
+date_gmt: '2009-04-15 22:41:06 +0000'
+categories:
+- Blogging
+tags: []
+comments:
+- id: 633
+  author: James Alexander
+  author_email: ''
+  author_url: ''
+  date: '2009-04-16 08:17:32 +0000'
+  date_gmt: '2009-04-16 08:17:32 +0000'
+  content: |
+    Have you looked at Drupal? It's a php based CMS using a MySQL backend. It also appears as though it has a module that will connect to Windows Live Writer: http:&#47;&#47;drupal.org&#47;project&#47;wlw_blogapi
+- id: 634
+  author: Gokul
+  author_email: ''
+  author_url: ''
+  date: '2009-04-16 23:30:15 +0000'
+  date_gmt: '2009-04-16 23:30:15 +0000'
+  content: |
+    Hi Tomas
+    Did you try blogengine.net you can run it on a SQL Lite database. And its simple.net code. It also supports the concept of pages, I tried adding a different master page to pages &amp; it works.
+    Was able to migrate from dasblog to blogengine.net. I am yet to figure out how the categories work. Rest all looking good for now.
+- id: 635
+  author: Jacob
+  author_email: jacob@rabidpaladin.com
+  author_url: http://theruntime.com/blogs/jacob/Default.aspx
+  date: '2009-04-17 12:35:11 +0000'
+  date_gmt: '2009-04-17 12:35:11 +0000'
+  content: |
+    I know you said you didn't want to go the .Net route again, but I'll second Gokul's recommendation of <a href="http:&#47;&#47;www.dotnetblogengine.net&#47;" rel="nofollow">BlogEngine.Net</a>. It comes with built-in providers for both XML and a variety of databases (though I put <a href="http:&#47;&#47;blogenginesqlserver.codeplex.com&#47;" rel="nofollow">my own provider</a> together to handle multiple blogs on a single database). The thing I like about BlogEngine.Net is how easy it is to create (and implement) extensions and skins.
+---
+<p><!--start_raw-->
+<p>Have you wondered why I haven&rsquo;t posted in a while? Well, I was away for a couple of weeks on vacation, and plenty busy before that, so there has been little time to sit down and write some meaningful content :-).</p>
+<p>Hopefully now that I&rsquo;m back I should be able to start posting again more regularly.</p><br />
+<h2>Migration</h2>
+<p>While on the topic of blogging; I&rsquo;ve been toying with the idea of migrating my website for a while to a different platform. Right now it&rsquo;s a rag-tag combination of dasBlog, some custom (and old!) ASP.NET code and a bunch of HTML files, and I&rsquo;d like to move it all into something simpler with some basic CMS capabilities.</p>
+<p>I&rsquo;m also, quite honestly, fed up with dasBlog. It was a fine tool and pretty good for it&rsquo;s time, but it has started showing it&rsquo;s age already, and it has a number of really annoying issues.</p>
+<p>I&rsquo;m not particularly interested in other .NET engines at this time, and have little desire to have to get up (and pay for) SQL Server just to run this site. I&rsquo;ve been contemplating getting a [linux-based] Virtual Private Server for several reasons, and this is a good chance to move away from dasBlog into something that runs better in that environment.</p>
+<p>What I have not decided on yet is what tool to use. So far, looks like it might be either <a href="http:&#47;&#47;www.movabletype.org&#47;">Movable Type</a> (which I used to run this blog on win32 for years), or <a href="http:&#47;&#47;wordpress.org&#47;">Wordpress</a>. I already have some ruby code that I can use to import all my existing dasBlog content into either tool, so at least that&rsquo;s mostly taken care of.</p><br />
+<h3>Movable Type</h3>
+<p>MT has improved quite a bit since the last time I used it, and getting a copy up and running was fairly easy. It still has some really nice features, one of which is that getting all my content up and setting up the appropriate redirects and rewrites to keep existing links valid turned out to be pretty easy because of how archiving works in MT.</p>
+<p>It does have a bunch of downsides as well, one of which is that MT is still mostly geared towards static publishing (i.e. HTML is generated and written to files served statically), which can be really annoying when you need to make site-wide changes. Though MT currently supports dynamic publishing through a PHP script and sort of works, it doesn&rsquo;t support a bunch of stuff in this mode, and a lot of plugins simply don&rsquo;t support this at all.</p>
+<p>Also, the lack of built-in paging for archives for MT is, well, disappointing to say the least!</p><br />
+<h3>Wordpress</h3>
+<p>Wordpress is definitely polished and very easy to setup. I originally toyed with importing my dasBlog content directly into the WP database, but it&rsquo;s a drag, and ended up importing it from the same output I used for importing in MT, which worked fine.</p>
+<p>I did need to use the <a href="http:&#47;&#47;wordpress.org&#47;extend&#47;plugins&#47;raw-html&#47;">raw-html</a> plugin to force Wordpress to avoid messing up all my code samples. The plugin works nicely, fortunately, because this &ldquo;feature&rdquo; makes WP pretty much unusable for me.</p>
+<p>Unfortunately, adding all the redirects for imported content to keep existing links working is a lot more difficult with WP. I&rsquo;m still not sure the best way to go about it, but it will likely involve extracting some info from the WP database and combining it with some output from the conversion process to add some sort of map-based redirection scheme. Ugly, to say the least.</p>
+<p>If anyone has any ideas, or can suggest another tool (something that hopefully supports Windows Live Writer), please do let me know!</p><!--end_raw--></p>

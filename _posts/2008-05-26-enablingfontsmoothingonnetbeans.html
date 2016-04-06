@@ -1,0 +1,50 @@
+---
+layout: post
+status: publish
+published: true
+title: Enabling Font Smoothing on NetBeans
+author:
+  display_name: Tomas Restrepo
+  login: tomasr
+  email: tomas@winterdom.com
+  url: http://winterdom.com/
+author_login: tomasr
+author_email: tomas@winterdom.com
+author_url: http://winterdom.com/
+wordpress_id: 14
+wordpress_url: http://winterdom.com/2008/05/enablingfontsmoothingonnetbeans
+date: '2008-05-26 05:29:42 +0000'
+date_gmt: '2008-05-26 05:29:42 +0000'
+categories:
+- Tools
+- Java
+tags: []
+comments:
+- id: 18
+  author: kholis
+  author_email: kholis@elect-eng.its.ac.id
+  author_url: http://blog.its.ac.id/kholis
+  date: '2008-06-16 18:37:26 +0000'
+  date_gmt: '2008-06-16 18:37:26 +0000'
+  content: |
+    thanks, my font looks better now...
+- id: 1768
+  author: Mrigess
+  author_email: mrigesh.raj.shrestha@gmail.com
+  author_url: ''
+  date: '2011-08-17 07:19:34 +0000'
+  date_gmt: '2011-08-17 07:19:34 +0000'
+  content: not working for me.. I am using netbeans 7.0.1 in ubuntu 11.04 and there
+    aint no advanced button in bottom left! any idea felllas!!! It has got java 1.6
+    i guess.. thanks in advance.
+---
+<p><!--start_raw-->
+<p>I've been working on some Java stuff lately and instead of using <a href="http:&#47;&#47;www.eclipse.org&#47;">Eclipse</a> as I usually do, I started working with <a href="http:&#47;&#47;www.netbeans.org&#47;">NetBeans 6.1</a>. It works reasonably well (much more than I expected).</p>
+<p>However, I run into one really annoying issue: NetBeans looked great on my Ubuntu box; but when I tried running it in my Windows machine, it looked like crap. More specifically, fonts on the text editor surface were rendered without anti-aliasing so they looked horribly wrong.</p>
+<p>I remembered then that NetBeans is a Swing app, which, until fairly recently, didn't even support using the platform's built-in sub-pixel rendering technologies (like ClearType on windows). On Java 1.5 (which I was using), however, it should support at least it's own smoothing mechanisms and those were not getting used at all on Windows.</p>
+<p>A few searches on google turned up lots of people complaining about it and a few people saying it could be enabled (or would be fixed on Java 1.6) but no clear hints as to where to locate the actual option.</p>
+<p><img style="border-right: 0px; border-top: 0px; border-left: 0px; border-bottom: 0px" height="264" alt="NetbeansOptions" src="http:&#47;&#47;www.winterdom.com&#47;weblog&#47;content&#47;binary&#47;WindowsLiveWriter&#47;EnablingFontSmoothingonNetBeans_664D&#47;NetbeansOptions_3.png" width="524" border="0" &#47;> </p>
+<p>After looking for a while finally figured out: You can enable font smoothing by going to the Tools -> Options dialog, then clicking on the Advanced Options button on the bottom left, and then selecting the Editor Settings category in the new dialog. There you'll find the elusive "Text Antialiasing" option.</p>
+<p>I'm not sure why this was enabled by default on Linux but not on Windows, but, anyway, enabling it makes all the difference in the world. </p>
+<p>One more thing to keep in mind: The way java renders fonts is a bit weird as well. I'm using DejaVu Sans Mono for the font and I need to use size 20 on NetBeans to get it to look around the same size of the size 15 I use on Vim (both on Windows and Linux).</p>
+<div class="wlWriterSmartContent" id="scid:0767317B-992E-4b12-91E0-4F059A8CECA8:2acea626-c221-4552-9014-542aec48db98" style="padding-right: 0px; display: inline; padding-left: 0px; padding-bottom: 0px; margin: 0px; padding-top: 0px">Technorati tags: <a href="http:&#47;&#47;technorati.com&#47;tags&#47;Java" rel="tag">Java</a>, <a href="http:&#47;&#47;technorati.com&#47;tags&#47;Fonts" rel="tag">Fonts</a>, <a href="http:&#47;&#47;technorati.com&#47;tags&#47;NetBeans" rel="tag">NetBeans</a></div><!--end_raw--></p>

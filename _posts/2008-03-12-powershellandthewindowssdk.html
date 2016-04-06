@@ -1,0 +1,32 @@
+---
+layout: post
+status: publish
+published: true
+title: PowerShell and the Windows SDK
+author:
+  display_name: Tomas Restrepo
+  login: tomasr
+  email: tomas@winterdom.com
+  url: http://winterdom.com/
+author_login: tomasr
+author_email: tomas@winterdom.com
+author_url: http://winterdom.com/
+wordpress_id: 368
+wordpress_url: http://winterdom.com/2008/03/powershellandthewindowssdk
+date: '2008-03-12 18:15:59 +0000'
+date_gmt: '2008-03-12 18:15:59 +0000'
+categories:
+- ".NET"
+- PowerShell
+tags: []
+comments: []
+---
+<p><!--start_raw-->
+<p>Nanda Lella's from the Windows SDK team is <a href="http:&#47;&#47;blogs.msdn.com&#47;nandal&#47;archive&#47;2008&#47;03&#47;10&#47;influence-the-future-of-windows-sdk-powershell-based-build-environment.aspx">asking for feedback</a> for the next version of the Platform SDK. Specifically, she asks whether a PowerShell-based build environment (as opposed to the current CMD-based one) would be a welcome addition to the SDK.</p>
+<p>Personally, I think this is a <em>great</em> idea and hope it becomes a reality [1]. I'm sure that having it out of the box would make PowerShell a lot more popular amongst developers. Repeat after me: <em>PowerShell is not just for sysadmins</em>!.</p>
+<p>Not having a build environment readily available in PowerShell kept me a long time from making it my default shell. </p>
+<p>Because of this, I eventually sat down and wrote a custom profile script, like many others, to setup the build environment manually, loosely based on the original batch files in the Windows SDK and Visual Studio distributions. It's probably not perfect, but it does the trick and now I use PowerShell all the time.</p>
+<p>Actually, I did make one significant modification to my script compared to the originals in the SDK: I keep machines with both .NET 3.5&#47;VS2008 as well as .NET 3.0&#47;VS2005, and wanted to keep a single profile script to avoid having to constantly modify my own environment. </p>
+<p>My current profile script first looks and configures the environment for VS2008; failing that, it falls back to the .NET 2.0&#47;3.0 and Visual Studio 2005 configuration. If anyone happens to be interested in it; ping me and I'll be happy to share it.</p>
+<p><strong>[1]</strong> Actually, there's no reason why this needs to be tied to a specific SDK version, but I imagine that's how it may&#47;will happen. Frankly, it would be good enough for many people to have a pre-written version downloadable from somewhere easily searchable and accessible.</p>
+<div class="wlWriterSmartContent" id="scid:0767317B-992E-4b12-91E0-4F059A8CECA8:4aff71aa-5478-46f7-8b6e-afeda318013c" style="padding-right: 0px; display: inline; padding-left: 0px; padding-bottom: 0px; margin: 0px; padding-top: 0px">Technorati tags: <a href="http:&#47;&#47;technorati.com&#47;tags&#47;PowerShell" rel="tag">PowerShell</a>, <a href="http:&#47;&#47;technorati.com&#47;tags&#47;Windows%20SDK" rel="tag">Windows SDK</a></div><!--end_raw--></p>

@@ -1,0 +1,27 @@
+---
+layout: post
+status: publish
+published: true
+title: BAM EventStream in PipelineTesting
+author:
+  display_name: Tomas Restrepo
+  login: tomasr
+  email: tomas@winterdom.com
+  url: http://winterdom.com/
+author_login: tomasr
+author_email: tomas@winterdom.com
+author_url: http://winterdom.com/
+wordpress_id: 390
+wordpress_url: http://winterdom.com/2007/11/bameventstreaminpipelinetesting
+date: '2007-11-14 07:31:25 +0000'
+date_gmt: '2007-11-14 07:31:25 +0000'
+categories:
+- BizTalk
+tags: []
+comments: []
+---
+<p><!--start_raw-->
+<p>Last night someone brought to my attention that the current versions of <a href="http:&#47;&#47;www.winterdom.com&#47;weblog&#47;2007&#47;08&#47;09&#47;PipelineTesting11Released.aspx">PipelineTesting</a> always return null from the IPipelineContext.<a href="http:&#47;&#47;msdn2.microsoft.com&#47;en-us&#47;library&#47;microsoft.biztalk.component.interop.ipipelinecontext.geteventstream.aspx">GetEventStream()</a> method. This is expected to return an <a href="http:&#47;&#47;msdn2.microsoft.com&#47;en-us&#47;library&#47;microsoft.biztalk.bam.eventobservation.eventstream.aspx">EventStream</a> object so that pipeline components can write to BAM, but I never had bothered looking it up before.</p>
+<p>I've now fixed this so that the property returns an EventStream-derived class that simply swallows all calls to it silently, to avoid tying the library to having any specific BAM infrastructure in place, and this will be included in the next version of the library.</p>
+<p>Is this good enough? Is there anyone who would prefer to have a way to override this behavior so that a real, connected BAM EventStream object is provided? Does someone need a way to check as part of the test assertions that specific events were indeed written to the EventStream? If so, I may look into a way to support this nicely, otherwise, I'll leave it as is for now.</p>
+<div class="wlWriterSmartContent" id="scid:0767317B-992E-4b12-91E0-4F059A8CECA8:0cb717d4-467f-425b-970e-465ebb86353e" style="padding-right: 0px; display: inline; padding-left: 0px; padding-bottom: 0px; margin: 0px; padding-top: 0px">Technorati tags: <a href="http:&#47;&#47;technorati.com&#47;tags&#47;PipelineTesting" rel="tag">PipelineTesting</a>, <a href="http:&#47;&#47;technorati.com&#47;tags&#47;BizTalk%20Server" rel="tag">BizTalk Server</a></div><!--end_raw--></p>

@@ -1,0 +1,30 @@
+---
+layout: post
+status: publish
+published: true
+title: Technorati Tags And dasBlog Categories in v1.9
+author:
+  display_name: Tomas Restrepo
+  login: tomasr
+  email: tomas@winterdom.com
+  url: http://winterdom.com/
+author_login: tomasr
+author_email: tomas@winterdom.com
+author_url: http://winterdom.com/
+wordpress_id: 83
+wordpress_url: http://winterdom.com/2006/09/technoratitagsanddasblogcategoriesinv19
+date: '2006-09-26 21:09:17 +0000'
+date_gmt: '2006-09-26 21:09:17 +0000'
+categories:
+- Blogging
+tags: []
+comments: []
+---
+<p><!--start_raw-->
+<p><img style="border-top-width: 0px; border-left-width: 0px; border-bottom-width: 0px; border-right-width: 0px" height="338" src="http:&#47;&#47;www.winterdom.com&#47;weblog&#47;content&#47;binary&#47;WindowsLiveWriter&#47;TechnoratiTagsAnddasBlogCategoriesinv1.9_1377C&#47;Technorati_ScrewedUp5.png" width="239" align="right" border="0"> I noticed today that my <a href="http:&#47;&#47;www.technorati.com&#47;profile&#47;tomasr">Technorati profile</a> page had the list of Top tags I blogged about all screwed up, with the name of the dasBlog category page as the tag name instead of just the category name. I am guessing this was caused after the <a href="http:&#47;&#47;www.winterdom.com&#47;weblog&#47;2006&#47;09&#47;22&#47;dasBlog19UpgradeComplete.aspx">upgrade</a> to dasBlog 1.9, which now seems to mark category links in posts with rel="tag", but Technorati is using the "filename" of the tag link URL as the tag name instead of the linked text itself.</p>
+<p>Anyone else experiencing this?</p>
+<p><strong>Update 2006&#47;09&#47;28:</strong> After browsing the source a bit, I think I see what the problem is: My template uses the <%categoryLinks%> macro to generate the category listing for posts. Under dasBlog 1.9, this macro forwards to the RenderCategoryTags(bool asTechnoratiTags) method, passing false as the argument.</p>
+<p>In this method, if the asTechnoratiTags argument is true, the category links are rendered as pointing to "http:&#47;&#47;www.technorati.com&#47;tag&#47;<CategoryName>" instead of the blog's category archive page. However, the code <em>always</em> adds rel="tag" to the category link, regardless of the value of the asTechnoratiTags argument, and I think this is what causes the issue. </p>
+<p>You can see the <a href="http:&#47;&#47;svn.sourceforge.net&#47;viewvc&#47;dasblogce&#47;trunk&#47;source&#47;newtelligence.DasBlog.Web.Core&#47;Macros.cs?revision=547&amp;view=markup">relevant code</a> in the dasBlog SVN repository around line 3229.</p>
+<div class="wlWriterSmartContent" id="d7bf807d-7bb0-458a-811f-90c51817d5c2:4babf71c-9d05-42f7-bbf6-cd146160015a" contenteditable="false" style="padding-right: 0px; display: inline; padding-left: 0px; padding-bottom: 0px; margin: 0px; padding-top: 0px">
+<p><span class="TagSite">Technorati:</span> <a href="http:&#47;&#47;technorati.com&#47;tag&#47;Technorati" rel="tag" class="tag">Technorati</a>, <a href="http:&#47;&#47;technorati.com&#47;tag&#47;dasBlog" rel="tag" class="tag">dasBlog</a><br &#47;><!-- StartInsertedTags: Technorati, dasBlog :EndInsertedTags --></p></div><!--end_raw--></p>

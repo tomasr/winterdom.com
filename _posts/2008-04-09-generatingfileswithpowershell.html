@@ -1,0 +1,34 @@
+---
+layout: post
+status: publish
+published: true
+title: Generating files with PowerShell
+author:
+  display_name: Tomas Restrepo
+  login: tomasr
+  email: tomas@winterdom.com
+  url: http://winterdom.com/
+author_login: tomasr
+author_email: tomas@winterdom.com
+author_url: http://winterdom.com/
+wordpress_id: 17
+wordpress_url: http://winterdom.com/2008/04/generatingfileswithpowershell
+date: '2008-04-09 07:04:35 +0000'
+date_gmt: '2008-04-09 07:04:35 +0000'
+categories:
+- PowerShell
+tags: []
+comments: []
+---
+<p><!--start_raw-->
+<p>Yesterday I needed to generate a bunch of small files to use as input for testing, as I needed to reproduce a bug I was tracking down. More to the point, I needed to generate 2000 files of size 781 bytes.</p>
+<p><strong>Update:</strong> I screwed up the code snippets on my first attempt. Fixed now!</p>
+<p>Naturally, I turned to PowerShell and whipped this script:</p>
+<div class="codebg"><code><span class="Identifier">$fc</span> = <span class="Statement">new-object</span> string (<span class="String">'a'</span>, <span class="Number">781</span>)      <br &#47;><span class="Number">1</span>..<span class="Number">2000</span> | %{ <span class="Type">[io.file]</span>::WriteAllText(<span class="String">"$(pwd)\$_.txt"</span>, <span class="Identifier">$fc</span>) } </code></div>
+<p>Is this the only way to do it? Certainly no, but a couple of things are worth mentioning about my specific solution. A savvy reader might ask: Why didn't you just use the redirection operator instead?</p>
+<div class="codebg"><code><span class="Number">1</span>..<span class="Number">2000</span> | %{ <span class="Identifier">$fc</span> > <span class="String">"$_.txt"</span> } </code></div>
+<p>That is indeed shorter, but has one major drawback for my problem: The redirection operator when writing to files defaults to using UTF-16LE encoding, which meant my files would come out the wrong size.</p>
+<p>Now, the redirection operator in this case is nothing more than a way to implicitly call the out-file cmdlet, which does provide a way to select the encoding:</p>
+<div class="codebg"><code><span class="Number">1</span>..<span class="Number">2000</span> | %{ <span class="Identifier">$fc</span> | <span class="Statement">out-file</span>&#160;<span class="String">"$_.txt"</span> -enc ascii } </code></div>
+<p>This is much better,&#160; but, unfortunately, still screws up the file size because it will add a CR LF pair at the end. And it isn't remarkably shorter than my original solution using File::WriteAllText().</p>
+<div class="wlWriterSmartContent" id="scid:0767317B-992E-4b12-91E0-4F059A8CECA8:48471c30-5568-42a6-a174-61375d4fb5ac" style="padding-right: 0px; display: inline; padding-left: 0px; padding-bottom: 0px; margin: 0px; padding-top: 0px">Technorati tags: <a href="http:&#47;&#47;technorati.com&#47;tags&#47;PowerShell" rel="tag">PowerShell</a></div><!--end_raw--></p>

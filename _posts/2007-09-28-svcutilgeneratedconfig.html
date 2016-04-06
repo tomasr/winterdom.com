@@ -1,0 +1,48 @@
+---
+layout: post
+status: publish
+published: true
+title: SvcUtil Generated Config
+author:
+  display_name: Tomas Restrepo
+  login: tomasr
+  email: tomas@winterdom.com
+  url: http://winterdom.com/
+author_login: tomasr
+author_email: tomas@winterdom.com
+author_url: http://winterdom.com/
+wordpress_id: 840
+wordpress_url: http://winterdom.com/2007/09/svcutilgeneratedconfig
+date: '2007-09-28 08:28:40 +0000'
+date_gmt: '2007-09-28 08:28:40 +0000'
+categories:
+- WCF
+tags: []
+comments:
+- id: 566
+  author: Scott Seely
+  author_email: sseely@nospam.catalystss.com
+  author_url: http://blogs.catalystss.com/blogs/scott_seely/
+  date: '2007-09-28 09:31:07 +0000'
+  date_gmt: '2007-09-28 09:31:07 +0000'
+  content: |
+    Thomas-- are you simply speaking about the values for things that are 'sizes'? If so, can you share which ones are causing you the most issues? I've got a handy solution in mind.
+    Also, FWIW, your explanation of "svcutil" doing XY &amp; Z just reminded me that many folks don't know where svcutil starts and the System.ServiceModel guts start. The point of my post was to draw that line.
+- id: 567
+  author: Tomas Restrepo
+  author_email: tomas@winterdom.com
+  author_url: http://www.winterdom.com/weblog/
+  date: '2007-09-28 12:22:18 +0000'
+  date_gmt: '2007-09-28 12:22:18 +0000'
+  content: |
+    Scott,
+    Yes, I'm talking about the sizes parameters (mostly maxRequestSize and readerQuotas stuff).
+    You're right I was a little loose with my terms, and I know part of the problem is really the defaults in the ServiceModel stuff and not SvcUtil, but having SvcUtil be a little bit more smart about it would go a long way.
+---
+<p><!--start_raw-->
+<p><a href="http:&#47;&#47;blogs.catalystss.com&#47;blogs&#47;scott_seely">Scott Seely</a> seems <a href="http:&#47;&#47;blogs.catalystss.com&#47;blogs&#47;scott_seely&#47;archive&#47;2007&#47;09&#47;28&#47;204.aspx">to object</a> to my <a href="http:&#47;&#47;www.winterdom.com&#47;weblog&#47;2007&#47;09&#47;28&#47;WCFTips.aspx">previous comment</a> on being careful about the defaults used by svcutil.exe. Scott goes on to describe in detail how svcutil figures out what should get written in the default configuration, which is pretty useful.</p>
+<p>But, seems to me like Scott may have misunderstood my comment. Yes, I do know how svcutil.exe works and even <em>why</em> it chooses the defaults it chooses. I'm not arguing against it configuring default values (even for all binding properties, as cumbersome as that can be). I'm arguing against the rationale of the default values themselves, as they make little sense for a <em>client side proxy.</em></p>
+<p>Don't get me wrong, I fully agree with Scott's comment that "Bigger defaults would have made it easier to blow up your average WCF endpoint, and that wouldn't have been a good thing", but that's an assertion that makes a lot of sense for <em>a service endpoint</em>. A client side proxy, on the other hand, will rarely require such stringent settings and in fact it constantly gets in the way (only case where this would be significant is in the case of duplex contracts).</p>
+<p>In other words, I'm arguing for SvcUtil being slightly more smart about the default values depending on the context. And even more, I'm arguing that the default security constraints configured by default on WCF bindings (SvcUtil or no SvcUtil) are too small. I'm not saying to make them unlimited, but they could benefit from slightly larger values, particularly for WSHttpBinding and friends.</p>
+<p>But as long as we're on the topic, let's add one more to the mix: The truth is, that these kind of security constraints are sitting right in <strong>no man's land</strong>. Developers will very rarely look at them (unless they are already aware of the issue) simply because they test their services in limited environments, where, for example, messages might be small enough to cause no trouble. But then they go blow up in their faces in the production environment. Administrators on the other end, have no clue what this settings are or what they configure (in fact, they have no clue they even exist) and will simply ignore them... until they blow up in their faces as well. This is not a good situation by any means, because you know what people will do? They'll just get used to <em>configure them always to the maximum possible value</em>. </p>
+<div class="wlWriterSmartContent" id="scid:0767317B-992E-4b12-91E0-4F059A8CECA8:bf90bff0-544a-4484-87af-a07b6305062a" style="padding-right: 0px; display: inline; padding-left: 0px; padding-bottom: 0px; margin: 0px; padding-top: 0px">Technorati tags: <a href="http:&#47;&#47;technorati.com&#47;tags&#47;Windows%20Communication%20Foundation" rel="tag">Windows Communication Foundation</a></div><!--end_raw--></p>

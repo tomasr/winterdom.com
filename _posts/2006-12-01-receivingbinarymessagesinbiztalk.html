@@ -1,0 +1,96 @@
+---
+layout: post
+status: publish
+published: true
+title: Receiving Binary Messages in BizTalk
+author:
+  display_name: Tomas Restrepo
+  login: tomasr
+  email: tomas@winterdom.com
+  url: http://winterdom.com/
+author_login: tomasr
+author_email: tomas@winterdom.com
+author_url: http://winterdom.com/
+wordpress_id: 1023
+wordpress_url: http://winterdom.com/2006/11/receivingbinarymessagesinbiztalk
+date: '2006-12-01 18:41:03 +0000'
+date_gmt: '2006-12-01 18:41:03 +0000'
+categories:
+- BizTalk
+tags: []
+comments:
+- id: 7328
+  author: Akhtar Hossain
+  author_email: Akhtar.Hossain0521@gmail.com
+  author_url: ''
+  date: '2013-01-22 19:10:32 +0000'
+  date_gmt: '2013-01-22 19:10:32 +0000'
+  content: I was able to use your code base to upload binary data to an Oracle BLOB
+    column using a custom .net helper component and calling that component from Orchestration.
+    I am happy with the solution even with performance limitation. My usage scenario
+    worked well
+- id: 83725
+  author: Martin Frey
+  author_email: tin@tins.ch
+  author_url: ''
+  date: '2014-03-14 09:02:31 +0000'
+  date_gmt: '2014-03-14 09:02:31 +0000'
+  content: Your solution works perfectly for me to pass through a zip file. Thanks
+    a lot!
+- id: 86278
+  author: BizTalk + SSIS | -
+  author_email: ''
+  author_url: http://manuelalexis.wordpress.com/2014/03/18/biztalk-ssis/
+  date: '2014-03-18 15:42:44 +0000'
+  date_gmt: '2014-03-18 15:42:44 +0000'
+  content: "[&#8230;] http:&#47;&#47;winterdom.com&#47;2006&#47;12&#47;receivingbinarymessagesinbiztalk
+    [&#8230;]"
+---
+<p><!--start_raw-->
+<p>On a recent project, we had to deal with binary messages in BizTalk Server 2004. Specifically, we needed to run a binary message through an orchestration, both receiving it and sending it through messaging ports, as well as passing it to custom .NET components that knew how to manipulate it.</p>
+<p>In our case, this was basically a binary compressed (zipped message), which we decided explicitly not to decompress during a pipeline, and instead always keep it in it's original raw form. Handling it wasn't much of a problem for the most part, since you can apply the same trick the RawString class does, but just keeping the contents as a Byte[] instead of a string (implementing it from scratch left as an exercise for the reader).</p>
+<p>The only tricky part was getting BizTalk to receive the raw binary message and fire off&nbsp;our orchestration to process it without&nbsp;jumping through&nbsp;too many hoops. <a href="http:&#47;&#47;www.traceofthought.net&#47;">Scott Colestock</a> has a great <a href="http:&#47;&#47;www.traceofthought.net&#47;PermaLink,guid,c5418f3d-2ea7-4530-ab9c-ae4c49154fcb.aspx">entry</a> on how to receive a RawString on an orchestration, so we obviously turn to that for inspiration. But, even with all the great advice from Scott and both alternatives presented there, it's still quite a bit of work.</p>
+<p>Fortunately, working with my friend <a href="http:&#47;&#47;blogs.devdeo.com&#47;gustavo.echeverry&#47;">Gustavo</a> we found out an easier way that didn't involve multipart message types or custom pipelines. It goes like this:</p>
+<p>The BizTalk orchestration is setup to receive a message of type XmlDocument, which ensures that the activation subscription for the orchestration does not contain a MessageType-based predicate. Then, we&nbsp;construct a new&nbsp;message declared using our custom .NET class (let's call it BinaryMessage), and initialize it in a Message Assignment shape by calling the new operator to call a constructor, passing the original XmlDocument message as an argument.</p>
+<p>Here's were we differ from the other proposed solutions: Our custom constructor takes an XLANGMessage instance as an argument. We figured it wouldn't work at first because the original message in the orchestration was an XmlDocument and not a regular BizTalk message, but it didn't cause a problem. Anyway, since we have the XLANGMessage instance, we could simply get the body part and call RetrieveAs() to get the contents of the message as a Stream and read that into our internal Byte[] array, like this:</p>
+<pre class="csharpcode"><span class="kwrd">public</span> BinaryMessage(XLANGMessage doc)<br />
+{<br />
+Stream stream = (Stream)doc[0].RetrieveAs(<span class="kwrd">typeof</span>(Stream));<br />
+<span class="kwrd">using</span> (stream)<br />
+{<br />
+MemoryStream tempStream = <span class="kwrd">new</span> MemoryStream();<br />
+<span class="kwrd">byte</span>[] buffer = <span class="kwrd">new</span> <span class="kwrd">byte</span>[64*1024];<br />
+<span class="kwrd">int</span> bytesRead = 0;<br />
+<span class="kwrd">while</span> ( (bytesRead = stream.Read(buffer, 0, buffer.Length)) > 0 )<br />
+tempStream.Write(buffer, 0, bytesRead);<br />
+Contents = tempStream.ToArray();<br />
+}<br />
+}<br />
+</pre></p>
+<style type="text&#47;css">.csharpcode, .csharpcode pre<br />
+{<br />
+font-size: small;<br />
+color: black;<br />
+font-family: consolas, "Courier New", courier, monospace;<br />
+background-color: #ffffff;<br />
+&#47;*white-space: pre;*&#47;<br />
+}<br />
+.csharpcode pre { margin: 0em; }<br />
+.csharpcode .rem { color: #008000; }<br />
+.csharpcode .kwrd { color: #0000ff; }<br />
+.csharpcode .str { color: #006080; }<br />
+.csharpcode .op { color: #0000c0; }<br />
+.csharpcode .preproc { color: #cc6633; }<br />
+.csharpcode .asp { background-color: #ffff00; }<br />
+.csharpcode .html { color: #800000; }<br />
+.csharpcode .attr { color: #ff0000; }<br />
+.csharpcode .alt<br />
+{<br />
+background-color: #f4f4f4;<br />
+width: 100%;<br />
+margin: 0em;<br />
+}<br />
+.csharpcode .lnum { color: #606060; }<br />
+</style></p>
+<p>Granted, the solution isn't terribly efficient (since it does involve doing a message copy), but since we're only going to be processing about a couple messages a day, that wasn't a significant concern.</p></p>
+<div class="wlWriterSmartContent" id="0767317B-992E-4b12-91E0-4F059A8CECA8:c12d6957-9b2c-46ca-9f8f-80754fc02b25" contenteditable="false" style="padding-right: 0px; display: inline; padding-left: 0px; padding-bottom: 0px; margin: 0px; padding-top: 0px">Technorati tags: <a href="http:&#47;&#47;technorati.com&#47;tags&#47;BizTalk" rel="tag">BizTalk</a>, <a href="http:&#47;&#47;technorati.com&#47;tags&#47;BTS" rel="tag">BTS</a></div><!--end_raw--></p>

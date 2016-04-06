@@ -1,0 +1,89 @@
+---
+layout: post
+status: publish
+published: true
+title: Listing BTS Adapters with Powershell
+author:
+  display_name: Tomas Restrepo
+  login: tomasr
+  email: tomas@winterdom.com
+  url: http://winterdom.com/
+author_login: tomasr
+author_email: tomas@winterdom.com
+author_url: http://winterdom.com/
+wordpress_id: 525
+wordpress_url: http://winterdom.com/2006/09/listingbtsadapterswithpowershell
+date: '2006-09-26 10:32:25 +0000'
+date_gmt: '2006-09-26 10:32:25 +0000'
+categories:
+- BizTalk
+- PowerShell
+tags: []
+comments:
+- id: 1931
+  author: kazim
+  author_email: kazim2476@gmail.com
+  author_url: ''
+  date: '2012-02-09 13:20:35 +0000'
+  date_gmt: '2012-02-09 13:20:35 +0000'
+  content: Brilliant work
+---
+<p><!--start_raw-->
+<p>This sample script will list all installed adapters in your local BizTalk Server, including the names of configured send and receive handlers for them:</p></p>
+<div class='codebg'><code><span class="Comment">#</span><br &#47;><br />
+<span class="Comment"># Helper function to list all WMI objects of</span><br &#47;><br />
+<span class="Comment"># a given type</span><br &#47;><br />
+<span class="Comment">#</span><br &#47;><br />
+<span class="Keyword">function</span>&nbsp;<span class="Function">bts-list</span>-objs(<span class="Identifier">$kind</span>)<br &#47;><br />
+{<br &#47;><br />
+&nbsp;&nbsp; <span class="Statement">get-wmiobject</span>&nbsp;<span class="Identifier">$kind</span>&nbsp;`<br &#47;><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;-namespace <span class="String">'root\MicrosoftBizTalkServer'</span><br &#47;><br />
+}<br &#47;><br />
+<br &#47;><br />
+<span class="Comment">#</span><br &#47;><br />
+<span class="Comment"># get objects related to an adapter</span><br &#47;><br />
+<span class="Comment"># </span><br &#47;><br />
+<span class="Keyword">function</span>&nbsp;<span class="Function">bts-get</span>-related(<span class="Identifier">$adapterName</span>, <span class="Identifier">$kind</span>)<br &#47;><br />
+{<br &#47;><br />
+&nbsp;&nbsp; <span class="Statement">get-wmiobject</span>&nbsp;<span class="Identifier">$kind</span>&nbsp;`<br &#47;><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;-namespace <span class="String">'root\MicrosoftBizTalkServer'</span>&nbsp;`<br &#47;><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;-<span class="Keyword">filter</span>&nbsp;<span class="String">"AdapterName='$adapterName'"</span><br &#47;><br />
+}<br &#47;><br />
+<br &#47;><br />
+<span class="Comment">#</span><br &#47;><br />
+<span class="Comment"># dump adapter information to the console</span><br &#47;><br />
+<span class="Comment">#</span><br &#47;><br />
+<span class="Keyword">function</span>&nbsp;<span class="Function">bts-show</span>-adapter(<span class="Identifier">$adapter</span>)<br &#47;><br />
+{<br &#47;><br />
+&nbsp;&nbsp; <span class="String">'--- '</span>&nbsp;+ <span class="Identifier">$adapter</span>.Name + <span class="String">' ---'</span><br &#47;><br />
+&nbsp;&nbsp; <span class="Identifier">$sendHandlers</span>&nbsp;= @(<span class="Statement">bts-get</span>-related <span class="Identifier">$adapter</span>.Name MSBTS_SendHandler2)<br &#47;><br />
+&nbsp;&nbsp; <span class="Conditional">if</span>&nbsp;( <span class="Identifier">$sendHandlers</span>.Length -<span class="Operator">gt</span>&nbsp;<span class="Number">0</span>&nbsp;)<br &#47;><br />
+&nbsp;&nbsp; {<br &#47;><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="String">'Send Handlers:'</span><br &#47;><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="Repeat">for</span>&nbsp;( <span class="Identifier">$i</span>&nbsp;=<span class="Number">0</span>; <span class="Identifier">$i</span>&nbsp;-<span class="Operator">lt</span>&nbsp;<span class="Identifier">$sendHandlers</span>.Length; <span class="Identifier">$i</span>++ )<br &#47;><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{<br &#47;><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span class="String">'&nbsp;&nbsp; '</span>&nbsp;+ <span class="Identifier">$sendHandlers</span>[<span class="Identifier">$i</span>].HostName<br &#47;><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<br &#47;><br />
+&nbsp;&nbsp; }<br &#47;><br />
+&nbsp;&nbsp; <br &#47;><br />
+&nbsp;&nbsp; <span class="Identifier">$recvHandlers</span>&nbsp;= @(<span class="Statement">bts-get</span>-related <span class="Identifier">$adapter</span>.Name MSBTS_ReceiveHandler)<br &#47;><br />
+&nbsp;&nbsp; <span class="Conditional">if</span>&nbsp;( <span class="Identifier">$recvHandlers</span>.Length -<span class="Operator">gt</span>&nbsp;<span class="Number">0</span>&nbsp;)<br &#47;><br />
+&nbsp;&nbsp; {<br &#47;><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="String">'Receive Handlers:'</span><br &#47;><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="Repeat">for</span>&nbsp;( <span class="Identifier">$i</span>&nbsp;=<span class="Number">0</span>; <span class="Identifier">$i</span>&nbsp;-<span class="Operator">lt</span>&nbsp;<span class="Identifier">$recvHandlers</span>.Length; <span class="Identifier">$i</span>++ )<br &#47;><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{<br &#47;><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span class="String">'&nbsp;&nbsp; '</span>&nbsp;+ <span class="Identifier">$recvHandlers</span>[<span class="Identifier">$i</span>].HostName<br &#47;><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<br &#47;><br />
+&nbsp;&nbsp; }<br &#47;><br />
+&nbsp;&nbsp; <span class="String">''</span><br &#47;><br />
+}<br &#47;><br />
+<br &#47;><br />
+<span class="Comment">#</span><br &#47;><br />
+<span class="Comment"># main script</span><br &#47;><br />
+<span class="Comment">#</span><br &#47;><br />
+<span class="Statement">bts-list</span>-objs MSBTS_AdapterSetting | %{ <span class="Statement">bts-show</span>-adapter <span class="Identifier">$_</span>&nbsp;}<br />
+</code></div></p>
+<p>Here's a sample output of running the script:</p></p>
+<p><img style="border-width: 0px;" src="http:&#47;&#47;www.winterdom.com&#47;weblog&#47;content&#47;binary&#47;WindowsLiveWriter&#47;ListingBTSAdapterswithPowershell_A1B0&#47;PS_BTS_Adapters3.png" width="578" border="0" height="377"> </p></p>
+<div class="wlWriterSmartContent" id="d7bf807d-7bb0-458a-811f-90c51817d5c2:e9fc0bdb-21f7-4908-8037-2d7fc3feaa69" style="margin: 0px; padding: 0px; display: inline;" contenteditable="false">
+<p><span class="TagSite">Technorati:</span> <a class="tag" href="http:&#47;&#47;technorati.com&#47;tag&#47;Powershell" rel="tag">Powershell</a>, <a class="tag" href="http:&#47;&#47;technorati.com&#47;tag&#47;BizTalk" rel="tag">BizTalk</a>, <a class="tag" href="http:&#47;&#47;technorati.com&#47;tag&#47;BTS" rel="tag">BTS</a><br><!-- StartInsertedTags: Powershell, BizTalk, BTS :EndInsertedTags --></p></div><!--end_raw--></p>

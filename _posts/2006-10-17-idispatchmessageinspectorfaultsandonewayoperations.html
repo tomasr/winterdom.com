@@ -1,0 +1,32 @@
+---
+layout: post
+status: publish
+published: true
+title: IDispatchMessageInspector, Faults and One-Way Operations
+author:
+  display_name: Tomas Restrepo
+  login: tomasr
+  email: tomas@winterdom.com
+  url: http://winterdom.com/
+author_login: tomasr
+author_email: tomas@winterdom.com
+author_url: http://winterdom.com/
+wordpress_id: 695
+wordpress_url: http://winterdom.com/2006/10/idispatchmessageinspectorfaultsandonewayoperations
+date: '2006-10-17 07:14:21 +0000'
+date_gmt: '2006-10-17 07:14:21 +0000'
+categories:
+- WCF
+- WinFX
+- Web Services
+tags: []
+comments: []
+---
+<p><!--start_raw-->
+<p>One extensibility hook in Windows Communication Foundation I've been playing with recently is the <a href="http:&#47;&#47;windowssdk.msdn.microsoft.com&#47;en-gb&#47;library&#47;system.servicemodel.dispatcher.idispatchmessageinspector.aspx">IDispatchMessageInspector</a> interface, which allows you to see the messages arriving at an endpoint before they have been dispatched as well as the corresponding response message before it is sent back to the client.</p>
+<p>A couple of&nbsp;points I noticed about the&nbsp;<a href="http:&#47;&#47;windowssdk.msdn.microsoft.com&#47;en-gb&#47;library&#47;system.servicemodel.dispatcher.idispatchmessageinspector.beforesendreply(VS.80).aspx">BeforeSendReply()</a> method that might be useful:</p>
+<ul>
+<li>If the operation the message was dispatched to was a One-Way operation, this method will still be invoked by the WCF runtime on your IDispatchMessageInspector implementation when the operation has finished its execution. However, the "reply" argument representing the response message will be null, so be sure to check for that before manipulating the message.</li>
+<li>You can detect in your implementation if the operation the message was dispatched to threw an exception&#47;fault, by checking the <a href="http:&#47;&#47;windowssdk.msdn.microsoft.com&#47;en-us&#47;library&#47;system.servicemodel.channels.message.isfault(VS.80).aspx">IsFault</a> property of the reply message. This will be even true for one-way operations (even though the client will never see it, the server side dispatcher still correctly notifies the message inspectors about it).</li></ul>
+<div class="wlWriterSmartContent" id="d7bf807d-7bb0-458a-811f-90c51817d5c2:797c21f0-9c73-46d6-8bc3-54e9d698234f" contenteditable="false" style="padding-right: 0px; display: inline; padding-left: 0px; padding-bottom: 0px; margin: 0px; padding-top: 0px">
+<p><span class="TagSite">Technorati:</span> <a href="http:&#47;&#47;technorati.com&#47;tag&#47;Windows+Communication+Foundation" rel="tag" class="tag">Windows Communication Foundation</a>, <a href="http:&#47;&#47;technorati.com&#47;tag&#47;WCF" rel="tag" class="tag">WCF</a>, <a href="http:&#47;&#47;technorati.com&#47;tag&#47;IDispatchMessageInspector" rel="tag" class="tag">IDispatchMessageInspector</a><br &#47;><!-- StartInsertedTags: Windows Communication Foundation, WCF, IDispatchMessageInspector :EndInsertedTags --></p></div><!--end_raw--></p>

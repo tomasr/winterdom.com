@@ -1,0 +1,33 @@
+---
+layout: post
+status: publish
+published: true
+title: Catching XML Schema Errors with the PipelineTesting Library
+author:
+  display_name: Tomas Restrepo
+  login: tomasr
+  email: tomas@winterdom.com
+  url: http://winterdom.com/
+author_login: tomasr
+author_email: tomas@winterdom.com
+author_url: http://winterdom.com/
+wordpress_id: 825
+wordpress_url: http://winterdom.com/2006/11/catchingxmlschemaerrorswiththepipelinetestinglibrary
+date: '2006-11-27 05:28:36 +0000'
+date_gmt: '2006-11-27 05:28:36 +0000'
+categories:
+- BizTalk
+tags: []
+comments: []
+---
+<p><!--start_raw-->
+<p><a href="http:&#47;&#47;geekswithblogs.net&#47;gwiele">Gregory Van de Wiele</a>, a fellow BizTalk MVP, wrote to me a couple of weeks ago with some good information on how to catch XML Schema errors thrown by the XML Disassembler Component in a BizTalk pipeline when using my BizTalk <a href="http:&#47;&#47;www.winterdom.com&#47;weblog&#47;2006&#47;04&#47;27&#47;PipelineTestingLibraryPart1.aspx">PipelineTesting</a> library. Here's the scoop:</p><br />
+<blockquote>
+<p><em>In order to find a real XML schema error, when using XMLDASM component for validating, you need to do this:</em></p>
+<ol>
+<li><em>Inside your test, catch type XmlDasmException</em></li>
+<li><em>You won&rsquo;t find the real schema validation error using the Message or ExtendedDescription prop: both are empty </em></li>
+<li><em>GetArgument(0) does the trick. Alternatively you could call the GetErrorMessage(Exception) on the Utilities type in the &nbsp;Microsoft.Test.BizTalk.PipelineObjects</em></li></ol>
+<p><em>It took me quite some time because I somehow overlooked the private &lsquo;arguments&rsquo; collections in the debugger. Maybe other people will make the same mistake.</em></p></blockquote>
+<p>Thanks for the tip, Gregory, I'm sure other people will find it useful! As soon as I find some free time, I'll update the PipelineTesting library with this and other suggestions Gregory passed on! If anyone has other suggestions or feature requests, now is the time for them :-)<br></p>
+<div class="wlWriterSmartContent" id="0767317B-992E-4b12-91E0-4F059A8CECA8:71a3f3d4-c888-4e88-8c5b-b54a3cabcb53" contenteditable="false" style="padding-right: 0px; display: inline; padding-left: 0px; padding-bottom: 0px; margin: 0px; padding-top: 0px">Technorati tags: <a href="http:&#47;&#47;technorati.com&#47;tags&#47;BizTalk" rel="tag">BizTalk</a>, <a href="http:&#47;&#47;technorati.com&#47;tags&#47;BTS" rel="tag">BTS</a>, <a href="http:&#47;&#47;technorati.com&#47;tags&#47;Testing" rel="tag">Testing</a></div><!--end_raw--></p>

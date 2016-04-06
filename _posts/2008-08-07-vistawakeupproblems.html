@@ -1,0 +1,41 @@
+---
+layout: post
+status: publish
+published: true
+title: Vista Wake Up Problems
+author:
+  display_name: Tomas Restrepo
+  login: tomasr
+  email: tomas@winterdom.com
+  url: http://winterdom.com/
+author_login: tomasr
+author_email: tomas@winterdom.com
+author_url: http://winterdom.com/
+wordpress_id: 881
+wordpress_url: http://winterdom.com/2008/08/vistawakeupproblems
+date: '2008-08-07 06:35:13 +0000'
+date_gmt: '2008-08-07 06:35:13 +0000'
+categories:
+- Vista
+tags: []
+comments:
+- id: 770
+  author: A thought
+  author_email: someone@somewhere.net
+  author_url: ''
+  date: '2009-05-14 02:04:51 +0000'
+  date_gmt: '2009-05-14 02:04:51 +0000'
+  content: Hmm - there is a service for this camera which I hear only is required
+    to put funny faces over the video.  Might be worth a try disabling that, as the
+    wakeup problem seems to be like a service timeout problem.  I'll be trying this
+    myself now - I never suspected the camera until this article, but it seems to
+    fit (before I had the camera, I had no problem, but then I have added a lot of
+    other things since as well).
+---
+<p><!--start_raw-->
+<p>I started having some problems on my Windows Vista machine lately regarding sleep&#47;hibernation: Sometimes (but very often) the machine would not wake up. Well, actually it <em>seemed</em> it had woken up correctly and the keyboard seemed to work, but the screen would stay black no matter what I'd do. </p>
+<p>I also noticed that when this happened, trying to shut down the machine again wouldn't work either, so I had to resort to completely shut down power to it and reboot from scratch. Looking at the event log, though, it would indeed appear the machine partially woke up, even to the point that the network cards would pick up an IP address. No errors at all on the event log.</p>
+<p><img style="border-right: 0px; border-top: 0px; border-left: 0px; border-bottom: 0px" height="200" alt="41x-ejLHVqL._SS400_" src="http:&#47;&#47;www.winterdom.com&#47;weblog&#47;content&#47;binary&#47;WindowsLiveWriter&#47;VistaWakeUpProblems_76A1&#47;41x-ejLHVqL._SS400__3.jpg" width="200" align="left" border="0" &#47;> However, I suspected this was the fault of a recent hardware change: I had recently gotten a Microsoft <a href="http:&#47;&#47;www.microsoft.com&#47;hardware&#47;digitalcommunication&#47;productdetails.aspx?pid=011">LifeCam VX-7000</a> to replace my older VX-6000 and I had installed its drivers and software (which I'm sorry to say is still crap).</p>
+<p>Next time the machine hung while trying to come out of hibernation, I tried disconnecting the LifeCam from the USB port before turning the machine on. No dice; it still hung up.</p>
+<p>But then I noticed that if I disconnected the LifeCam <em>before</em> putting it to sleep&#47;hibernate, it would wake up without a hitch! Weird, to say the least. I still don't know what the LifeCam drivers do or why they might cause the issue, but at least I know how to work around it for the time being. </p>
+<div class="wlWriterSmartContent" id="scid:0767317B-992E-4b12-91E0-4F059A8CECA8:6389a54e-0325-4b45-a53c-145d8aae9ebd" style="padding-right: 0px; display: inline; padding-left: 0px; padding-bottom: 0px; margin: 0px; padding-top: 0px">Technorati tags: <a href="http:&#47;&#47;technorati.com&#47;tags&#47;Vista" rel="tag">Vista</a></div><!--end_raw--></p>

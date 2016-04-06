@@ -1,0 +1,52 @@
+---
+layout: post
+status: publish
+published: true
+title: EnterpriseServices based applications
+author:
+  display_name: Tomas Restrepo
+  login: tomasr
+  email: tomas@winterdom.com
+  url: http://winterdom.com/
+author_login: tomasr
+author_email: tomas@winterdom.com
+author_url: http://winterdom.com/
+wordpress_id: 698
+wordpress_url: http://winterdom.com/2004/03/enterpriseservicesbasedapplications
+date: '2004-03-21 13:08:04 +0000'
+date_gmt: '2004-03-21 13:08:04 +0000'
+categories:
+- Enterprise Services
+tags: []
+comments: []
+---
+<p><!--start_raw-->Enterprise Services is a pretty nice technology overall (as is COM+ in general), but,<br />
+unfortunately, it does have a few significant downsides in .NET-based applications. The team<br />
+I'm on has been working for quite a while on a fairly large .NET application (250.000+ loc<br />
+and growing) which is based heavily on EnterpriseServices, so we do have some experience on<br />
+the subject :)</p>
+<p>That aside, here are some of the downsides we've run into:</p></p>
+<ul>
+<li>The already <a<br />
+href="http:&#47;&#47;blog.morty.info&#47;PermaLink.aspx?guid=700c4d5d-f3a3-49ff-919a-8d83265306aa">well</a> <a href="http:&#47;&#47;weblogs.asp.net&#47;rhurlbut&#47;archive&#47;2004&#47;02&#47;24&#47;79161.aspx">known</a> problem<br />
+with exception propagation</li></p>
+<li>The Compile-Register-Test cycle time is brutal. Registering and deregistering<br />
+ServicedComponents in COM+ is an <i>extremely</i> expensive operation.</li></p>
+<li>We have <i>tons</i> of boilerplate code we need to write on each method of our serviced components to do custom logging, security and a few other things. This sucks, but well, unless we switched to some sort of pipeline-based framework or had AOP, its something we'd have to live with anyway :)</li>
+<li>No support for app.config files for Server applications. Yes, WinServer 2003 supports it, but that doesn't help us in anyway, since our app must run under Win2000. The biggest problem with this is not writing your own configuration code, we already have a bit of gue for this written that uses IProcessInitializer and custom XML files to do so. The problem lies in that most 3rd party components you will find out there rely heavily on app.config files, so if you can't support them, you need to again write some (small) extra  code to support them.</li>
+<li>Using IProcessInitializer: It can be a pain to track what's going on sometimes to track problems at this point. <a href="http:&#47;&#47;www.sysinternals.com&#47;ntw2k&#47;freeware&#47;debugview.shtml">DebugView</a> seems to be our strongest ally so far :)</li><br />
+</ul></p>
+<p>The registration time is probably the issue that most pain is causing us right now... Our<br />
+developers are suffering cycle times of up to 5-minutes sometimes, and that's not only very<br />
+frustrating, it is a real and very significant problem because it really kills<br />
+productivity.... if you compile say, 10 times a day (and that's a very very low number),<br />
+then you're wasting almost an entire our just waiting for the process to finish!</p></p>
+<p>Yes, I know getting faster machines would help (the current set is a couple of years<br />
+old!), but unfortunately, that's not an option.</p></p>
+<p>So, as one of the people in charge of the application's architecture, I'm heavily looking<br />
+into anything that can help us bring down this cost, including something that seems pretty<br />
+ugly at first sight: heavily cutting the number of ServicedComponent-derived classes... our current system has well over 60 ServicedComponent classes.</p></p>
+<p>How Could I do this? Good question. Unfortunately, I haven't got a good answer right now. I've been playing with a few tricks, but nothing seems very clean. I've also seriously consider moving most of the application back-end code into WSE's SoapService-derived clases, and then exposing a single end-point on the COM+ application that deals with the basic stuff (of course, some special classes wouldn't fit this paradigm, but I could live with it). Heck, I've even got a prototype SoapTransport implementation that implements this.</p></p>
+<p>Of course, in such a model, then taking heavy control of distributed transactions and stuff because slightly more complicated, but I'm confident I could come up with a way to extend our framework (if I can call it that) to provide some support for this. However, it somehow feels... well.... strange, to say the list (it also has quite a few benefits, such as allowing us to take advantage of pipeline based-execution of some pre- and post-processing required). I could, of course, build a solution from scratch, but that seems even uglier :)</p></p>
+<p>One bit that of course worries me going in such a way, would be that eventually, migration to newer technologies could be problematic (Indigo, for example). And it would certainly add more complexity to the solution, which can't be a good thing...</p></p>
+<p>Anyone has any comments? options? (Loosing COM+ is not an option, one of the requirements we currently have is the support for distributed transactions). I'd really, really appreciate any ideas!</p><!--end_raw--></p>

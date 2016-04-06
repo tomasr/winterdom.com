@@ -1,0 +1,29 @@
+---
+layout: post
+status: publish
+published: true
+title: Transactional Receive Adapters in BTS 2004
+author:
+  display_name: Tomas Restrepo
+  login: tomasr
+  email: tomas@winterdom.com
+  url: http://winterdom.com/
+author_login: tomasr
+author_email: tomas@winterdom.com
+author_url: http://winterdom.com/
+wordpress_id: 466
+wordpress_url: http://winterdom.com/2005/02/transactionalreceiveadaptersinbts2004
+date: '2005-02-02 19:30:25 +0000'
+date_gmt: '2005-02-02 19:30:25 +0000'
+categories:
+- BizTalk
+tags: []
+comments: []
+---
+<p><!--start_raw-->When creating custom receive adapters for BizTalk Server 2004 that need to support transactions, one thing to keep in mind is: Who owns the transaction?</p>
+<p>The assumption that the BizTalk Adapter Framework does regarding DTC transactions in receive adapters is actually quite simple: The programming model assumes that the adapter itself owns (controls) the transaction and can decide when to commit or rollback it. This assumption is somewhat clearly described in the documentation for "Transactional Batch-Supported Receive Adapter Creation", which reads <i>"A receive adapter creates and controls transactions when the transactional submission of messages is required."</i>.</p></p>
+<p>The assumption is even more apparent once you look at the programming model for adapters itself: Once you've submitted a batch under a DTC Transaction (by passing the corresponding ITransaction object to IBTTransportBatch::Done() as an argument), and the batch has completed processing (i.e. the BatchComplete event is fired), the adapter needs to notify BizTalk what the final outcome of the transaction was (whether it committed or aborted in the end). This last part is done by calling the DTCCommitConfirm() method of the IBTDTCCommitConfirm reference returned by IBTTransportBatch::Done().</p></p>
+<p>This model makes perfect sense for adapters such as the MSMQC adapter, or a polling adapter of some sort, since the adapter itself is always in control of when to start a receive operation. However, in some cases this might not completely hold true. What happens, for example, if you've got some sort of adapter where the message (or the transport protocol) comes with a transaction reference you needed to use? Or, consider a more simple example: A transactional variant of the SubmitDirect sample adapter provided with the BizTalk SDK. In that case, the adapter does not own the transaction, and thus might very well not know (or care) when the transaction finally committed or aborted.</p></p>
+<p>In such a case, certainly, it might be necessary to make the adapter become a transactional resource and enlist itself in the transaction just to get notified of the transaction commit or abort so that it can pass that notification on down to BizTalk. This seems a little bit overboard and cumbersome to me (and indeed, I wonder why BizTalk itself couldn't be the one that does this and just relieve the adapters of all the burden).</p></p>
+<p>I've been playing for fun with a way to get around this under some scenarios by making the adapter (or part of it) into a COM+ Compensating Resource Manager that gets called as part of the transaction used to submit the message to BizTalk, and then using the CommitRecord() and AbortRecord() events delivered to the Compensator object to notify BizTalk of the end result of the transaction. This seems to work in the limited tests I've done (but very possibly it's not foolproof), but, frankly, seems like a bit of a kludge to me...</p></p>
+<p>One more thing to note: I do <i>not</i> know what the end result of <b>not</b> calling IBTDTCCommitConfirm::DTCCommitConfirm() at the end of the transaction is; the documentation does not specify that very clearly. I also do not know what might happen if for one reason or another you ended up calling that before the transaction actually commits or aborts, but I can imagine it can't be any good :)</p><!--end_raw--></p>

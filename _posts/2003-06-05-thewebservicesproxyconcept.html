@@ -1,0 +1,116 @@
+---
+layout: post
+status: publish
+published: true
+title: The Web Services Proxy Concept
+author:
+  display_name: Tomas Restrepo
+  login: tomasr
+  email: tomas@winterdom.com
+  url: http://winterdom.com/
+author_login: tomasr
+author_email: tomas@winterdom.com
+author_url: http://winterdom.com/
+wordpress_id: 341
+wordpress_url: http://winterdom.com/2003/06/thewebservicesproxyconcept
+date: '2003-06-05 07:36:18 +0000'
+date_gmt: '2003-06-05 07:36:18 +0000'
+categories:
+- Web Services
+tags: []
+comments:
+- id: 244
+  author: Chris Brooks
+  author_email: cbrooks@corillian.com
+  author_url: http://www.chrisbrooks.org
+  date: '2003-06-05 22:45:18 +0000'
+  date_gmt: '2003-06-05 22:45:18 +0000'
+  content: |
+    <p>I see your point about the temptation these tools create, but I don't see anything fundamentally wrong with the mapping&#47;serialization that I get with a strong development platform.  Is navigating a DOM or issuing XPATH queries supposed to make me feel better?  I guess I'm trying to understand what you would propose is better.</p>
+- id: 245
+  author: Christian Weyer
+  author_email: cw@eyesoft.dfe
+  author_url: http://weblogs.asp.net/cweyer/
+  date: '2003-06-06 01:04:35 +0000'
+  date_gmt: '2003-06-06 01:04:35 +0000'
+  content: |
+    <p>Of course I can understand your sentiments, Tomas. But perhaps - at least for the HTTP-branded moment - we should just make a difference between the messaging model and the programming model ...? Doc&#47;literal would make perfectly more sense with a real messaging infrastructure, i.e. with an asynchronous, decoupled communication layer. I like the idea of mapping SOAP over MSMQ. And then just use 'bare' SOAP messages ([SoapDocumentMethod(ParameterStyle = SoapParameterStyle.Bare)]<br &#47;>
+    ) - then we are a bit closer to what you are looking, I guess?</p>
+- id: 246
+  author: Sebastien Lambla
+  author_email: sebastien.lambla@6sens.com
+  author_url: http://erablog.net/filters/13645.post
+  date: '2003-06-06 05:53:50 +0000'
+  date_gmt: '2003-06-06 05:53:50 +0000'
+  content: |
+    <p>See url</p>
+- id: 247
+  author: Tomas Restrepo
+  author_email: tomasr@mvps.org
+  author_url: http://www.winterdom.com/weblog
+  date: '2003-06-06 08:01:15 +0000'
+  date_gmt: '2003-06-06 08:01:15 +0000'
+  content: |
+    <p>Chris: I don't think navigating the DOM manually is necessarily a better option, but I think something else, more closely mapped to messaging semantics, could be a better way. I'm not sure what yet, but I have some ideas I hope to explore soon!</p>
+    <p>Christian: Yes! That's pretty much what I'm looking for!</p>
+- id: 248
+  author: Simon Fell
+  author_email: sf@zaks.demon.co.uk
+  author_url: http://www.pocketsoap.com/weblog/
+  date: '2003-06-05 10:48:37 +0000'
+  date_gmt: '2003-06-05 10:48:37 +0000'
+  content: |
+    <p>Yeah, I've been saying for a while that doc&#47;lit as most people do it (i.e. the default ASP.NET stuff), is RPC is everything but name.</p>
+    <p>Have you thought about what a non-RPC programming model would look like (starting from WSDL) ?</p>
+- id: 249
+  author: Christian Weyer
+  author_email: cw@eyesoft.de
+  author_url: http://weblogs.asp.net/cweyer/
+  date: '2003-06-07 11:37:29 +0000'
+  date_gmt: '2003-06-07 11:37:29 +0000'
+  content: |
+    <p>OK, now that we are allowed to talk about it: just read Ingo's comment on WSE 2.0 ;-)<br &#47;>
+    <a href="http:&#47;&#47;www.ingorammer.com&#47;weblog&#47;archives&#47;001293.html" rel="nofollow">http:&#47;&#47;www.ingorammer.com&#47;weblog&#47;archives&#47;001293.html</a></p>
+- id: 250
+  author: Jorgen Thelin
+  author_email: thearchitect@TheArchitect.co.uk
+  author_url: http://www.TheArchitect.co.uk/weblog/
+  date: '2003-06-11 06:23:40 +0000'
+  date_gmt: '2003-06-11 06:23:40 +0000'
+  content: |
+    <p>I posted some comments in my weblog here:</p>
+    <p><a href="http:&#47;&#47;www.thearchitect.co.uk&#47;weblog&#47;archives&#47;2003&#47;06&#47;000173.html" rel="nofollow">http:&#47;&#47;www.thearchitect.co.uk&#47;weblog&#47;archives&#47;2003&#47;06&#47;000173.html</a></p>
+    <p>- Jorgen<br &#47;>
+    </p>
+- id: 251
+  author: Gerke Geurts
+  author_email: ggeurts@geurtsrus.com
+  author_url: ''
+  date: '2003-07-11 00:02:06 +0000'
+  date_gmt: '2003-07-11 00:02:06 +0000'
+  content: |
+    <p>I think proxies are still useful to invoke web services to allow an easy programming model that facilitates the serialisation and transmission of service invocations. What we must not expect is to get back an answer while the code that invoked the service is alive, i.e. the proxy should not wait for a service reply. In fact you would need to restrict the proxy possibilities to everything you are allowed to do when invoking COM+ queued components.</p>
+    <p>How than can a service consumer handle response messages? The service consumer will have to be a service himself, offering operations that the service provider can invoke to communicate back results of the original service invocation.</p>
+---
+<p><!--start_raw-->
+<p>
+<font size="2">Let's face it: Most people out there still think of Objects and OO-RPC<br />
+over HTTP when they think about WebServices. Can't say I blame them: it makes perfect<br />
+sense if you're just use to the usual OO and procedural paradigms.</font><br />
+</p></p>
+<p>
+<font size="2">Unfortunately, I think we keep portraying this notions that help reinforce<br />
+that belief instead of dispel it; and one of those notions is the concept of a WebServices<br />
+proxy. Many tools (.NET included), put the ability to generate proxy classes from<br />
+WSDL documents as a first class notion of their WebServices support infrastructure.</font><br />
+</p></p>
+<p>
+<font size="2">Now, don't get me wrong, I believe it is a very useful abstraction,<br />
+and is certainly very practical. However, it reinforces the notion that WSDL services<br />
+map to classes (and thus to objects) and operations to methods, and thus that webservice<br />
+invocations correspond to method invocations on an object at runtime. It's hard to<br />
+look someone straight while telling them that RPC is dead and messaging is the way<br />
+to go, and then tell them how they can create proxy classes than "conveniently" hide<br />
+that aspect to make it look like you're doing RPC all over again. If it looks like<br />
+RPC and feels like RPC....</font><br />
+</p><!--end_raw--></p>

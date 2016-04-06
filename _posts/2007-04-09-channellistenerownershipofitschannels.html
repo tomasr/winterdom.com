@@ -1,0 +1,29 @@
+---
+layout: post
+status: publish
+published: true
+title: Channel Listener Ownership of its Channels
+author:
+  display_name: Tomas Restrepo
+  login: tomasr
+  email: tomas@winterdom.com
+  url: http://winterdom.com/
+author_login: tomasr
+author_email: tomas@winterdom.com
+author_url: http://winterdom.com/
+wordpress_id: 24
+wordpress_url: http://winterdom.com/2007/04/channellistenerownershipofitschannels
+date: '2007-04-09 08:57:41 +0000'
+date_gmt: '2007-04-09 08:57:41 +0000'
+categories:
+- WCF
+tags: []
+comments: []
+---
+<p><!--start_raw-->
+<p><a href="http:&#47;&#47;blogs.msdn.com&#47;drnick&#47;">Nicholas Allen</a> posted a while back a <a href="http:&#47;&#47;blogs.msdn.com&#47;drnick&#47;archive&#47;2006&#47;10&#47;25&#47;asymmetry-between-listeners-and-factories.aspx">short entry</a> on the assymetries between channel factories (send side) and channel listeners (receive side) in Windows Communication Foundation. I've been revisiting some of his posts while working on my custom channel, and this one seemed pretty fundamental.</p>
+<p>The lifetime tie between channel factories and its&nbsp;output channels doesn't cause me problems. Actually, for my current work I don't really care about it because&nbsp;this is done purely to ease the cleanup of resources. Since channels will usually be tied to possibly different URLs and will likely not share the same network&#47;transport connection, this is not usually a problem (and even if they did, it would still not be a problem).</p>
+<p>However, things are quite different for channel listeners and input channels. As Nicholas clearly states, the lifetime of the channels is not to be tied to the specific channel listener that created them, so closing the channel listener should not cause any open channels to be closed or stop working. In general terms, if you have a transport where&nbsp;WCF will&nbsp;actually open connections (instead of receiving connections, like in my case), then it means the connection cannot be owned by the channel listener and instead must be owned by the channel itself, which means that channels cannot longer share connections unless I'm willing to do a lot of extra work (like reference counting it and doing some nasty fault handler).</p>
+<p>Will I do that extra work? Not likely. In my specific case, my transport will pretty much be limited to having a single input channel opened at a time per channel listener, so adding this would not really benefit me. Furthermore, if I did the work to support sharing connections here, it would make it impossible for me to support <a href="http:&#47;&#47;msdn2.microsoft.com&#47;en-us&#47;library&#47;system.servicemodel.description.listenurimode.aspx">ListenUriMode.Unique</a>. The reason is that the listen Uri (unique or not) is tied to the channel listener, not the actual channel (which is a pretty big deal) and also because of how the protocol works. If I was sharing connections there would be no way for me to share a unique Uri between multiple input channels. </p>
+<p>BTW, unique listen Uris are a feature I'm pretty interested in supporting in my custom channel as the protocol I'm working with has some explicit support for this built in that enables a number of very interesting scenarios.</p>
+<div class="wlWriterSmartContent" id="0767317B-992E-4b12-91E0-4F059A8CECA8:ce314c52-edc4-4fbc-9586-ce8d5e971f83" contenteditable="false" style="padding-right: 0px; display: inline; padding-left: 0px; padding-bottom: 0px; margin: 0px; padding-top: 0px">Technorati tags: <a href="http:&#47;&#47;technorati.com&#47;tags&#47;Windows%20Communication%20Foundation" rel="tag">Windows Communication Foundation</a>, <a href="http:&#47;&#47;technorati.com&#47;tags&#47;WCF%20Channels" rel="tag">WCF Channels</a></div><!--end_raw--></p>

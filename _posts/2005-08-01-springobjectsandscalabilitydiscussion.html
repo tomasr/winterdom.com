@@ -1,0 +1,29 @@
+---
+layout: post
+status: publish
+published: true
+title: Spring, objects, and scalability discussion
+author:
+  display_name: Tomas Restrepo
+  login: tomasr
+  email: tomas@winterdom.com
+  url: http://winterdom.com/
+author_login: tomasr
+author_email: tomas@winterdom.com
+author_url: http://winterdom.com/
+wordpress_id: 156
+wordpress_url: http://winterdom.com/2005/07/springobjectsandscalabilitydiscussion
+date: '2005-08-01 16:52:53 +0000'
+date_gmt: '2005-08-01 16:52:53 +0000'
+categories:
+- Development
+tags: []
+comments: []
+---
+<p><!--start_raw-->I'm not a java guy (meaning I haven't done any serious java development in a few years, and my professional focus is the MS platform at this time), but I've found the discussion around <a href="http:&#47;&#47;www.springframework.org&#47;">Spring</a> that <a href="http:&#47;&#47;www.neward.net&#47;ted&#47;weblog&#47;index.jsp">Ted Neward</a> <a href="http:&#47;&#47;www.neward.net&#47;ted&#47;weblog&#47;index.jsp?date=20050731#1122793248826">has</a> <a href="http:&#47;&#47;www.neward.net&#47;ted&#47;weblog&#47;index.jsp?date=20050727#1122529218328">been</a> <a href="http:&#47;&#47;www.neward.net&#47;ted&#47;weblog&#47;index.jsp?date=20050721#1122010458907">having</a> with other fellows in the Java camp to be extremely: a) entertaining, and b) fascinating.</p>
+<p>Even though I don't develop professionally in Java at the moment, I totally understand and agree with Ted's comments about the differences between working heavily in Object Oriented Dream Land and doing a good distributed system design. Doing a good distributed system design has significant challenges and is something where OO just doesn't fit right, while it is something where the basic Service Orientation tenets feel like home.</p></p>
+<p>For what it's worth, I believe object orientation to be a good thing, meaning it has many good principles and allows you to create wonderful designs... for <i>some</i> things and at <i>certain</i> abstraction layers of your application. It most definitely does not work everywhere, and trying to fit every square problem into the round OO hole is just going to cause you pain. You know, service orientation, and good old structured, functional and even logic programming all have places where they excel, and where they are far more appropriate and can lead to substantially better designs than a pure OO one (even if we are developing in what is generally considered an OO programming language). By better here I of course mean being more elegant, simple, more performant, more scalable, more secure or any combination of them.</p></p>
+<p>So, from a pragmatic perspective, I find that you really do need to be aware of all (or at least as many as you can) paradigms so you can take advantage of the one that fits a given problem  (or problem subset) the most and go with it. Getting bogged down into discussions about it not being an Object Oriented way of doing things is just, well, unpractical and short sighted. This is why I rather laugh at discussions such as the recently presented in recent articles in  <a href="http:&#47;&#47;www.acm.org&#47;pubs&#47;cacm&#47;">Communications of the ACM</a> such as <a href="http:&#47;&#47;doi.acm.org&#47;10.1145&#47;1042091.1042126">"Dataless objects considered harmful"</a> [1]. While it is fine to argue that if you're working on an OO design you should apply OO principles correctly, I think it is rather theoretical and unpragmatic to argue about things like classes with no data, which, forgive the heressy, are just another powerful tool in the arsenal (heck, several Design Patterns depend on them, are they bad as well?) [2].</p></p>
+<p><b>[1]</b> <a href="http:&#47;&#47;portal.acm.org&#47;citation.cfm?doid=944217.944246">"On pseudo object-oriented programming considered harmfu"</a> seems to present a slightly more pragmatic position on the subject...<br&#47;><br />
+<b>[2]</b> Is the <a href="http:&#47;&#47;portal.acm.org&#47;dl.cfm">ACM Digital Library</a> a great tool, or what?<br />
+</p><!--end_raw--></p>

@@ -1,0 +1,45 @@
+---
+layout: post
+status: publish
+published: true
+title: "$100 to spend on WF"
+author:
+  display_name: Tomas Restrepo
+  login: tomasr
+  email: tomas@winterdom.com
+  url: http://winterdom.com/
+author_login: tomasr
+author_email: tomas@winterdom.com
+author_url: http://winterdom.com/
+wordpress_id: 137
+wordpress_url: http://winterdom.com/2006/08/100tospendonwf
+date: '2006-08-22 10:58:43 +0000'
+date_gmt: '2006-08-22 10:58:43 +0000'
+categories:
+- XML
+- Workflow
+tags: []
+comments:
+- id: 83
+  author: Simon Ince
+  author_email: ''
+  author_url: http://www.dotnetblogs.co.uk/Default.aspx?tabid=137&amp;BlogID=19
+  date: '2006-08-23 03:16:42 +0000'
+  date_gmt: '2006-08-23 03:16:42 +0000'
+  content: |
+    I totally agree with the focus you put on guidance (and design time experience nearly fits in the same category for me)... and I think you've got some really solid thoughts about what areas would be good for focusing on. What do you think about consolidating this into a factory&#47;guidance automation approach? See my blog for my thoughts...
+- id: 84
+  author: Tomas Restrepo
+  author_email: tomasr@mvps.org
+  author_url: http://www.winterdom.com/weblog/
+  date: '2006-08-23 06:17:19 +0000'
+  date_gmt: '2006-08-23 06:17:19 +0000'
+  content: |
+    Simon, Yes, that's certainly an interesting idea, I like it!
+---
+<p><!--start_raw-->
+<p><a href="http:&#47;&#47;blogs.msdn.com&#47;mwinkle&#47;">Matt Winkler</a> asks <a href="http:&#47;&#47;blogs.msdn.com&#47;mwinkle&#47;archive&#47;2006&#47;08&#47;22&#47;712823.aspx">here</a> on feedback as to what we'd like to see on Windows Workflow Foundation that might help reduce the complexity and&#47;or improve the WF experience for developer: spend a $100 bucks on what you'd like to see. Here's my take on it:</p>
+<p>$10: Out of the Box hosting scenarios. This is a cool idea, and could be really complemented with:<br>$40: Guidance, Guidance, Guidance. We need to have good guidance in place on topics such as: WF Runtime Hosting Scenarios and Requirements; Long-running workflows; Workflow Versioning Strategies; Communication Options, Scalability options and more.<br>$20: Programming-model refinements. Things like the complexity introduced by spawned-contexts and the like cannot be 100% solved by tooling; the underlying programming model has to guide you towards writing correct code&nbsp;right from the start. I'll agree&nbsp;I don't have a&nbsp;good proposal as&nbsp;to how to fix it right now, though :-)&nbsp;<br>$30: Better design time experience: </p>
+<ul>
+<li>Improved designer</li>
+<li>Improved Design-time validation. This could either be done by providing more compile-time validation, or, perhaps even better, through a WfCop-kind of tool. One idea I think would mix well with the superb extensibility model in WF and the Guidance idea would be to make it scenario based: You select the kind of scenario you expect your workflows&#47;activities to run under, and extensive validation is done to see if it will work. For example, you might select the "Long-Running Transactional Workflow" escenario, and the tool would validate that things like serializability requirements are met by the workflow itself and all&nbsp;activities used. </li></ul><!--end_raw--></p>

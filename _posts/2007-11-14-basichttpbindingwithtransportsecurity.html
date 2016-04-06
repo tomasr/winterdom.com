@@ -1,0 +1,48 @@
+---
+layout: post
+status: publish
+published: true
+title: BasicHttpBinding with Transport Security
+author:
+  display_name: Tomas Restrepo
+  login: tomasr
+  email: tomas@winterdom.com
+  url: http://winterdom.com/
+author_login: tomasr
+author_email: tomas@winterdom.com
+author_url: http://winterdom.com/
+wordpress_id: 141
+wordpress_url: http://winterdom.com/2007/11/basichttpbindingwithtransportsecurity
+date: '2007-11-14 07:10:46 +0000'
+date_gmt: '2007-11-14 07:10:46 +0000'
+categories:
+- WCF
+- Web Services
+tags: []
+comments: []
+---
+<p><!--start_raw-->
+<p>This is just something to remind myself next time I need to implement a WCF service using the BasicHttpBinding with transport-only security (SSL + client certificates)':</p>
+<ul>
+<li>WCF expects that the "Require SSL" option in IIS is enabled.
+<li>If Metadata Exchange is needed, configure the MEX endpoint with a custom binding with the right settings; otherwise the service won't start.
+<li>Remember to set httpsGetEnabled="true" option in the <serviceMetadata> service behavior instead of the usual httpGetEnabled attribute.
+<li>WCF does not understand the "Accept Client Certificates" option in IIS. It treats it the same as "Ignore Client Certificates" option.</li></ul>
+<p>To use client certificates:</p>
+<ul>
+<ul>
+<li>Enable the "Require Client Certificates" option in IIS
+<li>On the service side, use a custom binding to set the requireClientCertificate option of the httpsTransport binding element:
+<div style="font-size: 11pt; background: #10100d; color: #a79a86; font-family: lucida console, monospace; text-align: left">
+<p style="margin: 0px"><span style="color: #a1b070"><</span><span style="color: #d6d694">bindings</span><span style="color: #a1b070">></span></p>
+<p style="margin: 0px"><span style="color: #a1b070">&nbsp;&nbsp; <</span><span style="color: #d6d694">customBinding</span><span style="color: #a1b070">></span></p>
+<p style="margin: 0px"><span style="color: #a1b070">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <</span><span style="color: #d6d694">binding</span><span style="color: #a1b070"> </span><span style="color: #009b00">name</span><span style="color: #a1b070">=</span><span style="color: #d6d694">"</span><span style="font-weight: bold; color: #44b1e3">sslBasicHttp</span><span style="color: #d6d694">"</span><span style="color: #a1b070">></span></p>
+<p style="margin: 0px"><span style="color: #a1b070">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <</span><span style="color: #d6d694">textMessageEncoding</span><span style="color: #a1b070"> </span><span style="color: #009b00">messageVersion</span><span style="color: #a1b070">=</span><span style="color: #d6d694">"</span><span style="font-weight: bold; color: #44b1e3">Soap11</span><span style="color: #d6d694">"</span><span style="color: #a1b070"> &#47;></span></p>
+<p style="margin: 0px"><span style="color: #a1b070">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <</span><span style="color: #d6d694">httpsTransport</span><span style="color: #a1b070"> </span><span style="color: #009b00">requireClientCertificate</span><span style="color: #a1b070">=</span><span style="color: #d6d694">"</span><span style="font-weight: bold; color: #44b1e3">true</span><span style="color: #d6d694">"</span><span style="color: #a1b070">&#47;></span></p>
+<p style="margin: 0px"><span style="color: #a1b070">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </</span><span style="color: #d6d694">binding</span><span style="color: #a1b070">></span></p>
+<p style="margin: 0px"><span style="color: #a1b070">&nbsp;&nbsp; </</span><span style="color: #d6d694">customBinding</span><span style="color: #a1b070">></span></p>
+<p style="margin: 0px"><span style="color: #a1b070"></</span><span style="color: #d6d694">bindings</span><span style="color: #a1b070">></span></p></div>
+<p></p>
+<li>On the client side, use basicHttpBinding with the security mode set to "Transport" and the option clientCredentialType set to "Certificate" on the<br />
+<transport&#47;> element.</li></ul></ul>
+<div class="wlWriterSmartContent" id="scid:0767317B-992E-4b12-91E0-4F059A8CECA8:bc394d9d-aad8-47a4-a9a9-5362b562dbb0" style="padding-right: 0px; display: inline; padding-left: 0px; padding-bottom: 0px; margin: 0px; padding-top: 0px">Technorati tags: <a href="http:&#47;&#47;technorati.com&#47;tags&#47;Windows%20Communication%20Foundation" rel="tag">Windows Communication Foundation</a></div><!--end_raw--></p>

@@ -1,0 +1,25 @@
+---
+layout: post
+status: publish
+published: true
+title: One More Update to KeywordClassifier
+author:
+  display_name: Tomas Restrepo
+  login: tomasr
+  email: tomas@winterdom.com
+  url: http://winterdom.com/
+author_login: tomasr
+author_email: tomas@winterdom.com
+author_url: http://winterdom.com/
+wordpress_id: 1299
+wordpress_url: http://winterdom.com/2009/10/one-more-update-to-keywordclassifier
+date: '2009-10-22 16:24:02 +0000'
+date_gmt: '2009-10-22 16:24:02 +0000'
+categories:
+- Visual Studio
+tags: []
+comments: []
+---
+<p>I&rsquo;ve just <a href="http:&#47;&#47;github.com&#47;tomasr&#47;KeywordClassifier">committed</a> some updates changes to my <a href="http:&#47;&#47;winterdom.com&#47;2009&#47;10&#47;updating-vs2010-extensions-for-beta-2">KeywordClassifier extension</a> for Visual Studio 2010 Beta 2.</p>
+<p>I had already worked around some problems my custom classifier was causing with Beta 2 related to it&rsquo;s use of a recursive invocation of the classifier services, but <a href="http:&#47;&#47;twitter.com&#47;noahsmark&#47;status&#47;5028792020">@noahsmark</a> <a href="http:&#47;&#47;gist.github.com&#47;214665">proposed</a> a better way to get this done in Beta 2 that would simplify the code a bit and get rid of the need to do the recursive invocation in the first place. This involved switching away from a custom classifier and instead implementing a custom <code>ITagger<ClassificationTag></code> service instead.</p>
+<p>The end result (to the user) is the same, but the code is definitely cleaner! In retrospect, though, naming the extension &ldquo;KeywordClassifier&rdquo; might not have been the best choice :).</p></p>

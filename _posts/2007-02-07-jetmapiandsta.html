@@ -1,0 +1,52 @@
+---
+layout: post
+status: publish
+published: true
+title: JET, MAPI and STA
+author:
+  display_name: Tomas Restrepo
+  login: tomasr
+  email: tomas@winterdom.com
+  url: http://winterdom.com/
+author_login: tomasr
+author_email: tomas@winterdom.com
+author_url: http://winterdom.com/
+wordpress_id: 980
+wordpress_url: http://winterdom.com/2007/02/jetmapiandsta
+date: '2007-02-07 05:15:06 +0000'
+date_gmt: '2007-02-07 05:15:06 +0000'
+categories:
+- ".NET"
+tags: []
+comments:
+- id: 1093
+  author: Rex
+  author_email: reedrexc@johndeere.com
+  author_url: ''
+  date: '2009-08-17 14:19:28 +0000'
+  date_gmt: '2009-08-17 14:19:28 +0000'
+  content: Is there any way I could get a code example of this solution in c# or vb.net?
+- id: 3008
+  author: Ted Chang
+  author_email: twc2102@columbia.edu
+  author_url: ''
+  date: '2012-08-31 14:40:38 +0000'
+  date_gmt: '2012-08-31 14:40:38 +0000'
+  content: How do you use an STA thread for your solution or did you use a different
+    driver&#47;engine?
+- id: 3013
+  author: Tomas Restrepo
+  author_email: tomas@winterdom.com
+  author_url: http://winterdom.com/
+  date: '2012-09-02 02:43:14 +0000'
+  date_gmt: '2012-09-02 02:43:14 +0000'
+  content: "@Ted: Just create a separate thread, and use Thread.SetApartmentState():
+    http:&#47;&#47;msdn.microsoft.com&#47;en-us&#47;library&#47;system.threading.thread.setapartmentstate.aspx"
+---
+<p><!--start_raw-->
+<p>I spent yesterday my fair share of hours trying to get the Exchange&#47;Outlook MAPI Installable ISAM for the JET engine to work&nbsp;through System.Data.OleDb. What we needed to do was pretty simple: Just do a couple of queries on the user's Outlook Inbox folder or Address book and display a few fields from there.</p>
+<p>There are quite a few samples and articles about using the Exchange IISAM through jet around, most of them old samples in VB6 using DAO and ADO (understandably). And they actually worked. However, when I tried to do the same from .NET I kept getting the following exception:</p>
+<p><font color="#ff0000">System.Data.OleDb.OleDbException: There are no MAPI clients installed on this machine. Install a MAPI client (like Outlook) on this machine.</font></p>
+<p>After much fiddling and much frustration, I figured out what the problem was: The Exchange&#47;Outlook IISAM engines need to be called from an STA Thread. That was not a problem for the many VB6-based samples because VB code was always in the STA, but in .NET threads by default are joined to the process' MTA.</p>
+<p>Just thought I might save someone a little frustration by point this out. Boy, I had almost forgotten how "fun" COM threading models were!</p>
+<div class="wlWriterSmartContent" id="0767317B-992E-4b12-91E0-4F059A8CECA8:41e8ebe3-10ff-486c-916d-569b3287b2bc" contenteditable="false" style="margin: 0px; padding: 0px; display: inline; float: none;">Technorati tags: <a href="http:&#47;&#47;technorati.com&#47;tags&#47;OLEDB" rel="tag">OLEDB</a>, <a href="http:&#47;&#47;technorati.com&#47;tags&#47;Outlook" rel="tag">Outlook</a>, <a href="http:&#47;&#47;technorati.com&#47;tags&#47;Exchange" rel="tag">Exchange</a>, <a href="http:&#47;&#47;technorati.com&#47;tags&#47;JET" rel="tag">JET</a>, <a href="http:&#47;&#47;technorati.com&#47;tags&#47;.NET" rel="tag">.NET</a></div><!--end_raw--></p>

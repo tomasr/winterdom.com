@@ -1,0 +1,26 @@
+---
+layout: post
+status: publish
+published: true
+title: Ast.ComplexCallHelper()
+author:
+  display_name: Tomas Restrepo
+  login: tomasr
+  email: tomas@winterdom.com
+  url: http://winterdom.com/
+author_login: tomasr
+author_email: tomas@winterdom.com
+author_url: http://winterdom.com/
+wordpress_id: 104
+wordpress_url: http://winterdom.com/2008/02/astcomplexcallhelper
+date: '2008-02-21 13:16:52 +0000'
+date_gmt: '2008-02-21 13:16:52 +0000'
+categories:
+- DLR
+tags: []
+comments: []
+---
+<p><!--start_raw-->
+<p>Something I ran into yesterday: There are two variants to Ast.ComplexCallHelper() in the DLR: One takes a MethodInfo and the other a Delegate as the invocation target. </p>
+<p>The MethodInfo variant does not check for the presence of a CodeContext argument, while the Delegate version handles this correctly. Not quite sure why the discrepancy between the two, but sure looks like using the Delegate variant is a better choice for now.</p>
+<div class="wlWriterSmartContent" id="scid:0767317B-992E-4b12-91E0-4F059A8CECA8:dd2e2dcb-5d07-4428-9b78-a14617ebe080" style="padding-right: 0px; display: inline; padding-left: 0px; padding-bottom: 0px; margin: 0px; padding-top: 0px">Technorati tags: <a href="http:&#47;&#47;technorati.com&#47;tags&#47;Dynamic%20Language%20Runtime" rel="tag">Dynamic Language Runtime</a></div><!--end_raw--></p>

@@ -1,0 +1,53 @@
+---
+layout: post
+status: publish
+published: true
+title: BizTalk 2006, MSMQ and BizTalk 2002
+author:
+  display_name: Tomas Restrepo
+  login: tomasr
+  email: tomas@winterdom.com
+  url: http://winterdom.com/
+author_login: tomasr
+author_email: tomas@winterdom.com
+author_url: http://winterdom.com/
+wordpress_id: 834
+wordpress_url: http://winterdom.com/2008/04/biztalk2006msmqandbiztalk2002
+date: '2008-04-27 23:24:24 +0000'
+date_gmt: '2008-04-27 23:24:24 +0000'
+categories:
+- BizTalk
+tags: []
+comments:
+- id: 1432
+  author: Ryan CrawCour
+  author_email: ryancrawcour@gmail.com
+  author_url: ''
+  date: '2010-04-20 00:26:19 +0000'
+  date_gmt: '2010-04-20 00:26:19 +0000'
+  content: "Using your component there doesnt appear to be UTF-16LE. \r\nOnly Unicode,
+    Unicode (Big-Endian). Is Unicode in this case the same as UTF-16LE?"
+- id: 1435
+  author: Ryan CrawCour
+  author_email: ryancrawcour@gmail.com
+  author_url: ''
+  date: '2010-04-20 00:49:35 +0000'
+  date_gmt: '2010-04-20 00:49:35 +0000'
+  content: "Once again, made my previous question redundant.\r\nTesting has shown
+    that Unicode does \"equal\" UT-16 and works for this scenario."
+- id: 1436
+  author: Tomas Restrepo
+  author_email: tomas@winterdom.com
+  author_url: http://winterdom.com/
+  date: '2010-04-20 01:21:24 +0000'
+  date_gmt: '2010-04-20 01:21:24 +0000'
+  content: "@Ryan: What MS calls Unicode is really UTF-16LE (little endian), Big endian
+    is UTF-16BE. Both are supported by the .NET framework."
+---
+<p><!--start_raw-->
+<p>A little over a year ago I <a href="http:&#47;&#47;www.winterdom.com&#47;weblog&#47;2006&#47;01&#47;31&#47;MSMQActiveXFormatterStringsAndBizTalk2006.aspx">posted an entry</a> about a new feature included in the MSMQ Send Adapter in BizTalk 2006 which provided a way to send messages through MSMQ from BizTalk to legacy applications that required the message contents to be formatted using the ActiveXFormatter, or that simply used the old COM-based MSMQ API.</p>
+<p>However, I didn't mentioned anything about how to enable the opposite scenario: How to receive and parse a text message in BizTalk 2006 coming from one of those legacy applications. Someone recently asked about this on the BizTalk Newsgroup and, as It turns out, BizTalk Server 2002 happens to fall in this category as well.</p>
+<p>Fortunately, this scenario is a lot simpler, if we assume that the contents of the message will be plain text (say, some string content or XML). The ActiveX message serialization rules dictate that a message with a BodyType of String will simply be serialized on the wire as a set of bytes encoded using UCS-2 (UTF-16LE), without a Byte Order Mark (BOM).</p>
+<p>BizTalk can parse UTF-16 contents without problems, but without a BOM, the standard disassemblers can't figure out the encoding of the message on it's own. </p>
+<p>Fortunately, most of the time you can work around this by setting the message Charset before parsing (for example using my own <a href="http:&#47;&#47;www.winterdom.com&#47;weblog&#47;2006&#47;01&#47;31&#47;FixMessageEncodingCustomPipelineComponentSample.aspx">FixEncoding</a> pipeline component).</p>
+<div class="wlWriterSmartContent" id="scid:0767317B-992E-4b12-91E0-4F059A8CECA8:33388475-6cea-4cc5-aad7-4dd6696eb8db" style="padding-right: 0px; display: inline; padding-left: 0px; padding-bottom: 0px; margin: 0px; padding-top: 0px">Technorati tags: <a href="http:&#47;&#47;technorati.com&#47;tags&#47;BizTalk" rel="tag">BizTalk</a>, <a href="http:&#47;&#47;technorati.com&#47;tags&#47;MSMQ" rel="tag">MSMQ</a></div><!--end_raw--></p>

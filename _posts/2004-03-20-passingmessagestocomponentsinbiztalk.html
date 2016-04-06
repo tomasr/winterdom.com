@@ -1,0 +1,26 @@
+---
+layout: post
+status: publish
+published: true
+title: Passing Messages to Components In BizTalk
+author:
+  display_name: Tomas Restrepo
+  login: tomasr
+  email: tomas@winterdom.com
+  url: http://winterdom.com/
+author_login: tomasr
+author_email: tomas@winterdom.com
+author_url: http://winterdom.com/
+wordpress_id: 688
+wordpress_url: http://winterdom.com/2004/03/passingmessagestocomponentsinbiztalk
+date: '2004-03-20 19:55:06 +0000'
+date_gmt: '2004-03-20 19:55:06 +0000'
+categories:
+- BizTalk
+tags: []
+comments: []
+---
+<p><!--start_raw-->If you're calling .NET components from BizTalk Server 2004 orchestrations, then chances are sooner or later you'll want to pass in complete messages as arguments. Doing it is actually pretty easy.</p>
+<p>One way to do this is to get your component to accept an XmlDocument instance. This works right away because ultimately, the BizTalk message is just an XmlDocument instance with a lot of goo on top, and so BizTalk knows hows to convert right away from and to an XmlDocument.</p></p>
+<p>However, you might actually want more control over this. So, one way to work things is to have your components accept an instance of Microsoft.XLANGs.BaseTypes.XLANGPart, as it has a few useful methods and properties. For example, you can access the document's schema thorugh the XmlSchema property.</p></p>
+<p>One pretty useful method in XLANGPart is the RetriveAs() method, which allows you to get a copy of the message into a representation you can deal with. Obviously, XML related types work right away (XmlNode, XmlDocument, and a few others, but not XmlReader), but you can specify any other type that is Xml-Serialization-compatible with the message schema.</p><!--end_raw--></p>

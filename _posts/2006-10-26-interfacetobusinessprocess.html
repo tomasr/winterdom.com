@@ -1,0 +1,42 @@
+---
+layout: post
+status: publish
+published: true
+title: Interface to Business Process?
+author:
+  display_name: Tomas Restrepo
+  login: tomasr
+  email: tomas@winterdom.com
+  url: http://winterdom.com/
+author_login: tomasr
+author_email: tomas@winterdom.com
+author_url: http://winterdom.com/
+wordpress_id: 16
+wordpress_url: http://winterdom.com/2006/10/interfacetobusinessprocess
+date: '2006-10-26 21:56:49 +0000'
+date_gmt: '2006-10-26 21:56:49 +0000'
+categories:
+- Architecture
+tags: []
+comments:
+- id: 19
+  author: Udi Dahan - The Software Simplis
+  author_email: Blog@UdiDahan.com
+  author_url: http://udidahan.weblogs.us
+  date: '2006-10-28 05:43:12 +0000'
+  date_gmt: '2006-10-28 05:43:12 +0000'
+  content: |
+    To your question about scalability, in Nick's follow up post, he says:
+    "So there are architectural tradeoffs between the two designs: Udi wins for scalability, while I get performance."
+    I've commented on his post (http:&#47;&#47;blogs.msdn.com&#47;nickmalik&#47;archive&#47;2006&#47;10&#47;27&#47;alas-we-must-differ.aspx) about why I think that scalability trumps performance.
+---
+<p><!--start_raw-->
+<p><a href="http:&#47;&#47;udidahan.weblogs.us&#47;">Udi Dahan</a> [1] has been commenting on an "SOA Anti-Pattern" he describes as "Services as the interface to a business process". Interesting stuff. In his <a href="http:&#47;&#47;udidahan.weblogs.us&#47;archives&#47;037010.html">latest post</a> he outs Nick Malik's comment on his <a href="http:&#47;&#47;blogs.msdn.com&#47;nickmalik&#47;archive&#47;2006&#47;10&#47;22&#47;declared-visible-and-open-coupling.aspx">Declared, Visile and Open Coupling</a> post for advocating a solution based on Udi's anti-pattern.</p>
+<p>So, a few questions&#47;comments:</p>
+<p>So, how well does Udi's proposed solution scale? Sure, if you have 10 partners, I see no problems. What happens when it's not partners but, say, customers and you've got a few millions of those? <br>Seems to me like the whole "service subscribes from change notifications from other service in order to know everything about all those things out there" in a case like this is just another way to build a data replication model (with the advantages and disadvantages that implies). Or am I just misunderstanding the whole point? </p>
+<p>It seems to me, though. that the solution&nbsp;proposed by Udi&nbsp;still builds an interface to a business process, just that instead of building a new service for it&nbsp;he&nbsp;forced the Co-Op Partner Service to become the interface&nbsp;for the process&nbsp;(and calling it Workflow instead of Business process doesn't really hide that fact).</p>
+<p>So, care to enlighten me?</p>
+<p><strong>P.S:</strong> One thing I did notice&nbsp;from Nick's proposed solution is that its the kind of thing where BizTalk works rather well as an implementation technology in many scenarios. This kind of solution, though, is certainly all about layering...</p>
+<p><strong>[1]</strong> Man, how many popups does your weblog have to have? Jeez.</p>
+<div class="wlWriterSmartContent" id="d7bf807d-7bb0-458a-811f-90c51817d5c2:6b19f710-1626-49ab-8fe2-a30276060eb5" contenteditable="false" style="padding-right: 0px; display: inline; padding-left: 0px; padding-bottom: 0px; margin: 0px; padding-top: 0px">
+<p><span class="TagSite">Technorati:</span> <a href="http:&#47;&#47;technorati.com&#47;tag&#47;Architecture" rel="tag" class="tag">Architecture</a>, <a href="http:&#47;&#47;technorati.com&#47;tag&#47;SOA" rel="tag" class="tag">SOA</a><br &#47;><!-- StartInsertedTags: Architecture, SOA :EndInsertedTags --></p></div><!--end_raw--></p>

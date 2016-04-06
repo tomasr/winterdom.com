@@ -1,0 +1,25 @@
+---
+layout: post
+status: publish
+published: true
+title: Contract-First
+author:
+  display_name: Tomas Restrepo
+  login: tomasr
+  email: tomas@winterdom.com
+  url: http://winterdom.com/
+author_login: tomasr
+author_email: tomas@winterdom.com
+author_url: http://winterdom.com/
+wordpress_id: 849
+wordpress_url: http://winterdom.com/2004/08/contractfirst
+date: '2004-08-28 04:29:52 +0000'
+date_gmt: '2004-08-28 04:29:52 +0000'
+categories:
+- Web Services
+tags: []
+comments: []
+---
+<p><!--start_raw--><a href="http:&#47;&#47;pluralsight.com&#47;blogs&#47;aaron&#47;archive&#47;2004&#47;08&#47;27&#47;2092.aspx">Aaron asks</a> if we believe in Contract-First. I sure do. BUT, he nailed it right on the head: It's very hard to do if you need to keep doing things by hand and avoiding the tools you use. It's extremely unproductive.</p>
+<p>Furthermore, the existing tools don't make it any easier to choose contract first. Example: Why bother defining your message schemas in XSD outside, when ASMX will just recreate them? (pain to get it to use your existing ones). Furthermore, even something as powerful as BizTalk falls into this pitfall: when importing a webservice reference, it imports schemas as well. Import two services that share schemas, and try to use that cleanly... it sucks.</p></p>
+<p>In all honesty, writing WSDL code by hand is a pain... I'd myself would settle for better support to deal with the message schemas... the rest of the bindings map fairly decently to the rest of the programming model, so it's not too bad....</p><!--end_raw--></p>

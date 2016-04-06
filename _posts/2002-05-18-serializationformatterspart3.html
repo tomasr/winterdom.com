@@ -1,0 +1,154 @@
+---
+layout: post
+status: publish
+published: true
+title: Serialization Formatters - Part 3
+author:
+  display_name: Tomas Restrepo
+  login: tomasr
+  email: tomas@winterdom.com
+  url: http://winterdom.com/
+author_login: tomasr
+author_email: tomas@winterdom.com
+author_url: http://winterdom.com/
+wordpress_id: 406
+wordpress_url: http://winterdom.com/2002/05/serializationformatterspart3
+date: '2002-05-18 12:41:59 +0000'
+date_gmt: '2002-05-18 12:41:59 +0000'
+categories:
+- ".NET"
+tags: []
+comments:
+- id: 298
+  author: yuval
+  author_email: yuval_gross@yahoo.com
+  author_url: ''
+  date: '2002-07-10 13:19:16 +0000'
+  date_gmt: '2002-07-10 13:19:16 +0000'
+  content: |
+    <p>hi there</p>
+    <p>i see you're a 'shark' in these matters, and i'd be thrilled if u could give me some advise.</p>
+    <p>i'm having some trouble with a server sending a large amount of data in response to a client call.<br &#47;>
+    i'm trying to solve this via custom sinks.<br &#47;>
+    i've already written the IRemotingFormatter (a cute code - using zlib's stream compression component over the result of BinaryFormatter).<br &#47;>
+    i'm having a little trouble writing the sink, though: <br &#47;>
+    - i see under the  tag i need to use a sinkprovider class (?? why did they call it 'formatter' then?) what is it supposed to do? only create my custom sink and call it?<br &#47;>
+    - what kind of sinks do i need to create? from what should they inherit or implement?</p>
+    <p>thanks<br &#47;>
+    </p>
+---
+<p><!--start_raw-->
+<p><font color="#669933">Formatters and Remoting</font></p></p>
+<p>It's pretty obvious that Serialization Formatters are not only meant to aid in<br />
+object persistence, but also play a very important role in the marshaling of<br />
+objects across remoting boundaries.</p></p>
+<p>Overall, when I look at the extensibility of the Remoting framework in .NET,<br />
+I'm throughly impressed. The MS people who worked on it did a very fine job in<br />
+making the framework as extensible as possible. However, there are some raw<br />
+spots, and how Serialization Formatters hook into the remoting infrastructure<br />
+is, imho, one of them.</p></p>
+<p>The extensibility model of remoting is, at its very core, based on channels and<br />
+channel sink chains, developed on top of a set of interfaces like<br />
+IClientChannelSink and IServerChannelSink, and chains of sink providers that<br />
+act as class factories for the sinks themselves (based on <code>IClientChannelSinkProvider</code><br />
+and <code>IServerChannelSinkProvider</code>).<br />
+</p></p>
+<p>On the other hand, Serialization formatters are based on the implementation of<br />
+the <code>IFormatter</code> interface; however, there's also the<br />
+not-so-well-known <code>IRemotingFormatter</code> interface. The definition of<br />
+the two are very much alike, except <code>IRemotingFormatter's</code> method<br />
+take an extra <code>Header[]</code> argument. Both SoapFormatter and<br />
+BinaryFormatter implement the <code>IRemotingFormatter</code> interface.<br />
+</p></p>
+<p>What's not so apparent is just how formatters plug into the remoting process.<br />
+If you look at the framework docs, you'll see that this is done a set of<br />
+classes implementing the <code>IClientFormatterSink</code> interface (on the<br />
+client side), and the <code>IChannelSinkBase&#47;IServerChannelSink</code> interfaces<br />
+on the server side. <code>IClientFormatterSink</code> is just an interface<br />
+combining the <code>IChannelSinkBase</code>, <code>IClientChannelSink</code> and<br />
+<code>IMessageSink</code> interfaces.<br />
+</p></p>
+<p>As you can see, this just means that, in essence you have to implement two<br />
+channel sinks of your own to plug your custom formatter into the remoting<br />
+infrastructure, not to mention two extra sink provider classes! Where does that<br />
+leave the <code>IFormatter</code> and <code>IRemotingFormatter</code> interfaces?<br />
+Nowhere. Absolutely nowhere.</p></p>
+<p>So here's where my rant is aimed: <i>Why take the trouble to define the interfaces<br />
+if you're not going to use them anyway?</i> Makes no sense to me. It just<br />
+seems like too much trouble writing full-fledged channel sinks just to do what<br />
+should be a much simpler task.</p></p>
+<p>But that's not the worst part. The worst part is that formatter sinks are not <i>really</i><br />
+full-fledged channel sinks. In reality, there are only two things in the <code>IClientChannelSink</code><br />
+implementation of a formatter sink that are actually called by the runtime:<br />
+NextChannelSink, and AsyncProcessResponse(). The others, you can leave<br />
+unimplemented. Now, to me, somehow, this doesn't seem quite right. Thanks to <a href="http:&#47;&#47;www.dotnetremoting.cc&#47;DotNetCentric&#47;"><br />
+Ingo</a>, I know understand why it was done this way. I was talking to him<br />
+earlier to day and I'm going to quote him on this, since he puts it much better<br />
+than I ever could:</p><br />
+<quote><br />
+<i><font size="-1"></p>
+<p>
+If you question this design, you'd have to question the complete separation in<br />
+IMessageSink, IClientChannelSink, IServerChannelSink and maybe even<br />
+IDynamicSink - I tended to do this [question it] in the past as well but I<br />
+somehow changed my attitude towards it ;-)</p></p>
+<p>
+I now agree with MS' designers that it's a Good Thing to have two interfaces,<br />
+whereas one works on messages and the other works on stream&#47;headers. So ...<br />
+when having two interface, you necessarily have one class which provides for<br />
+the transition between those two. Well, that's the IFormatterSink ;-).</p></p>
+<p>
+In front of the formatter, you've got IMessageSinks and after it you work with<br />
+IClientChannelSinks. However, to keep this consistent, the reply simply _has_<br />
+to be handled by IClientChannelSink for a formatter. Remember:<br />
+IClientChannelSink means dealing with stream&#47;header wheras IMessageSink means<br />
+dealing with Messages ;-)</p><br />
+</font></i><br />
+</quote></p>
+<p>He's obviously got a point here. I can't, however, keep away the feeling that<br />
+something's smells fishy here... I still believe it could have been done<br />
+differently.</p></p>
+<p>Ingo did point out to me something extremely important:<br />
+<quote><br />
+<i><font size="-1">However, there should be an IMessageSinkProvider interface ...<br />
+this really bugs me. You have to create an IMessageSink via an<br />
+IClientChannelSinkProvider, thereby leading to a must-have implementation of<br />
+IClientChannelSink as well. This interface's implementation will quite likely<br />
+only throw exception on each method because it's programmed to deal with<br />
+messages instead of streams and thereby has to be placed in front of the<br />
+formatter. </font></i><br />
+</quote></p></p>
+<p>
+I totally agree with this.</p></p>
+<p>If you're still wondering why write channel sinks in the first place: Well, if<br />
+you look at the formatter sinks for the two default formatters in the framework<br />
+you'll quickly realize why: <i>They need to manipulate transport headers!</i>.<br />
+This, quite honestly, could have been achieved without the need for full<br />
+channel sink implementations. Instead, MS could have just added generic<br />
+formatter sinks that could be instructed to use a given IFormatter or<br />
+IRemotingFormatter implementation, and added a new interface to allow them to<br />
+manipulate the transport headers, <i>if needed</i><br />
+. This would have taken a lot of trouble of writing remoting formatters away.</p></p>
+<p>And no, <code>IRemotingFormatter</code> is <i>not</i> the interface to use<br />
+here, for several reasons. For starters, IRemotingFormatter implementations<br />
+cannot change the headers passed in to them (well, at least they can't add new<br />
+ones). There's also a slight impedance mismatch between the <code>Header[]</code><br />
+argument pass in to <code>IRemotingFormatter</code> and the <code>ITransportHeaders</code><br />
+interface used in channel sinks to deal with headers. So, what purpose does <code>IRemotingFormatter</code><br />
+server in real life? As far as I can see, none at all. At least I couldn't spot<br />
+any place where its methods are actually called... Perhaps I missed something,<br />
+and if I did, I'd love to <a href="mailto:tomasr@mvps.org">hear</a> about it!<br />
+</p></p>
+<p>One of the downsides of all this is that it leads to a tight coupling between a<br />
+given formatter and the channel underneath, via the formatter sink. This can be<br />
+easily witnessed on the <a href="http:&#47;&#47;msdn.microsoft.com&#47;downloads&#47;sample.asp?url=&#47;MSDN-FILES&#47;027&#47;001&#47;901&#47;msdncompositedoc.xml&amp;frame=true"><br />
+Rotor</a> sources where the default formatter sinks actually <i>check what<br />
+channel</i> they are working on top of, and adjust their behavior based on<br />
+it [1]. Or even worse, does things that should've been left to one of the<br />
+transport sinks underneath, like <code>headers["__RequestVerb"] =<br />
+"POST";</code></p></p>
+<p>[1] This is required, in part, by some of the protocols, like SOAP, which<br />
+require the transport headers manipulated. For example, the HTTP result code<br />
+might need to be changed if the server's sending a fault or an actual<br />
+respose...</p><br />
+<!--end_raw--></p>

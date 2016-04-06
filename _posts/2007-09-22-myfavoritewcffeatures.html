@@ -1,0 +1,35 @@
+---
+layout: post
+status: publish
+published: true
+title: My Favorite WCF Features
+author:
+  display_name: Tomas Restrepo
+  login: tomasr
+  email: tomas@winterdom.com
+  url: http://winterdom.com/
+author_login: tomasr
+author_email: tomas@winterdom.com
+author_url: http://winterdom.com/
+wordpress_id: 126
+wordpress_url: http://winterdom.com/2007/09/myfavoritewcffeatures
+date: '2007-09-22 07:55:14 +0000'
+date_gmt: '2007-09-22 07:55:14 +0000'
+categories:
+- WCF
+tags: []
+comments: []
+---
+<p><!--start_raw-->
+<p>After working with Windows Communication Foundation for a while, I've reached the conclusion that the two features in WCF that I like the most are:</p>
+<p><strong>1. Generic Service Contracts:</strong> That is, the combination of using simple contracts with a single, catch-all operation and untyped data contracts (a.k.a. the System.ServiceModel.Channels.Message class). Particularly for one way, scenarios, these are really powerful and flexible. In other words, stuff like this:</p>
+<pre>[ServiceContract]<br />
+<span style="color: blue">public</span> <span style="color: blue">interface</span> IGenericOneWayService<br />
+{<br />
+[OperationContract(Action=<span style="color: maroon">"*"</span>, IsOneWay=<span style="color: maroon">true</span>)]<br />
+<span style="color: blue">void</span> Execute(Message msg);<br />
+}<br />
+</pre></p>
+<p><strong>2. Custom Bindings:</strong> Creating custom bindings by composing arbitrary sets of BindingElements is extremely flexible and a provides an excellent extensibility mechanism, particularly when you introduce custom protocol channels (i.e. above the transport channel) into the mix. </p></p>
+<p>It took a bit of time for these to finally "click" for me, but I know fully realize this is a pretty cool thing to have in the framework. I do wish there was better validation of custom bindings, as well as a way to specify declaratively the requirements and capabilities of binding elements.</p></p>
+<div class="wlWriterSmartContent" id="scid:0767317B-992E-4b12-91E0-4F059A8CECA8:a6125533-eeda-438e-b02b-c40e7e75e316" style="padding-right: 0px; display: inline; padding-left: 0px; padding-bottom: 0px; margin: 0px; padding-top: 0px">Technorati tags: <a href="http:&#47;&#47;technorati.com&#47;tags&#47;Windows%20Communication%20Foundation" rel="tag">Windows Communication Foundation</a></div><!--end_raw--></p>

@@ -1,0 +1,134 @@
+---
+layout: post
+status: publish
+published: true
+title: VS2010 RC Weirdness Around Custom Format Definitions
+author:
+  display_name: Tomas Restrepo
+  login: tomasr
+  email: tomas@winterdom.com
+  url: http://winterdom.com/
+author_login: tomasr
+author_email: tomas@winterdom.com
+author_url: http://winterdom.com/
+wordpress_id: 1316
+wordpress_url: http://winterdom.com/2010/03/vs2010-rc-weirdness-around-custom-format-definitions
+date: '2010-03-30 21:37:57 +0000'
+date_gmt: '2010-03-30 21:37:57 +0000'
+categories:
+- Visual Studio
+tags: []
+comments:
+- id: 1342
+  author: Noah Richards
+  author_email: noahric@microsoft.com
+  author_url: http://blogs.msdn.com/noahric
+  date: '2010-03-31 02:14:41 +0000'
+  date_gmt: '2010-03-31 02:14:41 +0000'
+  content: "Hey Tomas, I'll forward this on to Ameen to see if he knows anything about
+    it.\r\n\r\nThanks!\r\n-Noah"
+- id: 1343
+  author: sean e
+  author_email: sean@wholetomato.com
+  author_url: ''
+  date: '2010-03-31 15:31:02 +0000'
+  date_gmt: '2010-03-31 15:31:02 +0000'
+  content: I have run into similar problems.  I've seen (and reported to Ameen) similar
+    problems happen after changing the caret width in the system control panel (I
+    wasn't able repro).  Also once it happened after resuming from hibernation.  And
+    I have found that opening the Font &amp; Colors dialog immediately after launching
+    the IDE before opening solution will also make it happen (reproducible).
+- id: 1348
+  author: sean e
+  author_email: sean@wholetomato.com
+  author_url: ''
+  date: '2010-03-31 19:51:57 +0000'
+  date_gmt: '2010-03-31 19:51:57 +0000'
+  content: "I should note I reported these well after the RC came out - it took awhile
+    to rule out problems in our own extension.  Someone else hinted at similar problems
+    at http:&#47;&#47;social.msdn.microsoft.com&#47;Forums&#47;en-US&#47;vseditorprerelease&#47;thread&#47;0edd1eea-8d68-417d-a552-89dbc0896b3b&#47;\r\n\r\nIn
+    both that person's case and in all of mine, simply opening the Font and Colors
+    page of the IDE Options dialog and pressing enter gives the editor the kick it
+    needs to use the user (rather than default) colors.  No need to import settings."
+- id: 1349
+  author: Tomas Restrepo
+  author_email: tomas@winterdom.com
+  author_url: http://winterdom.com/
+  date: '2010-03-31 20:32:11 +0000'
+  date_gmt: '2010-03-31 20:32:11 +0000'
+  content: "@sean: Thanks for the confirmation. It's still good to hear I'm not totally
+    crazy :)"
+- id: 1358
+  author: Ameen
+  author_email: ameent@microsoft.com
+  author_url: ''
+  date: '2010-04-01 17:51:46 +0000'
+  date_gmt: '2010-04-01 17:51:46 +0000'
+  content: "Hello,\r\n\r\nI haven't been able to reproduce the problem using the fonts
+    &amp; colors repro Sean mentions. Regardless, certainly something is behaving
+    incorrectly. I've opened a work item and will look into the issue. I'll update
+    this thread with my findings.\r\n\r\nSorry for the inconvenience.\r\n-Ameen"
+- id: 1360
+  author: Tomas Restrepo
+  author_email: tomas@winterdom.com
+  author_url: http://winterdom.com/
+  date: '2010-04-01 19:10:29 +0000'
+  date_gmt: '2010-04-01 19:10:29 +0000'
+  content: "@Ameen: Thanks for looking into the problem, it's much appreciated. FWIW,
+    as far as I can see, this only seems to come up with custom definitions created
+    by other VS extensions, I have never had a problem with VS built-in definitions
+    (once I customize those, they are perfectly obeyed every time).\r\n\r\nFrom what
+    Sean and I have seen, I'd be tempted to say that maybe, just maybe, it's almost
+    as if sometimes the default values for a format definition were applied *after*
+    the customized color&#47;format settings had been applied already. Of course,
+    I have no clue, but that's what it kinda looks like from here :)"
+- id: 1363
+  author: sean e
+  author_email: sean@wholetomato.com
+  author_url: ''
+  date: '2010-04-04 15:43:37 +0000'
+  date_gmt: '2010-04-04 15:43:37 +0000'
+  content: Agree - I've never seen the problem occur with VS built-in components,
+    only with non-VS components - even with unmodified project wizard generated extensions.
+- id: 1364
+  author: sean e
+  author_email: sean@wholetomato.com
+  author_url: ''
+  date: '2010-04-04 15:50:22 +0000'
+  date_gmt: '2010-04-04 15:50:22 +0000'
+  content: "These are the steps that I thought generated a reproducible case of this
+    problem.   I'll take a look this week and see if there's something I left out.\r\n\r\n\r\nCreate
+    and build a new \"Editor Classifier\" project.\r\n\r\nIn the Fonts and Colors
+    dialog of the Exp instance, locate the \"Ordinary Text\" display item.  Change
+    both foreground and background to something memorable and very different than
+    the defaults.  Open a solution and confirm the colors work as expected.\r\n\r\nMake
+    sure IDE startup option is set to \"show empty environment.\"\r\n\r\nClose the
+    IDE.\r\n\r\nStart IDE and do not load a solution or any files.\r\n\r\nOpen Font
+    and Colors option page, confirm previous non-default color selection still appears
+    in \"Ordinary Text.\"  IMPORTANT: do NOT press OK.   Instead, press cancel.\r\n\r\nLoad
+    solution and see that text is rendered using default rather than user selected
+    colors.\r\n\r\nOpen F &amp; C dialog and press OK without making any changes at
+    all to fix the colors used in the editor."
+- id: 1373
+  author: sean e
+  author_email: sean@wholetomato.com
+  author_url: ''
+  date: '2010-04-10 18:07:16 +0000'
+  date_gmt: '2010-04-10 18:07:16 +0000'
+  content: I had a co-worker try out my steps and he wasn't able to repro on his system.  The
+    steps still work on mine though.  oh well...
+- id: 1376
+  author: sean e
+  author_email: sean@wholetomato.com
+  author_url: ''
+  date: '2010-04-13 00:47:25 +0000'
+  date_gmt: '2010-04-13 00:47:25 +0000'
+  content: It just happened again after re-connecting to a test machine via Remote
+    Desktop...
+---
+<p>I&rsquo;ve been noticing some oddities in how Visual Studio 2010 RC handles Custom <a href="http:&#47;&#47;msdn.microsoft.com&#47;en-us&#47;library&#47;microsoft.visualstudio.text.classification.classificationformatdefinition(VS.100).aspx">ClassificationFormatDefinitions</a> when multiple extensions are interacting together. It it hasn&rsquo;t been fixed already, then I guess it&rsquo;s already too late for it to matter, but I still wanted to bring it up just to know if it&rsquo;s just me that&rsquo;s been noticing this.</p>
+<p>As some readers are aware, I&rsquo;ve <a href="http:&#47;&#47;winterdom.com&#47;2010&#47;02&#47;visual-studio-2010-rc">written a couple</a> of VS2010 extensions for myself which I always install as soon as I setup a new VS2010 installation, and so far I&rsquo;ve been very happy with the results and VS2010 extensibility in general. Both of these extensions define custom ClassificationFormatDefinition, whose format I then tweak on my current VS color scheme.</p>
+<p>And this generally works great. That is, until I install another extension created by someone else. The first time I noticed this was when I installed the <a href="http:&#47;&#47;visualstudiogallery.msdn.microsoft.com&#47;en-us&#47;20cd93a2-c435-4d00-a797-499f16402378">Visual Studio Color Theme Editor</a> extension by Matthew Johnson. Everything worked fine, except that after using it a bit I realized that every time I changed the color theme for the whole IDE using Matthew&rsquo;s extension, my custom ClassificationFormatDefinitions would revert back to the default formats specified in the original definitions in code, instead of the values I had assigned to them in my customized VS color scheme.</p>
+<p>Re-importing the .vssettings file with my saved VS color scheme would get colors and formats right again, so, to be honest, I didn&rsquo;t give it much thought at the moment.</p>
+<p>Yesterday, however, I ran into this again while trying <a href="http:&#47;&#47;visualstudiogallery.msdn.microsoft.com&#47;en-us&#47;59ca71b3-a4a3-46ca-8fe1-0e90e3f79329">VsVim</a> by Jared Parsons. As soon as I fired up VS2010 after installing VsVim, I noticed that custom formats for my own definitions reverted once again to the default values. I ran into a couple of issues with VsVim so decided to disable it for now while until I had time to look into it closer and imagine my surprise when right after restarting VS2010 my customized format definitions came up right away instead of the default values!</p>
+<p>So my impression is that something (but not sure what) causes VS to ignore customized custom definition formats configuration (confusing, I know, sorry) when multiple VS extensions are running. Has anyone else run into this before?</p></p>

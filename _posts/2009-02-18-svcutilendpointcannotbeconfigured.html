@@ -1,0 +1,32 @@
+---
+layout: post
+status: publish
+published: true
+title: 'SvcUtil: Endpoint Cannot Be Configured'
+author:
+  display_name: Tomas Restrepo
+  login: tomasr
+  email: tomas@winterdom.com
+  url: http://winterdom.com/
+author_login: tomasr
+author_email: tomas@winterdom.com
+author_url: http://winterdom.com/
+wordpress_id: 106
+wordpress_url: http://winterdom.com/2009/02/svcutilendpointcannotbeconfigured
+date: '2009-02-18 06:34:24 +0000'
+date_gmt: '2009-02-18 06:34:24 +0000'
+categories:
+- WCF
+tags: []
+comments: []
+---
+<p><!--start_raw-->
+<p>I&rsquo;ve been working the past week on some custom WCF transport channels. It&rsquo;s been pretty instructive, though it can be a bit of a frustrating experience at times.</p>
+<p>The past couple of days, I&rsquo;ve been busy getting metadata&#47;policy export&#47;import working correctly, and ran into an error when using SvcUtil.exe to import my service metadata:</p>
+<div class="codebg"><code>
+<p>Attempting to download metadata from 'http:&#47;&#47;localhost:6466&#47;Metadata&#47;' using WS-Metadata Exchange or DISCO.<br>Error: An error occurred in the tool. </p>
+<p>Error: The binding on the service endpoint cannot be configured.<br>Parameter name: endpoint.Binding</p></code></div>
+<p>This is a pretty generic error message that, well, doesn&rsquo;t really tell you anything. <code>SvcUtil.exe</code> (and it&rsquo;s related VS feature) is a pretty key piece of the WCF developer toolkit, but, unfortunately, it&rsquo;s (a) full of bugs and (b) has horrible error handling, which makes diagnosing problems with metadata import incredibly frustrating.
+<p>As usual, the problem turned out to be mine: I had registered my <code>IPolicyImportExtension&#47;IWsdlImportExtension</code> implementation in a custom app.config file that I was feeding to SvcUtil using the <code>&#47;svcutilConfig</code> argument. This worked fine and the importer was getting correctly invoked and executed just fine.
+<p>However, I forgot to register my <code>bindingExtension</code> &amp; <code>bindingElementExtension</code> for my custom binding and custom transport binding element, which prevented SvcUtil from serializing the custom binding to the configuration XML.
+<p>Once I fixed that, it worked right away. I just wish that SvcUtil could have generated a clearer error message pointing out what the problem actually was.</p><!--end_raw--></p>

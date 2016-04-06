@@ -1,0 +1,96 @@
+---
+layout: post
+status: publish
+published: true
+title: Italics Rendering in VS2010 Beta 1
+author:
+  display_name: Tomas Restrepo
+  login: tomasr
+  email: tomas@winterdom.com
+  url: http://winterdom.com/
+author_login: tomasr
+author_email: tomas@winterdom.com
+author_url: http://winterdom.com/
+wordpress_id: 1239
+wordpress_url: http://winterdom.com/2009/05/italics-rendering-in-vs2010-beta-1
+date: '2009-05-21 03:39:02 +0000'
+date_gmt: '2009-05-21 03:39:02 +0000'
+categories:
+- Visual Studio
+tags: []
+comments:
+- id: 810
+  author: Neil
+  author_email: neil.houghton@gmail.com
+  author_url: ''
+  date: '2009-05-21 10:47:58 +0000'
+  date_gmt: '2009-05-21 10:47:58 +0000'
+  content: It looks like the line spacing in VS2010 is slightly larger.  I wonder
+    if that's easy to change.
+- id: 812
+  author: James Alexander
+  author_email: comonality@jamesralexander.com
+  author_url: http://jamesralexander.com
+  date: '2009-05-21 12:09:15 +0000'
+  date_gmt: '2009-05-21 12:09:15 +0000'
+  content: "It looks like each line of code (non comment, non blank) is actually slightly
+    larger in VS2010. I'm only going by what I'm seeing in your screen shots, using
+    my screen capture tool that draws a line across the screen, but it seems that
+    all lines are equal until the first code line: \"using System;\"\r\n\r\nPretty
+    strange. Could it be a product of text rendering in WPF? If you use the normal
+    fonts do you see the same behavior? (btw, love your font and VS themes!)"
+- id: 813
+  author: Tomas Restrepo
+  author_email: tomas@winterdom.com
+  author_url: http://winterdom.com/
+  date: '2009-05-21 12:26:49 +0000'
+  date_gmt: '2009-05-21 12:26:49 +0000'
+  content: 'James: Yes, it''s weird. I just tried it with Consolas 12pt, and I see
+    the same behavior: VS2008 shows 2 more lines than 2010. So it doesn''t appear
+    to be related to the font used.'
+- id: 814
+  author: Tomas Restrepo
+  author_email: tomas@winterdom.com
+  author_url: http://winterdom.com/
+  date: '2009-05-21 13:14:19 +0000'
+  date_gmt: '2009-05-21 13:14:19 +0000'
+  content: I've done a few more tests, and I've come to the conclusion that maybe
+    I've got it backwards... maybe VS2010 is actually rendering Envy Code R in italics
+    correctly. Still the old rendering seems to look a bit better to me :)
+- id: 816
+  author: Damien Guard
+  author_email: damien@envytech.co.uk
+  author_url: http://damieng.com
+  date: '2009-05-21 18:08:55 +0000'
+  date_gmt: '2009-05-21 18:08:55 +0000'
+  content: "The situation here is that VS2010 beta 1 is rendering text via WPF which
+    uses ideal widths and not GDI adjusted widths in order to enable sub-pixel positioning.
+    This doesn't really make sense for monospaced fonts and the font rendering is
+    very likely to change before RTM :)\r\n\r\n[)amien"
+- id: 987
+  author: Patrick
+  author_email: patrick2010@mailinator.com
+  author_url: ''
+  date: '2009-06-28 04:09:34 +0000'
+  date_gmt: '2009-06-28 04:09:34 +0000'
+  content: "With the ability for WPF to use open type font features, specifically
+    tabular vs proportional alignment, perhaps a smart editor would make it possible
+    to use proportional fonts for most of the code, and then set the alignment to
+    tabular when trying to arrange multiple lines of text. Such as assignment statements.\r\n\r\nTake
+    a look at http:&#47;&#47;msdn.microsoft.com&#47;en-us&#47;library&#47;ms745109.aspx
+    to see what I mean.\r\n\r\nAdditionally, I like the possibilities WPF will provide
+    for scrunching more text on a line while keeping the font large, or scrunching
+    more lines on the screen while keeping the font large. \r\n\r\nExcept for now
+    it looks like it's giving us less. ha ha.\r\n\r\nI think a neat idea for an addon
+    is something that would make the System.blah.blah small and then the last name
+    in the string larger. For example, the Winterdom.IO. would be small and the FileMap
+    could be large.\r\n\r\nIt's not really an issue on that example, but I've seen
+    really long blah.blah.blah.blah.blah.somethingimportant that isn't even on the
+    screen anymore code. This could fix that.  A mouseover would expand the blahs
+    to make them inspectable when necessary. a single click would make them stay big.
+    a second click would make them small again."
+---
+<p>A few people have asked questions about <a href="http:&#47;&#47;winterdom.com&#47;2009&#47;05&#47;installing-vs2010-beta-1">my comment</a> on the rendering quality of italics fonts in Visual Studio 2010 Beta 1. To make the point clearer, here&rsquo;s VS2010 side by side with VS2008, with the exact same code being displayed, using the same font (Envy Code R VS) at the same size:</p>
+<p><a href="http:&#47;&#47;winterdom.com&#47;wp-content&#47;uploads&#47;2009&#47;05&#47;vs10-italics.png"><img style="border-bottom: 0px; border-left: 0px; display: inline; border-top: 0px; border-right: 0px" title="vs10_italics" border="0" alt="vs10_italics" src="http:&#47;&#47;winterdom.com&#47;wp-content&#47;uploads&#47;2009&#47;05&#47;vs10-italics-thumb.png" width="640" height="380" &#47;></a> </p>
+<p>If you look at the expanded view carefully, you should be able to spot some significant differences. For example, look at the rendering for letters like &ldquo;<em>e</em>&rdquo; and &ldquo;<em>t</em>&rdquo;. Of course, I can&rsquo;t easily compare using another font, so that might be related (or not).</p>
+<p>This screenshot did leave me with a question: How come VS2008 manages to display 2 lines more than VS2010, if both text editor windows are the same size and both are using the same font size?</p></p>

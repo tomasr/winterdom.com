@@ -1,0 +1,27 @@
+---
+layout: post
+status: publish
+published: true
+title: Workflow Types and Prototypes
+author:
+  display_name: Tomas Restrepo
+  login: tomasr
+  email: tomas@winterdom.com
+  url: http://winterdom.com/
+author_login: tomasr
+author_email: tomas@winterdom.com
+author_url: http://winterdom.com/
+wordpress_id: 610
+wordpress_url: http://winterdom.com/2007/07/workflowtypesandprototypes
+date: '2007-07-17 06:58:03 +0000'
+date_gmt: '2007-07-17 06:58:03 +0000'
+categories:
+- Workflow
+tags: []
+comments: []
+---
+<p><!--start_raw-->
+<p>Windows Workflow Foundation creates workflow instances either from CLR Types describing the workflow, or from an XmlReader that provides the Workflow description in XAML. In either case, I've always viewed the entire workflow definition + creation as a variation of the <a href="http:&#47;&#47;www.dofactory.com&#47;Patterns&#47;PatternPrototype.aspx">prototype</a> pattern. It's a loose interpretation, of course, but it rhymes with the idea that either the CLR type of the XAML workflow are basically ways to describe the initial state of a WF workflow before execution (i.e. they are templates).</p>
+<p>Even at runtime, each activity in the workflow definition is used as a prototype to create instances of it to execute in a specific workflow context (see <a href="http:&#47;&#47;blogs.msdn.com&#47;advancedworkflow&#47;archive&#47;2006&#47;03&#47;21&#47;557121.aspx">spawned contexts</a>). Cloning of the prototype instance is done in WF by serializing the activity into an in-memory stream and loading it back out into&nbsp;a new CLR instance.</p>
+<p>All of this works very well in most cases, but something I was trying to do recently led me to wish the WF team had provided a third way of specifying a workflow definition: As an actual CLR instance of an activity tree; which, after all, is what WF does with the CLR type you provide. This would've been a pretty interesting way of dynamically generating workflow definitions directly through code, without having to resort to either using self-modifying workflows or generating XAML at runtime.</p>
+<div class="wlWriterSmartContent" id="0767317B-992E-4b12-91E0-4F059A8CECA8:1ee3d4fb-3bee-4679-9f2a-5434942cd18f" contenteditable="false" style="padding-right: 0px; display: inline; padding-left: 0px; padding-bottom: 0px; margin: 0px; padding-top: 0px">Technorati tags: <a href="http:&#47;&#47;technorati.com&#47;tags&#47;Windows%20Workflow%20Foundation" rel="tag">Windows Workflow Foundation</a></div><!--end_raw--></p>

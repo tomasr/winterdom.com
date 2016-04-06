@@ -1,0 +1,58 @@
+---
+layout: post
+status: publish
+published: true
+title: Processing IIS ETW events using Azure Stream Analytics
+author:
+  display_name: Tomas Restrepo
+  login: tomasr
+  email: tomas@winterdom.com
+  url: http://winterdom.com/
+author_login: tomasr
+author_email: tomas@winterdom.com
+author_url: http://winterdom.com/
+wordpress_id: 1521
+wordpress_url: http://winterdom.com/?p=1521
+date: '2014-11-16 02:21:29 +0000'
+date_gmt: '2014-11-16 02:21:29 +0000'
+categories:
+- IIS
+- Azure
+tags: []
+comments: []
+---
+<p><strong>Updated 2015&#47;07&#47;23:</strong> I've updated this post with some up-to-date information on Stream Analytics and some additional comments.</p>
+<p>This blog post <a href="http:&#47;&#47;winterdom.com&#47;2014&#47;11&#47;etw-logging-in-iis-8-5-2">continues</a> my series of blog posts about ETW logging in IIS 8.5. One of the things that I wanted to do from the start was using this as an excuse to dig into some Azure services. In the last entry, I updated the <a href="https:&#47;&#47;github.com&#47;tomasr&#47;iis-etw-tracing">sample code</a> to push ETW events collected from IIS in near real-time to an Azure Event Hub.</p>
+<p>Now, I&rsquo;d like to take that a bit further and actually process the events that make it to the hub. Naturally, I could write my own Event Hub listener that processes said events, but the Azure <a href="http:&#47;&#47;azure.microsoft.com&#47;en-us&#47;services&#47;stream-analytics&#47;">Stream Analytics</a> service&nbsp;sounded like a pretty interesting way to do this, so I decided to give it a try!</p>
+<p>The collector code serializes each ETW event into a flat JSON structure,&nbsp;using the header_ and event_ prefixes as necessary.&nbsp;Note, however, that Stream Analytics <a href="http:&#47;&#47;blogs.msdn.com&#47;b&#47;streamanalytics&#47;archive&#47;2015&#47;02&#47;18&#47;updates-to-azure-stream-analytics.aspx">now supports hierarchical JSON structures</a> (i.e. with nested objects), so you could use a different representation if you wanted</p>
+<h4>Configuring the Stream Analytics job.</h4><br />
+The first step to use Stream Analytics is creating a job in the management portal:</p>
+<p><a href="http:&#47;&#47;winterdom.com&#47;wp-content&#47;uploads&#47;2014&#47;11&#47;clip_image002.jpg"><img style="border: 0px currentcolor; display: inline;" title="clip_image002" src="http:&#47;&#47;winterdom.com&#47;wp-content&#47;uploads&#47;2014&#47;11&#47;clip_image002_thumb.jpg" alt="clip_image002" width="640" height="224" border="0" &#47;></a></p>
+<p>Once your Stream Analytics job is created, we will want to connect it to our existing Event Hub that is receiving events from the collector service.</p>
+<h4>Creating an Input</h4><br />
+Before doing this, we need to add a new SAS policy that Stream Analytics can use to read the events from the hub.</p>
+<p>To do this, go to your Event Hub configuration page, look for the &ldquo;shared access policies&rdquo; section and add a new one with Manage permissions:</p>
+<p><a href="http:&#47;&#47;winterdom.com&#47;wp-content&#47;uploads&#47;2014&#47;11&#47;clip_image00210.jpg"><img style="border: 0px currentcolor; display: inline;" title="clip_image002[10]" src="http:&#47;&#47;winterdom.com&#47;wp-content&#47;uploads&#47;2014&#47;11&#47;clip_image00210_thumb.jpg" alt="clip_image002[10]" width="640" height="122" border="0" &#47;></a></p>
+<p>Then click on the Save button to persist the changes.</p>
+<p>Now go back to the Stream Analytics instance and select the Add Inputs option. Here&rsquo;re we will want to connect it to our existing Event Hub instance:</p>
+<p><a href="http:&#47;&#47;winterdom.com&#47;wp-content&#47;uploads&#47;2014&#47;11&#47;clip_image00212.jpg"><img style="border: 0px currentcolor; display: inline;" title="clip_image002[12]" src="http:&#47;&#47;winterdom.com&#47;wp-content&#47;uploads&#47;2014&#47;11&#47;clip_image00212_thumb.jpg" alt="clip_image002[12]" width="640" height="102" border="0" &#47;></a></p>
+<p>The type of the input should be Data Stream, Event Hub, and then enter an alias for the input and select the existing event hub and the right shared access policy:</p>
+<p><a href="http:&#47;&#47;winterdom.com&#47;wp-content&#47;uploads&#47;2014&#47;11&#47;clip_image004.jpg"><img style="border: 0px currentcolor; display: inline;" title="clip_image004" src="http:&#47;&#47;winterdom.com&#47;wp-content&#47;uploads&#47;2014&#47;11&#47;clip_image004_thumb.jpg" alt="clip_image004" width="215" height="238" border="0" &#47;></a></p>
+<p>Then select the serialization format and encoding:</p>
+<p><a href="http:&#47;&#47;winterdom.com&#47;wp-content&#47;uploads&#47;2014&#47;11&#47;clip_image00214.jpg"><img style="border: 0px currentcolor; display: inline;" title="clip_image002[14]" src="http:&#47;&#47;winterdom.com&#47;wp-content&#47;uploads&#47;2014&#47;11&#47;clip_image00214_thumb.jpg" alt="clip_image002[14]" width="240" height="150" border="0" &#47;></a></p>
+<h4>Creating a Query</h4><br />
+Now that we have a way to get data into our Stream Analytics job, we can define one or more queries on top of the data. For example, let&rsquo;s say we want to create a summary of the successful hits within a 5 minute window:</p>
+<p><a href="http:&#47;&#47;winterdom.com&#47;wp-content&#47;uploads&#47;2014&#47;11&#47;clip_image001.png"><img style="border: 0px currentcolor; display: inline;" title="clip_image001" src="http:&#47;&#47;winterdom.com&#47;wp-content&#47;uploads&#47;2014&#47;11&#47;clip_image001_thumb.png" alt="clip_image001" width="640" height="250" border="0" &#47;></a></p>
+<h4>Creating an Output</h4><br />
+Now let&rsquo;s define an output for our query. In this case, I want to store the job output into a SQL Database on azure, which I have already created. Notice that you will want your DB to be on the same region as the Stream Analytics job! In this database, we&rsquo;ll create a simple table to store the results:</p>
+<p><a href="http:&#47;&#47;winterdom.com&#47;wp-content&#47;uploads&#47;2014&#47;11&#47;clip_image0017.png"><img style="border: 0px currentcolor; display: inline;" title="clip_image001[7]" src="http:&#47;&#47;winterdom.com&#47;wp-content&#47;uploads&#47;2014&#47;11&#47;clip_image0017_thumb.png" alt="clip_image001[7]" width="240" height="163" border="0" &#47;></a></p>
+<p>Go to the Output section of your Stream Analytics job and select the Add an Output option. Then select &ldquo;SQL Database&rdquo; as the destination, and enter your database details:</p>
+<p><a href="http:&#47;&#47;winterdom.com&#47;wp-content&#47;uploads&#47;2014&#47;11&#47;clip_image002.png"><img style="border: 0px currentcolor; display: inline;" title="clip_image002" src="http:&#47;&#47;winterdom.com&#47;wp-content&#47;uploads&#47;2014&#47;11&#47;clip_image002_thumb.png" alt="clip_image002" width="240" height="233" border="0" &#47;></a></p>
+<p><b>Note:</b> If you use a database that has &lsquo;-&rsquo; characters as part of the name, trying to create the output will result in an error, at least when I tried it.</p>
+<h4><img style="display: inline;" title="clip_image002[16]" src="http:&#47;&#47;winterdom.com&#47;wp-content&#47;uploads&#47;2014&#47;11&#47;clip_image00216.jpg" alt="clip_image002[16]" width="29" height="34" border="0" &#47;>Running the job</h4><br />
+Now we can start our Stream Analytics job and test the results!</p>
+<p>After the job has been running for a while, and we&rsquo;re feeding data to the Event Hub, we start seeing the results in our database table:</p>
+<p><a href="http:&#47;&#47;winterdom.com&#47;wp-content&#47;uploads&#47;2014&#47;11&#47;clip_image0046.jpg"><img style="border: 0px currentcolor; display: inline;" title="clip_image004[6]" src="http:&#47;&#47;winterdom.com&#47;wp-content&#47;uploads&#47;2014&#47;11&#47;clip_image0046_thumb.jpg" alt="clip_image004[6]" width="640" height="195" border="0" &#47;></a></p>
+<p>Overall, getting this working&nbsp;was surprisingly easy. Since I did my original tests, Stream Analytics and the documentation has improved substantially, making it even easier!</p>
+<h4>Supporting other event types</h4><br />
+While my original idea was&nbsp;to handle IIS log information, there&nbsp;is no reason the same technique cannot be used to collect and process other&nbsp;ETW events.&nbsp;I've recently updated the code to make&nbsp;the core code independent of the IIS log provider, and now you can add&#47;replace the existing&nbsp;ETW providers&#47;parsers used with your own using MEF. This was very easy since the collector is based on the excellent <a href="https:&#47;&#47;www.nuget.org&#47;packages&#47;Microsoft.Diagnostics.Tracing.TraceEvent&#47;">TraceEvent library</a> to collect ETW events.</p>

@@ -1,0 +1,59 @@
+---
+layout: post
+status: publish
+published: true
+title: Don't forget the BOM!
+author:
+  display_name: Tomas Restrepo
+  login: tomasr
+  email: tomas@winterdom.com
+  url: http://winterdom.com/
+author_login: tomasr
+author_email: tomas@winterdom.com
+author_url: http://winterdom.com/
+wordpress_id: 3
+wordpress_url: http://winterdom.com/2008/05/dontforgetthebom
+date: '2008-05-08 17:03:59 +0000'
+date_gmt: '2008-05-08 17:03:59 +0000'
+categories:
+- ".NET"
+- BizTalk
+tags: []
+comments:
+- id: 2
+  author: George V. Reilly
+  author_email: george@reilly.org
+  author_url: http://www.georgevreilly.com/blog/
+  date: '2008-05-13 23:44:07 +0000'
+  date_gmt: '2008-05-13 23:44:07 +0000'
+  content: |
+    I'm mildly in favor of BOMs, but I've run into a couple of cases where they cause problems:
+    1. Concatenating files together: cat *.txt > all.txt. BOMs embedded in the middle of the resulting file give most tools a conniption fit.
+    2. The Rhino JavaScript engine pukes on BOMs, which is annoying because Visual Studio generates them by default. Easily fixed in Vim with :argdo set nobomb|w
+- id: 3
+  author: Tomas Restrepo
+  author_email: tomas@winterdom.com
+  author_url: http://www.winterdom.com/weblog/
+  date: '2008-05-14 05:50:30 +0000'
+  date_gmt: '2008-05-14 05:50:30 +0000'
+  content: |
+    George: Those are valid concerns. However, you could argue that
+    1) it's a terrible idea to concatenate text files as if they were raw binary files; what if they are in different encodings?
+    2) Sounds like Rhino JavaScript has one nasty bug :)
+---
+<p><!--start_raw-->
+<p>If you're writing text files in an encoding that supports a <a href="http:&#47;&#47;en.wikipedia.org&#47;wiki&#47;Byte_Order_Mark">Byte-Order Mark</a>, you should always try to make sure that you include it, unless you have a protocol in place that precludes you from doing so (such as a legacy application that doesn't know how to deal with them).</p>
+<p>One of the reasons you should always remember the BOM is that many applications can use it to try to guess what encoding they should use when trying to read the text you're feeding them. </p>
+<p>Encoding detection based on the BOM is not foolproof, but it's better than having nothing at all, particularly in cases cases where simply assuming blindly a predefined encoding such as UTF-8 or UTF-16 might not be an option at all.</p>
+<p>One particular case where remembering the BOM is very important is with UTF-8. Let me tell you a story to illustrate why:</p>
+<p>We've been working the past few weeks on testing and improving a BizTalk-based solution for a client that some other consulting company had created. One particular piece had been working fine until, suddenly, we started getting an error when BizTalk tried to parse an incoming message with an error stating that "The character is not valid on the specified encoding".</p>
+<p>Looking at the message, it was supposed to be UTF-8 encoded, and for the most part looked OK. The character causing trouble was, in fact, a 0xA0 char (non-breaking space) inside an element value. While this was not good, it wasn't clear why it was causing trouble. </p>
+<p>Since it was an XML message, we opened it up in Internet Explorer: Yep, that too parsed it incorrectly and got stuck when it reached the problematic character. </p>
+<p>Looking a bit further , we found that in this particular case, the original developer had written a piece of code that created a Stream object with the message contents and then fed that to BizTalk. The code looked a bit like this:</p>
+<div class="codebg"><code><span class="StorageClass">public</span>&nbsp;<span class="StorageClass">static</span> Stream CreateStream(String msg) {       <br>&nbsp;&nbsp; MemoryStream stream = <span class="Statement">new</span> MemoryStream();       <br>&nbsp;&nbsp; <span class="Type">byte</span>[] bytes = Encoding.UTF8.GetBytes(msg);       <br>&nbsp;&nbsp; stream.Write(bytes, <span class="Number">0</span>, bytes.Length);       <br>&nbsp;&nbsp; stream.Position = <span class="Number">0</span>;       <br>&nbsp;&nbsp; <span class="Repeat">return</span> stream;       <br>} </code></div>
+<p>The message text itself was a piece of XML that included an <code><?xml?></code> declaration with the encoding attribute specifying UTF-8. This seemed OK, even if the code above just seemed like a pretty uncomfortable way of creating the stream.</p>
+<p>However, this gave us a clue: <code>UTF8Encoding.GetBytes()</code> won't give you a BOM. Looking at the message in a binary editor, we validated indeed the message did not have a BOM at all. So we tried replacing the code above to one that simply used a StreamReader object (which uses UTF-8 with a BOM by default), and that fixed the issue right away!</p>
+<p>This highlights why the BOM is so important for UTF-8: The basic characters in the set share the same values as the ASCII code. This is generally an advantage, but it can also mean that stuff that's incorrectly coded (such as our example above) might seem to work fine for a while until an unexpected character comes along and everything crumbles down. This is unlike other encoding, such as UTF-16, where things usually blow up right away.</p>
+<p>In this particular case, the culprit was really a combination of factors: The lack of a BOM together with the presence of the <a href="http:&#47;&#47;www.w3.org&#47;TR&#47;2006&#47;REC-xml-20060816&#47;#NT-EncodingDecl">encoding specification</a> in the XML declaration [1]. I'm not sure why the XML stacks get stuck on a BOM-less UTF-8 file with an encoding declaration, but there you have it. So don't forget the BOM!</p>
+<p><b>[1]</b> I personally thing the encoding specification in the XML declaration is probably the single most stupid idea included in the XML spec. It's just downright evil.</p>
+<div class="wlWriterSmartContent" id="scid:0767317B-992E-4b12-91E0-4F059A8CECA8:2211cc3e-a4a3-4612-8ae4-e018ff7c03f9" style="margin: 0px; padding: 0px; display: inline; float: none;">Technorati tags: <a href="http:&#47;&#47;technorati.com&#47;tags&#47;XML" rel="tag">XML</a>, <a href="http:&#47;&#47;technorati.com&#47;tags&#47;.NET" rel="tag">.NET</a>, <a href="http:&#47;&#47;technorati.com&#47;tags&#47;BizTalk" rel="tag">BizTalk</a></div><!--end_raw--></p>

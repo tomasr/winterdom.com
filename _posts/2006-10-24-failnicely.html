@@ -1,0 +1,52 @@
+---
+layout: post
+status: publish
+published: true
+title: Fail Nicely
+author:
+  display_name: Tomas Restrepo
+  login: tomasr
+  email: tomas@winterdom.com
+  url: http://winterdom.com/
+author_login: tomasr
+author_email: tomas@winterdom.com
+author_url: http://winterdom.com/
+wordpress_id: 456
+wordpress_url: http://winterdom.com/2006/10/failnicely
+date: '2006-10-24 08:15:58 +0000'
+date_gmt: '2006-10-24 08:15:58 +0000'
+categories:
+- ".NET"
+- WCF
+- WinFX
+tags: []
+comments:
+- id: 319
+  author: Dhileep
+  author_email: samdhil@gmail.com
+  author_url: ''
+  date: '2007-01-22 02:15:31 +0000'
+  date_gmt: '2007-01-22 02:15:31 +0000'
+  content: |
+    hi,
+    i have got the similar error while trying to host the WCF service in a windows service. Can you pls help me?
+- id: 320
+  author: Tomas Restrepo
+  author_email: tomas@winterdom.com
+  author_url: http://www.winterdom.com/weblog/
+  date: '2007-01-22 08:36:47 +0000'
+  date_gmt: '2007-01-22 08:36:47 +0000'
+  content: |
+    Dhileep: Check my further comments on this issue at http:&#47;&#47;www.winterdom.com&#47;weblog&#47;2006&#47;12&#47;02&#47;WCFServiceHostFailuresAndIDisposable.aspx.
+---
+<p><!--start_raw-->
+<p><strong>Warning:</strong> Rant ahead!</p>
+<p>In many applications, there will be cases where something so bad happens that the application cannot continue executing reliably. In those cases, it is a good practice to fail as fast as possible to avoid compromising something critical (like corrupting the user's data). However, if you're going to fail, do so gracefully.</p>
+<p>This means not only that you should try to fail as cleanly as possible, but that you should also make your best effort to leave clear hints of what happened that warranted such a serious action. At the very least, this will make it easier to diagnose trouble and, in doing that, it will help the poor developer&nbsp;maintain his sanity.</p>
+<p>I've been working quite a bit with Windows Communication Foundation lately, and I'm using a lot one of my favourite features: Self-hosted services using the ServiceHost infrastructure. However, I do have one big gripe with it:</p>
+<p>When you're starting your self-hosted service, you'll likelike have your configuration ready on your app.config file (though you can do so through code as well), you'll create your ServiceHost instance and then call Open() on it. During that process, ServiceHost will read your configuration and configure itself accordingly and if something is not quite right, it will fail right then and there by switching to the Faulted state and throwing an exception such as this:</p>
+<p><font face="Lucida Cons" size="2">System.ServiceModel.CommunicationObjectFaultedException: The communication object, System.ServiceModel.ServiceHost, cannot be used for communication because it is in the Faulted state.</font></p>
+<p>What it does not do is tell you why the heck it faulted in the first place! Oh, sure, there's a Faulted event in the ServiceHost class you can attach to, and one might think initially that it would provide more information about the problem, but&nbsp;one would be wrong. It drives me crazy!</p>
+<p>So, consider this a friendly suggestion for WCF v.Next (you know, 2 or 3 years from now): When there's a problem, please tell us what it is. Or include a crystal ball with the product or something.</p>
+<div class="wlWriterSmartContent" id="d7bf807d-7bb0-458a-811f-90c51817d5c2:6b5a0849-a2ff-4a6b-af44-bf1b9cd01ffb" contenteditable="false" style="padding-right: 0px; display: inline; padding-left: 0px; padding-bottom: 0px; margin: 0px; padding-top: 0px">
+<p><span class="TagSite">Technorati:</span> <a href="http:&#47;&#47;technorati.com&#47;tag&#47;Windows+Communication+Foundation" rel="tag" class="tag">Windows Communication Foundation</a>, <a href="http:&#47;&#47;technorati.com&#47;tag&#47;WCF" rel="tag" class="tag">WCF</a><br &#47;><!-- StartInsertedTags: Windows Communication Foundation, WCF :EndInsertedTags --></p></div><!--end_raw--></p>

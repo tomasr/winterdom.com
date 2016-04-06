@@ -1,0 +1,59 @@
+---
+layout: post
+status: publish
+published: true
+title: PowerShell V2 & Cmdlet Keyword
+author:
+  display_name: Tomas Restrepo
+  login: tomasr
+  email: tomas@winterdom.com
+  url: http://winterdom.com/
+author_login: tomasr
+author_email: tomas@winterdom.com
+author_url: http://winterdom.com/
+wordpress_id: 986
+wordpress_url: http://winterdom.com/2008/10/powershellv2cmdletkeyword
+date: '2008-10-18 07:20:26 +0000'
+date_gmt: '2008-10-18 07:20:26 +0000'
+categories:
+- PowerShell
+tags: []
+comments:
+- id: 689
+  author: http:&#47;&#47;powershell-basics.com&#47;
+  author_email: none@none.com
+  author_url: http://powershell-basics.com/
+  date: '2008-10-18 11:22:00 +0000'
+  date_gmt: '2008-10-18 11:22:00 +0000'
+  content: |
+    Thomas,
+    For a number of basic functions, this notation will not be necessary, but what it does allow is greater flexibility in working with pipelined objects and saving you from writing some argument parsing.
+    In the first case, by allowing a value from the pipeline, you are allowing the PowerShell parser to take a look at objects coming in to the function and fill out the parameters based what properties are available.
+    In the second scenario, by setting the parameter attribute, you can set up groups of parameters, set up optional parameters, and not have to write code in your function to parse through the arguements and determine what has been passed in.
+- id: 690
+  author: Tomas Restrepo
+  author_email: tomas@winterdom.com
+  author_url: http://winterdom.com/
+  date: '2008-10-18 11:35:57 +0000'
+  date_gmt: '2008-10-18 11:35:57 +0000'
+  content: |
+    Thanks for the response. FWIW, I have no problems with having both functions and cmdlets. In fact, I do think that script cmdlets are a great feature in V2. My question was purely about the syntax used to define the script cmdlets and more precisely about the syntax change coming in CTP3 (whether is a better syntax or not or how it could be improved).
+- id: 691
+  author: Jaykul
+  author_email: Jaykul@HuddledMasses.org
+  author_url: http://huddledmasses.org/
+  date: '2008-10-18 13:04:47 +0000'
+  date_gmt: '2008-10-18 13:04:47 +0000'
+  content: |
+    Yeah, you have to just tell yourself that you technically never had a "cmdlet" keyword in scripts.  Rembemer that even in CTP2, when you write "cmdlet" (or "filter" for that matter) ... what you get is actually a <strong>Function</strong> that shows up in the Function: PSDrive.
+    If you think about it in terms of the change from v1 (and pretend not to be an alpha technology user for a moment), what they are doing is <strong>enhancing</strong> the existing v1 <em>function</em> feature with the ability to have attributes so we can specify constraints and order, and take values from the pipeline or from properties of the pipeline objects.
+    I'd agree that the Param([Parameter]...) syntax is a little redundant, but I can't really think of a better pair of words to use, and they were going to have that redundancy even if they have the "cmdlet" keyword, so basically ... no difference, right?
+---
+<p><!--start_raw-->
+<p>In the <a href="http:&#47;&#47;blogs.msdn.com&#47;powershell&#47;archive&#47;2008&#47;10&#47;18&#47;emit-xml.aspx">latest entry</a> in the official <a href="http:&#47;&#47;blogs.msdn.com&#47;powershell&#47;">PowerShell Blog</a>, Jeffrey Snover leaves a little tidbit about a change coming on the next CTP of PowerShell V2:</p><br />
+<blockquote>
+<p>The <code>cmdlet</code> keyword is going away and we'll just have <code>function</code>. Notice that now you can specify the <code>[Parameter()]</code> attribute on parameters.&nbsp; When you do that, we treat the function like a cmdlet.</p></blockquote>
+<p>I don&rsquo;t mind getting rid of the <code>cmdlet</code> keyword; honestly, but is the new syntax that much of an improvement? So now instead of an explicit keyword telling you whether something is a function of a cmdlet, you have an attribute spilled around the function parameters? Not sure if that&rsquo;s good or not, but sounds confusing to me, at first glance.</p>
+<p>Maybe what rubs me the wrong way, however, is the <code>[Parameter]</code> attribute. I&rsquo;m OK with using an attribute to specify the metadata associated with the parameters, honestly. But the whole <code>Param</code> + <code>[Parameter]</code> thing just reads redundant and ugly:</p>
+<div class="codebg"><code><span class="Keyword">function</span>&nbsp;<span class="Function">Emit-XML</span> {<br><span class="Keyword">Param</span> ([Parameter(Mandatory=<span class="Identifier">$true</span>,ValueFromPipeline=<span class="Identifier">$true</span>)]<span class="Identifier">$object</span>)<br>...<br>} </code></div>
+<p>Can anyone more familiar with this chime in? Am I the only one slightly bothered by this?</p><!--end_raw--></p>

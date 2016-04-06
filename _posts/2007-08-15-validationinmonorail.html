@@ -1,0 +1,123 @@
+---
+layout: post
+status: publish
+published: true
+title: Validation In Monorail
+author:
+  display_name: Tomas Restrepo
+  login: tomasr
+  email: tomas@winterdom.com
+  url: http://winterdom.com/
+author_login: tomasr
+author_email: tomas@winterdom.com
+author_url: http://winterdom.com/
+wordpress_id: 863
+wordpress_url: http://winterdom.com/2007/08/validationinmonorail
+date: '2007-08-15 18:25:03 +0000'
+date_gmt: '2007-08-15 18:25:03 +0000'
+categories:
+- Castle
+tags: []
+comments:
+- id: 573
+  author: yartz
+  author_email: ''
+  author_url: ''
+  date: '2007-08-15 18:58:36 +0000'
+  date_gmt: '2007-08-15 18:58:36 +0000'
+  content: |
+    Monorail is such a relief from the pain that is ASP.Net. Now, instead of the horrid integrated ASP.Net validation controls you have attributes, inheritance, yet another tag soup language, inline loops, conditionals all over the place, terabytes of yet another javascript library, all this tightly wrapped in 9 steps to get the whole thing - hopefully - working.
+    It's almost as beautiful as the NIH&#47;non ASP.Net rendering model used in CruiseControl.Net web dashboard. So simple and extensible that it takes two to three years to get some changes done (and the whole thing is dead slow, but cache is coming, soon, really).
+- id: 574
+  author: Tomas Restrepo
+  author_email: tomas@winterdom.com
+  author_url: http://www.winterdom.com/weblog/
+  date: '2007-08-15 19:04:34 +0000'
+  date_gmt: '2007-08-15 19:04:34 +0000'
+  content: |
+    @Yartz: I realize this sounds like a lot of steps, but in the end it turns out pretty easy once you get the hang of it. Notice, however, that a lot of the steps I outlines really have little to do with validation per-se; they are added to enable databinding and other stuff. Certainly, if you described the entire process for ASP.NET validators, it would also contain a lot of steps; it's not really just drag and drop the validator component and that's it.
+    Besides, I've personally have had horrendous experience with the built-in asp.net validator framework; so much that in one project I participated they ended up writing their own.
+---
+<p><!--start_raw-->
+<p>I've been building a small application the last few days using Castle, including both Monorail and ActiveRecord, which I had not used before. It's been a very pleasant experience overall, as I dig a bit deeper into some of the features in Castle I had not used before. At the same time, it's been a bit frustrating as some of the documentation isn't quite up to date, or, more commonly, doesn't quite list all the necessary steps.</p>
+<p>One of the aspects that gave me a bit of trouble getting to run was using Castle.Components.Validator to add validation to the application. <a href="http:&#47;&#47;hammett.castleproject.org&#47;">Hammett</a> has a nice introduction to the validation framework on this <a href="http:&#47;&#47;hammett.castleproject.org&#47;wp-content&#47;uploads&#47;2007&#47;01&#47;mr%20formvalidation.html">screencast</a>, but even following this and the documentation I couldn't quite get it to work (I think part of the issue was that I use brail, while he uses nvelocity). </p>
+<p>In this example, I'm using ActiveRecord for persistence so that will affect some of the code, so be aware of that. Here's exactly what worked for me. </p></p>
+<p><strong>Step 1:</strong>&nbsp;Reference Castle.Components.Validator.dll on your project where your model classes are defined. Where necessary, reference the Castle.Components.Validator namespace. Make sure you pick a recent copy of the Castle libraries from the <a href="http:&#47;&#47;builds.castleproject.org&#47;cruise&#47;index.castle">build server</a> :-).</p></p>
+<p><strong>Step 2:</strong> Add validation attributes to the properties of your model classes. Make sure you explicitly specify a proper error message on your attributes, because the default messages might not be as informative. Here's an example:</p>
+<div class='codebg'><code><span class="Operator">[</span>Property<span class="Operator">(</span>Length <span class="Operator">=</span>&nbsp;100<span class="Operator">,</span>&nbsp;NotNull <span class="Operator">=</span>&nbsp;<span class="Boolean">true</span><span class="Operator">)]</span><br &#47;><br />
+<span class="Operator">[</span>ValidateNonEmpty<span class="Operator">(</span><span class="String">"Name cannot be empty"</span><span class="Operator">)]</span><br &#47;><br />
+<span class="Operator">[</span>ValidateIsUnique<span class="Operator">(</span><span class="String">"Name must be unique"</span><span class="Operator">)]</span><br &#47;><br />
+<span class="Statement">public</span>&nbsp;<span class="Type">string</span>&nbsp;Name <span class="Operator">{</span>&nbsp;<br &#47;><br />
+&nbsp;&nbsp; <span class="csharpProperties">get</span>&nbsp;<span class="Operator">{</span>&nbsp;<span class="Statement">return</span>&nbsp;_name<span class="Operator">;</span>&nbsp;<span class="Operator">}</span><br &#47;><br />
+&nbsp;&nbsp; <span class="csharpProperties">set</span>&nbsp;<span class="Operator">{</span>&nbsp;_name <span class="Operator">=</span>&nbsp;value<span class="Operator">;</span>&nbsp;<span class="Operator">}</span><br &#47;><br />
+<span class="Operator">}</span><br />
+</code></div></p>
+<p><strong>Step 3:</strong> Inherit your monorail controller from SmartDispatcherController so that the validation facilities are available. In my case, I'll use the ARSmartDispatcherController class so that&nbsp;I can use the nice ActiveRecord integration facilities as well:</p></p>
+<div class='codebg'><code><span class="Statement">public</span>&nbsp;<span class="Type">class</span>&nbsp;ClientController : ARSmartDispatcherController <span class="Operator">{</span>&nbsp;<br &#47;><br />
+&nbsp;&nbsp; <span class="Comment">&#47;&#47; ... </span><br &#47;><br />
+<span class="Operator">}</span><br />
+</code></div></p>
+<p><strong>Step 4:</strong> Use the [DataBiind] or [ARDataBind] attributes on your handler methods, and make sure you enable the Validate property:</p></p>
+<div class='codebg'><code><span class="Statement">public</span>&nbsp;<span class="Type">void</span>&nbsp;Create<span class="Operator">(</span><br &#47;><br />
+&nbsp;&nbsp; <span class="Operator">[</span>ARDataBind<span class="Operator">(</span><span class="String">"client"</span><span class="Operator">,</span>&nbsp;Validate<span class="Operator">=</span><span class="Boolean">true</span><span class="Operator">)]</span>&nbsp;Client client<br &#47;><br />
+<span class="Operator">)</span>&nbsp;<span class="Operator">{</span><br &#47;><br />
+&nbsp;&nbsp; <span class="Comment">&#47;&#47;...</span><br &#47;><br />
+<span class="Operator">}</span><br />
+</code></div></p>
+<p><strong>Step 5:</strong>&nbsp;Inside your handler code, check if the bound object contains error before persisting and if so redirect as appropriate if not. You can use the HasValidationError() method to check if the object triggered validation errors, and then call GetValidationSummary() to get the list of error messages.</p></p>
+<div class='codebg'><code><span class="Conditional">if</span>&nbsp;<span class="Operator">(</span>&nbsp;HasValidationError<span class="Operator">(</span>client<span class="Operator">)</span>&nbsp;<span class="Operator">)</span>&nbsp;<span class="Operator">{</span><br &#47;><br />
+&nbsp;&nbsp; Flash<span class="Operator">[</span><span class="String">"client"</span><span class="Operator">]</span>&nbsp;<span class="Operator">=</span>&nbsp;client<span class="Operator">;</span><br &#47;><br />
+&nbsp;&nbsp; Flash<span class="Operator">[</span><span class="String">"summary"</span><span class="Operator">]</span>&nbsp;<span class="Operator">=</span>&nbsp;GetErrorSummary<span class="Operator">(</span>client<span class="Operator">);</span><br &#47;><br />
+&nbsp;&nbsp; RedirectToReferrer<span class="Operator">();</span><br &#47;><br />
+<span class="Operator">}</span>&nbsp;<span class="Conditional">else</span>&nbsp;<span class="Operator">{</span><br &#47;><br />
+&nbsp;&nbsp; client<span class="Operator">.</span>Create<span class="Operator">();</span><br &#47;><br />
+&nbsp;&nbsp; RedirectToAction<span class="Operator">(</span><span class="String">"list"</span><span class="Operator">);</span><br &#47;><br />
+<span class="Operator">}</span><br />
+</code></div></p>
+<p>I'm currently wrapping GetErrorSummary() in my base controller class so that I can return a single string with all validation errors to avoid having to loop around in the view (I'm lazy):</p></p>
+<div class='codebg'><code><span class="Statement">protected</span>&nbsp;<span class="Type">string</span>&nbsp;GetErrorSummaryMsg<span class="Operator">(</span><span class="Statement">object</span>&nbsp;obj<span class="Operator">)</span>&nbsp;<span class="Operator">{</span><br &#47;><br />
+&nbsp;&nbsp; StringBuilder text <span class="Operator">=</span>&nbsp;<span class="Statement">new</span>&nbsp;StringBuilder<span class="Operator">();</span><br &#47;><br />
+&nbsp;&nbsp; <span class="Type">bool</span>&nbsp;isFirst <span class="Operator">=</span>&nbsp;<span class="Boolean">true</span><span class="Operator">;</span><br &#47;><br />
+&nbsp;&nbsp; <span class="Repeat">foreach</span>&nbsp;<span class="Operator">(</span>&nbsp;<span class="Type">string</span>&nbsp;str <span class="Repeat">in</span>&nbsp;GetErrorSummary<span class="Operator">(</span>obj<span class="Operator">).</span>ErrorMessages <span class="Operator">)</span>&nbsp;<span class="Operator">{</span><br &#47;><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="Conditional">if</span>&nbsp;<span class="Operator">(</span>&nbsp;!isFirst <span class="Operator">)</span><br &#47;><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; text<span class="Operator">.</span>Append<span class="Operator">(</span><span class="String">"<br&#47;>"</span><span class="Operator">);</span><br &#47;><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;text<span class="Operator">.</span>Append<span class="Operator">(</span>str<span class="Operator">);</span><br &#47;><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;isFirst <span class="Operator">=</span>&nbsp;<span class="Boolean">false</span><span class="Operator">;</span><br &#47;><br />
+&nbsp;&nbsp; <span class="Operator">}</span><br &#47;><br />
+&nbsp;&nbsp; <span class="Statement">return</span>&nbsp;text<span class="Operator">.</span>ToString<span class="Operator">();</span><br &#47;><br />
+<span class="Operator">}</span><br />
+</code></div></p>
+<p><strong>So far</strong> you should already have server-side validation working. Now let's add client side validation:</p></p>
+<p><strong>Step 6:</strong> Include the necessary for client side validation to work; you'll want to do this in your layout view:</p></p>
+<div class='codebg'><code>$<span class="Function">{</span>AjaxHelper.InstallScripts()<span class="Function">}</span><br &#47;><br />
+$<span class="Function">{</span>Scriptaculous.InstallScripts()<span class="Function">}</span><br &#47;><br />
+$<span class="Function">{</span>FormHelper.InstallScripts()<span class="Function">}</span><br />
+</code></div></p>
+<p>The last one, in particular, is pretty important; without it you'll later get bizarre JS errors like "Validation is not defined". This actually took me a while to get because it's the only one that Hammett doesn't explicitly include in his demo.</p></p>
+<p><strong>Step 7:</strong> Enable client-side validation in your form. For this, you need to add a couple of custom attributes to your form tag: immediate and useLabels and set them to true. Using FormHelper, here's what it would look like:</p></p>
+<div class='codebg'><code>$<span class="Function">{</span>FormHelper.FormTag(<span class="String">"create.rails"</span>, <span class="Function">{</span><span class="String">"immediate"</span>:<span class="String">'true'</span>, <span class="String">"useLabels"</span>:<span class="String">'true'</span><span class="Function">}</span>)<span class="Function">}</span><br &#47;><br />
+...<br />
+$<span class="Function">{</span>FormHelper.EndFormTag()<span class="Function">}</span><br &#47;><br />
+</code></div></p>
+<p>For the curious, this actually generates the following<br />
+<form&#47;> tag:</p></p>
+<div class='codebg'><code><span class="Function"><</span><span class="Statement">form</span><span class="Function">&nbsp;</span><span class="Type">action</span><span class="Function">=</span><span class="String">'create.rails'</span><span class="Function">&nbsp;</span><span class="Type">method</span><span class="Function">=</span><span class="String">'post'</span><span class="Function">&nbsp;</span><span class="Type">id</span><span class="Function">=</span><span class="String">'form1'</span><span class="Function">&nbsp;useLabels=</span><span class="String">"true"</span><span class="Function">&nbsp;></span><br />
+</code></div></p>
+<p>The closing tag will also contain the validation script using whatever validation provider your selected (prototypes, by default), unless you disable validation using FormHelper.DisableValidation().</p></p>
+<p><strong>Step 8:</strong> Declare your field labels and input controls. Using FormHelper, again, this is easy:</p></p>
+<div class='codebg'><code><span class="Function"><</span><span class="Statement">tr</span><span class="Function">></span><br &#47;><br />
+&nbsp;&nbsp; <span class="Function"><</span><span class="Statement">td</span><span class="Function">></span>${FormHelper.LabelFor("client.Name", "Name:")}<span class="Identifier"></</span><span class="Statement">td</span><span class="Identifier">></span><br &#47;><br />
+&nbsp;&nbsp; <span class="Function"><</span><span class="Statement">td</span><span class="Function">></span>${FormHelper.TextField("client.Name")}<span class="Identifier"></</span><span class="Statement">td</span><span class="Identifier">></span><br &#47;><br />
+<span class="Identifier"></</span><span class="Statement">tr</span><span class="Identifier">></span><br />
+</code></div></p>
+<p><strong>Step 9:</strong> Put the error messages from the server-side validation somewhere on your form:</p></p>
+<div class='codebg'><code><span class="Function"><?brail if IsDefined(</span><span class="String">"summary"</span><span class="Function">): ?></span><br &#47;><br />
+<span class="Function"><</span><span class="Statement">tr</span><span class="Function">></span><br &#47;><br />
+&nbsp;&nbsp; <span class="Function"><</span><span class="Statement">td</span><span class="Function">&nbsp;</span><span class="Type">colspan</span><span class="Function">=</span><span class="String">'2'</span><span class="Function">&nbsp;</span><span class="Type">class</span><span class="Function">=</span><span class="String">'validator'</span><span class="Function">></span>${summary}<span class="Identifier"></</span><span class="Statement">td</span><span class="Identifier">></span><br &#47;><br />
+<span class="Identifier"></</span><span class="Statement">tr</span><span class="Identifier">></span><br &#47;><br />
+<span class="Function"><?brail end ?></span><br />
+</code></div></p>
+<p><img style="border: 0px none ;" alt="validation" src="http:&#47;&#47;www.winterdom.com&#47;weblog&#47;content&#47;binary&#47;WindowsLiveWriter&#47;ValidationInMonorail_1150D&#47;validation_3.png" border="0"> </p></p>
+<p>And now, client side validation should be working :-) Notice that the client-side validation messages seem to be tagged with the "validation-advice" CSS class, so that makes them easy to style.</p></p>
+<div class="wlWriterSmartContent" id="0767317B-992E-4b12-91E0-4F059A8CECA8:3f95720e-2616-44f7-91c9-18d7f6f7b2a3" style="margin: 0px; padding: 0px; display: inline;" contenteditable="false">Technorati tags: <a href="http:&#47;&#47;technorati.com&#47;tags&#47;Monorail" rel="tag">Monorail</a>, <a href="http:&#47;&#47;technorati.com&#47;tags&#47;Castle" rel="tag">Castle</a>, <a href="http:&#47;&#47;technorati.com&#47;tags&#47;ActiveRecord" rel="tag">ActiveRecord</a></div><br />
+<!--end_raw--></p>

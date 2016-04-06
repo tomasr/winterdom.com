@@ -1,0 +1,75 @@
+---
+layout: post
+status: publish
+published: true
+title: 'Stupid Question #1 continued'
+author:
+  display_name: Tomas Restrepo
+  login: tomasr
+  email: tomas@winterdom.com
+  url: http://winterdom.com/
+author_login: tomasr
+author_email: tomas@winterdom.com
+author_url: http://winterdom.com/
+wordpress_id: 792
+wordpress_url: http://winterdom.com/2003/04/stupidquestion1continued
+date: '2003-04-04 07:08:53 +0000'
+date_gmt: '2003-04-04 07:08:53 +0000'
+categories:
+- Web Services
+tags: []
+comments:
+- id: 540
+  author: Christian Weyer
+  author_email: cw@eyesoft.de
+  author_url: http://dotnetweblogs.com/cweyer/
+  date: '2003-04-04 07:33:16 +0000'
+  date_gmt: '2003-04-04 07:33:16 +0000'
+  content: |
+    <p>OK, you are right here ... I mixed things up :-(<br &#47;>
+    Sorry.</p>
+    <p>Cheers,<br &#47;>
+    Christian</p>
+- id: 541
+  author: Ali
+  author_email: aghareza22@hotmail.com
+  author_url: http://radio.weblogs.com/0120671/
+  date: '2003-04-04 09:19:40 +0000'
+  date_gmt: '2003-04-04 09:19:40 +0000'
+  content: "<p>This is far from a stupid question.  I really didn't know either.  I
+    thought maybe it was some form of convention, but like most things in .net, there
+    is a reason behind it.  I think it might have something to do with this example:</p>\n<p>\t[WebMethod]<br
+    &#47;>\npublic Customer GetCustomer(out Customer c1)<br &#47;>\n{<br &#47;>\n<br
+    &#47;>\nCustomer customer1 = new Customer();<br &#47;>\nCustomer customer2 = new
+    Customer();<br &#47;>\n<br &#47;>\ncustomer1.name = \"Ali\";<br &#47;>\ncustomer1.phone
+    = \"555-1212\";<br &#47;>\ncustomer2.name = \"Tom\";<br &#47;>\ncustomer2.phone
+    = \"555-5555\";<br &#47;>\nc1 = customer1;<br &#47;>\nreturn customer2;;</p>\n<p>\t}</p>\n<p>Now,
+    if you apply the XmlRoot tag to the Customer object, you now have two Customer
+    elements in the same namespace.  This is most likely why the return value is wrapped
+    in the Result block.<br &#47;>\n</p>\n"
+---
+<p><!--start_raw--><a href="">Christian</a> responds to my <a href="">earlier</a> question on a comment: <quote><i>"As you are using a Document&#47;literal ASMX based Web Service which aims at *messages* and not *RPCs* (you know this distinction and the ongoing discussions ...), the top element of the serialized instance is just a signal for what kind of message is sent back to the original caller ... nothing more. The inbound message is GetCustomer and the outbound is GetCustomerResult - you see: just XML block :-)"</i></quote></p>
+<p>Thanks for the comment!. I understand what's going on with document&#47;literal and the messages going back and forth, however, that was not what I was refering to. </p></p>
+<p>You say the inbound message is GetCustomer and the outbound message is GetCustomerResult. Well, no, not really. The inbound message indeed is GetCustomer, but the outbound message, if you look at my original example, is actually GetCustomerResponse. The GetCusomerResult element is how the Customer object is being serialized. "That* is what I'm arguing about.</p></p>
+<p>Allow me to present it with a counter example: Why couldn't this be the default SOAP answer:</p></p>
+<pre class="codes"><code><?xml version="1.0" encoding="utf-8"?><br />
+<soap:Envelope xmlns:xsi="http:&#47;&#47;www.w3.org&#47;2001&#47;XMLSchema-instance"<br />
+xmlns:xsd="http:&#47;&#47;www.w3.org&#47;2001&#47;XMLSchema"<br />
+xmlns:soap="http:&#47;&#47;schemas.xmlsoap.org&#47;soap&#47;envelope&#47;"><br />
+<soap:Body><br />
+<GetCustomerResponse xmlns="http:&#47;&#47;www.winterdom.com&#47;services&#47;WeirdBhv"><br />
+<Customer xmlns="http:&#47;&#47;www.winterdom.com&#47;schemas&#47;customer"><br />
+<name>string</name></p>
+<phone>string</phone><br />
+</Customer><br />
+</GetCustomerResponse><br />
+</soap:Body><br />
+</soap:Envelope><br />
+</code></pre></p>
+<p>This is indeed exactly what would happen if I had changed my Customer definition like this:</p></p>
+<pre class="codes"><code>[ XmlRoot("Customer", Namespace="http:&#47;&#47;www.winterdom.com&#47;schemas&#47;customer") ]<br />
+public class Customer<br />
+{<br />
+...<br />
+}<br />
+</code></pre><!--end_raw--></p>

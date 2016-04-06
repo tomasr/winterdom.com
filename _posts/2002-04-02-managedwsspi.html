@@ -1,0 +1,35 @@
+---
+layout: post
+status: publish
+published: true
+title: Managed WSSPI
+author:
+  display_name: Tomas Restrepo
+  login: tomasr
+  email: tomas@winterdom.com
+  url: http://winterdom.com/
+author_login: tomasr
+author_email: tomas@winterdom.com
+author_url: http://winterdom.com/
+wordpress_id: 490
+wordpress_url: http://winterdom.com/2002/04/managedwsspi
+date: '2002-04-02 17:53:25 +0000'
+date_gmt: '2002-04-02 17:53:25 +0000'
+categories:
+- ".NET"
+tags: []
+comments:
+- id: 348
+  author: Jef
+  author_email: jef.lee@itvision.com.au
+  author_url: ''
+  date: '2003-02-24 00:14:56 +0000'
+  date_gmt: '2003-02-24 00:14:56 +0000'
+  content: |
+    <p>Tomas,</p>
+    <p>How do I use this from VB6?</p>
+    <p>Jef.</p>
+---
+<p><!--start_raw-->I've got most of the basic WSSPI managed wrapper already built, and I'm adding a few <a href="http:&#47;&#47;nunit.sourceforge.net">NUnit</a> tests. <br&#47;><br />
+The lousy part is that lost a good hour trying to find out why the managed wrapper didn't work, while the unmanaged code did, only to find out that it was my own fault! It turned out I was passing the incorrect buffer type to the SSPI Context APIs, so instead of passing <code>SECBUFFER_TOKEN</code> as I <i>should</i> have, I was passing <code>SECBUFFER_DATA</code>. No wonder I was getting an invalid token error...<br />
+<!--end_raw--></p>

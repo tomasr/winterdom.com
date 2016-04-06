@@ -1,0 +1,40 @@
+---
+layout: post
+status: publish
+published: true
+title: SqlTrackingQuery Sample
+author:
+  display_name: Tomas Restrepo
+  login: tomasr
+  email: tomas@winterdom.com
+  url: http://winterdom.com/
+author_login: tomasr
+author_email: tomas@winterdom.com
+author_url: http://winterdom.com/
+wordpress_id: 369
+wordpress_url: http://winterdom.com/2006/01/sqltrackingquerysample
+date: '2006-01-22 16:02:36 +0000'
+date_gmt: '2006-01-22 16:02:36 +0000'
+categories:
+- WinFX
+- Workflow
+tags: []
+comments: []
+---
+<p><!--start_raw-->
+<p>Beta 2 of Windows Workflow Foundation includes the new SqlTrackingQuery class (in the System.Workflow.Runtime.Tracking namespace), which allows you to query the tracking records in a SQL Server database inserted by the SqlTrackingService service.</p></p>
+<p></p>
+<p>I've written a simple Windows Forms Application that illustrates how to use this basic API and displays the resulting information (well, part of it, as it can be quite a bit) on a simple databinding-based UI. Here's a screenshot:</p>
+<p></p></p>
+<p></p>
+<p><img src="http:&#47;&#47;www.winterdom.com&#47;weblog&#47;images&#47;SqlTrackerView.jpg"></p>
+<p></p></p>
+<p></p>
+<p>Something to keep in mind in using this API is that calling SqlTrackingQuery.GetWorkflows() or SqlTrackingQuery.TryGetWorkflow() will attempt to load the original assemblies that defined the workflows for which instances were found in the tracking database. To handle this, the sample simply handles the AppDomain.ResolveAssembly event and provides the user with a simple UI to select the necessary assembly:</p>
+<p></p></p>
+<p></p>
+<p><img src="http:&#47;&#47;www.winterdom.com&#47;weblog&#47;images&#47;SqlTrackerView_AL.jpg"></p>
+<p></p></p>
+<p></p>
+<p>You can download the sample <a href="http:&#47;&#47;www.winterdom.com&#47;dev&#47;wwf&#47;SqlTrackingQuerySample.zip">here</a>.</p>
+<p></p><!--end_raw--></p>

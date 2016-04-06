@@ -1,0 +1,27 @@
+---
+layout: post
+status: publish
+published: true
+title: InitializeSecurityContext() and SEC_E_INSUFFICIENT_MEMORY
+author:
+  display_name: Tomas Restrepo
+  login: tomasr
+  email: tomas@winterdom.com
+  url: http://winterdom.com/
+author_login: tomasr
+author_email: tomas@winterdom.com
+author_url: http://winterdom.com/
+wordpress_id: 1285
+wordpress_url: http://winterdom.com/2009/07/initializesecuritycontext-and-sec_e_insufficient_memory
+date: '2009-07-16 02:41:24 +0000'
+date_gmt: '2009-07-16 02:41:24 +0000'
+categories:
+- Development
+tags: []
+comments: []
+---
+<p>I&rsquo;ve been doing some work recently with the <a href="http:&#47;&#47;msdn.microsoft.com&#47;en-us&#47;library&#47;aa380493(VS.85).aspx">Security Support Provider Interface</a> (SSPI) API in Windows; particularly with the Kerberos package. I had used SSPI a lot before (see my <a href="http:&#47;&#47;github.com&#47;tomasr&#47;wsspi&#47;">WSSPI</a> library for stuff I did with it years ago), but it had been mostly done with NTLM and not much of Kerberos.</p>
+<p>Overall, using Kerberos is not much different from NTLM. However, one thing I kept running into that kept me chasing ghosts was getting a <code>SEC_E_INSUFFICIENT_MEMORY</code> error code from my calls to <code><a href="http:&#47;&#47;msdn.microsoft.com&#47;en-us&#47;library&#47;aa375507(VS.85).aspx">InitializeSecurityContext()</a></code>.</p>
+<p>All the documentation says about the error is <em>&ldquo;There is not enough memory available to complete the requested action&rdquo;</em>, but I was pretty sure all my buffer handling was correct and had enough space to receive the generated token. </p>
+<p>After beating my head against this and coming up to it time and time and again, I realized one condition that would trigger this: An incorrect <a href="http:&#47;&#47;technet.microsoft.com&#47;en-us&#47;library&#47;cc961723.aspx">Service Principal Name</a>! Particularly, in my case, it would be an SPN without the Fully Qualified Domain Name of the target service host.</p>
+<p>I&rsquo;m putting this on just so that I have a clue what to watch out for next time it comes up!</p></p>

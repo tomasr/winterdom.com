@@ -1,0 +1,47 @@
+---
+layout: post
+status: publish
+published: true
+title: Enabling FeedFlare on dasBlog
+author:
+  display_name: Tomas Restrepo
+  login: tomasr
+  email: tomas@winterdom.com
+  url: http://winterdom.com/
+author_login: tomasr
+author_email: tomas@winterdom.com
+author_url: http://winterdom.com/
+wordpress_id: 991
+wordpress_url: http://winterdom.com/2006/04/enablingfeedflareondasblog
+date: '2006-04-15 10:13:36 +0000'
+date_gmt: '2006-04-15 10:13:36 +0000'
+categories:
+- Blogging
+tags: []
+comments:
+- id: 697
+  author: Scott Hanselman
+  author_email: scott@hanselman.com
+  author_url: ''
+  date: '2006-04-16 19:44:49 +0000'
+  date_gmt: '2006-04-16 19:44:49 +0000'
+  content: |
+    Shiny. I'll check it in as a standard macro!
+- id: 698
+  author: JRF
+  author_email: ''
+  author_url: http://www.jforsythe.com
+  date: '2006-07-30 01:51:50 +0000'
+  date_gmt: '2006-07-30 01:51:50 +0000'
+  content: |
+    Argh, I wish this had been listed as a feature of the latest build.  I went off and made one of these too.
+    http:&#47;&#47;www.jforsythe.com&#47;jforsytheblog&#47;2006&#47;07&#47;27&#47;GotFeedburnerFeedflaresWorkingWithDasBlog18.aspx
+    I like yours though.
+---
+<p><!--start_raw--><P>I spent some time last night fooling around with some of the options available from <A href="http:&#47;&#47;www.feedburner.com&#47;">FeedBurner</A> (which is an excellent service, by the way), and decided to enable the FeedFlare features. Doing so for your feed is trivial, since feedburner serves it with all done automatically for you.</P><br />
+<P><IMG height=75 alt=FeedFlare.png src="http:&#47;&#47;www.winterdom.com&#47;Weblog&#47;content&#47;binary&#47;FeedFlare.png" width=206 align=left border=0>However, enabling it for your site does require you to add a <script&#47;> tag to your item template. I implemented this fairly easily in the end (though it took me a while to figure out how) by creating a custom dasBlog macro. Here's the code for the macro:</P><br />
+<P><SPAN style="FONT-SIZE: 11px; COLOR: black; FONT-FAMILY: Courier New; BACKGROUND-COLOR: transparent"><SPAN style="FONT-SIZE: 11px; COLOR: green; FONT-FAMILY: Courier New; BACKGROUND-COLOR: transparent">&#47;&#47;</SPAN><BR><SPAN style="FONT-SIZE: 11px; COLOR: green; FONT-FAMILY: Courier New; BACKGROUND-COLOR: transparent">&#47;&#47; FeedFlareMacros.cs</SPAN><BR><SPAN style="FONT-SIZE: 11px; COLOR: green; FONT-FAMILY: Courier New; BACKGROUND-COLOR: transparent">&#47;&#47;</SPAN><BR><SPAN style="FONT-SIZE: 11px; COLOR: green; FONT-FAMILY: Courier New; BACKGROUND-COLOR: transparent">&#47;&#47; Author:</SPAN><BR><SPAN style="FONT-SIZE: 11px; COLOR: green; FONT-FAMILY: Courier New; BACKGROUND-COLOR: transparent">&#47;&#47; Tomas Restrepo (tomasr@mvps.org)</SPAN><BR><SPAN style="FONT-SIZE: 11px; COLOR: green; FONT-FAMILY: Courier New; BACKGROUND-COLOR: transparent">&#47;&#47;</SPAN><BR><BR><SPAN style="FONT-SIZE: 11px; COLOR: blue; FONT-FAMILY: Courier New; BACKGROUND-COLOR: transparent">using</SPAN> System;<BR><SPAN style="FONT-SIZE: 11px; COLOR: blue; FONT-FAMILY: Courier New; BACKGROUND-COLOR: transparent">using</SPAN> System.Web;<BR><SPAN style="FONT-SIZE: 11px; COLOR: blue; FONT-FAMILY: Courier New; BACKGROUND-COLOR: transparent">using</SPAN> System.Web.UI;<BR><SPAN style="FONT-SIZE: 11px; COLOR: blue; FONT-FAMILY: Courier New; BACKGROUND-COLOR: transparent">using</SPAN> newtelligence.DasBlog.Runtime;<BR><SPAN style="FONT-SIZE: 11px; COLOR: blue; FONT-FAMILY: Courier New; BACKGROUND-COLOR: transparent">using</SPAN> newtelligence.DasBlog.Web.Core;<BR><BR><SPAN style="FONT-SIZE: 11px; COLOR: blue; FONT-FAMILY: Courier New; BACKGROUND-COLOR: transparent">namespace</SPAN> Winterdom.Commonality.Macros<BR>{<BR><SPAN style="FONT-SIZE: 11px; COLOR: blue; FONT-FAMILY: Courier New; BACKGROUND-COLOR: transparent">&nbsp;&nbsp; public</SPAN> <SPAN style="FONT-SIZE: 11px; COLOR: blue; FONT-FAMILY: Courier New; BACKGROUND-COLOR: transparent">class</SPAN> FeedFlareMacros<BR>&nbsp;&nbsp; {<BR><SPAN style="FONT-SIZE: 11px; COLOR: blue; FONT-FAMILY: Courier New; BACKGROUND-COLOR: transparent">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; protected</SPAN> SharedBasePage _requestPage;<BR><SPAN style="FONT-SIZE: 11px; COLOR: blue; FONT-FAMILY: Courier New; BACKGROUND-COLOR: transparent">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; protected</SPAN> Entry _item;<BR><BR><SPAN style="FONT-SIZE: 11px; COLOR: blue; FONT-FAMILY: Courier New; BACKGROUND-COLOR: transparent">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;public</SPAN> FeedFlareMacros(SharedBasePage page, Entry item)<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; _requestPage <SPAN style="FONT-SIZE: 11px; COLOR: red; FONT-FAMILY: Courier New; BACKGROUND-COLOR: transparent">=</SPAN> page;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; _item <SPAN style="FONT-SIZE: 11px; COLOR: red; FONT-FAMILY: Courier New; BACKGROUND-COLOR: transparent">=</SPAN> item;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<BR><BR><SPAN style="FONT-SIZE: 11px; COLOR: blue; FONT-FAMILY: Courier New; BACKGROUND-COLOR: transparent">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; public</SPAN> <SPAN style="FONT-SIZE: 11px; COLOR: blue; FONT-FAMILY: Courier New; BACKGROUND-COLOR: transparent">virtual</SPAN> Control FeedFlare()<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<BR><SPAN style="FONT-SIZE: 11px; COLOR: blue; FONT-FAMILY: Courier New; BACKGROUND-COLOR: transparent">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; const</SPAN> <SPAN style="FONT-SIZE: 11px; COLOR: blue; FONT-FAMILY: Courier New; BACKGROUND-COLOR: transparent">string</SPAN> scriptTag <SPAN style="FONT-SIZE: 11px; COLOR: red; FONT-FAMILY: Courier New; BACKGROUND-COLOR: transparent">=</SPAN> <SPAN style="FONT-SIZE: 11px; COLOR: #666666; FONT-FAMILY: Courier New; BACKGROUND-COLOR: #e4e4e4">"<script src=\"http:&#47;&#47;feeds.feedburner.com&#47;{0}?flareitem={1}\" type=\"text&#47;javascript\"></script>"</SPAN>;<BR><BR><SPAN style="FONT-SIZE: 11px; COLOR: blue; FONT-FAMILY: Courier New; BACKGROUND-COLOR: transparent">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; string</SPAN> feedburnerName <SPAN style="FONT-SIZE: 11px; COLOR: red; FONT-FAMILY: Courier New; BACKGROUND-COLOR: transparent">=</SPAN> _requestPage.SiteConfig.FeedBurnerName;<BR><SPAN style="FONT-SIZE: 11px; COLOR: blue; FONT-FAMILY: Courier New; BACKGROUND-COLOR: transparent">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; if</SPAN> ( feedburnerName !<SPAN style="FONT-SIZE: 11px; COLOR: red; FONT-FAMILY: Courier New; BACKGROUND-COLOR: transparent">=</SPAN> <SPAN style="FONT-SIZE: 11px; COLOR: blue; FONT-FAMILY: Courier New; BACKGROUND-COLOR: transparent">null</SPAN> &amp;&amp; feedburnerName.Length > 0 )<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<BR><SPAN style="FONT-SIZE: 11px; COLOR: blue; FONT-FAMILY: Courier New; BACKGROUND-COLOR: transparent">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; string</SPAN> script <SPAN style="FONT-SIZE: 11px; COLOR: red; FONT-FAMILY: Courier New; BACKGROUND-COLOR: transparent">=</SPAN> <SPAN style="FONT-SIZE: 11px; COLOR: blue; FONT-FAMILY: Courier New; BACKGROUND-COLOR: transparent">string</SPAN>.Format(scriptTag, feedburnerName, HttpUtility.HtmlEncode(Utils.GetPermaLinkUrl(_requestPage.SiteConfig, _item.EntryId)));<BR><SPAN style="FONT-SIZE: 11px; COLOR: blue; FONT-FAMILY: Courier New; BACKGROUND-COLOR: transparent">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; return</SPAN> <SPAN style="FONT-SIZE: 11px; COLOR: blue; FONT-FAMILY: Courier New; BACKGROUND-COLOR: transparent">new</SPAN> LiteralControl(script);<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<BR><SPAN style="FONT-SIZE: 11px; COLOR: blue; FONT-FAMILY: Courier New; BACKGROUND-COLOR: transparent">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; return</SPAN> <SPAN style="FONT-SIZE: 11px; COLOR: blue; FONT-FAMILY: Courier New; BACKGROUND-COLOR: transparent">null</SPAN>;<BR>&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;} <BR>&nbsp;&nbsp; }<BR>} <SPAN style="FONT-SIZE: 11px; COLOR: green; FONT-FAMILY: Courier New; BACKGROUND-COLOR: transparent">&#47;&#47; namespace Winterdom.Commonality.Macros</SPAN></SPAN></P><br />
+<P>I then simply enabled it in the web.config file and inserted this into my blog template:</P><br />
+<P>&nbsp;&nbsp;&nbsp;<%FeedFlare()|FeedFlare%></P><br />
+<P>Not the most elegant solution, I'm sure, but it did the trick :). Seeing how <A href="http:&#47;&#47;www.hanselman.com&#47;blog&#47;">Scott</A> already went through this, I'm guessing a future dasBlog build&nbsp;might have built-in support for this stuff.</P><br />
+<P>&nbsp;</P><!--end_raw--></p>

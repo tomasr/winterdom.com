@@ -1,0 +1,40 @@
+---
+layout: post
+status: publish
+published: true
+title: Modifying the home in PowerShell
+author:
+  display_name: Tomas Restrepo
+  login: tomasr
+  email: tomas@winterdom.com
+  url: http://winterdom.com/
+author_login: tomasr
+author_email: tomas@winterdom.com
+author_url: http://winterdom.com/
+wordpress_id: 846
+wordpress_url: http://winterdom.com/2008/01/modifyingthehomeinpowershell
+date: '2008-01-24 11:29:23 +0000'
+date_gmt: '2008-01-24 11:29:23 +0000'
+categories:
+- PowerShell
+tags: []
+comments: []
+---
+<p><!--start_raw-->
+<p>After a long time of procrastinating about it, I finally sat down and started putting together a simple <a href="http:&#47;&#47;www.computerperformance.co.uk&#47;powershell&#47;powershell_profile_ps1.htm">profile script</a> for PowerShell to make it a usable alternative for everyday tasks. It's an excellent shell, but without tweaking it a bit, it can be a bit painful to use at times.</p>
+<p>One of the things I wanted to do was modify the global $HOME variable so that it points to my real home folder: one I've configured in the HOME environment variable and that bears no relationship to my user's windows profile directory. </p>
+<p>I also wanted PowerShell to use this other folder when resolving filesystem paths starting with "~\", which can be very convenient. Here's what I came up:</p></p>
+<div class="codebg"><code><span class="Comment">#</span><br &#47;><br />
+<span class="Comment"># Set the $HOME variable for our use</span><br &#47;><br />
+<span class="Comment"># and make powershell recognize ~\ as $HOME</span><br &#47;><br />
+<span class="Comment"># in paths</span><br &#47;><br />
+<span class="Comment">#</span><br &#47;><br />
+<span class="Statement">set-variable</span>&nbsp;-name HOME -value (<span class="Statement">resolve-path</span>&nbsp;<span class="Identifier">$env:Home</span>) -force<br &#47;><br />
+(<span class="Statement">get-psprovider</span>&nbsp;FileSystem).Home = <span class="Identifier">$HOME</span><br />
+</code></div></p>
+<p>The first line sets the $HOME variable, and needs the -force switch to do it since it is a read-only variable. The second line simply changes the Home property of the ProviderInfo object for the FileSystem provider (I don't care about how the home gets interpreted in other provider contexts).</p>
+<p>On a side note, I also don't keep my real profile script in the default locations used by PowerShell. Instead, I keep my profile script in a file called "_profile.ps1" in, you guessed it, my home folder. Then I simply dot-source it from one of the real profile scripts recognized by PowerShell (such as "c:\users\<user>\Documents\WindowsPowerShell\profile.ps1"), like this:</p></p>
+<div class="codebg"><code>. <span class="String">"$env:HOME\_profile.ps1"</span><br />
+</code></div></p>
+<p>Pretty cool stuff, and hopefully this will help me avoid procrastinating so much on making PowerShell my default shell on windows.</p>
+<div class="wlWriterSmartContent" id="scid:0767317B-992E-4b12-91E0-4F059A8CECA8:cae345a7-2e28-41bb-95ff-4fa8b54d5f56" style="margin: 0px; padding: 0px; display: inline;">Technorati tags: <a href="http:&#47;&#47;technorati.com&#47;tags&#47;PowerShell" rel="tag">PowerShell</a></div><!--end_raw--></p>

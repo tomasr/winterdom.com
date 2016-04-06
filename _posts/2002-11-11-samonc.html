@@ -1,0 +1,51 @@
+---
+layout: post
+status: publish
+published: true
+title: Sam on C++
+author:
+  display_name: Tomas Restrepo
+  login: tomasr
+  email: tomas@winterdom.com
+  url: http://winterdom.com/
+author_login: tomasr
+author_email: tomas@winterdom.com
+author_url: http://winterdom.com/
+wordpress_id: 987
+wordpress_url: http://winterdom.com/2002/11/samonc
+date: '2002-11-11 05:53:35 +0000'
+date_gmt: '2002-11-11 05:53:35 +0000'
+categories:
+- Development
+tags: []
+comments:
+- id: 692
+  author: Sam Gentile
+  author_email: ManagedCode@attbi.com
+  author_url: http://radio.weblogs.com/0105852/
+  date: '2002-11-11 06:43:56 +0000'
+  date_gmt: '2002-11-11 06:43:56 +0000'
+  content: |
+    <p>Thanks for your thoughtful and kind response. When you diagree about C++ designed for multi-paradigm design, I think my choice of words was incorrect. C++ was designed by Stroustrup to support multiple "styles" or "paradigms" od Programming. It was *never* designed by *choice* to be a pure OO language which we agree on but it was designed to support multiple types of programming. From Stroustrup, 3rd edition, page 22 "C++ is a general purpose progarmming language with a bias toward systems programming that supports object oriented programming and supports generic prpgramming." Page 23, "C++ was designed to support data abstraction, object-oriented programming in addition to traditional C programming under these constraints." My point is that it was designed by intention to support other paradigms than OO. </p>
+    <p>Also, if the essay comes off as a defense of C++ or a call to use it, I've failed. The point I was trying to make is that multi-pardigm design is useful and confining oneself to the subset that is OOD is limiting one's flexibility and choices. I used C++ as an example but I could have used ADA or other languages.</p>
+    <p>Thoughts?</p>
+    <p>Thanks BTW. At least you read it-)</p>
+- id: 693
+  author: Tomas Restrepo
+  author_email: tomasr@mvps.org
+  author_url: http://www.winterdom.com/weblog
+  date: '2002-11-11 06:55:52 +0000'
+  date_gmt: '2002-11-11 06:55:52 +0000'
+  content: |
+    <p>I don't think you failed, Sam. Actually, you brought out very good points overall. And I very much agree with your opinion that confining ourselves to OOD is way too limited.</p>
+---
+<p><!--start_raw-->Sam Gentile put up a great comment yesterday on <a href="http:&#47;&#47;radio.weblogs.com&#47;0105852&#47;stories&#47;2002&#47;11&#47;10&#47;multiparadigmDesignAndGenericProgramming.html">Multi-paradigm design and generic programming</a>, which I found spot on in several ways. My current work is all pure C#, which, I admit, I like as a language. However, I still miss working with C++ and the power it gave me, particularly being able to work with templates (here's hoping for generics!).</p>
+<p>I do feel, however, that I find myself in disagreement with some of Sams's assertions. My main concern is saying that C++ was designed to support Multi-Paradigms. Well, I'm not privy to the events that lead to C++ standarization, but I don't swallow this; not completely, at least. I do agree C++ was never designed to be fully OO; in fact, I thing C++ goes quite a bit beyond OO by giving you more possibilities; but I disgress. My real point is that it is the other way around: It happens that C++ can be in such a low-level fashion (abstraction-wise) that you can tack these other programming paradigms on <i>top</i> of it by building abstractions, but I don't think that was the main intention. Then again, that's just my opinion.</p></p>
+<p>One of my pet peeves with C++, even though I love working on it, is that, even with all its power and flexibility, some things that should be trivial are still way too complicated, unnessarily. Despite what one may think, C++ still carries the heavy burden of its C-legacy, and that hurts the language usability. Case in point: Manipulating strings... such a fundamental task in most modern applications, can be a real pita in C++, even with the help of the <code>std:string</code> and friends.</p></p>
+<p>Now, Sam (and Coplien) do have several other assertions I agree with. The OO-Purity of C++ is one that comes to mind. Purity? Who cares about purity? Let's be brutally honest: Purity doesn't make products any better; purity doesn't help you sell more copies of your products (at least in most markets :)), and purity sure as hell doesn't automatically give you maintainability and flexibility. Design and abstraction give you those. I think OO is, in essence, just a low-level abstraction you can build other abstractions on, but designing (and even less, making requirements definitions) at the pure OO level is just counter-productive. So here's my take: At the end of the day, there's no pure and unpure, there's just <i>it feels right or it feels wrong</i>. Gut feeling seems to be these days the best you can hope for.</p></p>
+<p>As for abstraction building, I'm not even completely sure C++ is necessarily the way to go. The way I see it, it very much depends on the problem domain. I'm not going to argue one way or another right now, so just let me tell you three things I've read this year that resonated deeply within me regarding abstractions:</p></p>
+<ul>
+<li>Story number 12 of <a href="http:&#47;&#47;www.amazon.com&#47;exec&#47;obidos&#47;tg&#47;detail&#47;-&#47;020161622X">The Pragmatic Programmer</a>.</li>
+<li>Paul Graham's <a href="http:&#47;&#47;www.paulgraham.com&#47;power.html">Succinctness is Power</a> and specially his <a href="http:&#47;&#47;www.paulgraham.com&#47;taste.html">Taste for Makers</a> article.</li>
+<li>Graydon Hoare's <a href="http:&#47;&#47;www.venge.net&#47;graydon&#47;talks&#47;mkc&#47;html&#47;mgp00001.html">"One Day Compilers"</a> presentation. Well worth a read if Domain-Specifil languages are in your mind these days.</li><br />
+</ul><!--end_raw--></p>

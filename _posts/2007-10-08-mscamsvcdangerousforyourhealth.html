@@ -1,0 +1,30 @@
+---
+layout: post
+status: publish
+published: true
+title: MSCamSvc dangerous for your health
+author:
+  display_name: Tomas Restrepo
+  login: tomasr
+  email: tomas@winterdom.com
+  url: http://winterdom.com/
+author_login: tomasr
+author_email: tomas@winterdom.com
+author_url: http://winterdom.com/
+wordpress_id: 420
+wordpress_url: http://winterdom.com/2007/10/mscamsvcdangerousforyourhealth
+date: '2007-10-08 19:12:12 +0000'
+date_gmt: '2007-10-08 19:12:12 +0000'
+categories:
+- Vista
+tags: []
+comments: []
+---
+<p><!--start_raw-->
+<p>I've <a href="http:&#47;&#47;www.winterdom.com&#47;weblog&#47;2007&#47;07&#47;22&#47;VistaStrikeTwo.aspx">mentioned</a> in the past that I've had some nasty performance problems with Windows Vista, particularly with the machine hanging at times paging so extreme that it completely freezes. Several weeks ago I completely disabled the pagefile and a few other things, and that helped for a while. It didn't remove the problem completely, but now it happened far more infrequently and freezed the machine for shorter periods of time.</p>
+<p>This week, however, it happened several times, and I started looking a bit more closely as to what the issue is. I noticed this time it was a bit more reproducible and usually happened when I opened up "Windows Fax And Scan", an application that really shouldn't cause much trouble and that I had noticed before sometimes triggered the issue.</p>
+<p>After digging a bit deeper, I think I found the culprit! I have a <a href="http:&#47;&#47;www.microsoft.com&#47;hardware&#47;digitalcommunication&#47;productdetails.aspx?pid=002">Microsoft Lifecam VX-6000</a>. It's a simple webcam that does the trick for what little I use it, and my needs are pretty modest to begin with. I always thought the software was a little clunky, but since I rarely used it much, I didn't mind.</p>
+<p>However, today, after the machine froze for about 10 minutes paging (remember, with no pagefile!)&nbsp; I noticed that a process, started by MSCAMS32.EXE, which corresponds to the MSCamSvc service. It usually doesn't seem to use much memory, but seems to page a <em>lot</em>. How much? This time it was to the tune of 64'000.000+ pagefaults. Yes, <em>64 million pagefaults</em> (and I hadn't even <em>used</em> the cam recently). The closest process in paging was dwm.exe with around 19 million.</p>
+<p>And that's when I realized what the deal with Windows Fax and Scan was: The MS software&#47;driver makes the webcam available to WIA (Windows Image Acquisition), which might be what WFaS uses to interact with scanner!</p>
+<p>For now I've simply disabled the offending service, and we'll see how it goes. Nasty stuff...</p>
+<div class="wlWriterSmartContent" id="scid:0767317B-992E-4b12-91E0-4F059A8CECA8:18487f53-edb7-4f83-9a1d-8d14752c2263" style="padding-right: 0px; display: inline; padding-left: 0px; padding-bottom: 0px; margin: 0px; padding-top: 0px">Technorati tags: <a href="http:&#47;&#47;technorati.com&#47;tags&#47;Vista" rel="tag">Vista</a>, <a href="http:&#47;&#47;technorati.com&#47;tags&#47;Performance" rel="tag">Performance</a></div><!--end_raw--></p>

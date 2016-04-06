@@ -1,0 +1,107 @@
+---
+layout: post
+status: publish
+published: true
+title: 403 Forbidden in Reporting Services
+author:
+  display_name: Tomas Restrepo
+  login: tomasr
+  email: tomas@winterdom.com
+  url: http://winterdom.com/
+author_login: tomasr
+author_email: tomas@winterdom.com
+author_url: http://winterdom.com/
+wordpress_id: 665
+wordpress_url: http://winterdom.com/2008/06/403forbiddeninreportingservices
+date: '2008-06-11 13:21:41 +0000'
+date_gmt: '2008-06-11 13:21:41 +0000'
+categories:
+- Tools
+tags: []
+comments:
+- id: 442
+  author: Quan
+  author_email: quanday@hotmail.com
+  author_url: ''
+  date: '2008-06-26 11:53:52 +0000'
+  date_gmt: '2008-06-26 11:53:52 +0000'
+  content: |
+    Thanks, I spent considerable time on this.
+    One of my servers work without requiring this addition, but another won't work until I added this. Not sure why, and not sure of the implications, but for now it's working for me.
+- id: 1032
+  author: Greg Martin
+  author_email: gmartin@reedtech.com
+  author_url: ''
+  date: '2009-07-13 21:33:58 +0000'
+  date_gmt: '2009-07-13 21:33:58 +0000'
+  content: "Thanks for posting this.  Saved me hours...\r\n\r\n\\\\Greg"
+- id: 1150
+  author: Ramone Hamilton
+  author_email: ramone.hamilton@hotmail.com
+  author_url: http://ramone.isa-geek.net
+  date: '2009-10-04 11:54:56 +0000'
+  date_gmt: '2009-10-04 11:54:56 +0000'
+  content: Thanks for this, this had been a big problem for me.
+- id: 1228
+  author: Steve Callan
+  author_email: stevencallan@hotmail.com
+  author_url: ''
+  date: '2009-11-16 22:12:24 +0000'
+  date_gmt: '2009-11-16 22:12:24 +0000'
+  content: Totally amazing fix that belies belief, but nonetheless, it solved the
+    403 error I was receiving on the second run of replicating an ASP&#47;SSRS application.
+    The first run worked fine without the addition of this file, the second would
+    not render a report because of this error. Adding this file into the Documents
+    section did the trick.
+- id: 1333
+  author: Ash
+  author_email: missenlinx@gmail.com
+  author_url: ''
+  date: '2010-03-16 06:33:03 +0000'
+  date_gmt: '2010-03-16 06:33:03 +0000'
+  content: Weird, I have no idea why this resolved my issues, RS was working fine
+    1 day then next not and only this fixed it
+- id: 1642
+  author: Victor J.
+  author_email: vj@jfsl.net
+  author_url: ''
+  date: '2010-12-23 19:05:48 +0000'
+  date_gmt: '2010-12-23 19:05:48 +0000'
+  content: "Works like a charm! This fix also worked for my SSRS in Sharepoint Integrated
+    Mode.\r\nThanks a lot!"
+- id: 1685
+  author: Lara L.
+  author_email: labastiel@hillsboroughcounty.org
+  author_url: ''
+  date: '2011-03-25 13:11:20 +0000'
+  date_gmt: '2011-03-25 13:11:20 +0000'
+  content: Thank You!  I don't know why this works but it fixed my issue too!
+- id: 1857
+  author: KS
+  author_email: konstantinost7@yahoo.com
+  author_url: ''
+  date: '2011-12-12 11:21:31 +0000'
+  date_gmt: '2011-12-12 11:21:31 +0000'
+  content: Thanks a lot it worked perfectly!
+- id: 132934
+  author: Fernando
+  author_email: fernando.olmos68@gmail.com
+  author_url: ''
+  date: '2014-06-19 06:43:46 +0000'
+  date_gmt: '2014-06-19 06:43:46 +0000'
+  content: "Thank you!!! You saved my job! :)\r\nDon't know why that file was missing
+    from the list though. Very concerning."
+- id: 567435
+  author: rosdi
+  author_email: rosdikasim@gmail.com
+  author_url: ''
+  date: '2015-08-12 15:47:19 +0000'
+  date_gmt: '2015-08-12 15:47:19 +0000'
+  content: Thanks a lot!.. you saved my time!
+---
+<p><!--start_raw-->
+<p>I just spent a good chunk of time fighting a problem with my SQL Server 2005 Reporting Services installation. I had not previously used it on this machine so it should've been exactly as the SQL Server (and SP2) installation program configured it.</p>
+<p>I started by deploying a new set of reports from Visual Studio over to the server, which worked straight away. I then went to the Web-based Report manager and could see my reports deployed, but as soon as I tried actually rendering one of the reports, I'd get an error like this one:</p>
+<div class="codebg"><code>Remote server returned an error: (403) Forbidden</code></div>
+<p>Long story short, the problem was in how the &#47;Reports application references the services in the &#47;ReportServer application, and I fixed it by going to IIS and modifying the &#47;ReportServer application configuration to add "ReportService2005.asmx" as a possible default content page under the "Documents" tab of the application's property page.</p>
+<div class="wlWriterSmartContent" id="scid:0767317B-992E-4b12-91E0-4F059A8CECA8:69791478-efe1-4d1a-a9cb-399cd2320a0b" style="padding-right: 0px; display: inline; padding-left: 0px; padding-bottom: 0px; margin: 0px; padding-top: 0px">Technorati tags: <a href="http:&#47;&#47;technorati.com&#47;tags&#47;SQL%20Server%20Reporting%20Services" rel="tag">SQL Server Reporting Services</a>, <a href="http:&#47;&#47;technorati.com&#47;tags&#47;SSRS" rel="tag">SSRS</a></div><!--end_raw--></p>

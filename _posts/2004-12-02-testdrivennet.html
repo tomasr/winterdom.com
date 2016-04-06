@@ -1,0 +1,25 @@
+---
+layout: post
+status: publish
+published: true
+title: TestDriven.NET
+author:
+  display_name: Tomas Restrepo
+  login: tomasr
+  email: tomas@winterdom.com
+  url: http://winterdom.com/
+author_login: tomasr
+author_email: tomas@winterdom.com
+author_url: http://winterdom.com/
+wordpress_id: 339
+wordpress_url: http://winterdom.com/2004/12/testdrivennet
+date: '2004-12-02 03:57:13 +0000'
+date_gmt: '2004-12-02 03:57:13 +0000'
+categories:
+- ".NET"
+tags: []
+comments: []
+---
+<p><!--start_raw-->Many people have commented on the release of <a href="http:&#47;&#47;www.testdriven.net&#47;">TestDriven.NET</a>, including <a href="http:&#47;&#47;samgentile.com&#47;blog&#47;archive&#47;2004&#47;11&#47;29&#47;12342.aspx">Sam</a> and <a href="http:&#47;&#47;www.hanselman.com&#47;blog&#47;PermaLink.aspx?guid=5454b87f-b15f-4f22-920c-b530f8cdb2cc">Scott</a>.</p>
+<p>I tend to agree that it is a cool tool, and the integration with the IDE is very impressive. One thing I'd like to see, though, is a more visual form of feedback. While output to the output window is nice, it means I have to go and read what it means to see the outcome of the test. while I'm not a big fan of NUnitGUI, I must admit that the red&#47;green semaphores are an attractive and easy way to visualize the results of the tests. (If there is something better than the output window in TestDriven.NET, someone please tell me.... but please don't say the Task window!). Another thing I did notice is that it is a little on the slow side, but since one would use it to run a single test method at a time, I figure that's ok.</p></p>
+<p>Unfortunately for me, it doesn't work very well (or at all) on our current working development system. The problem is that TestDriven.NET seems to rely a lot on the VS.NET project system, which we barely use. We all build around here with <a href="http:&#47;&#47;nant.sf.net&#47;">NAnt</a>, and basically have a single VS.NET project containing the entire source tree (it's not that big, and we have it split over several of those). This gives us intellisense and designer support, which pretty much seem to be the only reason for using VS.NET as the IDE at this stage. Any tips here would be welcomed :)</p><!--end_raw--></p>

@@ -1,0 +1,95 @@
+---
+layout: post
+status: publish
+published: true
+title: xs:any and Validation
+author:
+  display_name: Tomas Restrepo
+  login: tomasr
+  email: tomas@winterdom.com
+  url: http://winterdom.com/
+author_login: tomasr
+author_email: tomas@winterdom.com
+author_url: http://winterdom.com/
+wordpress_id: 866
+wordpress_url: http://winterdom.com/2003/04/xsanyandvalidation
+date: '2003-04-16 16:10:43 +0000'
+date_gmt: '2003-04-16 16:10:43 +0000'
+categories:
+- XML
+tags: []
+comments:
+- id: 576
+  author: Simon Fell
+  author_email: sf@zaks.demon.co.uk
+  author_url: http://www.pocketsoap.com/weblog/
+  date: '2003-04-16 17:44:32 +0000'
+  date_gmt: '2003-04-16 17:44:32 +0000'
+  content: |
+    <p>you seen to be right, does lax work any better ?</p>
+- id: 577
+  author: Tomas Restrepo
+  author_email: tomasr@mvps.org
+  author_url: http://www.winterdom.com/weblog
+  date: '2003-04-16 19:04:40 +0000'
+  date_gmt: '2003-04-16 19:04:40 +0000'
+  content: |
+    <p>Nope. It gives the same error.</p>
+- id: 578
+  author: Fumiaki Yoshimatsu
+  author_email: fumiaki_y@hotmail.com
+  author_url: ''
+  date: '2003-04-16 19:19:04 +0000'
+  date_gmt: '2003-04-16 19:19:04 +0000'
+  content: |
+    <p>I used .NET 1.1 and it worked just fine.  Should be a bug on 1.0.  Note that Xerces-J also says that it validates.  So it is not you who mistakes.</p>
+- id: 579
+  author: Dare Obasanjo
+  author_email: kpako@yahoo.com
+  author_url: http://www.kuro5hin.org/user/Carnage4Life/diary
+  date: '2003-04-17 14:16:30 +0000'
+  date_gmt: '2003-04-17 14:16:30 +0000'
+  content: |
+    <p><a href="http:&#47;&#47;support.microsoft.com&#47;default.aspx?scid=kb;en-us;317353" rel="nofollow">http:&#47;&#47;support.microsoft.com&#47;default.aspx?scid=kb;en-us;317353</a></p>
+- id: 580
+  author: Tomas Restrepo
+  author_email: tomasr@mvps.org
+  author_url: http://www.winterdom.com/weblog
+  date: '2003-04-17 21:18:50 +0000'
+  date_gmt: '2003-04-17 21:18:50 +0000'
+  content: |
+    <p>Thanks for confirming it as a bug, Dare!</p>
+---
+<p><!--start_raw-->Can anyone help me out by clarifying what the correct behavior should be for an XSD validator in the prescence of xs:any?</p>
+<p>Imagine I had the following schema:</p></p>
+<pre class="codes"><code><?xml version="1.0" encoding="utf-8" ?><br />
+<xs:schema<br />
+targetNamespace="http:&#47;&#47;www.winterdom.com&#47;schemas&#47;valprb1"<br />
+elementFormDefault="qualified"<br />
+xmlns="http:&#47;&#47;www.winterdom.com&#47;schemas&#47;valprb1"<br />
+xmlns:xs="http:&#47;&#47;www.w3.org&#47;2001&#47;XMLSchema"<br />
+><br />
+<xs:element name="test"><br />
+<xs:complexType><br />
+<xs:sequence><br />
+<xs:element name="value1" type="xs:string"&#47;><br />
+<xs:any namespace="##any" processContents="skip" &#47;><br />
+</xs:sequence><br />
+</xs:complexType><br />
+</xs:element><br />
+</xs:schema><br />
+</code></pre></p>
+<p>And the following XML:</p></p>
+<pre class="codes"><code><test xmlns="http:&#47;&#47;www.winterdom.com&#47;schemas&#47;valprb1"><br />
+<value1>whatever</value1><br />
+<!-- Should fit in xs:any --><br />
+<s:other xmlns:s="http:&#47;&#47;www.winterdom.com&#47;schemas&#47;other">asdad</s:other><br />
+</test><br />
+</code></pre></p>
+<p>What should the correct behavior be here regarding the validation of s:other given my specification of processContents="skip"? I'm not quite entirely sure of what the <a href="http:&#47;&#47;www.w3.org&#47;TR&#47;xmlschema-1&#47;">XSD specification</a> implies. My initial understanding would've been that the validator should not try to actually validate anything fitting in the xs:any section, just verify that it is indeed valid XML. However, this seems not to be the case, at least for the .NET XmlValidatingReader, which reports:</p></p>
+<pre>Error: Could not find schema information for the<br />
+element 'http:&#47;&#47;www.winterdom.com&#47;schemas&#47;other:other'.<br />
+An error occurred at file:&#47;&#47;&#47;C:&#47;temp&#47;test.xml(4, 5).<br />
+</pre></p>
+<p>The message obviously points out that I haven't given any schema information for s:other, but my question goes towards the why I should have to do it? If I was using skip?</p></p>
+<p>So I'm probably misunderstanding how things are supposed to work, and I'd love it if someone would point me out in the right direction...</p><!--end_raw--></p>

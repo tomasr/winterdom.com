@@ -1,0 +1,81 @@
+---
+layout: post
+status: publish
+published: true
+title: PipelineTesting vs TestablePipeline
+author:
+  display_name: Tomas Restrepo
+  login: tomasr
+  email: tomas@winterdom.com
+  url: http://winterdom.com/
+author_login: tomasr
+author_email: tomas@winterdom.com
+author_url: http://winterdom.com/
+wordpress_id: 215
+wordpress_url: http://winterdom.com/2009/01/pipelinetestingvstestablepipeline
+date: '2009-01-06 19:40:30 +0000'
+date_gmt: '2009-01-06 19:40:30 +0000'
+categories:
+- BizTalk
+tags: []
+comments:
+- id: 1328
+  author: Ernesto
+  author_email: ernestochaveschaves@gmail.com
+  author_url: http://netocc.wordpress.com
+  date: '2010-03-15 17:44:54 +0000'
+  date_gmt: '2010-03-15 17:44:54 +0000'
+  content: HI, could you give me an example of how to test a pipeline that expects
+    an email with atachments as the input message?
+- id: 1331
+  author: Tomas Restrepo
+  author_email: tomas@winterdom.com
+  author_url: http://winterdom.com/
+  date: '2010-03-16 00:18:08 +0000'
+  date_gmt: '2010-03-16 00:18:08 +0000'
+  content: "@Ernesto: What exactly are you looking for in your tests? This should
+    certainly be possible, but how it would look would depend on how you've got your
+    own email adapter configured.\r\n\r\nIf you're assuming the receive adapter is
+    doing MIME decoding, then you'd simply create a source message with the message
+    body text in the Body part, and each attachment just as a separate part in the
+    message.\r\n\r\nIf you're assuming the receive adapter is NOT doing MIME decoding,
+    then no, PipelineTesting doesn't have anything specifically there to help with
+    it; so you'd need to write your own MIME encoding routines (or just capture sample
+    message traffic) to create the input message."
+- id: 1441
+  author: Chakri
+  author_email: chaksred@yahoo.com
+  author_url: ''
+  date: '2010-04-20 22:09:16 +0000'
+  date_gmt: '2010-04-20 22:09:16 +0000'
+  content: "Tomas,\r\n\r\nCan we test EDI schemas following any of the two testing
+    methods? I am trying to find a way to Unit Test pipeline components with out having
+    to deploy the pipeline components to Biztalk server. So far it is a failure.\r\n\r\n-Thanks\r\nChakri"
+- id: 1442
+  author: Tomas Restrepo
+  author_email: tomas@winterdom.com
+  author_url: http://winterdom.com/
+  date: '2010-04-20 22:52:17 +0000'
+  date_gmt: '2010-04-20 22:52:17 +0000'
+  content: "@Chakri: I don't believe so, not at the moment. The problem is that the
+    EDI pipeline components only run in the messaging engine; I believe you can't
+    even run them from an orchestration."
+---
+<p><!--start_raw-->
+<p>I recently wrote an entry describing in general terms the new Unit Testing features in the BizTalk Server 2009 beta. However, I didn&rsquo;t focus much on the functionality available for testing pipelines and how it related to my own <a href="http:&#47;&#47;github.com&#47;tomasr&#47;pipelinetesting&#47;wikis">PipelineTesting</a> library.</p>
+<p>The BTS09 testing features work by having compiled pipelines derive from the new <code>TestableReceivePipeline</code> and <code>TestableSendPipeline</code> classes, which define a <code>TestPipeline()</code> method for invoking the pipelines with one or more files as input documents and the necessary schemas (as XSD files on disk).</p>
+<p>Here&rsquo;s the canonical sample of how it is used in the documentation:</p>
+<div class="codebg"><code>[TestMethod]<br><span class="StorageClass">public</span>&nbsp;<span class="Type">void</span> TestMethod() {<br>&nbsp;&nbsp; <span class="Type">string</span> strSourcePO_XML = <span class="SpecialChar">@</span><span class="String">"C:\BizTalkSamples\POProcessing\POInst.xml"</span>;<br><br>&nbsp;&nbsp; ReceivePipeline1 rp = <span class="Statement">new</span> ReceivePipeline1();<br><br>&nbsp;&nbsp; StringCollection documents = <span class="Statement">new</span> StringCollection();<br>&nbsp;&nbsp; documents.Add(strSourcePO_XML);<br><br>&nbsp;&nbsp; StringCollection parts = <span class="Statement">new</span> StringCollection();<br>&nbsp;&nbsp; parts.Add(<span class="SpecialChar">@</span><span class="String">"C:\BizTalkSamples\POProcessing\POInst.xml"</span>);<br><br>&nbsp;&nbsp; Dictionary<<span class="Type">string</span>, <span class="Type">string</span>> schemas = <span class="Statement">new</span> Dictionary<<span class="Type">string</span>, <span class="Type">string</span>>();<br>&nbsp;&nbsp; schemas.Add(<span class="String">"<a href="http:&#47;&#47;POProcessing.PO">http:&#47;&#47;POProcessing.PO</a>"</span>, <span class="SpecialChar">@</span><span class="String">"C:\BizTalkSamples\POProcessing\PO.xsd"</span>);<br><br>&nbsp;&nbsp; rp.TestPipeline(documents, parts, schemas);<br>} </code></div>
+<p>By comparison, here&rsquo;s what doing a similar thing with PipelineTesting might look like:</p>
+<div class="codebg"><code>[Test]<br><span class="StorageClass">public</span>&nbsp;<span class="Type">void</span> TestPipeline() {<br>&nbsp;&nbsp; ReceivePipelineWrapper pipeline =<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Pipelines.Receive<CSV_FF_RecvPipeline>()<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; .WithSpec<Schema3_FF>();<br>&nbsp;&nbsp; IBaseMessage input = MessageHelper.CreateFromStream(<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; DocLoader.LoadStream(<span class="String">"CSV_FF_RecvInput.txt"</span>)<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; );<br><br>&nbsp;&nbsp; MessageCollection output = pipeline.Execute(input);<br>} </code></div>
+<p>Both the BTS09 features as well as PipelineTesting rely on the venerable PipelineObjects.dll assembly originally included in the SDK tools folder (but which now is a more integral part of the product), so general behavior should be relatively similar.</p>
+<p>The big difference, however, is flexibility. I designed the original PipelineTesting library to be far more flexible and allow you to do a lot more than simply execute a compiled BizTalk pipeline, which is all the BizTalk 2009 features allow you to do at this time.</p>
+<p>This flexibility allows you to also do the following tasks with PipelineTesting:</p>
+<ul>
+<li>Composing pipelines from arbitrary components at runtime and execute them.
+<li>Work with compiled BizTalk Schemas instead of the raw XSD files.
+<li>Doesn&rsquo;t require you to build a special version of your pipelines to test them.
+<li>Close control of each part of the pipeline execution process: Control the properties of each component, how schemas are resolved, transaction support, and other things like that.
+<li>Very good support for multi-part messages.
+<li>Support for per-instance pipeline configuration</li></ul>
+<p>All in all, I&rsquo;m very happy with PipelineTesting and will favor it when working with BizTalk Server 2009 over it&rsquo;s own testing features. I also hope to take a couple of ideas to improve PipelineTesting and make it even easier to use and more powerful.</p><!--end_raw--></p>

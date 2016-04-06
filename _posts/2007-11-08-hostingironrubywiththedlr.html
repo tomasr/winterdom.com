@@ -1,0 +1,92 @@
+---
+layout: post
+status: publish
+published: true
+title: Hosting IronRuby with the DLR
+author:
+  display_name: Tomas Restrepo
+  login: tomasr
+  email: tomas@winterdom.com
+  url: http://winterdom.com/
+author_login: tomasr
+author_email: tomas@winterdom.com
+author_url: http://winterdom.com/
+wordpress_id: 150
+wordpress_url: http://winterdom.com/2007/11/hostingironrubywiththedlr
+date: '2007-11-08 13:53:55 +0000'
+date_gmt: '2007-11-08 13:53:55 +0000'
+categories:
+- ".NET"
+tags: []
+comments:
+- id: 98
+  author: she
+  author_email: hot@hot.com
+  author_url: ''
+  date: '2007-11-10 03:59:23 +0000'
+  date_gmt: '2007-11-10 03:59:23 +0000'
+  content: |
+    Hmm it seems that you have to adjust the ruby scripts to properly talk in a certain way too this way?
+    Right now I invoke any method from the commandline&#47;shell in any ruby file with ruby -e,
+    that is quite flexible... can we invoke i.e. ruby with flags too?
+- id: 99
+  author: Tomas Restrepo
+  author_email: tomas@winterdom.com
+  author_url: http://www.winterdom.com/weblog/
+  date: '2007-11-10 04:57:33 +0000'
+  date_gmt: '2007-11-10 04:57:33 +0000'
+  content: |
+    No, you don't need to adjust your ruby scripts for this (well, you won't once IronRuby is more mature); and using a global variable could hardly be considered an adjustment.
+    As for "ruby -e", I think the equivalent would be to run "rbx.exe -c", so yeah, it should be possible (though in that case, Script.Execute() would be a lot less code to write ;))
+---
+<p><!--start_raw-->
+<p>I've been playing with the <a href="http:&#47;&#47;blogs.msdn.com&#47;hugunin&#47;archive&#47;2007&#47;04&#47;30&#47;a-dynamic-language-runtime-dlr.aspx">Dynamic Language Runtime</a> (DLR) and <a href="http:&#47;&#47;www.ironruby.net&#47;">IronRuby</a> lately, and one of the things I've found particularly interesting is the DLR Hosting API, which allows you to bring up the DLR and execute and evaluate scripts inside any .NET 2.0 application.</p>
+<p>If you haven't played with the DLR before, it might be worth mentioning that the DLR is the Microsoft.Scripting.dll assembly you'll find in the one of the projects shipping with it (it may sound stupid to actually mention it, but it actually took me some time to find out that was it). </p>
+<p>Several versions of the DLR are around, given that it is still in in heavy development, including some early builds in the Silverlight 1.1 alpha, IronPython and IronRuby. For now, I've been playing with the version that's in the IronRuby SVN repository.</p>
+<p>The core, low-level hosting interfaces in the DLR are in the Microsoft.Scripting.Hosting namespace, but there are several classes you can use in Microsoft.Scripting&nbsp; that make the whole process a lot easier.</p>
+<p>Keep in mind that I'm writing this as I learn more of the DLR and IronRuby, so there's a chance I make some mistakes along the way :-). Also, the whole hosting API (and IronRuby itself) is in full development, and will likely change a lot in the following months.</p>
+<p><strong>The "long" way around</strong></p>
+<p>There are actually several ways you can use the DLR hosting interfaces, depending on the level of control and flexibility you need, as well as whether you want to host it locally (inside the same Appdomain) or remotely. Let's start with the long way of doing it (I will only discuss local hosting for now).</p>
+<p>The first thing to look at is the ScriptDomainManager class. When hosting the DLR locally, this works as a singleton instance through the CurrentManager property. The ScriptDomainManager gives you a way to get access to the language providers supported by the DLR, like those of IronRuby or IronPythong. In fact, you can register new language providers if needed using the RegisterLanguageProvider() method.</p>
+<p>Once you have the ScriptDomainManager, you can use the LanguageProvider for the language you want to; the easiest way is by looking it up using the file extension used for the language, like ".py" for Python, ".rb" for IronRuby and so on, or by using it's name. Each of the currently supported languages are recognized by several names; for example the language provider for IronRuby can be retrieved using "rb", "ruby" or "ironruby".</p></p>
+<div>ScriptDomainManager&nbsp;manager&nbsp;=&nbsp;ScriptDomainManager.CurrentManager; <BR &#47;>LanguageProvider&nbsp;ruby&nbsp;= <BR &#47;>&nbsp;&nbsp;&nbsp;manager.GetLanguageProvider(<font color='Maroon'>"ruby"</font>); <BR &#47;>&nbsp;&nbsp;&nbsp;<font color='Green'>&#47;&#47;&nbsp;could&nbsp;also&nbsp;be</font> <BR &#47;>&nbsp;&nbsp;&nbsp;<font color='Green'>&#47;&#47;&nbsp;manager.GetLanguageProviderByFileExtension(".rb");</font></div></p>
+<p>Now we can ask for the ScriptEngine for our language and ask it to execute a script directly from a file:</p></p>
+<div>ScriptEngine&nbsp;eng&nbsp;=&nbsp;ruby.GetEngine(); <BR &#47;>eng.ExecuteFile(<font color='Maroon'>@"e:\Tests\DlrHost\SampleScript.rb"</font>);</div></p>
+<p>We could also first compile the script into a module, manipulate it, and then execute it:</p></p>
+<div>IScriptModule&nbsp;mod&nbsp;=&nbsp; <BR &#47;>&nbsp;&nbsp;&nbsp;eng.CompileFile(<font color='Maroon'>@"e:\Tests\DlrHost\SampleScript.rb"</font>,&nbsp;<font color='Maroon'>"Sample"</font>); <BR &#47;><font color='Green'>&#47;&#47;&nbsp;manipulate&nbsp;module</font> <BR &#47;>mod.Execute();</div></p>
+<p>Or perhaps you have some piece of script in a string somewhere and you want to execute it directly instead of writing it to a file first:</p></p>
+<div><font color='Blue'>string</font>&nbsp;script&nbsp;=&nbsp;<font color='Maroon'>"puts&nbsp;\"Hello&nbsp;World!\""</font>; <BR &#47;>ICompiledCode&nbsp;code&nbsp;=&nbsp;eng.CompileCode(script); <BR &#47;>code.Execute();</div></p>
+<p>The engine also allows you to evaluate an expression instead of simply executing the code, which can be useful as well. As you can see, there are many ways you can load and execute code in the DLR.</p></p>
+<p><strong>The short way</strong></p></p>
+<p>Even though "the long way" isn't really lengthy or complex at all, the DLR does provide an easier way: the Microsoft.Scripting.Script class. Script has a bunch of static methods that allow you to compile, evaluate and execute code on the local ScriptDomainManager.</p></p>
+<p>Executing a script file is as easy as:</p></p>
+<div>Script.ExecuteFile(<font color='Maroon'>@"e:\Tests\DlrHost\SampleScript.rb"</font>);</div></p>
+<p>You can also evaluate a simple expression directly:</p></p>
+<div><font color='Blue'>int</font>&nbsp;result&nbsp;=&nbsp;(<font color='Blue'>int</font>)Script.Evaluate(<font color='Maroon'>"ruby"</font>,&nbsp;<font color='Maroon'>"1+8-4"</font>);</div></p>
+<p>Notice that if you're not executing&#47;compiling a script from a file, you need to explicitly state what language the expression to execute is written in.</p></p>
+<p><strong>Changing Options</strong></p></p>
+<p>The ScriptDomainManager class has an Options property (an instance of the ScriptDomainOptions class), which contains some interesting switches you can change to diagnose and debug stuff within the DLR and the language provider. (This may go away or change in the feature, at least according to the comments on the source code)</p></p>
+<p>One such option is the ShowASTs property: when set to true, the state abstract syntax tree for the expression&#47;script being evaluated will be dumped to the console. For example, here's the AST output for the last example.</p></p>
+<div><font color="Green">&#47;&#47;</font> <br><font color="Green">&#47;&#47;&nbsp;AST&nbsp;unknown_ast</font> <br><font color="Green">&#47;&#47;</font> <br> <br>.codeblock&nbsp;Object&nbsp;main&nbsp;(&nbsp;global,)()&nbsp;{ <br>&nbsp;&nbsp;&nbsp;&nbsp;.var&nbsp;RuntimeFlowControl&nbsp;#rfc&nbsp;(Local,InParameterArray) <br>&nbsp;&nbsp;&nbsp;&nbsp;.var&nbsp;Object&nbsp;#self&nbsp;(Local,InParameterArray) <br> <br>&nbsp;&nbsp;&nbsp;&nbsp;{ <br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(.bound&nbsp;#rfc)&nbsp;=&nbsp;(RubyOps.GetRfc)( <br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;.context, <br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;); <br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(.bound&nbsp;#self)&nbsp;=&nbsp;(RubyOps.GetSelf)( <br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;.context, <br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;); <br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{ <br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;.<font color="Blue">return</font>&nbsp;.action&nbsp;InvokeMember&nbsp;-( <br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;.action&nbsp;InvokeMember&nbsp;+( <br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<font color="Maroon">1</font> <br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<font color="Maroon">8</font> <br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;) <br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<font color="Maroon">4</font> <br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;); <br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;} <br>&nbsp;&nbsp;&nbsp;&nbsp;} <br>}</div></p>
+<p><strong>Passing data to Ruby</strong></p></p>
+<p>You can pass data&#47;variables to a script from your host application using the Script.SetVariable() method (if using the script class) or one of the other ways to set values of variables into scopes as necessary. </p></p>
+<p>For IronRuby, however, I believe the only way to do this available is to define a global variable from your DLR hosting application. Doing it, however, isn't very intuitive at this time.</p></p>
+<p>To do this, you need to go "the long way", and explicitly use ScriptDomainManager to get a reference to the Ruby LanguageProvider and its ScriptEngine. Then you need to downcast the ScriptEngine to a variable of type Ruby.Hosting.RubyEngine, and get the execution context to set a global variable there.</p></p>
+<p>A lot of the scope and global variables, once you dig below the Script class, work using symbol IDs instead of names. You can get a symbol ID for the global variable you're about to define using the SymbolTable.StringToId() method.</p></p>
+<p>Let's build an example. First, we'll define a simple class called OurHost:</p></p>
+<div><font color="Blue">public</font>&nbsp;<font color="Blue">class</font>&nbsp;OurHost <br>{ <br>&nbsp;&nbsp;&nbsp;<font color="Blue">public</font>&nbsp;<font color="Blue">void</font>&nbsp;Callback(<font color="Blue">string</font>&nbsp;text) <br>&nbsp;&nbsp;&nbsp;{ <br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Console.WriteLine(<font color="Maroon">"ruby&nbsp;says:&nbsp;{0}"</font>,&nbsp;text); <br>&nbsp;&nbsp;&nbsp;} <br>}</div></p>
+<p>This class will be used by our Ruby script to call back into our C# hosting application. </p></p>
+<p>Now, create the scripting engine and get a reference to the RubyEngine class:</p>
+<pre>ScriptDomainManager manager = ScriptDomainManager.CurrentManager;<br />
+LanguageProvider ruby =<br />
+manager.GetLanguageProvider(<span style="color: maroon;">"ruby"</span>);<br />
+ScriptEngine eng = ruby.GetEngine();<br />
+RubyEngine rubyEng = ((RubyEngine)eng);</pre></p>
+<p>Now we can add a global variable called $host into the engine execution context and execute our script:</p></p>
+<div><font color="Green">&#47;&#47;&nbsp;Add&nbsp;a&nbsp;global&nbsp;variable&nbsp;called&nbsp;$host</font> <br>SymbolId&nbsp;var&nbsp;=&nbsp;SymbolTable.StringToId(<font color="Maroon">"host"</font>); <br>rubyEng.ExecutionContext.GlobalVariables.Add(var,&nbsp;<font color="Blue">new</font>&nbsp;OurHost()); <br> <br>eng.ExecuteFile(<font color="Maroon">@"e:\Tests\DlrHost\SampleScript.rb"</font>);</div></p>
+<p>Our Ruby script, SampleScript.rb would now be able to use the $host variable to call the DLR hosting application:</p>
+<pre>$host.Callback <span style="color: maroon;">"calling home!"</span></pre></p>
+<p>
+</p>
+<div class="wlWriterSmartContent" id="scid:0767317B-992E-4b12-91E0-4F059A8CECA8:f1fd942b-5939-4115-8e29-a786210c703e" style="margin: 0px; padding: 0px; display: inline;">Technorati tags: <a href="http:&#47;&#47;technorati.com&#47;tags&#47;IronRuby" rel="tag">IronRuby</a>, <a href="http:&#47;&#47;technorati.com&#47;tags&#47;DLR" rel="tag">DLR</a></div>
+<p></p><!--end_raw--></p>

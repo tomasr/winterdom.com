@@ -1,0 +1,92 @@
+---
+layout: post
+status: publish
+published: true
+title: Formatting Byte Arrays in PowerShell
+author:
+  display_name: Tomas Restrepo
+  login: tomasr
+  email: tomas@winterdom.com
+  url: http://winterdom.com/
+author_login: tomasr
+author_email: tomas@winterdom.com
+author_url: http://winterdom.com/
+wordpress_id: 1287
+wordpress_url: http://winterdom.com/2009/09/formatting-byte-arrays-in-powershell
+date: '2009-09-04 01:12:56 +0000'
+date_gmt: '2009-09-04 01:12:56 +0000'
+categories:
+- PowerShell
+tags: []
+comments:
+- id: 1117
+  author: Arjan&#8217;s World &raquo; LINKBLOG for Sep 4, 2009
+  author_email: ''
+  author_url: http://www.arjansworld.com/2009/09/04/linkblog-for-sep-4-2009/
+  date: '2009-09-04 14:19:07 +0000'
+  date_gmt: '2009-09-04 14:19:07 +0000'
+  content: "[...] Formatting Byte Arrays in PowerShell - Tomas Restrepo [...]"
+- id: 1118
+  author: John Weldon
+  author_email: johnweldon4@gmail.com
+  author_url: ''
+  date: '2009-09-04 14:59:14 +0000'
+  date_gmt: '2009-09-04 14:59:14 +0000'
+  content: Very Nice!
+- id: 1127
+  author: Alex Espinoza
+  author_email: aespinoza@structum.com.mx
+  author_url: http://neonlabs.structum.net/
+  date: '2009-09-12 03:08:11 +0000'
+  date_gmt: '2009-09-12 03:08:11 +0000'
+  content: What are you using to display code ??? Is beautiful.... If you can share...
+    it would be nice to show code like this in my blog :D
+- id: 1128
+  author: Tomas Restrepo
+  author_email: tomas@winterdom.com
+  author_url: http://winterdom.com/
+  date: '2009-09-12 18:56:31 +0000'
+  date_gmt: '2009-09-12 18:56:31 +0000'
+  content: '@Alex: I just use Vim''s TOhtml plugin, with a custom .css file I <a href=''http:&#47;&#47;winterdom.com&#47;2008&#47;07&#47;stylingcodeforblogvim2css''
+    rel="nofollow">generated</a> from my own <a href=''http:&#47;&#47;winterdom.com&#47;2008&#47;08&#47;molokaiforvim''
+    rel="nofollow">molokai</a> color scheme for vim.'
+- id: 2141
+  author: Andrei
+  author_email: dizzy_dbd@yahoo.com
+  author_url: ''
+  date: '2012-03-19 12:02:15 +0000'
+  date_gmt: '2012-03-19 12:02:15 +0000'
+  content: Great work!
+---
+<p>A few years ago, I posted <a href="http:&#47;&#47;winterdom.com&#47;2006&#47;09&#47;hexdumputility">a small utility class</a> I kept around to dump byte arrays in a nice format for reading. I still use that a bit, but got tired of having to fool with test projects to use it sometimes during my debugging sessions, so I finally broke down and just ported it into a PowerShell function:</p>
+<pre class="codebg"><code><span class="Keyword">function</span> <span class="Function">byteToChar</span>(<span class="Type">[byte]</span><span class="Identifier">$b</span>) {<br />
+   <span class="Conditional">if</span> ( <span class="Identifier">$b</span> -<span class="Operator">lt</span> <span class="Number">32</span> -<span class="Operator">or</span> <span class="Identifier">$b</span>  -<span class="Operator">gt</span> <span class="Number">127</span> ) {<br />
+      <span class="String">'.'</span><br />
+   } <span class="Conditional">else</span> {<br />
+      <span class="Type">[char]</span><span class="Identifier">$b</span><br />
+   }<br />
+}<br />
+<span class="Keyword">function</span> <span class="Function">format-bytes</span>(<span class="Identifier">$bytes</span>, <span class="Identifier">$bytesPerLine</span> = <span class="Number">8</span>) {<br />
+   <span class="Identifier">$buffer</span> = <span class="Statement">new-object</span> system.text.stringbuilder<br />
+   <span class="Repeat">for</span> ( <span class="Identifier">$offset</span>=<span class="Number">0</span>; <span class="Identifier">$offset</span> -<span class="Operator">lt</span> <span class="Identifier">$bytes</span>.Length; <span class="Identifier">$offset</span> += <span class="Identifier">$bytesPerLine</span> ) {<br />
+      <span class="Type">[void]</span><span class="Identifier">$buffer</span>.AppendFormat(<span class="String">'{0:X8}   '</span>, <span class="Identifier">$offset</span>)<br />
+      <span class="Identifier">$numBytes</span> = <span class="Type">[math]</span>::min(<span class="Identifier">$bytesPerLine</span>, <span class="Identifier">$bytes</span>.Length - <span class="Identifier">$offset</span>)<br />
+      <span class="Repeat">for</span> ( <span class="Identifier">$i</span>=<span class="Number">0</span>; <span class="Identifier">$i</span> -<span class="Operator">lt</span> <span class="Identifier">$numBytes</span>; <span class="Identifier">$i</span>++ ) {<br />
+         <span class="Type">[void]</span><span class="Identifier">$buffer</span>.AppendFormat(<span class="String">'{0:X2} '</span>, <span class="Identifier">$bytes</span>[<span class="Identifier">$offset</span>+<span class="Identifier">$i</span>])<br />
+      }<br />
+      <span class="Type">[void]</span><span class="Identifier">$buffer</span>.Append(<span class="String">' '</span> * (((<span class="Identifier">$bytesPerLine</span> - <span class="Identifier">$numBytes</span>)*<span class="Number">3</span>)+<span class="Number">3</span>))<br />
+      <span class="Repeat">for</span> ( <span class="Identifier">$i</span>=<span class="Number">0</span>; <span class="Identifier">$i</span> -<span class="Operator">lt</span> <span class="Identifier">$numBytes</span>; <span class="Identifier">$i</span>++ ) {<br />
+         <span class="Type">[void]</span><span class="Identifier">$buffer</span>.Append( (byteToChar <span class="Identifier">$bytes</span>[<span class="Identifier">$offset</span> + <span class="Identifier">$i</span>]) )<br />
+      }<br />
+      <span class="Type">[void]</span><span class="Identifier">$buffer</span>.Append(<span class="String">"</span><span class="SpecialChar">`n</span><span class="String">"</span>)<br />
+   }<br />
+   <span class="Identifier">$buffer</span>.ToString()<br />
+}<br />
+</code></pre></p>
+<p>It&rsquo;s not fancy or fast, but it does the trick pretty nicely. I use PowerShell a lot during my debugging sessions, be that to quickly test things or make simple calculations, and this will be another useful tool in my PowerShell arsenal. It already proved quite useful today :-). Here's what the output looks like:</p></p>
+<pre class="codebg"><code>&sect; hyperion {~} <span class="Keyword">format-bytes</span> <span class="Identifier">$bytes</span> <span class="Number">16</span><br />
+00000000   60 30 06 09 2A 86 48 86 F7 12 01 02 02 02 01 11    `0..*.H.........<br />
+00000010   00 FF FF FF FF 63 9E C7 4F 19 35 B7 30 74 CD 5A    .....c..O.5.0t.Z<br />
+00000020   26 5E C0 ED CE 8A 3D 05 C8 28 9B 10 C0 01 00 2E    &amp;^....=..(......<br />
+00000030   E0 01                                              ..<br />
+</code></pre></p>

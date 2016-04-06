@@ -1,0 +1,97 @@
+---
+layout: post
+status: publish
+published: true
+title: Vim Swap Files
+author:
+  display_name: Tomas Restrepo
+  login: tomasr
+  email: tomas@winterdom.com
+  url: http://winterdom.com/
+author_login: tomasr
+author_email: tomas@winterdom.com
+author_url: http://winterdom.com/
+wordpress_id: 958
+wordpress_url: http://winterdom.com/2009/02/vimswapfiles
+date: '2009-02-06 05:11:49 +0000'
+date_gmt: '2009-02-06 05:11:49 +0000'
+categories:
+- Vim
+tags: []
+comments:
+- id: 674
+  author: Leonid Volnitsky
+  author_email: leonid@volnitsky.com
+  author_url: http://volnitsky.com
+  date: '2009-02-06 07:02:24 +0000'
+  date_gmt: '2009-02-06 07:02:24 +0000'
+  content: |
+    I use vim-swaps all the time to recover unsaved edits from crashes(vim -r). It is good idea to set swap-dir, but not to the &#47;tmp. Most distros wipe &#47;tmp on reboot.
+- id: 675
+  author: tomasr
+  author_email: tomas@winterdom.com
+  author_url: http://winterdom.com/weblog/
+  date: '2009-02-06 07:05:35 +0000'
+  date_gmt: '2009-02-06 07:05:35 +0000'
+  content: |
+    @Leonid: That's a good point regarding reboots. I haven't had any problems yet, and I admit I rarely have problems with loosing unsaved edits. I'm a compulsive saver (old vice from the winword 6 days :()
+- id: 740
+  author: MikeH
+  author_email: mphasak@hotmail.com
+  author_url: ''
+  date: '2009-05-02 17:30:43 +0000'
+  date_gmt: '2009-05-02 17:30:43 +0000'
+  content: Thanks for sharing, Tomas.  It finally struck me today that these things
+    are an annoyance that I should be able to control, and now life will be more peaceful.
+- id: 830
+  author: Peter Buxton
+  author_email: somercet@gmail.com
+  author_url: http://redstatearmy.org/
+  date: '2009-05-26 05:56:29 +0000'
+  date_gmt: '2009-05-26 05:56:29 +0000'
+  content: "&#47;var&#47;tmp is an even better location, and you can easily protect
+    yourself from clobbering. I created (chmod 0640) \"&#47;var&#47;tmp&#47;vim-peter\"
+    and set the following my ~&#47;.vimrc:\r\n\r\nset backupdir=&#47;var&#47;tmp&#47;vim-peter&#47;&#47;\r\nset
+    directory=&#47;var&#47;tmp&#47;vim-peter&#47;&#47;\r\n\r\nand now all my backup
+    and swap files are safe and protected. Also available in Windows:\r\n\r\nhttp:&#47;&#47;vim.wikia.com&#47;wiki&#47;Remove_swap_and_backup_files_from_your_working_directory"
+- id: 1604
+  author: Joshua Rodman
+  author_email: jrodman@nothanks.example.com
+  author_url: ''
+  date: '2010-11-07 03:55:13 +0000'
+  date_gmt: '2010-11-07 03:55:13 +0000'
+  content: "why would you make vim-peter over in &#47;var&#47;tmp?\r\nWhy not \r\n\r\nset
+    backupdir=~&#47;tmp&#47;vim&#47;&#47;\r\nset directory=~&#47;tmp&#47;vim&#47;&#47;\r\n\r\nor
+    whatever you wish to call it.  It's user-specific data!  No reason to put it over
+    in &#47;var."
+- id: 1605
+  author: Tomas Restrepo
+  author_email: tomas@winterdom.com
+  author_url: http://winterdom.com/
+  date: '2010-11-07 14:52:49 +0000'
+  date_gmt: '2010-11-07 14:52:49 +0000'
+  content: "@Joshua, @Peter: I'm the only one using my machines; I honestly don't
+    care about making it harder for *me* to use and have to do more setup just because.\r\n\r\nI
+    just want those files out of the way and NOT in my home dir, as I don't want to
+    make my backups more annoying that they already are."
+- id: 132282
+  author: ".swp file - dBforums"
+  author_email: ''
+  author_url: http://www.dbforums.com/unix-shell-scripts/1701568-swp-file.html#post6617832
+  date: '2014-05-08 20:35:11 +0000'
+  date_gmt: '2014-05-08 20:35:11 +0000'
+  content: "[&#8230;] the following: Vim Swap Files | Winterdom  Tried on Linux:   -
+    created .vimrc in my current dir:  ~> more .vimrc set directory=&#47;tmp   vi
+    [&#8230;]"
+---
+<p><!--start_raw-->
+<p>This is another one of those pesky Vim posts I do from time to time. Today&rsquo;s one is about a feature that I rarely paid much attention to, until it started driving me crazy: Swap files.</p>
+<p>Vim&rsquo;s swap files are, by default, created with the .swp extension right next to the file you opened. This is usually convenient, and, to be honest, I never paid much attention to them; just had to make sure I excluded them from source control (either manually or using .xxxignore files).</p>
+<p>However, if Vim closes unexpectedly for whatever reason, the swap file would be left behind, which would prompt the infamous &ldquo;Swap file xxx already exists&rdquo; error message, and ask you what you wanted to do.</p>
+<p>That&rsquo;s only a mild annoyance most of the time. However, depending on your choices and how often it happens, Vim might start creating additional swap files with slightly different extensions, like .swo and .swn, if I remember correctly.</p>
+<p>And then, one day, you realize you have 3 or 4 old swap files laying around cluttering your file system. Not good. </p>
+<p>I started seeing this after my desktop machine started throwing BSODs regularly thanks to the x64 NVIDIA driver, which isn&rsquo;t exactly the most reliable piece of software ever. I usually have at least one Vim instance opened, most of the time with 4 or 5 documents in it, so that meant&hellip; a lot of swap files left behind.</p>
+<p>Finally got annoyed enough to do something about it, and after checking the help for <a href="http:&#47;&#47;www.vim.org&#47;htmldoc&#47;recover.html#swap-file">swap-file</a>, I realized I could easily get these of my face and someplace I didn&rsquo;t care about. This is what I added to my .vimrc file:</p>
+<div class="codebg"><code><span class="Statement">if</span>&nbsp;<span class="Function">has</span><span class="Operator">(</span><span class="String">"win32"</span><span class="Operator">)</span>&nbsp;<span class="Operator">||</span>&nbsp;<span class="Function">has</span><span class="Operator">(</span><span class="String">"win64"</span><span class="Operator">)</span><br>&nbsp;&nbsp; <span class="Statement">set</span>&nbsp;<span class="PreProc">directory</span>=$TMP<br><span class="Statement">else</span><br>&nbsp;&nbsp; <span class="Statement">set</span>&nbsp;<span class="PreProc">directory</span>=&#47;tmp<br><span class="Statement">end</span> </code></div>
+<p>It just causes Vim to write swap files to my temporary directory. The unix option of using the root tmp dir instead of my own tmp dir in my home directory is probably not a good one, but I&rsquo;m the only user of my linux machines, anyway, so it&rsquo;s not a big deal.</p>
+<p>Other than that, it works great and helps me keep my sanity.</p><!--end_raw--></p>

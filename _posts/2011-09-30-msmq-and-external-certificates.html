@@ -1,0 +1,119 @@
+---
+layout: post
+status: publish
+published: true
+title: MSMQ and External Certificates
+author:
+  display_name: Tomas Restrepo
+  login: tomasr
+  email: tomas@winterdom.com
+  url: http://winterdom.com/
+author_login: tomasr
+author_email: tomas@winterdom.com
+author_url: http://winterdom.com/
+wordpress_id: 1340
+wordpress_url: http://winterdom.com/2011/09/msmq-and-external-certificates
+date: '2011-09-30 01:26:45 +0000'
+date_gmt: '2011-09-30 01:26:45 +0000'
+categories:
+- MSMQ
+tags: []
+comments:
+- id: 1796
+  author: Distributed Weekly 122 &mdash; Scott Banwart&#039;s Blog
+  author_email: ''
+  author_url: http://rogue-technology.com/blog/?p=1355
+  date: '2011-09-30 13:23:52 +0000'
+  date_gmt: '2011-09-30 13:23:52 +0000'
+  content: "[...] MSMQ and External Certificates [...]"
+- id: 1860
+  author: JohnAbruzzi
+  author_email: francism@talkingtech.com
+  author_url: ''
+  date: '2011-12-20 02:37:41 +0000'
+  date_gmt: '2011-12-20 02:37:41 +0000'
+  content: this article is awesome, took me ages to find something like this. Thanks
+    mate.
+- id: 2785
+  author: Dmitry
+  author_email: borovsky.d@gmail.com
+  author_url: ''
+  date: '2012-07-17 14:38:09 +0000'
+  date_gmt: '2012-07-17 14:38:09 +0000'
+  content: "Hello. Thanks for the article, it's cool.\r\nI have a question. Do you
+    now how to check Message.DigitalSignature? I've tried to google it,  but there
+    is no information about it."
+- id: 2822
+  author: Tomas Restrepo
+  author_email: tomas@winterdom.com
+  author_url: http://winterdom.com/
+  date: '2012-07-27 12:16:52 +0000'
+  date_gmt: '2012-07-27 12:16:52 +0000'
+  content: "@Dimitry: Not sure what you mean by checking it... you mean verifying
+    if the signature is valid? Usually that is done by MSMQ itself, as it will reject
+    a message where the signature doesn't verify; or are you talking about something
+    else?"
+---
+<p>I&rsquo;ve spent some time lately playing around with MSMQ, Authentication and the use of External Certificates. This is an interesting scenario, but one that I found to be documented in relatively unclear terms, with somewhat conflicting information all over the place. Plus, the whole process isn&rsquo;t very transparent at first.</p>
+<p>Normally, when you&rsquo;re using MSMQ Authentication, you&rsquo;ll have MSMQ configured with Active Directory Integration. When this setup, MSMQ will normally create an internal, self-signed certificate for each user&#47;machine pair and register it in Active Directory. The sender would then request that the message be sent authenticated, which will cause the local MSMQ runtime to sign the message body + a set of properties using this certificate, and then include the public key of the certificate and the signature (encrypted with the certificate&rsquo;s private key) alongside the message.</p>
+<p>The MSMQ service where the authenticated queue is defined would then verify the signature using the certificate public key to ensure it wasn&rsquo;t tampered with. If that check passed, it could then lookup a matching certificate in AD, allowing it to identity the user sending the message for authentication (there are a few more checks in there, but this is the basic process).</p>
+<p>This basic setup runs fairly well and is easy to test. Normally all you have to do here is:</p>
+<ul>
+<li>Mark the target queue with the Authenticated property:      <br &#47;><a href="http:&#47;&#47;winterdom.com&#47;wp-content&#47;uploads&#47;2011&#47;09&#47;msmq_auth.png"><img style="background-image: none; border-right-width: 0px; padding-left: 0px; padding-right: 0px; display: inline; border-top-width: 0px; border-bottom-width: 0px; border-left-width: 0px; padding-top: 0px" title="msmq_auth" border="0" alt="msmq_auth" src="http:&#47;&#47;winterdom.com&#47;wp-content&#47;uploads&#47;2011&#47;09&#47;msmq_auth_thumb.png" width="366" height="120" &#47;></a> </li>
+<li>Have the sender make sure to request authentication. For System.Messaging, this would be the <a href="http:&#47;&#47;msdn.microsoft.com&#47;en-us&#47;library&#47;system.messaging.messagequeue.authenticate.aspx">MessageQueue.Authenticate</a> property, while using the C&#47;C++ API it would mean setting the <a href="http:&#47;&#47;msdn.microsoft.com&#47;en-us&#47;library&#47;windows&#47;desktop&#47;ms701308(v=vs.85).aspx">PROPID_M_AUTH_LEVEL</a> property to an appropriate value (normally MQMSG_AUTH_LEVEL_ALWAYS). </li> </ul><br />
+<h2>External Certificates</h2>
+<p>So what if you didn&rsquo;t want to use the MSMQ internal certificate, for some reason? Well, MSMQ also allows you to use your own certificates, which could be, for example, generated using your Certificate Server CA installation trusted by your domain, or some other well known Certification Authority. To do this you need to:</p>
+<ol>
+<li>Register your certificate + private key on the sender machine for the user that is going to be sending the messages. The docs all talk about registering the certificate on the &ldquo;Microsoft Internet Explorer Certificate Store&rdquo; which confused me at first, but turns out it just meant that it would normally be the CurrentUser\MY store. </li>
+<li>Register the certificate (public key only) on the corresponding AD object so that the receiving MSMQ server can find it. You can do this using the MSMQ admin console from the MSMQ server properties window, or using the <a href="http:&#47;&#47;msdn.microsoft.com&#47;en-us&#47;library&#47;windows&#47;desktop&#47;ms705096(v=vs.85).aspx">MQRegisterCertificate()</a> API. </li> </ol>
+<p>I decided to try this using a simple self-signed certificate generated using <a href="http:&#47;&#47;msdn.microsoft.com&#47;en-us&#47;library&#47;bfsktky3(v=vs.80).aspx">MakeCert</a> (a tool I hate having to use because I can never remember the right arguments to use!). I created my certificate into CurrentUser\MY, then registed the public part of the cert using with the MSMQ management console.</p>
+<p>The next part was changing my sender application code to use the external certificate, which is done by setting MessageQueue.SenderCertificate (or the PROPID_M_SENDER_CERT property). It wasn&rsquo;t immediately obvious at first what format the certificate was to be provided, but turns out it&rsquo;s just the DER-encoded representation of the X.509 certificate. In .NET, this means you can just use <a href="http:&#47;&#47;msdn.microsoft.com&#47;en-us&#47;library&#47;system.security.cryptography.x509certificates.x509certificate.getrawcertdata.aspx">X509Certificate.GetRawCertData()</a>&#47;<a href="http:&#47;&#47;msdn.microsoft.com&#47;en-us&#47;library&#47;system.security.cryptography.x509certificates.x509certificate2.rawdata.aspx">X509Certificate2.RawData</a> or <a href="http:&#47;&#47;msdn.microsoft.com&#47;en-us&#47;library&#47;dxz81eb9.aspx">X509Certificate.Export()</a> with <a href="http:&#47;&#47;msdn.microsoft.com&#47;en-us&#47;library&#47;system.security.cryptography.x509certificates.x509contenttype.aspx">X509ContentType.Cert</a> value, which is equivalent. Here&rsquo;s the basic code:</p>
+<pre class="codebg"><code>X509Certificate cert = ...;</p>
+<p>Message msg = <span class="Statement">new</span> Message();<br />
+msg.Body = data;<br />
+msg.UseDeadLetterQueue = <span class="Constant">true</span>;<br />
+msg.UseAuthentication = <span class="Constant">true</span>;<br />
+msg.SenderCertificate = cert.GetRawCertData();<br />
+queue.Send(msg, MessageQueueTransactionType.Single);<br />
+</code></pre></p>
+<p>I ran this on my Windows 7 machine and all I got was this error: </p></p>
+<pre class="codebg"><code>System.Messaging.MessageQueueException (0x80004005): Cryptographic function has failed.<br />
+   at System.Messaging.MessageQueue.SendInternal(Object obj, MessageQueueTransaction internalTransaction, MessageQueueTransactionType transactionType)<br />
+   at System.Messaging.MessageQueue.Send(Object obj, MessageQueueTransactionType transactionType)<br />
+   at MsmqTest1.Program.Main(String[] args) in C:\tomasr\tests\MSMQ\MsmqTest1\Program.cs:line 73<br />
+</code></pre></p>
+<p>What follows is a nice chase down the rabbit hole in order to figure it out.</p></p>
+<h2>The Problem</h2></p>
+<p>After bashing my head against this error for a few hours, I have to admit I was stumped and had no clue what was going on. My first impression was that I had been specifying the certificate incorrectly (false) or that I was deploying my certificate to the wrong stores. That wasn't it, either. Then I thought perhaps there was something in my self-signed certificate that was incorrect, so I started comparing its properties with those of the origina MSMQ internal certificate used in the first test. As far as I could see, the only meaningful difference was that the MSMQ one had 2048-bit keys while mine had 1024-bit ones, but that was hardly relevant at this point.</p></p>
+<p>After some spelunking and lots of searching I ran into the <a href="http:&#47;&#47;blogs.msdn.com&#47;b&#47;johnbreakwell&#47;archive&#47;2008&#47;07&#47;09&#47;latest-version-1-5-of-the-logging-script-for-msmq-3-0.aspx">MQTrace script</a> [1]. With that in hand, I enabled MSMQ tracing and notice a 0x80090008 error code, which means NTE_BAD_ALGID ("Invalid algorithm specified"). So obviously somehow MSMQ was using a "wrong" algorithm, but which one, and why?</p></p>
+<p>In the middle of all this I decided to try something: I switched my sender application to delivering the message over HTTP instead of the native MSMQ TCP-based protocol; all it required was changing the <a href="http:&#47;&#47;msdn.microsoft.com&#47;en-us&#47;library&#47;windows&#47;desktop&#47;ms700996(v=vs.85).aspx">Format Name</a> used to reference the queue. This failed with the same error, but the MSMQ log gave me another bit of information: The NTE_BAD_ALGID error was being returned by a <a href="http:&#47;&#47;msdn.microsoft.com&#47;en-us&#47;library&#47;windows&#47;desktop&#47;aa379908(v=vs.85).aspx">CryptCreateHash()</a> function call!</p></p>
+<p>Armed with this dangerous knowledge, I whipped out trusty WinDBG, set up a breakpoint in CryptCreateHash() and ran into this:</p></p>
+<pre class="codebg"><code>003ee174 50b6453f 005e14d0 <font color="red">0000800e</font> 00000000 CRYPTSP!CryptCreateHash</code></pre></p>
+<p>0x800e is CALG_SHA512. So MSMQ was trying to use the SHA-512 algorithm for the hash; good information! Logically, the next thing I tried was to force MSMQ to use the more common SHA-1 algorithm instead by setting the appropriate property in the message (<a href="http:&#47;&#47;msdn.microsoft.com&#47;en-us&#47;library&#47;windows&#47;desktop&#47;ms706984(v=vs.85).aspx">PROPID_M_HASH_ALG</a>):</p></p>
+<pre class="codebg"><code>msg.HashAlgorithm = HashAlgorithm.Sha;</code></pre></p>
+<p>And it worked! Well, for HTTP anyhow, as it broke again as soon as I switched the sender app back to the native transport. It turns out that the <code>PROPID_M_HASH_ALG</code> property is ignored when using the native transport.</p></p>
+<h2>Changes in MSMQ 4.0 and 5.0</h2></p>
+<p>Around this time I ran into a couple of interesting documents:</p></p>
+<ul>
+<li><a href="http:&#47;&#47;technet.microsoft.com&#47;en-us&#47;library&#47;dd759129.aspx">What's new in Message Queuing 5.0</a> </li>
+<li><a href="http:&#47;&#47;blogs.msdn.com&#47;b&#47;johnbreakwell&#47;archive&#47;2009&#47;05&#47;22&#47;changes-for-msmq-in-windows-7-and-windows-server-2008-r2.aspx">MSMQ 5.0 - Changes introduced with Windows 7 and Windows Server 2008 R2</a> </li><br />
+</ul></p>
+<p>The key part that came up from both of these is that in MSMQ 4.0 and 5.0 there were security changes around the Hash algorithm used for signing messages. In MSMQ 4.0, support for using SHA-2 was added and MAC&#47;MD2&#47;MD4&#47;MD5 were disabled by default, while keeping SHA-1 as the default one. In MSMQ 5.0, however, SHA-1 was disabled by default again and SHA-2 (specifically SHA-512) was made the default [2]. So this explains readily why my test case was using SHA-512 as the hashing algorithm.</p></p>
+<p>At this point I went back to using internal MSMQ certificates and checked what Hash algorithm was being used in that case and, sure enough, it was using SHA-512 as well. Obviously then something in the certificate I was providing was triggering the problem, but what?</p></p>
+<p>And then it hit me that the problem had nothing to do with the certificate itself, but with the private&#47;public key pair associated with the certificate. When you create&#47;request a certificate, one aspect is what Cryptographic (CAPI) Provider to use to generate (and store it?) and I had been using the default, which is the "Microsoft Strong Cryptographic Provider"; according to <a href="http:&#47;&#47;msdn.microsoft.com&#47;en-us&#47;library&#47;bb931357(v=VS.85).aspx">this page</a> it apparently isn't quite strong enough to support SHA-2 [3].</p></p>
+<p>So I created a new certificate, this time explicitly using a cryptographic provider that supports SHA-2, by providing the following arguments to my <code>MakeCert.exe</code> call</p></p>
+<pre class="codebg"><code>-sp "Microsoft Enhanced RSA and AES Cryptographic Provider" -sy 12</code></pre></p>
+<p>And sure enough, sending authenticated messages over the native protocol succeeded now. Sending over HTTP also worked with the updated certificate without having to set the <code>HashAlgorithm</code> property.</p></p>
+<h2>Exporting and Using Certificates</h2></p>
+<p>Something to watch out for that might not be entirely obvious: If you export a certificate + private key from a system store into a PFX (PKCS#12) file, your original choice of cryptographic service provider is stored alongside the key in the file:</p></p>
+<p><a href="http:&#47;&#47;winterdom.com&#47;wp-content&#47;uploads&#47;2011&#47;09&#47;pfx.png"><img style="background-image: none; border-right-width: 0px; padding-left: 0px; padding-right: 0px; display: inline; border-top-width: 0px; border-bottom-width: 0px; border-left-width: 0px; padding-top: 0px" title="pfx" border="0" alt="pfx" src="http:&#47;&#47;winterdom.com&#47;wp-content&#47;uploads&#47;2011&#47;09&#47;pfx_thumb.png" width="717" height="394" &#47;></a></p></p>
+<p>Once you import the PFX file into a second machine, it will use the same crypto provider as the original one. This might be important if you're generating certificates in one machine for using in another. The lesson so far seems to be: </p><br />
+<quote>When using external certificates for use with MSMQ 5.0, ensure you choose a cryptographic provider that supports SHA-2 when generating the public&#47;private key pair of the certificate, like the "Microsoft Enhanced RSA and AES Cryptographic Provider".</quote> </p>
+<p>At this point I'm not entirely sure how much control you have over this part if you're generating the certificates in, say, Unix machines where this concept doesn't apply (or how exactly it might work with external certification authorities).</p></p>
+<h2>External Certificates in Workgroup Mode</h2></p>
+<p>Another aspect I was interested in was the use of External Certificates when MSMQ is in Workgroup mode. In this mode, authenticated queues aren't all that useful (at least as far as I understand things right now), because without AD the receiving MSMQ server has no way to match the certificate used to sign the message with a Windows identity to use for the access check on the queue. In this scenario messages appear to be rejected when they reach the queue with a "The signature is invalid" error.</p></p>
+<p>However, if the queue does <b>not</b> have the <code>Authenticated</code> option checked, then messages signed with external certificates will reach the queue successfully. The receiving application can then check that the message was indeed signed because the <a href="http:&#47;&#47;msdn.microsoft.com&#47;en-us&#47;library&#47;system.messaging.message.digitalsignature.aspx">Message.DigitalSignature</a> (<a href="http:&#47;&#47;msdn.microsoft.com&#47;en-us&#47;library&#47;ms699802(v=vs.85).aspx">PROPID_M_SIGNATURE</a>)property will contain the hash encrypted with the certificate private key as expected. The application could then simply retrieve the public key and look it up in whatever application-specific store it had to check it against known certificates.</p></p>
+<p>My understanding here is that despite that it cannot lookup the certificate in DS, the MSMQ receiving server will still verify that the signature is indeed valid according to the certificate attached to the message. That's only half the work so that's why the application should then verify that the certificate is known and trusted.</p></p>
+<p><b>[1]</b> John Breakwell's MSMQ blog on MSDN is a godsend when troubleshooting and understanding MSMQ. Glad he continued posting about this stuff on his <a href="http:&#47;&#47;geekswithblogs.net&#47;Plumbersmate&#47;Default.aspx">alternate blog</a> after he left MS. </p>
+<p>  <br &#47;><b>[2]</b> The System.Messaging stuff does not provide a way to specify SHA-2 algorithms in the message properties in .NET 4.0. No idea if this will be improved in the future. </p>
+<p>  <br &#47;><b>[3]</b> I always thought the CAPI providers seemed to be named by someone strongly bent on confusing his&#47;her enemies...</p></p>

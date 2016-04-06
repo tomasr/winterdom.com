@@ -1,0 +1,54 @@
+---
+layout: post
+status: publish
+published: true
+title: Workflow Services in Orcas
+author:
+  display_name: Tomas Restrepo
+  login: tomasr
+  email: tomas@winterdom.com
+  url: http://winterdom.com/
+author_login: tomasr
+author_email: tomas@winterdom.com
+author_url: http://winterdom.com/
+wordpress_id: 518
+wordpress_url: http://winterdom.com/2007/06/workflowservicesinorcas
+date: '2007-06-27 20:24:03 +0000'
+date_gmt: '2007-06-27 20:24:03 +0000'
+categories:
+- BizTalk
+- WCF
+- Workflow
+tags: []
+comments: []
+---
+<p><!--start_raw-->
+<p>One of the new power features in .NET 3.5, sorely missing when .NET 3.0 was released is the integration between Windows Communication Foundation and Windows Workflow Foundation, in the way of the new Workflow Services model. Besides providing an easy way to invoke WCF services from WF without resorting to using BasicHttpBinding on the services or invoking&nbsp;a [wrapper] client class form a code activity in your workflow, it also provides a way to expose a workflow as a WCF service to the outside.</p>
+<p>The second functionality is the one that, naturally, interests me the most. After looking at it for a while, I've made a few observations that I'd like to share.</p>
+<p><strong>Implementing Services</strong></p>
+<p>A very interesting thing&nbsp;is how you implement services as workflows. If you know how to create WCF services the right way, then you [mostly] know how to implement services as workflows. The reason for this is that most of the&nbsp;tasks you'd normally when creating a WCF service still apply when creating a workflow service. That is, you will still declare your service contract (interface) as well as&nbsp;your&nbsp;message&#47;data contracts. The only key differences really is how you implement that contract.</p>
+<p>When using workflow services, you implement a contract by using the new Receive activity introduced in&nbsp;.NET&nbsp;3.5, and select which operation of the contract you'd be implementing. You still need to do the activity binding dance for parameters as well as (possibly) create response messages for the incoming requests. Basically, the Receive activity works as a kind of sequential activity where the child activities represent the tasks to execute after the request message is received until the response message is sent (if this is a&nbsp;request&#47;response service).</p>
+<p>You'd also need to do a lot of the usual work in setting up your service host, only instead of using the regular ServiceHost class you'll be using the new WorkflowServiceHost class. Guy Burstein has a good entry on getting started on exposing workflows as services <a href="http:&#47;&#47;blogs.microsoft.co.il&#47;blogs&#47;bursteg&#47;archive&#47;2007&#47;04&#47;20&#47;WF-and-WCF-Integration-in-_2200_Orcas_2200_-_2D00_-Part-1-_2D00_-Workflow-Enabled-Services.aspx">here</a> you might want to check out.</p>
+<p><strong>Starting Workflows</strong></p>
+<p>One very interesting option in the Receive&nbsp;Activity is the CanCreateInstance property. You can use this property to have the WorkflowServiceHost automatically create and start a new instance of your Workflow when a new message arrives at the service endpoint for the implemented operation,&nbsp;without having to write manual code to receive the message and create the new workflow instance.</p>
+<p>People familiar with BizTalk 2004&#47;6 will recognize this option as being similar to the Activate property of the Receive Shape in BizTalk orchestrations. It also serves, in a way, a similar purpose as the CanCreateInstance property of the new [DurableOperationBehavior] attribute introduced for WCF in .NET 3.5 as part of WCF Durable Services infrastructure. Jesus Rodriguez has an <a href="http:&#47;&#47;weblogs.asp.net&#47;gsusx&#47;archive&#47;2007&#47;06&#47;14&#47;orcas-durable-services.aspx">excellent article</a> introducing this new feature.</p>
+<p>Something I found a bit curious about the CanCreateInstance property of the Receive Activity is that there's currently no validation around where you set it. As far as I can see, it doesn't make much sense to use it unless the receive activity is the entry point of your workflow, but currently nothing prevents you from setting it if is not. That said, I guess it might be difficult to validate this correctly given the WF execution model.</p>
+<p><strong>Continuing Workflows</strong></p>
+<p>The Receive Activity doesn't limit you to starting new workflow instances; it also allows your workflow instance to wait until a message is received (through a service invocation from a consumer) to continue execution. This is a key scenario for long-running processes because the workflow will have all the necessary context within the business process to interpret the coming message correctly and act on it.</p>
+<p>How does the host know which workflow instance should process a given message, then? The answer lies in the binding context. WF requires the consumer of the service to send a token alongside the request message that tells it what workflow instance the message is for. This token is, essentially, the WorkflowInstanceId, and can be sent either as an HTTP Header or as a SOAP Header.</p>
+<p>Using the WorkflowInstanceId as the instance selection token is a logical choice for WF, as the Workflow Runtime, as well as the persistence service, already have clear knowledge of what the ID means and how to use it, so getting the right workflow instance to pass the message to is basically just a call to the GetWorkflow() method of the WorkflowRuntime object.</p>
+<p>For this entire process to work, both the server and the client must use the special WSHttpBindingContext class, which helps makes this process a bit more transparent (particularly for the workflow service). On the client side, naturally, the service consumer must be, somehow, aware of the correct workflow instance ID to use as the token. Sometimes, this will be handled in a very transparent way by the infrastructure, but sometimes you'll need to make it more explicit. And by the way, the WSHttpBindingContext class is also used for WCF Durable Services.</p>
+<p>Serge Luca has an <a href="http:&#47;&#47;sergeluca.spaces.live.com&#47;Blog&#47;cns!E8A06D5F2F585013!787.entry">extensive sample</a> of using WF Services in several scenarios that is pretty interesting to check out.</p>
+<p><strong>The Limitation&nbsp;of IDs</strong></p>
+<p>This entire mechanism works fine for WF Services. However, after I saw this the first time, there was something that I didn't quite like about it, and it kept nagging in my head. A few days ago I finally realized what it was: As a first option for having this feature, it is pretty useful, but it is, in a way, a significant step back.</p>
+<p>The problem with using the WorkflowInstanceId as the linking element between the service consumer and the workflow implementing the service is that it has, essentially, no business meaning. While it is a very useful technical discriminating ID, most business scenarios where this kind of long running services and processes are involved <em>already have natural correlating identifiers </em>in the problem domain, like a purchase order id, a loan id, or&nbsp;a combination of&nbsp;customer id and tracking id.</p>
+<p>There are several implications of this simple fact:</p>
+<ul>
+<li>Consumers of the service become aware&nbsp;of the fact that there's a workflow on the other end of the service. This is actually merely an implementation detail of the service which should be transparent to the consumer as much as possible.</li>
+<li>Consumers might now be forced to track yet another id, and one that has no business meaning at all. So instead of just having, say, the order id around they also need to find where to store the workflow id.</li>
+<li>The WorkflowInstanceId becomes an added part of the service messaging, but it is one you might not always be aware of because it doesn't make part of the core messaging description.</li></ul>
+<p>Of all of this, I think the second one is what bothers me the most. If you're ever used the wonderful Correlation Set mechanism introduced in BizTalk 2004, then you'll definitely see where I'm coming from, as this is a bit more restrictive and less expressive than what we can do right now with BizTalk. In fact, this is more akin to the limited correlation mechanism we had back in <a href="http:&#47;&#47;support.microsoft.com&#47;?scid=kb%3Ben-us%3B321413&amp;x=12&amp;y=12">BizTalk 2002</a> (though that required jumping through a lot more hoops).</p>
+<p><strong>Conclusion</strong></p>
+<p>All in all, this seems like a very welcome addition to both WCF and WF, even though there are limitations in this first release. I'll be watching closely how both develop as they take a bit more of the core messaging and orche<br />
+stration strengths that Biztalk has enjoyed for the past few years.</p>
+<div class="wlWriterSmartContent" id="0767317B-992E-4b12-91E0-4F059A8CECA8:28e670e1-0c6b-4d07-9937-372a1e165834" contenteditable="false" style="padding-right: 0px; display: inline; padding-left: 0px; padding-bottom: 0px; margin: 0px; padding-top: 0px">Technorati tags: <a href="http:&#47;&#47;technorati.com&#47;tags&#47;Workflow" rel="tag">Workflow</a>, <a href="http:&#47;&#47;technorati.com&#47;tags&#47;Windows%20Communication%20Foundation" rel="tag">Windows Communication Foundation</a>, <a href="http:&#47;&#47;technorati.com&#47;tags&#47;BizTalk" rel="tag">BizTalk</a></div><!--end_raw--></p>

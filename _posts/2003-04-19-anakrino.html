@@ -1,0 +1,39 @@
+---
+layout: post
+status: publish
+published: true
+title: Anakrino
+author:
+  display_name: Tomas Restrepo
+  login: tomasr
+  email: tomas@winterdom.com
+  url: http://winterdom.com/
+author_login: tomasr
+author_email: tomas@winterdom.com
+author_url: http://winterdom.com/
+wordpress_id: 884
+wordpress_url: http://winterdom.com/2003/04/anakrino
+date: '2003-04-19 07:44:43 +0000'
+date_gmt: '2003-04-19 07:44:43 +0000'
+categories:
+- ".NET"
+tags: []
+comments:
+- id: 603
+  author: Neil Cowburn [MVP]
+  author_email: neil@online.cowburn.me.uk
+  author_url: ''
+  date: '2003-04-22 08:30:33 +0000'
+  date_gmt: '2003-04-22 08:30:33 +0000'
+  content: |
+    <p>I have the very same experience with Windows Server 2003. </p>
+    <p>FWIW, I've managed to replicate the same error msg I get in Win03 in Win XP... twice... using differing methods.</p>
+    <p>The first method consisted of manually adding an entry to the assemblies node in the anakrino.xml file. The entry pointed to an assembly Anakrino would have no idea where it was kept. Saving the file and launching Anakrino caused it to crash immediately.</p>
+    <p>Secondly, I've found that the order in which the .NET Frameworks are installed seems to be paramount. After blasting my Win XP system a couple of months ago, I installed the Everett beta first (with dotnetfx v1.1), followed by VS .NET 2002 (with dotnetfx v1.0). Anakrino always crashed whenever I tried to launch it. I fixed this solution by uninstalling both frameworks and installing them in numerical order (v1.0 and then v1.1). After installation, Anakrino worked without a hitch.</p>
+    <p>Interestingly, I blasted my Win XP system again this morning. I've just installed VS .NET 2003 RTM with dotnetfx v1.1. There is no dotnetfx v1.0 on this system. Anakrino crashes. </p>
+    <p>I wonder what Jay makes of this... </p>
+---
+<p><!--start_raw-->Jeff Saurik [1] talks about <a href="http:&#47;&#47;www.saurik.com&#47;net&#47;exemplar&#47;">Anakrino</a> release 10 and it working with .NET v1.1. I can say it sure works with v1.1; that's not the problem, as I ran it for a long time on my WinXP box with both VS.NET 2002 and the Everett betas and RCs without a hitch.</p>
+<p>What does happen is that in my experience, it <i>will always</i> crash on Windows Server 2003. I've never managed to run it here, fwiw.</p></p>
+<p><b>Update:</b> for what it's worth, exemplar still works when run from the command line directly. No nice GUI, but it's better than nothing :)</p></p>
+<p>[1] Great all-around guy; met him a couple years back at a Microsoft</p><!--end_raw--></p>

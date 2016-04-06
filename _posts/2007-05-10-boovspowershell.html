@@ -1,0 +1,47 @@
+---
+layout: post
+status: publish
+published: true
+title: Boo vs. PowerShell
+author:
+  display_name: Tomas Restrepo
+  login: tomasr
+  email: tomas@winterdom.com
+  url: http://winterdom.com/
+author_login: tomasr
+author_email: tomas@winterdom.com
+author_url: http://winterdom.com/
+wordpress_id: 254
+wordpress_url: http://winterdom.com/2007/05/boovspowershell
+date: '2007-05-10 14:52:48 +0000'
+date_gmt: '2007-05-10 14:52:48 +0000'
+categories:
+- PowerShell
+tags: []
+comments:
+- id: 189
+  author: oneliner
+  author_email: ''
+  author_url: ''
+  date: '2007-05-13 10:38:11 +0000'
+  date_gmt: '2007-05-13 10:38:11 +0000'
+  content: |
+    [System.Object].Assembly.GetTypes() | %{$_.GetMethods().Length} | measure-object -sum
+- id: 190
+  author: pete w
+  author_email: talktopete@gmail.com
+  author_url: http://www.acceptedeclectic.com
+  date: '2007-06-05 19:23:02 +0000'
+  date_gmt: '2007-06-05 19:23:02 +0000'
+  content: |
+    I just picked up powershell today, I'm hooked!
+    [System.Object].Assembly.GetTypes() | foreach {
+    $_.Name; $_.GetMethods() | foreach{"-==-"+$_.Name}
+    }
+    "Types $typeCount, Methods $methodCount"
+---
+<p><!--start_raw-->
+<p>Oren (<a href="http:&#47;&#47;ayende.com&#47;Blog&#47;">Ayende</a>) wrote a cool little <a href="http:&#47;&#47;ayende.com&#47;Blog&#47;archive&#47;2007&#47;05&#47;10&#47;Booish-fun.aspx">script</a> in Boo showing how to count the number of types and methods in mscorlib. Just for fun, here's an equivalent script in PowerShell that does the same thing:</p>
+<div><font face="Lucida Console">[System.Object].Assembly.GetTypes()&nbsp;|&nbsp;<font color="blue">foreach</font>&nbsp;{&nbsp; <br>&nbsp;&nbsp;&nbsp;<font color="#35687d">$typeCount</font>++&nbsp; <br>&nbsp;&nbsp;&nbsp;<font color="#35687d">$methodCount</font>&nbsp;+=&nbsp;<font color="#35687d">$_</font>.GetMethods().Length <br>} <br><font color="maroon">"Types&nbsp;$typeCount,&nbsp;Methods&nbsp;$methodCount"</font> <br></font></div>
+<p>This is, of course, just one possible way to write it.</p>
+<div class="wlWriterSmartContent" id="0767317B-992E-4b12-91E0-4F059A8CECA8:ab65bca8-a520-47a2-aa79-a3a9fd0bfcb1" contenteditable="false" style="padding-right: 0px; display: inline; padding-left: 0px; padding-bottom: 0px; margin: 0px; padding-top: 0px">Technorati tags: <a href="http:&#47;&#47;technorati.com&#47;tags&#47;Boo" rel="tag">Boo</a>, <a href="http:&#47;&#47;technorati.com&#47;tags&#47;PowerShell" rel="tag">PowerShell</a></div><!--end_raw--></p>

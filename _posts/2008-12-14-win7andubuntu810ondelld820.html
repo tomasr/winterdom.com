@@ -1,0 +1,68 @@
+---
+layout: post
+status: publish
+published: true
+title: Win7 and Ubuntu 8.10 on Dell D820
+author:
+  display_name: Tomas Restrepo
+  login: tomasr
+  email: tomas@winterdom.com
+  url: http://winterdom.com/
+author_login: tomasr
+author_email: tomas@winterdom.com
+author_url: http://winterdom.com/
+wordpress_id: 827
+wordpress_url: http://winterdom.com/2008/12/win7andubuntu810ondelld820
+date: '2008-12-14 07:55:59 +0000'
+date_gmt: '2008-12-14 07:55:59 +0000'
+categories:
+- Vista
+- Linux
+tags: []
+comments:
+- id: 551
+  author: http:&#47;&#47;jasonseney.myopenid.com&#47;
+  author_email: none@none.com
+  author_url: http://jasonseney.myopenid.com/
+  date: '2008-12-14 20:04:16 +0000'
+  date_gmt: '2008-12-14 20:04:16 +0000'
+  content: |
+    Hi, interesting article. I've been thinking of trying out Windows 7, but might not bother now. Also thinking of finally upgrading my Ubuntu.
+    I was wondering too, the name of that font for Vim? Looks a lot like Ragnarok... Do you have the font for download? :D
+    Thanks!
+- id: 552
+  author: tomasr
+  author_email: tomas@winterdom.com
+  author_url: http://winterdom.com/weblog/
+  date: '2008-12-14 20:18:00 +0000'
+  date_gmt: '2008-12-14 20:18:00 +0000'
+  content: |
+    As I said, the font is Damien Guard's Envy Code R, which you can get from the link in the article. The Vim colorscheme itself is <a href="http:&#47;&#47;winterdom.com&#47;weblog&#47;2008&#47;08&#47;12&#47;MolokaiForVim.aspx" rel="nofollow">molokai</a>.
+- id: 553
+  author: http:&#47;&#47;jasonseney.myopenid.com&#47;
+  author_email: none@none.com
+  author_url: http://jasonseney.myopenid.com/
+  date: '2008-12-18 10:47:57 +0000'
+  date_gmt: '2008-12-18 10:47:57 +0000'
+  content: |
+    Ah yes, sorry I meant to say "color scheme" not "font" :P I was reading about the Envy Code R font, and the word font stuck in my head...
+    Anyways, thanks for the color scheme link!!!
+---
+<p><!--start_raw-->
+<p>Now that I no longer rely so much on my &ldquo;work&rdquo; laptop (a Dell Latitude D820), I&rsquo;ve been a bit more open about rebuilding it and playing a bit with it. </p><br />
+<h2>Windows 7 PDC Alpha</h2>
+<p>A couple of weeks after coming home from the PDC in Los Angeles, I bit the bullet and repaved the machine with the Windows 7 Alpha we got. Installation went fine and everything seemed to work fine. </p>
+<p>I was, however, not particularly impressed with it. Sure, there are a few nice UI and usability enhancements, but nothing that would make a really significant impact on my day-to-day usage. Performance was OK, but not great, either:</p>
+<ul>
+<li>General usage performance was, as far as I could see roughly similar to Vista on the machine.</li>
+<li>Aero was felt significantly slower than on Vista. It was particularly noticeable with effects turned on, like when windows are minimized&#47;maximized, with very choppy animation.</li>
+<li>Using it as a host OS for virtualization using Virtual PC 2007 didn&rsquo;t worked too well. It worked, but was noticeably slower than on Vista for me.</li></ul>
+<p>Neither of this is really surprising since it is still an early alpha and well, VPC isn&rsquo;t great at supporting new OS releases anyway. However, it does tell me that we probably shouldn&rsquo;t expect any major performance changes with Win7 over Vista (Heck, we&rsquo;d be very lucky if performance remains the same with minor improvements here and there).</p><br />
+<h2>Ubuntu 8.10 (Intrepid Ibex)</h2>
+<p>Last week I wiped Win7 and installed Ubuntu 8.10. This is the first time I&rsquo;ve installed Ubuntu on this machine. I already hade Ibex running on my older Dell Inspiron 6000, where it works great and with very acceptable performance, and was curious how it would work out on the D820.</p>
+<p>For the most part, it went well. Installation worked flawlessly, and all the hardware seems to work (though I haven&rsquo;t exercised it too much yet). Performance-wise, it seems to behave very well, with good boot times and applications loading in very reasonable times.</p>
+<p><a href="http:&#47;&#47;winterdom.com&#47;weblog&#47;content&#47;binary&#47;WindowsLiveWriter&#47;Win7andUbuntu8.10onDellD820_92F1&#47;screenshot_4.png"><img title="screenshot" style="border-right: 0px; border-top: 0px; display: inline; margin: 0px 10px 0px 0px; border-left: 0px; border-bottom: 0px" height="219" alt="screenshot" src="http:&#47;&#47;winterdom.com&#47;weblog&#47;content&#47;binary&#47;WindowsLiveWriter&#47;Win7andUbuntu8.10onDellD820_92F1&#47;screenshot_thumb_1.png" width="350" align="left" border="0"></a> </p>
+<p>The big difference between the two machines (aside from the D820 having a dual core processor) is that this one has an NVidia graphics card instead of the ATI on the Inspiron. I installed the NVidia proprietary drivers (version 177) and it <em>almost</em> works very well.</p>
+<p>The reason I say this is that the driver works fairly well, with good video performance and so on. However, the Linux <a href="http:&#47;&#47;winterdom.com&#47;weblog&#47;2007&#47;10&#47;23&#47;FixingSleepInUbuntu710.aspx">Achilles heel</a> raises it&rsquo;s ugly head again. Surprisingly enough, Suspend (sleep) seems to work fine and even pretty fast to get in&#47;out of. </p>
+<p>Hibernation, however, doesn&rsquo;t work at all: The machine tries to get into hibernation and appears to almost succeed, but right away restarts as if had been rebooted instead. Haven&rsquo;t yet dug in to see what exactly the problem is yet.</p>
+<p>On the good news good front: On this clean installation I was able to get <a href="http:&#47;&#47;winterdom.com&#47;weblog&#47;2008&#47;08&#47;18&#47;ImprovingFontRenderingInUbuntu.aspx">font rendering</a> right away working correctly, and even succeeded in having the terminal application (gnome-terminal) render <a href="http:&#47;&#47;damieng.com&#47;blog&#47;2008&#47;05&#47;26&#47;envy-code-r-preview-7-coding-font-released">Envy Code R</a> correctly!</p><!--end_raw--></p>

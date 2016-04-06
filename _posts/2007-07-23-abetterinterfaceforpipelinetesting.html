@@ -1,0 +1,37 @@
+---
+layout: post
+status: publish
+published: true
+title: A Better Interface for PipelineTesting
+author:
+  display_name: Tomas Restrepo
+  login: tomasr
+  email: tomas@winterdom.com
+  url: http://winterdom.com/
+author_login: tomasr
+author_email: tomas@winterdom.com
+author_url: http://winterdom.com/
+wordpress_id: 249
+wordpress_url: http://winterdom.com/2007/07/abetterinterfaceforpipelinetesting
+date: '2007-07-23 20:58:07 +0000'
+date_gmt: '2007-07-23 20:58:07 +0000'
+categories:
+- BizTalk
+tags: []
+comments: []
+---
+<p><!--start_raw-->
+<p>Last year I wrote the initial version of my <a href="http:&#47;&#47;www.winterdom.com&#47;weblog&#47;2006&#47;04&#47;27&#47;PipelineTestingLibraryPart1.aspx">PipelineTesting</a> library, a wrapper library that makes it possible&nbsp;to automate testing of&nbsp;BizTalk Server 2006 pipelines and pipeline components. Since then, I've used the library successfully on several projects and I'm extremely happy I spent the time creating it, as it has made my life a lot easier when working with Pipelines.</p>
+<p>However, the original API for the library was not the best. While not hard to use, it was not completely intuitive and it was very verbose, for no good reason except that it resembled (partially) the original API in the PipelineObjects library from Microsoft. </p>
+<p>Finally this bothered enough that I decided to do something about it and improve the API with something better. My goals are:</p>
+<ul>
+<li><em>Keep the original API compatible.</em> In other words, you should still be able to use the original API if you so want (if only to keep compatibility for existing users).</li>
+<li>Make it less verbose, but more readable.</li>
+<li>Fix pain points in the current API.</li></ul>
+<p>The current API works, but it is somewhat painful in the following aspects:</p>
+<ul>
+<li>Creating pipelines from scratch and using&nbsp;default pipelines</li>
+<li>Executing Send pipelines (since you need to create collections even if you're only going to use one input message)</li>
+<li>Manipulating messages</li></ul>
+<p>I'll be exploring some options to fix these issues in following posts, and I'd sure appreciate any feedback!</p>
+<div class="wlWriterSmartContent" id="0767317B-992E-4b12-91E0-4F059A8CECA8:fd354dc8-4fed-4d79-9db5-0c00389e50bf" contenteditable="false" style="padding-right: 0px; display: inline; padding-left: 0px; padding-bottom: 0px; margin: 0px; padding-top: 0px">Technorati tags: <a href="http:&#47;&#47;technorati.com&#47;tags&#47;BizTalk" rel="tag">BizTalk</a>, <a href="http:&#47;&#47;technorati.com&#47;tags&#47;Testing" rel="tag">Testing</a></div><!--end_raw--></p>

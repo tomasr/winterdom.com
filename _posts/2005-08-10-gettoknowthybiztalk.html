@@ -1,0 +1,37 @@
+---
+layout: post
+status: publish
+published: true
+title: Get to know thy BizTalk
+author:
+  display_name: Tomas Restrepo
+  login: tomasr
+  email: tomas@winterdom.com
+  url: http://winterdom.com/
+author_login: tomasr
+author_email: tomas@winterdom.com
+author_url: http://winterdom.com/
+wordpress_id: 168
+wordpress_url: http://winterdom.com/2005/08/gettoknowthybiztalk
+date: '2005-08-10 19:34:36 +0000'
+date_gmt: '2005-08-10 19:34:36 +0000'
+categories:
+- BizTalk
+tags: []
+comments: []
+---
+<p><!--start_raw-->Recently, <a href="http:&#47;&#47;pluralsight.com&#47;blogs&#47;dbox&#47;archive&#47;2005&#47;07&#47;29&#47;13652.aspx">some</a> <a href="http:&#47;&#47;samgentile.com&#47;blog&#47;archive&#47;2005&#47;07&#47;22&#47;31859.aspx">prominent</a> people have started (or, most likely, are just now talking about it) about BizTalk Server, some in light of the recent SO&#47;Contract and <a href="http:&#47;&#47;pluralsight.com&#47;blogs&#47;johncj&#47;archive&#47;2005&#47;08&#47;04&#47;13855.aspx">Messaging</a> Vs. <a href="http:&#47;&#47;pluralsight.com&#47;blogs&#47;aaron&#47;archive&#47;2005&#47;04&#47;25&#47;7729.aspx">RPC</a> <a href="http:&#47;&#47;samgentile.com&#47;blog&#47;archive&#47;2005&#47;08&#47;04&#47;31892.aspx">discussions</a>. I'm not a BizTalk Expert (heck, I wouldn't call myself an expert in anything in particular), but I've done my good share of BizTalk development and really have come to love the product in this past couple of years!</p>
+<p>One of the things that drove me towards BizTalk in the first place is the product feel: it's a really complex product, but based on a few solid, simple and elegant principles, and its a product that you can learn something new about every time you work with it or in every new project you build. This is something that makes it far more exciting for me, as a developer, to work with it, and reminds me a whole lot of when I started using C++.</p></p>
+<p>Some others have mentioned that every .NET developer should get to know BizTalk Server at least once. I agree totally with this, and not only because it features Contract-Oriented development as a key principle. I would recommend this to other developers because of a completely different, yet totally related issue: <i>It will really open up your mind and, once you understand the principles it is based on, it will give you a new set of conceptual tools and views from which to tackle projects</i>.</p></p>
+<p>The reason I say this is because of my own experience. Let me be totally honest about this: When I first started looking at BizTalk (back in the 2000&#47;2002 timeframe) I learned the basics of how to create schemas, maps, channels, ports and, of course, orchestrations. While I could certainly build usefull stuff with it, I'm possitively sure that I "didn't get it". I just couldn't get my grips on the "limitations" I kept encountering for everything (starting with orchestrations, which felt totally unnatural at the beginning).</p></p>
+<p>Eventually, I got it (or so I'd like to think), but not because someone told me what it meant. What really opened my eyes was actively working with the product. You see, BizTalk is not a product you can learn just by reading about it; it really has to be experienced to really grasp what the principles are and just what makes it so powerful.</p></p>
+<p>Here's are some examples of what it took me to get it:</p></p>
+<ul>
+<li><i>The mechanics:</i> When I started looking at BizTalk, I kept asking myself why it was so damn hard and why I had to do so many things just to call an orchestration and get a response back. Well, eventually figured out BizTalk wass <i>not</i> about calling things (particularly not about calling orchestrations), it was about sending and receiving messages <i>everywhere</i>. This is why such a simple figure as this makes so huge an statement about the BizTalk architecture and its basic principle:<br />
+<br&#47;><br />
+<img src="http:&#47;&#47;www.winterdom.com&#47;weblog&#47;images&#47;BizTalkArch.jpg" &#47;><br />
+</li></p>
+<li><i>Transactions:</i> You know, I just didn't get why I couldn't receive a message transactionally and why treating an orchestration as an atomic transaction was so hard. Long running transactions? just what the heck were those for? It took me encountering real business scenarios and, dare I say, even writing a transactional adapter to understand the real model behind transactions in BizTalk.</li><br />
+</ul></p>
+<p>This are just examples, but I think they serve to hightlight my point. So, get to know your BizTalk and open your mind to the new possibilities...</p><br />
+<!--end_raw--></p>

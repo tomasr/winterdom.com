@@ -1,0 +1,46 @@
+---
+layout: post
+status: publish
+published: true
+title: WF SqlTrackingService data partitioning
+author:
+  display_name: Tomas Restrepo
+  login: tomasr
+  email: tomas@winterdom.com
+  url: http://winterdom.com/
+author_login: tomasr
+author_email: tomas@winterdom.com
+author_url: http://winterdom.com/
+wordpress_id: 535
+wordpress_url: http://winterdom.com/2006/03/wfsqltrackingservicedatapartitioning
+date: '2006-03-24 16:13:31 +0000'
+date_gmt: '2006-03-24 16:13:31 +0000'
+categories:
+- WinFX
+tags: []
+comments: []
+---
+<p><!--start_raw--><a href="http:&#47;&#47;blogs.msdn.com&#47;moustafa&#47;">Moustafa Khalil Ahmed</a> (from the Windows Workflow Foundation Team) recently <a href="http:&#47;&#47;blogs.msdn.com&#47;moustafa&#47;archive&#47;2006&#47;03&#47;23&#47;559391.aspx">blogged</a> about how the SqlTrackingService included in WF does data partitioning across tables to keep data partitioned to smaller subsets for completed workflows. <br><br>Moustafa was kind enough to answer some <a href="http:&#47;&#47;forums.microsoft.com&#47;MSDN&#47;ShowPost.aspx?PostID=316178&amp;SiteID=1&amp;mode=1">extra questions</a> about how it worked on the WF forums, and this was his answer, which I believe completements the stuff on his weblog:<br><br><br />
+<blockquote><span>
+<p class="MsoNormal" style="margin: 0in 0in 0pt;"><i><span style="font-size: 10pt; font-family: Arial;"><font face="Verdana, Geneva, Arial, Sans-serif">"The<br />
+partition is done on the completion of the workflow instance. That is<br />
+your records will be in your regular tables until the instance<br />
+completes and this is when the records are going to move to the added<br />
+tables. This is designed for applications that have no downtime do not<br />
+want to incur downtime. We do have an offline scheme as well, so if you<br />
+have a downtime and want to do partitioning during that time or you<br />
+want to avoid moving records around when the instances complete or for<br />
+any other reason you can schedule a task that runs<br />
+PartitionCompletedWorkflowInstances stored proc which will move all<br />
+currently completed instances from the live tables to the partitions.<br />
+Host applications don&rsquo;t need special privileges to create those tables,<br />
+the user should be part of the tracking_ roles that are defined in the<br />
+SqlTrackingService database. </font></span></i></p></p>
+<p class="MsoNormal" style="margin: 0in 0in 0pt;"><i><span style="font-size: 10pt; font-family: Arial;"><font face="Verdana, Geneva, Arial, Sans-serif">&nbsp;</font></span></i></p></p>
+<p class="MsoNormal" style="margin: 0in 0in 0pt;"><i><span style="font-size: 10pt; font-family: Arial;"><font face="Verdana, Geneva, Arial, Sans-serif"><font face="Verdana, Geneva, Arial, Sans-serif">SqlTrackingQuery<br />
+will look at the partitioned tables as well. You can look at the<br />
+PartitionCompletedWorkflowInstances stored proc as a starting point if<br />
+you want to have your own Archiving and Purging story other than the<br />
+one we provide out of box. We are working on documenting the<br />
+SqlTrackingService schema in WF&rsquo;s help</font>.</font></span>"</i></p></span></blockquote><br><span></span>
+<p></p><!--end_raw--></p>

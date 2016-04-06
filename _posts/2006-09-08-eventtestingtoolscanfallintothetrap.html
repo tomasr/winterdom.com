@@ -1,0 +1,44 @@
+---
+layout: post
+status: publish
+published: true
+title: Event Testing Tools can Fall into the Trap
+author:
+  display_name: Tomas Restrepo
+  login: tomasr
+  email: tomas@winterdom.com
+  url: http://winterdom.com/
+author_login: tomasr
+author_email: tomas@winterdom.com
+author_url: http://winterdom.com/
+wordpress_id: 752
+wordpress_url: http://winterdom.com/2006/09/eventtestingtoolscanfallintothetrap
+date: '2006-09-08 09:30:42 +0000'
+date_gmt: '2006-09-08 09:30:42 +0000'
+categories:
+- Development
+- Tools
+tags: []
+comments:
+- id: 503
+  author: Rajat
+  author_email: rajat.khare@delphi.com
+  author_url: ''
+  date: '2007-06-19 22:16:54 +0000'
+  date_gmt: '2007-06-19 22:16:54 +0000'
+  content: |
+    Hi,
+    even I am getting a similar problem. I have created a thread in the test, which is going to make a callback on a delegate..and it pretty much does the job.. But after test execution nunit starts throwing some exceptions.. Very strange.. Could u get any solution to your problem? Please let me know at rajat.khare@delphi.com
+- id: 504
+  author: Tomas Restrepo
+  author_email: tomas@winterdom.com
+  author_url: http://www.winterdom.com/weblog/
+  date: '2007-06-21 17:20:27 +0000'
+  date_gmt: '2007-06-21 17:20:27 +0000'
+  content: |
+    To be honest, I never bothered following up on it... you might want to just ask in the NUnit mailing lists to see if someone fixed it.
+---
+<p><!--start_raw-->
+<p>Remember <a href="http:&#47;&#47;www.winterdom.com&#47;weblog&#47;2006&#47;08&#47;31&#47;ExceptionManagementRules.aspx">all</a> <a href="http:&#47;&#47;www.hanselman.com&#47;blog&#47;GoodExceptionManagementRulesOfThumb.aspx">those</a> <a href="http:&#47;&#47;www.srtsolutions.com&#47;public&#47;item&#47;140466">posts</a> about good exception handling practices? Well, it seems even the best of us can fall into that trap.</p>
+<p>I've been working on putting the finishing touches on a socket server for one of our clients, and I've happy as to the results I've had so far and how the design ended up. I've also got good coverage of the code using NUnit, including all the socket manipulation. However, I noticed something weird today while testing again:<br><a href="http:&#47;&#47;www.winterdom.com&#47;weblog&#47;content&#47;binary&#47;EventTestingToolscanFallintotheTrap_9165&#47;NUnit_Unhandled13.png" atomicselection="true"><img style="border-right: 0px; border-top: 0px; border-left: 0px; border-bottom: 0px" height="173" src="http:&#47;&#47;www.winterdom.com&#47;weblog&#47;content&#47;binary&#47;EventTestingToolscanFallintotheTrap_9165&#47;NUnit_Unhandled_thumb11.png" width="300" align="left" border="0"></a></p>
+<p>Every single test passes with no issues. When I run the tests for each TestFixture (class) individually, they run perfectly. However, when I run the full tests in the entire test assembly, I&nbsp;started getting an unhandled exception somewhere in a background thread (all tests are still green, though). Hey, no problem, let's just look at where the exception was generated and fix it! Or maybe not:</p><!--end_raw--></p>

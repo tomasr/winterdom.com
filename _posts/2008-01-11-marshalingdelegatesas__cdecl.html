@@ -1,0 +1,50 @@
+---
+layout: post
+status: publish
+published: true
+title: Marshaling Delegates as __cdecl
+author:
+  display_name: Tomas Restrepo
+  login: tomasr
+  email: tomas@winterdom.com
+  url: http://winterdom.com/
+author_login: tomasr
+author_email: tomas@winterdom.com
+author_url: http://winterdom.com/
+wordpress_id: 373
+wordpress_url: http://winterdom.com/2008/01/marshalingdelegatesas__cdecl
+date: '2008-01-11 05:42:56 +0000'
+date_gmt: '2008-01-11 05:42:56 +0000'
+categories:
+- ".NET"
+tags: []
+comments:
+- id: 1237
+  author: namalik
+  author_email: nahmedmalik@hotmail.com
+  author_url: http://www.namalik.com
+  date: '2009-11-23 01:55:20 +0000'
+  date_gmt: '2009-11-23 01:55:20 +0000'
+  content: I love you man. I spend the two days struggling with it. Thanks a lot for
+    the post.
+- id: 1722
+  author: Fred
+  author_email: fredrikostlund@hotmail.com
+  author_url: ''
+  date: '2011-05-27 12:10:14 +0000'
+  date_gmt: '2011-05-27 12:10:14 +0000'
+  content: Many thanks
+---
+<p><!--start_raw-->
+<p>I spent some time the last couple of days working on some C# code that used P&#47;Invoke to interact with an unmanaged library consisting of several function calls and some callback procedures. </p>
+<p>One of the issues I ran into was that I needed to pass to one of the library's functions a delegate for it to use as a callback procedure. Doing this is usually not much of a problem, but this time I'd get an AccessViolationException after my managed callback function returned, signaling that the stack was probably getting corrupted somewhere.</p>
+<p>After looking around quite a bit I realized my mistake: The C API I was invoking used the C calling convention (__cdecl), instead of the __stdcall convention used in the Windows API. </p>
+<p>I was correctly decorating my P&#47;Invoke signatures with CallingConvention=CallingConvention.Cdecl in the [DllImport] attribute, but this only affect the APIs I called directly; the delegate instance I was passing as callback was getting marshaled as a __stdcall procedure, thus causing the problem.</p>
+<p>I remembered that in the old days of .NET 1.0&#47;1.1 there was nothing built into the .NET framework that you could directly use to signal the P&#47;Invoke layer to marshal a delegate as a __cdecl function, so you usually had to resort to creating a little wrapper using Managed C++ or, even <a href="http:&#47;&#47;www.codeproject.com&#47;KB&#47;dotnet&#47;Cdecl_CSharp_VB.aspx">runtime code generation</a>.</p>
+<p>Fortunately, I discovered that .NET 2.0 had built-in support for this, though finding it took a while. Hopefully this post will make it easier to find in the future. </p><br />
+<h2>[UnmanagedFunctionPointer]</h2>
+<p>The .NET Framework 2.0 contains a the new UnmanagedFunctionPointerAttribute class, which can be used to decorate a delegate declaration. One of the fields of this attribute can be used to specify the calling convention you want to use when an instance of the delegate needs to be marshaled to unmanaged code as a callback function.</p>
+<p>With this, I could simply declare my delegate like this:</p>
+<div>[UnmanagedFunctionPointerAttribute(CallingConvention.Cdecl)]    <br &#47;><font color="#0000ff">delegate</font>&#160;<font color="#0000ff">void</font> CallbackProc(IntPtr clientData);     <br &#47;></div>
+<p>Nifty and very useful stuff.</p>
+<div class="wlWriterSmartContent" id="scid:0767317B-992E-4b12-91E0-4F059A8CECA8:a65b5c36-effa-4fbd-ba8e-e4e277f05cd1" style="padding-right: 0px; display: inline; padding-left: 0px; padding-bottom: 0px; margin: 0px; padding-top: 0px">Technorati tags: <a href="http:&#47;&#47;technorati.com&#47;tags&#47;P&#47;Invoke" rel="tag">P&#47;Invoke</a></div><!--end_raw--></p>

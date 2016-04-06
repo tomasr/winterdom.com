@@ -1,0 +1,63 @@
+---
+layout: post
+status: publish
+published: true
+title: Strange COM+&#47;SC Problem with Threads
+author:
+  display_name: Tomas Restrepo
+  login: tomasr
+  email: tomas@winterdom.com
+  url: http://winterdom.com/
+author_login: tomasr
+author_email: tomas@winterdom.com
+author_url: http://winterdom.com/
+wordpress_id: 262
+wordpress_url: http://winterdom.com/2006/09/strangecomscproblemwiththreads
+date: '2006-09-29 18:37:18 +0000'
+date_gmt: '2006-09-29 18:37:18 +0000'
+categories:
+- ".NET"
+- Web Services
+- Enterprise Services
+tags: []
+comments: []
+---
+<p><!--start_raw-->
+<p>I've been spending most of today diagnosing a fairly strange issue that has been nagging one of our services in production, and which we hadn't yet been able to fully repro until today. The basic application itself is fairly simple: It's an ASP.NET v1.1 Web Service that calls into a custom ServicedComponent configured locally in a COM+ Server application:</p>
+<p><img height="294" alt="Service Architecture" src="http:&#47;&#47;www.winterdom.com&#47;weblog&#47;content&#47;binary&#47;WindowsLiveWriter&#47;StrangeCOMSCProblemwithThreads_106DE&#47;WS_ComPlus_Problem5.png" width="506"> </p>
+<p>It worked fine for a while, but a few weeks ago we started getting intermittent failures, that manifested themselves&nbsp;when the COM+ application stopped working after a few days of constant running, at which point it would start returning errors when a call to a remote ServicedComponent. The remote component works fine (it's was a preexisting component built for another project that works fine for everyone else). All is running on Windows 2000 Server, by the way.</p>
+<p>The really weird issue is that the errors the application would start returning where of two different kinds:</p>
+<ol>
+<li>It would initially start throwing InvalidCastExceptions saying "QueryInterface for interface System.IDisposable failed" when our COM+ component called Dispose() on the remote ServicedComponent's proxy.
+<li>It would eventually start throwing another exception saying "Old format or invalid type library".</li></ol>
+<p>Once those started appearing,&nbsp;our&nbsp;COM+&nbsp;Server Application became a dead-weight. It didn't crash, but *all* requests caused one of the errors mentioned above. Restarting IIS (to reset the ASP.NET Web Service) didn't work, and only shutting down and restarting the COM+ Server application would clear it up.</p>
+<p>We had tried several things to try to resolve this, including the obvious things like checking to ensure we were Dispose()'ing everything correctly (we had a few cases that we missed it, and fixed it), completely unregistering our serviced components and registering everything again, checking we had the .NET FX v.1.1 SP1 installed (we did) and so forth, without any luck.</p>
+<p>Today we finally got some good information about what seems to be causing the problem, though why it happens is still a mistery to me at this point. It appears something in&nbsp;our COM+ Server application is causing the thread pool to misbehave: It appears almost as if for almost each request received by the server, a new thread was created, used and then discarded. It doesn't get destroyed. It doesn't return to the pool to be reused. It just sits there <em>sleeping</em>.</p>
+<p>We discovered this after noticing that the thread count of the COM+ server process just kept growing as we threw requests at it. We didn't notice this before because response time didn't seem to be much affected, and while memory usage was on the rise, it didn't grow steadily and at intervals large chunks of memory would get reclaimed by the system. Obviously, we should've done more extensive load testing to discover this before.</p>
+<p>Anyway, the COM+ server process eventually reaches a state where the virtual memory size is around 150MB or more and the Thread Count for the process reaches a little over 7000 (yes, 7000), at which point it would stop servicing requests as I described before. Having discovered this, I got out trusty old <a href="http:&#47;&#47;www.microsoft.com&#47;whdc&#47;devtools&#47;debugging&#47;default.mspx">Windbg</a> and after doing a smaller repro scenario (after processing just a few hundred&nbsp;requests), I proceeded to take a minidump of the COM+ server process and brought it back with me for analysis.</p>
+<p>I've been spending the remaining of the day looking at it, though I must admit I haven't found anything too useful yet. Looking at all the thread stacks (all 93 of them, whoooohooo!), some are easily recognizable and expected, like some RPC and threadpool control threads. However, the vast majority of the threads (around 70) of them show this as the thread stack:</p>
+<p><font face="Lucida Console" size="2">0:000> ~37 kb<br>ChildEBP RetAddr Args to Child <br>04eef514 7c59a28f 00000001 04eef52c 00000000 NTDLL!ZwDelayExecution+0xb<br>04eef534 79233c74 00003a98 00000001 04eef7c0 KERNEL32!SleepEx+0x32<br>04eef554 79233cec 00003a98 04eef58c 010b5d08 mscorwks!Thread::UserSleep+0x93<br>04eef564 00e4b69e 04eef570 00003a98 017fc55c mscorwks!ThreadNative::Sleep+0x30<br>WARNING: Frame IP not in any known module. Following frames may be wrong.<br>04eef5b4 791d94bc 04eef6cc 791ed194 04eef608 0xe4b69e<br>04eef5bc 791ed194 04eef608 00000000 04eef5e0 mscorwks!CallDescrWorker+0x30<br>04eef6cc 791ed54b 00bc82f3 79b7a000 04eef6f8 mscorwks!MethodDesc::CallDescr+0x1b8<br>04eef788 791ed5b9 79bc82f3 79b7a000 79b91d95 mscorwks!MethodDesc::CallDescr+0x4f<br>04eef7b0 792e87b7 04eef7f4 03a54298 791b32a8 mscorwks!MethodDesc::Call+0x97<br>04eef7fc 792e8886 04eef814 03a5a598 792e87c4 mscorwks!ThreadNative::KickOffThread_Worker+0x9d<br>04eef8a0 791cf03c 03a5a598 00000000 00000000 mscorwks!ThreadNative::KickOffThread+0xc2<br>04eeffb4 7c57b388 000a7898 006f0063 00000003 mscorwks!Thread::intermediateThreadProc+0x44<br>04eeffec 00000000 791ceffb 000a7898 00000000 KERNEL32!BaseThreadStart+0x52</font></p>
+<p>From this, it would appear as indeed the threads were being <em>put to sleep</em> right after processing a request. But why, and by what, is still something we're trying to figure out.</p>
+<p>Some things might be worth mentioning at this point:</p>
+<ul>
+<li>We're not manually creating new threads in our code.
+<li>We're not&nbsp;doing any&nbsp;async operations or calling any async delegates, so it's not a case of us&nbsp;forgetting to call EndXXX() somewhere.
+<li>We're not explicitly using the managed ThreadPool anywhere.
+<li>We're not hanging on to the request thread (after all, until the error happens we're getting responses right away to the calling Web Service).</li></ul>
+<p>We still have a few things we want to try out, and we're considering getting the most recent <a href="http:&#47;&#47;support.microsoft.com&#47;default.aspx?scid=kb;en-us;922667">COM+ rollup package</a> of hotfixes for Windows 2000 onboard to see if it helps, though we haven't seen anything specific in the KB articles that points directly at a problem like ours. I'm still very reluctant to say this is a platform bug, though; there might be something we did to cause it and we're just missing it.</p>
+<p>If anyone happens to have any ideas or suggestions, they would sure&nbsp;be appreciated!</p>
+<p><strong>Update 2006&#47;09&#47;30:</strong> I've been playing with this some more, and realized I was doing something stupid: I totally forgot about loading the SOS (Son Of Strike) extension to the debugger. With this in hand, I've&nbsp;been able to discover a few extra things:</p>
+<p>Using the !comstate and !threads commands reveal that most of the threads being created are not even related to the COM+ thread pool at all. Here's the breakdown of threads:</p>
+<ul>
+<li>1 is the finalizer thread (thread 13)
+<li>1 is a threadpool worker thread (thread 19)
+<li>9 threads are in the MTA, and 1 in the STA
+<li>All the rest of the threads are not even in a COM apartment at all.</li></ul>
+<p>Looking at all the other "weird" threads with SOS, I was able to dump a more useful stack trace:</p>
+<p><font face="Lucida Console" size="2">0:000> ~37e !clrstack<br>Thread 37<br>ESP EIP <br>0x04eef58c 0x77f883a3 [FRAME: ECallMethodFrame] [DEFAULT] Void System.Threading.Thread.Sleep(I4)<br>0x04eef59c 0x03943e37 [DEFAULT] [hasThis] Void Microsoft.Practices.EnterpriseLibrary.Configuration.Storage.ConfigurationChangeWatcher.Poller()<br>0x04eef7c0 0x791d94bc [FRAME: GCFrame] </font></p>
+<p>Humm... interesting. We <em>do</em> use the Enterprise Library for database access in this application (though it's just calling a few SPs that manage a transaction log), and now it appears it's ENTLIB creating watcher threads. Certainly something we'll look at monday morning; we may be initializing something wrong and I have an idea as to what might be.</p>
+<p>BTW, did I mention Windbg + Symbol Serve<br />
+r + SOS rocks?</p>
+<p><strong>Update 2006&#47;10&#47;02:</strong> Yep, verified; the problem was the Enteprise Library. We got rid of it, and the problem went away. Go figure!</p>
+<div class="wlWriterSmartContent" id="d7bf807d-7bb0-458a-811f-90c51817d5c2:b6b04a2a-5f89-4818-8cd8-ca4554acc822" contenteditable="false" style="padding-right: 0px; display: inline; padding-left: 0px; padding-bottom: 0px; margin: 0px; padding-top: 0px">
+<p><span class="TagSite">Technorati:</span> <a href="http:&#47;&#47;technorati.com&#47;tag&#47;Web+Service" rel="tag" class="tag">Web Service</a>, <a href="http:&#47;&#47;technorati.com&#47;tag&#47;WS" rel="tag" class="tag">WS</a>, <a href="http:&#47;&#47;technorati.com&#47;tag&#47;Enterprise+Services" rel="tag" class="tag">Enterprise Services</a>, <a href="http:&#47;&#47;technorati.com&#47;tag&#47;COM+" rel="tag" class="tag">COM+</a>, <a href="http:&#47;&#47;technorati.com&#47;tag&#47;.NET" rel="tag" class="tag">.NET</a><br &#47;><!-- StartInsertedTags: Web Service, WS, Enterprise Services, COM+, .NET :EndInsertedTags --></p></div><!--end_raw--></p>

@@ -1,0 +1,37 @@
+---
+layout: post
+status: publish
+published: true
+title: Enterprise Services 2.0 and Transaction Promotion + Delegation
+author:
+  display_name: Tomas Restrepo
+  login: tomasr
+  email: tomas@winterdom.com
+  url: http://winterdom.com/
+author_login: tomasr
+author_email: tomas@winterdom.com
+author_url: http://winterdom.com/
+wordpress_id: 145
+wordpress_url: http://winterdom.com/2005/07/enterpriseservices20andtransactionpromotiondelegation
+date: '2005-07-20 14:25:22 +0000'
+date_gmt: '2005-07-20 14:25:22 +0000'
+categories:
+- Enterprise Services
+tags: []
+comments: []
+---
+<p><!--start_raw-->Robert Hurlbut <a href="http:&#47;&#47;weblogs.asp.net&#47;rhurlbut&#47;archive&#47;2005&#47;07&#47;20&#47;420018.aspx">talks here</a> about Paul Fallon's <a href="http:&#47;&#47;www.paulfallon.com&#47;Transaction+Promotion+And+Delegation+Coming+Soon+To+ES+Transaction+In+Whidbey.aspx">comment</a> that Enterprise Services will get Transaction Promotion and Delegation support. I agree this is great news. I'm already very excited about System.Transactions, as the API is extremely nice, and we're planning on using it for the project we are about to begin to control transactional support across plugins attached to an event-driven processing pipeline for the application.</p>
+<p>Robert also asks: <i>"I noticed recently through Reflector that Systems.Transactions references System.EnterpriseServices in its assembly (Systems.Transactions.dll). I know that S.T uses managed calls to MSDTC when a transaction has been promoted to a full distributed transaction, but I wonder if ES is still in the mix somehow as a ServicedComponent wrapper?"</i></p></p>
+<p>Reflector also has this really cool feature that if you right click on a referenced assembly, you can select the View Imports option and it will show you all the classes&#47;methods that are used from that assembly. Here's what it shows for Beta 2 System.Transactions&#47;System.EnterpriseServices:</p></p>
+<pre><code>System.EnterpriseServices.ContextUtil.get_IsInTransaction() : Boolean<br />
+System.EnterpriseServices.ContextUtil.get_SystemTransaction() : Transaction<br />
+System.EnterpriseServices.ContextUtil.IsDefaultContext() : Boolean<br />
+System.EnterpriseServices.ServiceConfig<br />
+System.EnterpriseServices.ServiceConfig..ctor()<br />
+System.EnterpriseServices.ServiceConfig.set_BringYourOwnSystemTransaction(Transaction) : Void<br />
+System.EnterpriseServices.ServiceConfig.set_Synchronization(SynchronizationOption) : Void<br />
+System.EnterpriseServices.ServiceDomain.Enter(ServiceConfig) : Void<br />
+System.EnterpriseServices.ServiceDomain.Leave() : TransactionStatus<br />
+System.EnterpriseServices.SynchronizationOption<br />
+System.EnterpriseServices.TransactionStatus<br />
+</code></pre><!--end_raw--></p>

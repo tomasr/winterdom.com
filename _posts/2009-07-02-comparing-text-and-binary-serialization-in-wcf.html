@@ -1,0 +1,142 @@
+---
+layout: post
+status: publish
+published: true
+title: Comparing Text and Binary Serialization in WCF
+author:
+  display_name: Tomas Restrepo
+  login: tomasr
+  email: tomas@winterdom.com
+  url: http://winterdom.com/
+author_login: tomasr
+author_email: tomas@winterdom.com
+author_url: http://winterdom.com/
+wordpress_id: 1282
+wordpress_url: http://winterdom.com/2009/07/comparing-text-and-binary-serialization-in-wcf
+date: '2009-07-02 17:32:11 +0000'
+date_gmt: '2009-07-02 17:32:11 +0000'
+categories:
+- WCF
+tags: []
+comments:
+- id: 1012
+  author: Winterdom &raquo; Blog Archive &raquo; Comparing Text and Binary Serialization
+    &#8230; | XML Developer
+  author_email: ''
+  author_url: http://www.xmldeveloperindia.com/2009/07/02/winterdom-%c2%bb-blog-archive-%c2%bb-comparing-text-and-binary-serialization/
+  date: '2009-07-02 20:36:13 +0000'
+  date_gmt: '2009-07-02 20:36:13 +0000'
+  content: "[...] Originally posted here: Winterdom &raquo; Blog Archive &raquo; Comparing
+    Text and Binary Serialization &#8230; [...]"
+- id: 1021
+  author: 'New and Notable 338 : Sam Gentile''s Blog (if (DeveloperTask == Communication
+    &amp;&amp; OS == Windows)'
+  author_email: ''
+  author_url: http://samgentile.com/Web/new-and-notable/new-and-notable-338/
+  date: '2009-07-06 18:22:10 +0000'
+  date_gmt: '2009-07-06 18:22:10 +0000'
+  content: "[...] Comparing Text and Binary Serialization in WCF [...]"
+- id: 1022
+  author: DotNetShoutout
+  author_email: ''
+  author_url: http://dotnetshoutout.com/Comparing-Text-and-Binary-Serialization-in-WCF-Tomas-Restrepo
+  date: '2009-07-07 05:38:57 +0000'
+  date_gmt: '2009-07-07 05:38:57 +0000'
+  content: |-
+    <strong>Comparing Text and Binary Serialization in WCF - Tomas Restrepo...</strong>
+
+    Thank you for submitting this cool story - Trackback from DotNetShoutout...
+- id: 1063
+  author: Drew Noakes
+  author_email: winterdom@drewnoakes.com
+  author_url: http://drewnoakes.com
+  date: '2009-07-30 13:53:37 +0000'
+  date_gmt: '2009-07-30 13:53:37 +0000'
+  content: "Thanks for this post.  I distilled the methods above into one:\r\n\r\n\r\nprivate
+    static byte[] Serialise(object obj, MessageEncodingBindingElement encoding)\r\n{\r\n
+    \   encoding.MessageVersion = MessageVersion.Soap12;\r\n    var stream = new MemoryStream();\r\n
+    \   Message message = Message.CreateMessage(MessageVersion.Soap12, \"\", obj,
+    new DataContractSerializer(obj.GetType()));\r\n    encoding.CreateMessageEncoderFactory().Encoder.WriteMessage(message,
+    stream);\r\n    return stream.ToArray();\r\n}\r\n\r\n\r\n\r\n...where 'encoding'
+    is either TextMessageEncodingBindingElement or BinaryMessageEncodingBindingElement."
+- id: 1869
+  author: kage
+  author_email: dust4ngel@gmail.com
+  author_url: http://sphex-industries.net/
+  date: '2012-01-12 19:20:23 +0000'
+  date_gmt: '2012-01-12 19:20:23 +0000'
+  content: "i'm probably not the first guy to wonder what the output of this program
+    was:\r\n\r\nDC serialized to XML resulted in 466 bytes\r\nDC serialized to binary
+    resulted in 220 bytes"
+- id: 402838
+  author: Maxim
+  author_email: ocheretianko.m@gmail.com
+  author_url: ''
+  date: '2015-01-11 21:22:34 +0000'
+  date_gmt: '2015-01-11 21:22:34 +0000'
+  content: Even more! Binary serialisation is a lot faster than xml (~11ms versus
+    ~200ms)
+---
+<p>A question I recently ran into asked about comparing message sizes when using the default Text Message Encoder used by most bindings in WCF with the Binary Message Encoder used by the TcpBinding, without going through the entire WCF stack and having to use a protocol analyzer.</p>
+<p>Here&rsquo;s a sample application that just serializes an object using the DataContractSerializer and then runs it through both message encoders and presents the results:</p>
+<pre class="codebg"><code><br />
+<span class="Statement">using</span> System;<br />
+<span class="Statement">using</span> System.Collections.Generic;<br />
+<span class="Statement">using</span> System.IO;<br />
+<span class="Statement">using</span> System.Linq;<br />
+<span class="Statement">using</span> System.Runtime.Serialization;<br />
+<span class="Statement">using</span> System.ServiceModel;<br />
+<span class="Statement">using</span> System.ServiceModel.Channels;<br />
+<span class="Statement">using</span> System.Text;</p>
+<p><span class="StorageClass">namespace</span> BinSerializationTest {<br />
+   [DataContract]<br />
+   <span class="StorageClass">class</span> SampleDataContract {<br />
+      [DataMember]<br />
+      <span class="StorageClass">public</span> <span class="Type">string</span> Member1;<br />
+      [DataMember]<br />
+      <span class="StorageClass">public</span> <span class="Type">int</span> Member2;<br />
+      [DataMember]<br />
+      <span class="StorageClass">public</span> <span class="Type">string</span> Member3;<br />
+   }</p>
+<p>   <span class="StorageClass">class</span> Program {<br />
+      <span class="StorageClass">static</span> <span class="Type">void</span> Main(<span class="Type">string</span>[] args) {<br />
+         <span class="Exception">try</span> {<br />
+            SampleDataContract dc = <span class="Statement">new</span> SampleDataContract {<br />
+               Member1 = <span class="String">"Sample string 1"</span>,<br />
+               Member2 = <span class="Number">142234</span>,<br />
+               Member3 = <span class="String">"Different data here"</span><br />
+            };<br />
+            <span class="Type">byte</span>[] xml = SerializeToXml(dc);<br />
+            Console.WriteLine(<span class="String">"DC serialized to XML resulted in {0} bytes"</span>, xml.Length);<br />
+            <span class="Type">byte</span>[] bin = SerializeToBin(dc);<br />
+            Console.WriteLine(<span class="String">"DC serialized to binary resulted in {0} bytes"</span>, bin.Length);<br />
+         } <span class="Exception">catch</span> ( Exception ex ) {<br />
+            Console.WriteLine(ex);<br />
+         }<br />
+      }</p>
+<p>      <span class="StorageClass">static</span> <span class="Type">byte</span>[] SerializeToXml<T>(T obj) {<br />
+         Message msg = ObjectToMessage(obj);<br />
+         MessageEncodingBindingElement mebe = <span class="Statement">new</span> TextMessageEncodingBindingElement();<br />
+         mebe.MessageVersion = MessageVersion.Soap12;<br />
+         <span class="Repeat">return</span> Serialize(msg, mebe.CreateMessageEncoderFactory());<br />
+      }<br />
+      <span class="StorageClass">static</span> <span class="Type">byte</span>[] SerializeToBin<T>(T obj) {<br />
+         Message msg = ObjectToMessage(obj);<br />
+         MessageEncodingBindingElement mebe = <span class="Statement">new</span> BinaryMessageEncodingBindingElement();<br />
+         mebe.MessageVersion = MessageVersion.Soap12;<br />
+         <span class="Repeat">return</span> Serialize(msg, mebe.CreateMessageEncoderFactory());<br />
+      }<br />
+      <span class="StorageClass">static</span> <span class="Type">byte</span>[] Serialize(Message msg, MessageEncoderFactory factory) {<br />
+         MessageEncoder enc = factory.Encoder;<br />
+         MemoryStream stream = <span class="Statement">new</span> MemoryStream();<br />
+         enc.WriteMessage(msg, stream);<br />
+         <span class="Repeat">return</span> stream.ToArray();<br />
+      }<br />
+      <span class="StorageClass">static</span> Message ObjectToMessage<T>(T obj) {<br />
+         DataContractSerializer ser = <span class="Statement">new</span> DataContractSerializer(<span class="Statement">typeof</span>(T));<br />
+         <span class="Repeat">return</span> Message.CreateMessage(MessageVersion.Soap12, <span class="String">""</span>, obj, ser);<br />
+      }<br />
+   }<br />
+}<br />
+</code></pre></p>
+<p>Hope it&rsquo;s useful!</p></p>

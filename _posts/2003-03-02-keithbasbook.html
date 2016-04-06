@@ -1,0 +1,28 @@
+---
+layout: post
+status: publish
+published: true
+title: KeithBa's Book
+author:
+  display_name: Tomas Restrepo
+  login: tomasr
+  email: tomas@winterdom.com
+  url: http://winterdom.com/
+author_login: tomasr
+author_email: tomas@winterdom.com
+author_url: http://winterdom.com/
+wordpress_id: 668
+wordpress_url: http://winterdom.com/2003/03/keithbasbook
+date: '2003-03-02 08:25:12 +0000'
+date_gmt: '2003-03-02 08:25:12 +0000'
+categories:
+- Web Services
+tags: []
+comments: []
+---
+<p><!--start_raw-->I've been reading this week <a href="http:&#47;&#47;www.keithba.net&#47;blog&#47;">Keith Ballinger</a>'s new book, <a href="http:&#47;&#47;www.amazon.com&#47;exec&#47;obidos&#47;tg&#47;detail&#47;-&#47;0321113594">".NET Web Services: Architecture and Implementation"</a> (courtesy of a <a href="http:&#47;&#47;dotnetweblogs.com&#47;cmedina&#47;">friend</a>). So far, I'm only up to chapter 12, but I've learned quite a few things I wasn't aware of. I specially like how Keith puts everything together and explains things in a concise, yet easy to grasp manner.</p>
+<p>However, I have seen a few typos and errors I can't help but mention (I guess the tech reviewer in me resists to read a book without dissecting it:)). These are fairly minor, and don't detract in any way from the overall quality of the book. So, Keith, in case you're interested, here are some of them:</p></p>
+<p>In page 41, at the bottom of the page there's a small example of a WebMethod that uses XmlElementAttribute to change the XML element name for the message response (consisting of a string argument marked as out). However, as far as I can see, this doesn't work, since the XMlElementAttribute is applied to the method's return value, which is of type void, not to the entire response, which I believe is what Keith wanted. Or at least, it doesn't seem to work for me.</p></p>
+<p>In pages 103 and 104, an example of using XmlArrayItemAttribute is shown to modify what the repeating element name inside an XML-serialized array (from the default, which is just the type name). The example uses this attribute to modify the serialization of a string[] so that each item is in an element called "name" instead of just "string", and page 104 is supposed to show what the resulting XML should be. However, this example still has all items serialized as "<string>whatever</string>".</p></p>
+<p>I think I saw a few more, but I can't remember right now exactly what they were...</p><br />
+<!--end_raw--></p>

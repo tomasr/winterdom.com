@@ -1,0 +1,41 @@
+---
+layout: post
+status: publish
+published: true
+title: More on xs:any
+author:
+  display_name: Tomas Restrepo
+  login: tomasr
+  email: tomas@winterdom.com
+  url: http://winterdom.com/
+author_login: tomasr
+author_email: tomas@winterdom.com
+author_url: http://winterdom.com/
+wordpress_id: 878
+wordpress_url: http://winterdom.com/2003/04/moreonxsany
+date: '2003-04-16 18:28:14 +0000'
+date_gmt: '2003-04-16 18:28:14 +0000'
+categories:
+- XML
+tags: []
+comments:
+- id: 598
+  author: Dare Obasanjo
+  author_email: kpako@yahoo.com
+  author_url: http://www.kuro5hin.org/user/Carnage4Life/diary
+  date: '2003-04-17 14:19:06 +0000'
+  date_gmt: '2003-04-17 14:19:06 +0000'
+  content: |
+    <p>Lax shouldn't give you an error it should give you a warning. What version of the .NET Framework are you using? </p>
+- id: 599
+  author: Tomas Restrepo
+  author_email: tomasr@mvps.org
+  author_url: http://www.winterdom.com/weblog
+  date: '2003-04-17 21:16:57 +0000'
+  date_gmt: '2003-04-17 21:16:57 +0000'
+  content: |
+    <p>Dare: That was it. You are right in that it gives a warning instead of an error (at least in v1.1). The problem was my code wasn't checking ValidationEventArgs.Severity.</p>
+    <p>Thanks!</p>
+---
+<p><!--start_raw-->Fumiaki Yoshimatsu points out on a <a href="http:&#47;&#47;www.winterdom.com&#47;weblog&#47;archives&#47;000268.html#comments">comment</a> to my <a href="http:&#47;&#47;www.winterdom.com&#47;weblog&#47;archives&#47;000268.html">xs:any post</a> that skip seems to work on .NET 1.1.</p>
+<p>I just tried it, and indeed it works and shows no error. Lax still gives me an error, though, which I think should not, either.</p><!--end_raw--></p>

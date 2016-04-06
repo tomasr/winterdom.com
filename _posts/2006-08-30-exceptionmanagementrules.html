@@ -1,0 +1,73 @@
+---
+layout: post
+status: publish
+published: true
+title: Exception Management Rules
+author:
+  display_name: Tomas Restrepo
+  login: tomasr
+  email: tomas@winterdom.com
+  url: http://winterdom.com/
+author_login: tomasr
+author_email: tomas@winterdom.com
+author_url: http://winterdom.com/
+wordpress_id: 829
+wordpress_url: http://winterdom.com/2006/08/exceptionmanagementrules
+date: '2006-08-30 18:20:08 +0000'
+date_gmt: '2006-08-30 18:20:08 +0000'
+categories:
+- ".NET"
+- Architecture
+tags: []
+comments:
+- id: 554
+  author: Jonathan Cogley
+  author_email: jonathan.cogley@thycotic.com
+  author_url: http://weblogs.asp.net/jcogley
+  date: '2006-08-31 05:33:53 +0000'
+  date_gmt: '2006-08-31 05:33:53 +0000'
+  content: |
+    The guidelines that we practice are - don't catch an exception you don't intend to handle (and handle doesn't mean rethrowing or swallowing it).  This takes care of most of the above since in general we just don't catch it and let it bubble up to a generic error handler which notifies, logs, etc (and it has the full stack trace for our viewing pleasure).
+    Swallowing an exception in our code bases requires a really good comment explaining exactly WHY this is necessary.
+    We believe that having a solid well understood exception strategy across a team is a critical aspect of quality software development.
+- id: 555
+  author: Tomas Restrepo
+  author_email: tomasr@mvps.org
+  author_url: http://www.winterdom.com/weblog/
+  date: '2006-08-31 06:09:12 +0000'
+  date_gmt: '2006-08-31 06:09:12 +0000'
+  content: |
+    Jonathan,
+    I hear you man and I totally agree. Sometimes, however, people need it spelled out in more detail. Besides, couldn't let such an oportunity to show some WTF's I've seen around pass :)
+- id: 1907
+  author: seo
+  author_email: 563Costellowo@gmail.com
+  author_url: http://seo
+  date: '2012-01-31 17:26:32 +0000'
+  date_gmt: '2012-01-31 17:26:32 +0000'
+  content: Hey there just wanted to give you a quick heads up. The words in your post
+    seem to be running off the screen in Opera. I'm not sure if this is a formatting
+    issue or something to do with internet browser compatibility but I thought I'd
+    post to let you know. The design look great though! Hope you get the problem resolved
+    soon. Cheers
+---
+<p><!--start_raw-->
+<p><a href="http:&#47;&#47;www.hanselman.com&#47;blog&#47;">Scott Hanselman</a> shares some <a href="http:&#47;&#47;www.hanselman.com&#47;blog&#47;GoodExceptionManagementRulesOfThumb.aspx">rules of thumb</a> to manage Exceptions gracefully in your applications. As usual, great stuff from Scott. Here are&nbsp;some of my own I would add:</p>
+<ul>
+<li>Don't do: throw new Exception("Something Happened");. Please, I beg of you, don't do it. Don't abuse System.InvalidOperationException, either.</li>
+<li>Chain exceptions. Seriously, chaining exceptions via the InnerException property is a great way to add new information to a problem you caught, but still allow the developer to trace all the way back to the original error to diagnose it. </li>
+<li>Don't just catch exceptions and translate them to other types without adding meaningful information and&nbsp; (yes, I'm repeating myself here) using InnerException. I can't remember the number of times I've seen such crap as:<br></li>
+<div class="wlWriterSmartContent" id="57F11A72-B0E5-49c7-9094-E3A15BD5B5E6:1a02e7dc-96d3-4749-836e-11e29dcadea7" contenteditable="false" style="padding-right: 0px; display: inline; padding-left: 0px; float: none; padding-bottom: 0px; margin: 0px; padding-top: 0px">
+<pre style="background-color:White;">
+<div><!--<br />
+Code highlighting produced by Actipro CodeHighlighter (freeware)<br />
+http:&#47;&#47;www.CodeHighlighter.com&#47;<br />
+--><span style="color: #0000FF; ">try</span><span style="color: #000000; "><br />
+{<br />
+</span><span style="color: #008000; ">&#47;&#47;</span><span style="color: #008000; ">...</span><span style="color: #008000; "><br />
+</span><span style="color: #000000; ">} </span><span style="color: #0000FF; ">catch</span><span style="color: #000000; ">(SomeException ex)<br />
+{<br />
+</span><span style="color: #0000FF; ">throw</span><span style="color: #000000; "> </span><span style="color: #0000FF; ">new</span><span style="color: #000000; "> InvalidOperationException(ex.Message);<br />
+}</span></div></pre></div></p>
+<li>If you're gonna log the exception, do the right thing and log the entire exception information (just calling ToString() usually does the trick). For goodness sake don't just log Exception.Message.</li>
+<li>Be sure to define and take advantage of portions of the code that are natural Exception handling boundaries, such as threaded methods. A good discussion about the topic was brought up on the comments on <a href="http:&#47;&#47;codebetter.com&#47;blogs&#47;jeffrey.palermo&#47;archive&#47;2006&#47;08&#47;17&#47;148387.aspx">this</a> entry from <a href="http:&#47;&#47;codebetter.com&#47;blogs&#47;jeffrey.palermo&#47;">Jeffrey Palermo.</a></li></ul><!--end_raw--><br />

@@ -1,0 +1,80 @@
+---
+layout: post
+status: publish
+published: true
+title: Custom PropPage in R2 Sample
+author:
+  display_name: Tomas Restrepo
+  login: tomasr
+  email: tomas@winterdom.com
+  url: http://winterdom.com/
+author_login: tomasr
+author_email: tomas@winterdom.com
+author_url: http://winterdom.com/
+wordpress_id: 170
+wordpress_url: http://winterdom.com/2007/10/customproppageinr2sample
+date: '2007-10-23 07:14:30 +0000'
+date_gmt: '2007-10-23 07:14:30 +0000'
+categories:
+- BizTalk
+tags: []
+comments:
+- id: 1542
+  author: Marge
+  author_email: mbflirt@yahoo.com
+  author_url: ''
+  date: '2010-07-23 20:51:37 +0000'
+  date_gmt: '2010-07-23 20:51:37 +0000'
+  content: "Hi, thank you for your posting.\r\nWill this adapter work for BizTalk
+    2009?"
+- id: 1543
+  author: Tomas Restrepo
+  author_email: tomas@winterdom.com
+  author_url: http://winterdom.com/
+  date: '2010-07-24 14:07:53 +0000'
+  date_gmt: '2010-07-24 14:07:53 +0000'
+  content: It should work on 2009.
+- id: 1669
+  author: Arnold
+  author_email: arnold.geluk@ciber.com
+  author_url: ''
+  date: '2011-02-11 11:48:36 +0000'
+  date_gmt: '2011-02-11 11:48:36 +0000'
+  content: "I've got an outofmemoryexception in Biztalk 2010 when I load the configuration
+    of the &#47;dev&#47;null adapter when I create a send port with it. \r\n\r\nCan
+    you help me with this?\r\n\r\nHereby the details from a trace: \r\n\r\n[3612]
+    \ \r\n[3612] Microsoft.BizTalk.Adapter.Framework.Forms.AdapterProxy: Void .ctor(System.String)
+    \r\n[3612]   adapterGuid={a5caaa62-07e6-46c2-b9e1-68fc2fe30dcd} \r\n[3612] Microsoft.BizTalk.Adapter.Framework.Forms.AdapterProxy:
+    Void ReadAdapterInfoFromRegistry() \r\n[3612] Microsoft.BizTalk.Adapter.Framework.Forms.AdapterProxy:
+    Void Instantiate() \r\n[3612]   adapterName=&#47;dev&#47;null adapter \r\n[3612]
+    \  assemblyFile=C:\\install\\NullAdapter\\Winterdom.BizTalk.Adapters.NullAdapter.dll
+    \r\n[3612]   typeName=Winterdom.BizTalk.Adapters.NullAdapterMgmt \r\n[3612] Microsoft.BizTalk.Adapter.Framework.Forms.FrameworkPropertyGrid:
+    Void set_XsdSchema(System.String) \r\n\r\n.....\r\n\r\n[3612] System.NullReferenceException:
+    Object reference not set to an instance of an object. \r\n[3612]    at Microsoft.BizTalk.Adapter.Framework.Xsd.XsdSchema.get_IsRootSimple()
+    \r\n[3612]    at Microsoft.BizTalk.Adapter.Framework.Xsd.XsdSchema.get_RootName()
+    \r\n[3612]    at Microsoft.BizTalk.Adapter.Framework.Compiler.get_RootInstance()
+    \r\n[3612]    at Microsoft.BizTalk.Adapter.Framework.Specification.LoadSchema(String
+    schema) \r\n[3612]    at Microsoft.BizTalk.Adapter.Framework.Specification.set_XsdSchema(String
+    value) \r\n[3612]    at Microsoft.BizTalk.Adapter.Framework.Forms.FrameworkPropertyGrid.set_XsdSchema(String
+    value) \r\n[3612] System.OutOfMemoryException: Exception of type 'System.OutOfMemoryException'
+    was thrown. \r\n[3612]    at System.Text.StringBuilder.ExpandByABlock(Int32 minBlockCharCount)
+    \r\n[3612]    at System.Text.StringBuilder.Append(Char* value, Int32 valueCount)
+    \r\n[3612]    at System.Text.StringBuilder.AppendHelper(String value) \r\n[3612]
+    \   at System.Text.StringBuilder.Append(String value) \r\n[3612]    at Microsoft.BizTalk.Adapter.Framework.Forms.FrameworkPropertyGrid.ShowException(String
+    stage, Exception exception) \r\n[3612]    at Microsoft.BizTalk.Adapter.Framework.Forms.FrameworkPropertyGrid.set_XsdSchema(String
+    value) \r\n[3612]    at Microsoft.BizTalk.Adapter.Framework.Forms.SpecificationGrid.set_XsdSchema(String
+    value) \r\n[3612]    at Microsoft.BizTalk.Adapter.Framework.Forms.SpecificationGrid.Microsoft.BizTalk.Adapter.Framework.Forms.IAFPropertyGrid.SetAdapterMgmtInfo(Object
+    site, String mgmtGuid, String xmlInst, ConfigType configType)"
+---
+<p><!--start_raw-->
+<p>As <a href="http:&#47;&#47;www.winterdom.com&#47;weblog&#47;2007&#47;10&#47;22&#47;CustomPropPagesInAdapterConfiguration.aspx">promised</a>, here's a sample managed adapter implementing a custom adapter configuration dialog for BizTalk Server 2006 R2. It isn't a fancy sample, just a new version of my &#47;dev&#47;null adapter with a simple, custom dialog. It should be enough, however, to illustrate the basic details needed to get you up and running quickly.</p>
+<p>Here's a snapshot of the configuration dialog when invoked from the BizTalk Administration Console:</p>
+<p><a href="http:&#47;&#47;www.winterdom.com&#47;weblog&#47;content&#47;binary&#47;WindowsLiveWriter&#47;CustomPropPageinR2Sample_7D6A&#47;Adapter4_2.png"><img style="border: 0px none ;" alt="Adapter4" src="http:&#47;&#47;www.winterdom.com&#47;weblog&#47;content&#47;binary&#47;WindowsLiveWriter&#47;CustomPropPageinR2Sample_7D6A&#47;Adapter4_thumb.png" align="left" border="0" height="260" width="241"></a> </p>
+<p>Some things I discovered that complement my previous article on the topic:</p>
+<p><em>COM Registration:</em> The class implementing IPropertyPageFrame needs to be registered with COM. However, you won't be able to use the "Register for COM interop" option in the Visual Studio project settings for this, because you'll get an error saying that the Microsoft.BizTalk.ExplorerOM.dll assembly isn't registered. To work around this, I created a custom build step that calls regasm.exe with the &#47;registered option.</p>
+<p><em>Property Bags:</em> Remember I said you needed to implement two versions of IPersistPropertyBag? Turns out both are indeed needed. Even the BizTalk Administration Console will call both implementations at different times. </p>
+<p>Also, it can become cumbersome to implement your adapter configuration load&#47;save code for both IPropertyBag implementations, so I simply wrote a small adapter class that wraps the Microsoft.BizTalk.ExplorerOM.IPropertyBag instance so that it looks like a Microsoft.BizTalk.Admin.IPropertyBag one. This way I could write code just once to serialize&#47;deserialize the adapter settings. You can find the wrapper class in PropBagAdapter.cs,</p>
+<p><em>Registry:</em> As usual, the adapter ships with a .REG file containing the adapter registry entries. Make sure to modify the file paths there so that they point to your project's location on disk. One thing worth noting here is how now the TransmitLocation_PageProv value contains the CLSID I explicitly gave to my TransmitLocPageProvider class (which implements IPropertyPageFrame).</p>
+<p><strong>Download:</strong>&nbsp;<a href="http:&#47;&#47;www.winterdom.com&#47;dev&#47;bts&#47;NullAdapterR2.zip">NullAdapterR2.zip</a>. </p>
+<p>I think you'll find the code is pretty straightforward and should give you an idea of how to get this up and running in your own adapters, if you're interested.</p>
+<div class="wlWriterSmartContent" id="scid:0767317B-992E-4b12-91E0-4F059A8CECA8:186beb8c-43f6-4547-abe8-a9550f543976" style="margin: 0px; padding: 0px; display: inline; float: none;">Technorati tags: <a href="http:&#47;&#47;technorati.com&#47;tags&#47;BizTalk%20Server%202006%20R2" rel="tag">BizTalk Server 2006 R2</a>, <a href="http:&#47;&#47;technorati.com&#47;tags&#47;Null%20Send%20Adapter" rel="tag">Null Send Adapter</a></div><!--end_raw--></p>

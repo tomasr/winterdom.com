@@ -1,0 +1,53 @@
+---
+layout: post
+status: publish
+published: true
+title: BizTalk 2010 Config Tool Hanging
+author:
+  display_name: Tomas Restrepo
+  login: tomasr
+  email: tomas@winterdom.com
+  url: http://winterdom.com/
+author_login: tomasr
+author_email: tomas@winterdom.com
+author_url: http://winterdom.com/
+wordpress_id: 1329
+wordpress_url: http://winterdom.com/2010/11/biztalk-2010-config-tool-hanging
+date: '2010-11-08 12:35:57 +0000'
+date_gmt: '2010-11-08 12:35:57 +0000'
+categories:
+- BizTalk
+tags: []
+comments:
+- id: 1611
+  author: Scott Banwart&#039;s Blog &raquo; Blog Archive &raquo; Distributed Weekly
+    76
+  author_email: ''
+  author_url: http://rogue-technology.com/blog/?p=1050
+  date: '2010-11-12 14:21:20 +0000'
+  date_gmt: '2010-11-12 14:21:20 +0000'
+  content: "[...] BizTalk 2010 Config Tool Hanging [...]"
+- id: 1615
+  author: Ben Cline
+  author_email: clineer@hotmail.com
+  author_url: http://msinnovations.wordpress.com
+  date: '2010-11-18 20:01:11 +0000'
+  date_gmt: '2010-11-18 20:01:11 +0000'
+  content: "Thomas, I had reported something like this back during the BizTalk 2010
+    beta: https:&#47;&#47;connect.microsoft.com&#47;BizTalk&#47;feedback&#47;details&#47;559304&#47;startsplashscr-hangs-before-config-wizard.
+    Yeah, you have to have SQL enabled prior to running the config wizard as you found
+    out. \r\nThanks,\r\nBen Cline"
+- id: 1616
+  author: Tomas Restrepo
+  author_email: tomas@winterdom.com
+  author_url: http://winterdom.com/
+  date: '2010-11-19 02:25:40 +0000'
+  date_gmt: '2010-11-19 02:25:40 +0000'
+  content: "@Ben: Yeah, it's a similar issue. I just found it curious that somehow
+    the config wizard required TCP instead of accepting shared memory like it does
+    for the SSO configuration. Oh well, live and learn :)"
+---
+<p>Last week I was installing BizTalk Server 2010 on my development Virtual Machine, which previously had 2009 installed. Installation went fine, but when I started the BizTalk Configuration tool, it started hanging for minutes at a time.</p>
+<p>Strangely enough, the tool let me configure Enterprise Single Sign-On (ENTSSO) without any problems, but would hang every time I tried to configure a new BizTalk Group. After some tests, it became obvious it was hanging when trying to connect to SQL Server to check if the group databases could be created until the connection timeout would expire.</p>
+<p>It would indeed eventually respond again, but trying to do anything would only cause it to hang again. It was really weird that it would hang here because of the database connection, when the SQL Server used was local and ENTSSO had configured straight away without any problems.</p>
+<p>Fortunately, I managed to figure it out: The problem was that the SQL Server instance had TCP&#47;IP connectivity disabled (only shared memory was enabled). Enabling TCP&#47;IP and restarting the SQL Server service fixed the problem.</p></p>

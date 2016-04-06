@@ -1,0 +1,70 @@
+---
+layout: post
+status: publish
+published: true
+title: Spawned Contexts and Activity Binding
+author:
+  display_name: Tomas Restrepo
+  login: tomasr
+  email: tomas@winterdom.com
+  url: http://winterdom.com/
+author_login: tomasr
+author_email: tomas@winterdom.com
+author_url: http://winterdom.com/
+wordpress_id: 121
+wordpress_url: http://winterdom.com/2006/05/spawnedcontextsandactivitybinding
+date: '2006-05-03 20:29:56 +0000'
+date_gmt: '2006-05-03 20:29:56 +0000'
+categories:
+- WinFX
+- Workflow
+tags: []
+comments: []
+---
+<p><!--start_raw-->
+<p>A few weeks ago, there was a post on the <a href="http:&#47;&#47;blogs.msdn.com&#47;advancedworkflow&#47;">Advanced Workflow</a> blog (an<br />
+excellent resource, which I recommend you take a look at) about <a href="http:&#47;&#47;blogs.msdn.com&#47;advancedworkflow&#47;archive&#47;2006&#47;03&#47;21&#47;557121.aspx">spawned<br />
+contexts</a> and how it affects activities (or rather, code related to<br />
+activities) nested inside activities such as Replicator, While and so on. This<br />
+is an issue that can be quite confusing and it's easy to write code that won't<br />
+work correctly under these circumstances (one of the dangers of writing too much<br />
+code behind your workflow, I'd say).</p></p>
+<p>I've seen a few posts on the <a href="http:&#47;&#47;forums.microsoft.com&#47;MSDN&#47;ShowForum.aspx?ForumID=122&SiteID=1">Windows<br />
+Workflow forums</a> from people that have been bitten by this issue,&nbsp;such<br />
+as <a href="http:&#47;&#47;forums.microsoft.com&#47;MSDN&#47;ShowPost.aspx?PostID=355604&SiteID=1">this<br />
+one</a>,&nbsp;and it got me thinking about whether using Activity Binds instead<br />
+of directly modifying properties of activities in code (event handlers) might<br />
+simplify this. As far as I can tell, it indeed works just fine under beta 2, and<br />
+it seems to me like it can lead to a slightly more elegant solution than what I<br />
+proposed as the solution for that particular post.</p></p>
+<p>Here's a similar example that instead defines a read-only property on the<br />
+workflow class that returns the current member of an enumerator over the<br />
+collection and then simply binds the relevant property of the activity in the<br />
+While loop to the workflow property. Works much nicer, I think.</p></p>
+<p><img alt="" src="http:&#47;&#47;www.winterdom.com&#47;Weblog&#47;content&#47;binary&#47;ActCtxt_Binding.png" align="bottom" border="0" hspace="0"></p></p>
+<div class='codebg'><code><span class="StorageClass">private</span>&nbsp;List<MemberInfo> members;<br &#47;><br />
+<span class="StorageClass">private</span>&nbsp;IEnumerator<MemberInfo> enumerator;<br &#47;><br />
+<br &#47;><br />
+<span class="StorageClass">public</span>&nbsp;MemberInfo CurrentMember<br &#47;><br />
+{<br &#47;><br />
+&nbsp;&nbsp; <span class="Statement">get</span>&nbsp;{ <span class="Repeat">return</span>&nbsp;enumerator.Current; }<br &#47;><br />
+}<br &#47;><br />
+<br &#47;><br />
+<span class="StorageClass">public</span>&nbsp;Sample2()<br &#47;><br />
+{<br &#47;><br />
+&nbsp;&nbsp; InitializeComponent();<br &#47;><br />
+&nbsp;&nbsp; members = MemberInfo.GetMembers();<br &#47;><br />
+&nbsp;&nbsp; enumerator = members.GetEnumerator();<br &#47;><br />
+}<br &#47;><br />
+<br &#47;><br />
+<span class="StorageClass">private</span>&nbsp;<span class="Type">void</span>&nbsp;WhileCondition(<span class="Type">object</span>&nbsp;sender, ConditionalEventArgs e)<br &#47;><br />
+{<br &#47;><br />
+&nbsp;&nbsp; e.Result = enumerator.MoveNext();<br &#47;><br />
+}<br />
+</code></div></p>
+<p>You can see the code for the example <a href="http:&#47;&#47;www.winterdom.com&#47;weblog&#47;content&#47;binary&#47;WFExecutionContextTest.zip">here</a>.<br />
+Sample1.cs contains the original proposed solution, while Sample2.cs contains<br />
+the new one using binding. That said, I'm still not totally happy with it. It<br />
+still requires some code to put everything together and it's not quite as<br />
+"declarative" as I'd like...</p>
+<p></p><!--end_raw--></p>

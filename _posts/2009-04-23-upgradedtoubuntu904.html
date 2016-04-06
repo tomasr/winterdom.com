@@ -1,0 +1,45 @@
+---
+layout: post
+status: publish
+published: true
+title: Upgraded to Ubuntu 9.04
+author:
+  display_name: Tomas Restrepo
+  login: tomasr
+  email: tomas@winterdom.com
+  url: http://winterdom.com/
+author_login: tomasr
+author_email: tomas@winterdom.com
+author_url: http://winterdom.com/
+wordpress_id: 40
+wordpress_url: http://winterdom.com/2009/04/upgradedtoubuntu904
+date: '2009-04-23 23:16:14 +0000'
+date_gmt: '2009-04-23 23:16:14 +0000'
+categories:
+- Linux
+tags: []
+comments:
+- id: 768
+  author: Pedro
+  author_email: pedro_rui@hotmail.com
+  author_url: ''
+  date: '2009-05-13 20:27:11 +0000'
+  date_gmt: '2009-05-13 20:27:11 +0000'
+  content: Nice desktop. What's the theme you're using?
+- id: 769
+  author: Tomas Restrepo
+  author_email: tomas@winterdom.com
+  author_url: http://winterdom.com/
+  date: '2009-05-14 00:44:03 +0000'
+  date_gmt: '2009-05-14 00:44:03 +0000'
+  content: 'Pedro: I believe it''s New Wave Dark Menus with a few customized things
+    (like the icons). The wallpaper is just something I created with http:&#47;&#47;www.bgpatterns.com&#47;
+    if I remember correctly.'
+---
+<p><!--start_raw-->
+<p>Today was the release of <a href="http:&#47;&#47;www.ubuntu.com&#47;products&#47;whatisubuntu&#47;904features&#47;">Ubuntu 9.04</a> Jaunty Jackalope, so I immediately started an in-place upgrade of my Dell D820 laptop. Downloading the packages took forever (the servers where obviously getting hammered pretty badly), but finally completed at the end of the afternoon.</p>
+<p>After that, actually installing the downloaded packages took about an hour and a half, part of it because I always forget how many prompts an Ubuntu update puts up throughout the process.</p>
+<p><a href="http:&#47;&#47;winterdom.com&#47;weblog&#47;content&#47;binary&#47;WindowsLiveWriter&#47;UpgradedtoUbuntu9.04_13925&#47;Jaunty_2.png"><img title="Jaunty" style="border-right: 0px; border-top: 0px; display: inline; margin: 0px 10px 5px 0px; border-left: 0px; border-bottom: 0px" height="150" alt="Jaunty" src="http:&#47;&#47;winterdom.com&#47;weblog&#47;content&#47;binary&#47;WindowsLiveWriter&#47;UpgradedtoUbuntu9.04_13925&#47;Jaunty_thumb.png" width="240" align="left" border="0"></a> After installation and rebooting, I came up to pretty much the same desktop I had before (good). However, I soon ran into troubles: X and Gnome completely locking hard on me. No applications would respond at all (not even a terminal window already opened) so I was forced to drop back to another terminal window and reboot the machine from there.</p>
+<p>After this happening three or four times in a row, I realized the lockup would only happen when I tried to change the theme from the Gnome settings panel. As long as I didn&rsquo;t do that, everything seemed to work just fine.</p>
+<p>That&rsquo;s when it occurred to me to just drop down and remove my <code>~&#47;.themes</code> directory. As soon as I did that, I was able to change my gnome appearance settings without X locking up on me.</p>
+<p>Not sure what I had in there to cause such troubles, but there you go. I&rsquo;ll report later then on any new things I find.</p><!--end_raw--></p>

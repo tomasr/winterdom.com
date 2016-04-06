@@ -1,0 +1,60 @@
+---
+layout: post
+status: publish
+published: true
+title: Rediscovering IEnumerable<T>
+author:
+  display_name: Tomas Restrepo
+  login: tomasr
+  email: tomas@winterdom.com
+  url: http://winterdom.com/
+author_login: tomasr
+author_email: tomas@winterdom.com
+author_url: http://winterdom.com/
+wordpress_id: 507
+wordpress_url: http://winterdom.com/2006/10/rediscoveringienumerablelttgt
+date: '2006-10-13 15:11:32 +0000'
+date_gmt: '2006-10-13 15:11:32 +0000'
+categories:
+- ".NET"
+- Architecture
+- LINQ
+tags: []
+comments:
+- id: 838
+  author: Ahmed AL-Sayed
+  author_email: ahmedsayed_86@hotmail.com
+  author_url: http://TechieTweaks.blogspot.com
+  date: '2009-05-27 13:43:51 +0000'
+  date_gmt: '2009-05-27 13:43:51 +0000'
+  content: Thanks for the article. If you had some examples would be appreciated.
+---
+<p><!--start_raw-->
+<p>My recent experiments with LINQ have taken me to rediscover the power of the IEnumerable<T> interface in .NET. As many of you know by now, one of the cornerstones on which LINQ is built and that makes it so accessible is that it fully supports the very basic IEnumerable<T> interface.</p>
+<p>This is extremely powerful because it means the barrier to entry to play in the LINQ world is very low: Pretty much all typed containers in .NET&nbsp;support IEnumerable<T> in one way or another, which means that if you're using any of them then you're ready to start using LINQ and take advantage of its powerful query capabilities. Obviously, for more advanced scenarios, LINQ does define a more <a href="http:&#47;&#47;blogs.gotdotnet.com&#47;mattwar&#47;archive&#47;2006&#47;05&#47;10&#47;594966.aspx">powerful mechanism</a> in the IQueryable<T> interface.</p></p>
+<p><img style="margin: 1.5em;" src="http:&#47;&#47;www.winterdom.com&#47;weblog&#47;content&#47;binary&#47;WindowsLiveWriter&#47;RediscoveringIEnumerableT_963E&#47;Cubes%5B10%5D.png" width="73" align="left" height="219"> However, the&nbsp;goodness of IEnumerable<T> does not&nbsp;start or stop&nbsp;with LINQ. It's far better than that, because you can take advantage of its properties right now. The primary benefits of the IEnumerable<T> interface are two:</p></p>
+<ol>
+<li>It enables a very simple and useful language construct: The "for each" loop.  </li>
+<li>It is a highly restricted interface.</li></ol>
+<p>The second property is the key that makes IEnumerable<T> so nice to use on your designs: Because it serves pretty much only one purpose (to allow iteration), it means that your purposes with regards to the interface are extremely clear to users of your API, and thus allows them more flexibility. It might sound strange at first that using a more restrictive interface leads to more flexibility, so let me explain what I mean.</p>
+<p>When&nbsp;you're&nbsp;exposing .NET collections directly as part of your API interface, either as properties or as arguments or returns values of functions, you're encouraged to prefer using one of the base collection interfaces instead of the collection types by tools like FxCop [1]&nbsp;(except if you're using arrays directly). So, for example, instead of using List<T>, you're encouraged to use IList<T>; instead of using Dictionary<K,V>, you're encouraged to use IDictionary<K,V> instead. </p>
+<p>This is a good&nbsp;practice because it gives you some flexibility&nbsp;in switching collection implementations later on if your original choice wasn't the right one, and I've made a habit of trying to follow it whenever I remember to do so (and FxCop is always there to remind me, as well). However, for many scenarios, even the base interfaces are way to open. For a given scenario, you really have to ask yourself: Do I really need the full capabilities expressed by an interface like IList<T>?</p>
+<p>For collection properties, I would say that most of the time you do actually need them, so I won't consider them here. However, for method arguments and return values, that's actually more debatable. A lot of scenarios don't require all those capabilities, and indeed, just the capability to iterate over the collection is more than enough! Those are the scenarios were you will want to restrict your public interface and just use IEnumerable<T> instead.</p>
+<p><strong>Method Arguments</strong></p>
+<p>If all you want to do is walk over a collection inside one of your methods, then by all means you'll want to restrict your interface and ask for an IEnumerable<T> instead:</p></p>
+<div class='codebg'><code><span class="Type">void</span>&nbsp;DoSomething<span class="Operator">(</span>IEnumerable<span class="Operator"><</span>X<span class="Operator">></span>&nbsp;list<span class="Operator">)</span>&nbsp;<span class="Operator">{</span><br &#47;><br />
+<span class="Operator">}</span><br />
+</code></div></p>
+<p>As expressed, the interface for the method presents a clearer intent. For the method implementor, it says: All you're&nbsp;supposed&nbsp;to do with this collection is iterate over it. For the method user, it gives him a lot more flexibility in choosing what he passes in, and gives him a clear idea of what the method does with the collection.</p>
+<p>This is possibly the case where you more often will want the restricted interface because you, as the developer writing the method, have full control and knowledge about the intent.</p>
+<p><strong>Method Return Values</strong></p>
+<p>If you're defining a method that will return a collection, think what you expect the user to do with the collection you return. Normally, returning the full collection interface here is the right thing to do because if you're returning a "free flying" (i.e. detached) collection, you want your client to be able to do with it whatever it pleases after that.</p>
+<p>However, in some scenarios the opossite is true. Sometimes you get to define a method on which you'll be the <em>consumer</em> and not the <em>implementor</em>. For example, if you're defining an interface to act as an extension hook into your own library&#47;application, then you get to design that interface and your own code will consume it, but someone else is going to be implementing it. In those cases, then you can apply the same reasoning as the "Method Arguments" case above! Since you're the consumer and you have intimate knowledge of what you'll do with the collection you get, you can restrict it to IEnumerable<T> and thus give more flexibility to those that are going to be <em>implementing</em> your extension interface.</p></p>
+<div class='codebg'><code><span class="Statement">public</span>&nbsp;IEnumerable<span class="Operator"><</span>X<span class="Operator">></span>&nbsp;GetAll<span class="Operator">(){</span><br &#47;><br />
+<span class="Operator">}</span><br />
+</code></div></p>
+<p>One of the nice side effects of having a method defined as returning IEnumerable<T> instead of a collection is that however implements it might even do away with&nbsp;returning a collection at all. This is particularly nice because you can then implement the method using the Iterators feature in C# 2.0 [2] with the "yield return" statement instead of manually building a collection and returning it. This can also lead to memory savings under&nbsp;the right&nbsp;circumstances.</p>
+<p><strong>[1]</strong> Actually, FxCop does give you a choice: Either use the collection interfaces, or use the collection types in System.Collections.ObjectModel.</p>
+<p><strong>[2]</strong> It might not be evident at first look, but you can&nbsp;define iterator methods as returning either an IEnumerator<T> or an IEnumerable<T>. Juwal Lowy has a good discussion of iterators in his <a href="http:&#47;&#47;msdn.microsoft.com&#47;msdnmag&#47;issues&#47;06&#47;00&#47;C20&#47;default.aspx#S1">MSDN Magazine Article</a>.</p>
+<div class="wlWriterSmartContent" id="d7bf807d-7bb0-458a-811f-90c51817d5c2:f2cc690a-01fe-4435-bca9-3d59a70aba97" style="margin: 0px; padding: 0px; display: inline;" contenteditable="false">
+<p><span class="TagSite">Technorati:</span> <a href="http:&#47;&#47;technorati.com&#47;tag&#47;LINQ" rel="tag" class="tag">LINQ</a>, <a href="http:&#47;&#47;technorati.com&#47;tag&#47;IEnumerable" rel="tag" class="tag">IEnumerable</a>, <a href="http:&#47;&#47;technorati.com&#47;tag&#47;Iterators" rel="tag" class="tag">Iterators</a><br><!-- StartInsertedTags: LINQ, IEnumerable, Iterators :EndInsertedTags --></p></div><!--end_raw--></p>

@@ -1,0 +1,36 @@
+---
+layout: post
+status: publish
+published: true
+title: Failed Message Routing
+author:
+  display_name: Tomas Restrepo
+  login: tomasr
+  email: tomas@winterdom.com
+  url: http://winterdom.com/
+author_login: tomasr
+author_email: tomas@winterdom.com
+author_url: http://winterdom.com/
+wordpress_id: 139
+wordpress_url: http://winterdom.com/2005/07/failedmessagerouting
+date: '2005-07-19 13:11:03 +0000'
+date_gmt: '2005-07-19 13:11:03 +0000'
+categories:
+- BizTalk
+tags: []
+comments:
+- id: 85
+  author: Linus Joseph
+  author_email: ''
+  author_url: http://blogs.covarius.com
+  date: '2006-08-30 16:21:13 +0000'
+  date_gmt: '2006-08-30 16:21:13 +0000'
+  content: |
+    One case where failed message routing doesnt seem to work is here..
+    http:&#47;&#47;blogs.covarius.com&#47;PermaLink,guid,1cce4ee8-aa46-4eb6-9922-c2ed4cc728e8.aspx
+---
+<p><!--start_raw-->As <a href="http:&#47;&#47;bloggingabout.net&#47;blogs&#47;wellink&#47;archive&#47;2005&#47;06&#47;03&#47;5327.aspx">some</a> people have mentioned recently, one of the new features in BizTalk Server 2006 (aka PathFinder) is routing of failed messages. This is a very cool new feature because it gives you the possibility of using the standard Pub&#47;Sub mechanism exposed by BizTalk to handle failed messages (either because they failed during a receive or a send operation). The trick to enable this is the "Generate error report for failed message" checkbox in the port configuration.</p>
+<p>One really nice thing about how this feature is implemented is that it should be adapter-agnostic, meaning it should work with any adapter that uses the standard adapter framework (except, I believe, MSMQT which it seems won't support it). Now, here's the tricky point: As I understood the feature, it would work with any adapter that supported suspending failed messages.</p></p>
+<p>However, imagine my surprised when I noticed the feature working with a custom transactional receive adapter I had built for one of our customers, given that the adapter explicitly does <i>not</i> support message suspension (if the submit operation generates an error, the adapter just aborts the transaction and forgets about it).</p></p>
+<p>In the case I was testing, I tried having the adapter submit a document with invalid XML to the XMLReceive pipeline (which would fail). Normally, I would've expected the adapter to trap the error and abort the transaction, but instead it went ahead and commited it! Apparently, when the "Generate error report for failed message" is enabled, the BizTalk messaging engine will trap the error condition when the message is submitted and, instead of reporting the error back to the adapter, it will tell it that everything went OK.</p></p>
+<p>I do not know if this is intentional, or if it is a bug, but it certainly seems like an interesting behavior to be aware of. It would be interesting to know if this is not done for adapters that support in order processing... This was, btw, tested on the CTP of BizTalk 2006 given out at TechEd this year.</p><!--end_raw--></p>

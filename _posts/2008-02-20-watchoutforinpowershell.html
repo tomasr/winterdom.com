@@ -1,0 +1,90 @@
+---
+layout: post
+status: publish
+published: true
+title: Watch out for ':' in PowerShell
+author:
+  display_name: Tomas Restrepo
+  login: tomasr
+  email: tomas@winterdom.com
+  url: http://winterdom.com/
+author_login: tomasr
+author_email: tomas@winterdom.com
+author_url: http://winterdom.com/
+wordpress_id: 747
+wordpress_url: http://winterdom.com/2008/02/watchoutforinpowershell
+date: '2008-02-20 06:30:56 +0000'
+date_gmt: '2008-02-20 06:30:56 +0000'
+categories:
+- PowerShell
+tags: []
+comments:
+- id: 500
+  author: jsnover
+  author_email: jsnover13@hotmail.com
+  author_url: ''
+  date: '2008-02-20 06:44:14 +0000'
+  date_gmt: '2008-02-20 06:44:14 +0000'
+  content: |
+    Have you tried this?
+    PS>dir c:\a*
+    Directory: Microsoft.PowerShell.Core\FileSystem::C:\
+    Mode           LastWriteTime       Length Name
+    ----           -------------       ------ ----
+    -a---      2&#47;8&#47;2008  2:55 PM          439 asec.vbs
+    -a---     9&#47;18&#47;2006  2:43 PM           24 autoexec.bat
+    PS>cat c:\autoexec.bat
+    REM Dummy file for NTVDM
+    PS>${c:\autoexec.bat}
+    REM Dummy file for NTVDM
+    Jeffrey Snover [MSFT]
+    Windows Management Partner Architect
+    Visit the Windows PowerShell Team blog at:    http:&#47;&#47;blogs.msdn.com&#47;PowerShell
+    Visit the Windows PowerShell ScriptCenter at:  http:&#47;&#47;www.microsoft.com&#47;technet&#47;scriptcenter&#47;hubs&#47;msh.mspx
+- id: 501
+  author: Tomas Restrepo
+  author_email: tomas@winterdom.com
+  author_url: http://www.winterdom.com/weblog/
+  date: '2008-02-20 06:47:20 +0000'
+  date_gmt: '2008-02-20 06:47:20 +0000'
+  content: |
+    Jeffrey: Yes, I did try it! That's what I meant when I said
+    <blockquote>Heck, you can even try something like "${c:autoexec.bat}" and watch the magic happen!</blockquote>
+    :-)
+- id: 502
+  author: Mac Noland
+  author_email: mcdonaldnoland@yahoo.com
+  author_url: http://team-foundation-server.blogspot.com
+  date: '2008-03-04 13:24:07 +0000'
+  date_gmt: '2008-03-04 13:24:07 +0000'
+  content: |
+    Thanks for posting this.  Very helpful!
+- id: 1471
+  author: Dan
+  author_email: dan@test.com
+  author_url: ''
+  date: '2010-05-04 15:15:56 +0000'
+  date_gmt: '2010-05-04 15:15:56 +0000'
+  content: Thanks for the post, helped me solve a small issue today :)
+- id: 2434
+  author: Forrest C. Shields II
+  author_email: fshields@iservices.com
+  author_url: http://blog.ForrestShields.com
+  date: '2012-05-04 17:01:24 +0000'
+  date_gmt: '2012-05-04 17:01:24 +0000'
+  content: I knew the colon was to blame.  Thanks for the post.
+---
+<p><!--start_raw-->
+<p>Here's something that tripped me the other day in a Windows PowerShell script. Let's say that you have to variables $user and $machine, and want to print a string with the value of both of them separated by a colon (':'). </p>
+<p>You can obviously do it using string concatenation:</p>
+<div class="codebg"><code><span class="Identifier">$user</span> = <span class="Constant">'tomasr'</span>     <br &#47;><span class="Identifier">$machine</span> = <span class="Constant">'arcano'</span>     <br &#47;>    <br &#47;>write (<span class="Identifier">$user</span> + <span class="Constant">':'</span> + <span class="Identifier">$machine</span>) </code></div>
+<p>That works, but doesn't PowerShell support that nice string interpolation feature? Why, yes it does! So why don't we just rewrite it like this:</p>
+<div class="codebg"><code>write <span class="Constant">"$user:$machine"</span>   </code></div>
+<p>But wait! If you run that last line, all you get is the value of the $machine variable... where did $user go?</p>
+<p>The answer is that the colon has a special meaning in PowerShell variable names: It's used to associate the variable with a specific <em>scope</em> or namespace. There are a few scopes defined by PowerShell, such as script and global; so for example a global variable might be named $global:var.</p>
+<p>But haven't we also seen that syntax elsewhere? Sure, how about $env:PATH? Same thing; except here env isn't a scope by itself, but a PSDrive. So the part before the ':' can either be either an actual scope defined by PS or a PSDrive. Heck, you can even try something like "${c:autoexec.bat}" and watch the magic happen!</p>
+<p>So the problem with our string interpolation is that when PowerShell sees "$user:$machine", it expects to find a scope&#47;psdrive named 'user' and expects a variable name to follow the ':', but '$' isn't valid, and 'user' isn't a scope or a PSDrive either, which confuses PowerShell a bit. But since he's too much of a gentleman he just fixes it up as best as he can and ignores everything up to this point and just dumps $machine without complaining. Nice of him, but it can really trip you up if you don't expect it!</p>
+<p>Can we avoid this? Yes, we can, by simply delimiting variable names exactly for PowerShell by using '{}', like this:</p>
+<div class="codebg"><code>write <span class="Constant">"${user}:$machine"</span>  </code></div>
+<p>Section 5.8 on page 141 of Bruce Payette's excellent <a href="http:&#47;&#47;www.amazon.com&#47;Windows-PowerShell-Action-Bruce-Payette&#47;dp&#47;1932394907&#47;">Windows PowerShell in Action</a> covers the topic of variables in PowerShell and gave me the clue to work around this issue.</p>
+<div class="wlWriterSmartContent" id="scid:0767317B-992E-4b12-91E0-4F059A8CECA8:f2ccfa83-229b-4bc6-8502-a514fd672de1" style="padding-right: 0px; display: inline; padding-left: 0px; padding-bottom: 0px; margin: 0px; padding-top: 0px">Technorati tags: <a href="http:&#47;&#47;technorati.com&#47;tags&#47;PowerShell" rel="tag">PowerShell</a></div><!--end_raw--></p>

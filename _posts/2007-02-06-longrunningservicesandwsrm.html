@@ -1,0 +1,69 @@
+---
+layout: post
+status: publish
+published: true
+title: Long Running Services and WS-RM
+author:
+  display_name: Tomas Restrepo
+  login: tomasr
+  email: tomas@winterdom.com
+  url: http://winterdom.com/
+author_login: tomasr
+author_email: tomas@winterdom.com
+author_url: http://winterdom.com/
+wordpress_id: 643
+wordpress_url: http://winterdom.com/2007/02/longrunningservicesandwsrm
+date: '2007-02-06 16:13:02 +0000'
+date_gmt: '2007-02-06 16:13:02 +0000'
+categories:
+- Architecture
+- WCF
+- WinFX
+- Workflow
+- Web Services
+tags: []
+comments:
+- id: 426
+  author: DevHawk
+  author_email: harry@devhawk.net
+  author_url: http://devhawk.net
+  date: '2007-02-08 15:34:42 +0000'
+  date_gmt: '2007-02-08 15:34:42 +0000'
+  content: |
+    You didn't misunderstand me. I want an interoperable open queued messaging platform. But I would like it to at least support SSB features that are over and above what standard MQ platforms provide (in order, conversations, conversation groups, end-to-end reliable messaging, etc)
+- id: 427
+  author: Paul Fremantle
+  author_email: paul@fremantle.org
+  author_url: http://bloglines.com/blog/paulfremantle
+  date: '2007-03-05 02:50:25 +0000'
+  date_gmt: '2007-03-05 02:50:25 +0000'
+  content: |
+    WSRM doesn't *enforce* persistence - but please remember that WCF is not the only implementation. For example, there is a persistent open source implementation of WSRM in WSO2's Web Services Application Server.
+    Paul Fremantle,
+    WS-RX TC Co-Chair
+- id: 428
+  author: Tomas Restrepo
+  author_email: tomas@winterdom.com
+  author_url: http://www.winterdom.com/weblog/
+  date: '2007-03-05 04:48:56 +0000'
+  date_gmt: '2007-03-05 04:48:56 +0000'
+  content: |
+    Paul: I realize that, which is exactly why I mentioned I put the "blame" on WSRM itself. I understand that other implementations are persistent, but my argument was precisely that there's no guarantee that because a given platform implements WSRM it supports persistence, thus making it significantly less useful.
+---
+<p><!--start_raw-->
+<p><a href="http:&#47;&#47;devhawk.net&#47;">Harry Pierson</a>&nbsp;posted a <a href="http:&#47;&#47;devhawk.net&#47;2007&#47;02&#47;06&#47;How+I+Learned+To+Stop+Worrying+And+Love+WCF.aspx">story</a> about Windows Communication Foundation and his "epiphany" (my words) on the usefulnes of WS-ReliableMessaging in Web Services. I found several comments here that made me think. <a href="http:&#47;&#47;codebetter.com&#47;blogs&#47;sam.gentile&#47;">Sam Gentile</a> recently <a href="http:&#47;&#47;codebetter.com&#47;blogs&#47;sam.gentile&#47;archive&#47;2007&#47;02&#47;05&#47;New-and-Notable-138.aspx">commented</a> as well on the importance of WS-RM, and I did a few quick posts there.</p>
+<p>Let me first start this discussion that I believe that the basic concept behind reliable messaging (and WS-RM) is indeed very important and very needed in the Web Services World to make it easier to implement reliable services and integrate disparate applications. </p>
+<p>That said, <a href="http:&#47;&#47;www.winterdom.com&#47;weblog&#47;2006&#47;02&#47;21&#47;WCFWSRMAndPartialTrust.aspx">I've been frank</a> in the past and say that I believe that the WS-RM spec, as it exists right now, is remarkably lacking. Harry mentioned the core point: It does not demand persistence of the message and conversation state from the endpoints involved in the communication. Thus, as WS-RM currently exists, and how platforms such as WCF implement it, it means you don't really have the guarantee of reliablity. At best, all you have is the <em>illussion</em> of reliability. The only thing you can be sure of is that one of your endpoints is gonna fail, sooner or later.</p>
+<p>If there is one thing that I have learned from my work on Application Integration (with and without BizTalk), is that ensuring reliable communication across a distributed application infrastructure is a tough nut to crack. There's a lot of very significant issues that can arise here, depending on the type of problem domain you're solving: Message delivery, delayed deliver, synchronous and asynchronous interchanges, ordered deliver (and even tougher, in-order processing), lost and duplicated messages and so on.</p>
+<p>A spec like WS-RM doesn't try to solve all this issues, for obvious reasons, and that really is fine. A lot of these issues cannot be taken into account by themselves, but only in the context of the overall architecture and requirements. In particular, how the individual endpoints are designed can make a huge impact in which of the issues mentioned before are significant and <em>how</em> significant. </p>
+<p>Some architectural choices will make some of these problems go away without having to write more code for it. For example, a given service might have&nbsp;a set of messages created in such a way that the operations they represent are idempotent. In that case, duplicated messages should not be a problem, and spending a lot of time to avoid them would not be an efficient use of your development budget, as they are a non issue. In other contexts, for example, missing one or two messages during high load might also not be important because perhaps the contents can be reconstructed from subsequent exchanges.</p>
+<p>So given this, why do I make so much fuss about WS-RM if it wasn't meant to be the end-all solution anyway? Because of the way it has been positioned by the marketplace: It is usually portrayed as saying that it "finally solves the reliable messaging problem for Web Services". It doesn't. Unfortunately, the WCF literature hasn't helped clear this misconception and actually has made the problem a bit worse.</p>
+<p>The other problem I have with WS-RM is that it does a bare minimum of work to help the reliability issue. And for better or worse, it doesn't do what I consider is a significant element of what that bare minimum <em>should</em> be, which is&nbsp;to require implementations to force endpoint applications to survive restarts&#47;crashes. My bigguest concern is people building solutions assuming that because they used WCF and turned the RM bit on then they are done and their services are reliable, because that's not really true. Reliable services take a lot of work, and flipping a bit is just not gonna do it, but unfortunately in the way it has been sold to the masses, it sure sounds like learning about all those pesky reliability issues isn't needed when "WCF just does it for us" [1]...</p>
+<p>That's my opinion, by the way, and I might be wrong. You need to do your own decision about whether the required&#47;supported functionality&nbsp;is enough for your needs, but <em>be aware of what it is that WS-RM brings to the table</em> and be sure you're making an informed decision.</p>
+<p>Harry made a really interesting comparison in his post: <em>"If HTTP is basically UDP, then WS-* is trying to be TCP"</em>. I won't comment on whether the comparison is valid or not, but I do want to say that if we (as in "the community", or the "developer world" or whatever) just spent several years working on reliable messaging for webservices just to get what the underlying transport protocol, invented more than 20 years ago, already did to start with, then boy, we have really lost the train this time.</p>
+<p>What I want to say by this is if we're going to work on creating a significant improvement on the reliable messaging field, then we need to move forward to solve higher level problems with higher level abstractions. Abstractions such as Workflow and Orchestration are significant advances in this field, for example, because they make it easier to write the endpoint applications in such a way that state can be persisted and thus it's easier for them to survive restarts and allow easier retry mechanisms.</p>
+<p>That's why I sometimes despair when I see a whole bunch of fuss made about using Workflow Foundation for such tasks such as driving navigation between three pages in a web application: Great way to make something that was already very easy into a significantly more complex solution that brings dubious benefits (in my humble opinion) to the table. There are far more&nbsp;interesting uses for something like WF but hey, that's just me :-)</p>
+<p>One last comment Harry made that&nbsp;got my attention&nbsp;was right at the end, when he says <em>"Eventually, I would love to see something that has the programming semantics of SSB and the interoperability of WCF"</em>. It sounds to me (though I might be misinterpreting him) that what he wants sure sounds like an interoperable, open queued messaging platform. </p>
+<p>Personally, I'm very interested in such a platform as I believe it would be a great asset to implement reliable and interoperable message driven systems. That's the reason I'm watching very closely the development of the <a href="http:&#47;&#47;www.amqp.org&#47;">Advanced Message Queuing Protocol</a> (AMQP) especification. And, there's no reason why AMQP could not be a great transport protocol for reliable Web Services!</p>
+<p>[1] I do want to be very clear that I'm not bashing the WCF team here. Technically speaking, they're within what the WS-RM spec requires of them (and I fault the spec directly for that), and they probably have the best intentions in the world about trying to make it easier for us developers to use these technologies. They&nbsp;also had to make some very tough decisions about what they would support in V1.</p>
+<div class="wlWriterSmartContent" id="0767317B-992E-4b12-91E0-4F059A8CECA8:71fd9f11-a1ff-4446-833e-cf25c400cafc" contenteditable="false" style="padding-right: 0px; display: inline; padding-left: 0px; padding-bottom: 0px; margin: 0px; padding-top: 0px">Technorati tags: <a href="http:&#47;&#47;technorati.com&#47;tags&#47;Architecture.%20Web%20Services" rel="tag">Architecture. Web Services</a>, <a href="http:&#47;&#47;technorati.com&#47;tags&#47;WCF" rel="tag">WCF</a>, <a href="http:&#47;&#47;technorati.com&#47;tags&#47;WF" rel="tag">WF</a>, <a href="http:&#47;&#47;technorati.com&#47;tags&#47;Messaging" rel="tag">Messaging</a></div><!--end_raw--></p>

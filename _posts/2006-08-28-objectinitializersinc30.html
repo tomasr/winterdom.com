@@ -1,0 +1,69 @@
+---
+layout: post
+status: publish
+published: true
+title: Object Initializers in C# 3.0
+author:
+  display_name: Tomas Restrepo
+  login: tomasr
+  email: tomas@winterdom.com
+  url: http://winterdom.com/
+author_login: tomasr
+author_email: tomas@winterdom.com
+author_url: http://winterdom.com/
+wordpress_id: 397
+wordpress_url: http://winterdom.com/2006/08/objectinitializersinc30
+date: '2006-08-28 07:19:54 +0000'
+date_gmt: '2006-08-28 07:19:54 +0000'
+categories:
+- ".NET"
+- LINQ
+tags: []
+comments:
+- id: 292
+  author: Jeremy Miller
+  author_email: ''
+  author_url: http://codebetter.com/blogs/jeremy.miller
+  date: '2006-08-28 13:03:58 +0000'
+  date_gmt: '2006-08-28 13:03:58 +0000'
+  content: |
+    I'm definitely more excited for C# 3.0 than I was for Whidbey because of these types of features.  This JSON-like syntax is already available in Javascript if you're doing any Ajax coding:
+    var tomas = { Name="Tomas", Age=28, Hobby="Music" };
+    or with a touch more coding to get methods too:
+    var tomas = new Person({ Name="Tomas", Age=28, Hobby="Music" });
+- id: 293
+  author: Tomas Restrepo
+  author_email: tomasr@mvps.org
+  author_url: http://www.winterdom.com/weblog/
+  date: '2006-08-28 15:11:17 +0000'
+  date_gmt: '2006-08-28 15:11:17 +0000'
+  content: |
+    Jeremy,
+    I have to agree, Orcas is far more interesting, and I quite like the changes in C# 3.0 even though they'll raise the language complexity a bit. I wasn't very aware of the JS syntax (not much of a JS developer, I'm afraid), but it's interesting! I'll have to take a look at it...
+---
+<p><!--start_raw-->
+<p>One of the new language features in C# 3.0, thanks to the LINQ stuff, is the new syntax for object and collection initializers. Basically, this feature allows you to initialize an object by both creating the object instance (i.e. a new expression) as well as assign values to one or more properties in a single sentence, or to initialize a collection with a set of values to add to it in a single expression similar to how you already do with arrays in C# < 3.0.</p></p>
+<p>Here's an example of using the new syntax:</p></p>
+<div class='codebg'><code>Person tomas = <span class="Statement">new</span>&nbsp;Person() { Name=<span class="String">"Tomas"</span>, Age=<span class="Number">28</span>, Hobby=<span class="String">"Music"</span>&nbsp;};<br &#47;><br />
+Person clone = <span class="Statement">new</span>&nbsp;Person() { tomas.Hobby, tomas.Name, tomas.Age };<br &#47;><br />
+<br &#47;><br />
+List<Person> people = <span class="Statement">new</span>&nbsp;List<Person>() { tomas, clone };<br />
+</code></div></p>
+<p>The first line initializes a Person object with the default constructor (though you could call a constructor with parameters here), and assigns explicit values to the Name, Age and Hobby properties. </p></p>
+<p>The second line initializes another Person object with the default constructor, and again assigns values to all the properties. However, notice that here we don't especify the name of the properties to initialize explicitly. Instead, the compiler will "guess" which property to initialize by matching the name of the property of the object used in the expression (i.e. tomas.Hobby is matched to the Hobby property).</p></p>
+<p>The third line initializes a collection of type List<Person> with the objects tomas and clone as items in it. Look how the expression is in general very similar to an array initialization expression.</p></p>
+<p>This entire feature can be quite handy and I believe it can significantly improve readability of the code when used correctly. Personally, I prefer to use as much as possible the explicit form of it in which you clearly especify which property you're assigning a value to (i.e. Hobby=tomas.Hobby), particularly when using the very similar syntax to initialize anonymous types:</p></p>
+<div class='codebg'><code>var minime = <span class="Statement">new</span>&nbsp;{ Name=tomas.Name, Age=tomas.Age&#47;<span class="Number">2</span>&nbsp;};<br />
+</code></div></p>
+<p>One thing did strike me as curious about the new object initialization syntax in C# 3.0: C# already had a special syntax that did something very similar: The syntax for attributes: </p></p>
+<div class='codebg'><code>[Attribute(<span class="Number">1</span>, Property=<span class="Statement">value</span>)]<br />
+</code></div></p>
+<p>While this was a very restricted syntax, it served much of the same purpose, and it was somewhat curious to me why a different syntax was used instead of reusing the existing one. That said, I think I can guess at some of the reasons this was not done:</p></p>
+<p></p></p>
+<ol>
+<li>The new object initialization syntax is more inline with the array initialization syntax<br />
+</li>
+<li>The new sytnax clearly separates what is being initialized as part of the object construction process (i.e. everything in the ()) and what is being initialized with property setters (i.e. everything in the {}). </li></ol></p>
+<p>Number 2&nbsp;in particular might be important because it is more explicit when you introduce the whole "automatic matching of member being used for intitialization to the name of the member being initialized" feature. If the existing attribute initialization syntax had been reused, this would've been far more confusing as there would be no easy way to spot whether a given initializing expression was actually using one of the available constructors or it was implicitly initializing a given property, which would've significantly reduce the readability of the language in this cases.</p></p>
+<p>That said, I don't care all that much for the automatic property name guessing; I much prefer to be explicit as to what property I'm initializing.</p></p>
+<p></p><!--end_raw--></p>

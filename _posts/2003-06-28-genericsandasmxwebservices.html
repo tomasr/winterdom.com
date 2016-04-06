@@ -1,0 +1,71 @@
+---
+layout: post
+status: publish
+published: true
+title: Generics and ASMX WebServices
+author:
+  display_name: Tomas Restrepo
+  login: tomasr
+  email: tomas@winterdom.com
+  url: http://winterdom.com/
+author_login: tomasr
+author_email: tomas@winterdom.com
+author_url: http://winterdom.com/
+wordpress_id: 419
+wordpress_url: http://winterdom.com/2003/06/genericsandasmxwebservices
+date: '2003-06-28 07:52:15 +0000'
+date_gmt: '2003-06-28 07:52:15 +0000'
+categories:
+- Web Services
+tags: []
+comments:
+- id: 302
+  author: Greg
+  author_email: greg_reuter@us.fujitsu.com
+  author_url: ''
+  date: '2004-03-11 11:54:48 +0000'
+  date_gmt: '2004-03-11 11:54:48 +0000'
+  content: |
+    <p>What does ASMX stand for?</p>
+---
+<p><!--start_raw-->
+<p>
+<font size="2">Doug Purdy&#160;posted&#160;an interesting <a href="http:&#47;&#47;www.douglasp.com&#47;2003&#47;06&#47;18.html#a330">question</a> a<br />
+couple of weeks ago regarding generics in the upcoming releases of .NET and what possible<br />
+impact they could have on the ASMX WebServices and Remoting models (with remoting<br />
+being the fairly obvious answer). </font><span ><font size="2">Being an opinionated<br />
+and general trouble-making sould myself, I can't help but raise a few questions on<br />
+the matter :)</font><br />
+</span><br />
+</p></p>
+<p>
+<font size="2">I think the presence of generics in ASMX sounds fairly interesting<br />
+from a theoretic point of view, but I can't help but wonder just how useful it would<br />
+be in the real world. Specially troublesome is thinking just exactly what it means<br />
+for the "describe-first-code-later" movement. How would you describe a service involving<br />
+parametric types? I'm obviously no WS expert, but I can't see&#160;an obvious answer<br />
+without at least partially loosing type information in the description.</font><br />
+</p></p>
+<p>
+<font size="2">One wacky thought that comes to mind is the idea of generics and webservices<br />
+intermingling to create <em>meta-services</em>: services that at one point in time<br />
+(most likely during a late portion of a design phase) get <em>instantiated</em> over<br />
+specific types so that the <em>real</em> service emerges. But if my worry above is<br />
+real, this would need to happen <em>before</em> the final service is described using<br />
+current tools. A meta-service would basically be composed of some sort of parameterized,<br />
+meta-message description for input and&#160;output messages, which themselves could<br />
+not be fully described using current tools. </font><br />
+</p></p>
+<p>
+<font size="2">In a sense, if we go down to the SOAP level, we can already do generics:<br />
+pass in whatever document we want (yes, with some restrictions, I know) within the<br />
+body of the message. The problem is description, really. And if we were to have such<br />
+a <em>meta-service</em> directly exposed somehow (which would imply some dynamic type<br />
+creation based on the message payload), something else would need to be added to the<br />
+message itself to "fill in the blanks", either through some sort of header, or with<br />
+embedded schema information (yuck!). </font><br />
+</p></p>
+<p>
+<font size="2">Again, I'm no expert here, so I might just be babbling, but&#160;I'm<br />
+not sure just how&#160;useful this would actually be.... </font><br />
+</p><!--end_raw--></p>

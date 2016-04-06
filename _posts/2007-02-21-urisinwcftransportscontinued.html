@@ -1,0 +1,52 @@
+---
+layout: post
+status: publish
+published: true
+title: URIs in WCF Transports Continued
+author:
+  display_name: Tomas Restrepo
+  login: tomasr
+  email: tomas@winterdom.com
+  url: http://winterdom.com/
+author_login: tomasr
+author_email: tomas@winterdom.com
+author_url: http://winterdom.com/
+wordpress_id: 937
+wordpress_url: http://winterdom.com/2007/02/urisinwcftransportscontinued
+date: '2007-02-21 12:13:04 +0000'
+date_gmt: '2007-02-21 12:13:04 +0000'
+categories:
+- WCF
+tags: []
+comments:
+- id: 658
+  author: Scott Seely
+  author_email: ''
+  author_url: http://blogs.catalystss.com/blogs/Scott_Seely/
+  date: '2007-02-21 13:34:50 +0000'
+  date_gmt: '2007-02-21 13:34:50 +0000'
+  content: |
+    Headers in config: the <endpoint> configuration element under &#47;system.serviceModel&#47;services&#47;Service can contain <headers>. These are then read in and passed to config.
+    I think you are running into a scenario where static wsdl&#47;policy becomes a good solution. You are designing a multi-hop scenario. Most scenarios talk about point to point communications. You are doing pub&#47;sub (aka WS-Eventing http:&#47;&#47;www.w3.org&#47;Submission&#47;WS-Eventing&#47;). Early drafts of pub&#47;sub talked about publisher aggregators collecting a set of publishers and then making that information available to potential clients. I think that your publishers need some sort of step during initialization that tells the routers what types of messages will be published so that the consumers find out the types of things they can subscribe to. A simplistic solution for the issues you present is having the router simply get a WSDL&#47;Policy doc from a publisher and then rewrite that doc with the router as the source. I'm assuming that the identity of the published messages doesn't need to appear to be  the actual publisher but should appear to be the router.
+    (If you want to discuss in private e-mail: sseely_at_catalystss_dot_com)
+---
+<p><!--start_raw-->
+<p>On my <a href="http:&#47;&#47;www.winterdom.com&#47;weblog&#47;2007&#47;02&#47;20&#47;URIsAndWCFTransportChannels.aspx">last post</a> I&nbsp;put out&nbsp;some questions on the design of URI&nbsp;syntaxes for Windows Communication Foundation transport channels. <a href="http:&#47;&#47;blogs.catalystss.com&#47;blogs&#47;Scott_Seely&#47;">Scott Seely</a> posted a very interesting response and I wanted to comment a bit on it.</p>
+<p>First Scott says:</p><br />
+<blockquote>
+<p><em>"The address element can take a set of extra headers-- see EndpointAddress.Headers. These headers can also be passed in as part of the config object model. This feature exists to handle scenarios like yours. The URI should contain enough information to hit the endpoint."</em></p></blockquote>
+<p>Scott's referring to the <a href="http:&#47;&#47;msdn2.microsoft.com&#47;en-us&#47;library&#47;system.servicemodel.endpointaddress.aspx">EndpointAddress</a> class, which can indeed contain optional headers "<a>used to provide additional, more detailed addressing information to identify or interact with the endpoint</a>". See <a href="http:&#47;&#47;msdn2.microsoft.com&#47;en-us&#47;library&#47;aa480210.aspx">here</a> for a bit more details as well. The big about "these headers can also be passed in as ppart of the config object model" did confuse me a bit; care to point to relevant docs&#47;examples?</p>
+<p>One thing Scott is totally right here is his last part about the URI containing only enough information to hit the endpoint. For example, if you had an SMTP transport, for sending messages the logical addressing scheme would be centered around the email address to send the message to; but, you'd also need to know the hostname and port where you'll find an SMTP server listening. However, the last bit would be a private configuration detail to the client, and would never need to be exposed to the outside. This gives me some ideas to work with already!</p>
+<p>Scott's comment also made me think about something I had not been considering before. See, those headers in the EndpointAddress are very useful in scenarios where WS-Addressing is involved. In particular, in a fully asynchronous, disjoined request&#47;reply scenario, you can use them to pass extra information&nbsp;needed by the other endoint to reply to your original message, as part of the ReplyTo header. For an asynchronous mechanism like I'm working on, looking at supporting that would be very interesting and I can think of a couple of ways to leverage that.</p>
+<p>Scott goes on to say:</p><br />
+<blockquote>
+<p><em>"As for asymmetry in the URI scheme, what you need to do is tell any clients, via policy and WSDL, how to connect to your endpoint. So long as you can express that asymettry in a way that the client can work with it with no ill effects, you should be fine."</em></p></blockquote>
+<p>That's the crux of the issue I have with my current scheme. The URI assymmetry I talked about is partially caused by the underlying transport: The message sender&nbsp;needs to specify some information, but the message receiver needs to specify different information. How come?</p>
+<p>The thing here to understand is that the protocol I'm working with has routing intermediaries:</p>
+<p><img src="http:&#47;&#47;www.winterdom.com&#47;weblog&#47;content&#47;binary&#47;WindowsLiveWriter&#47;URIsinWCFTransportsContinued_C7EC&#47;WcfRouting.png" height="144" width="446"> </p>
+<p>Those routing intermediaries don't know anything about WCF or SOAP (and much less WS-*). All they know is how to receive a message from a message publisher (which in our case would be a WCF client proxy) and route them to somewhere a message consumer (which in our case would be a WCF service) based on a configured criteria. </p>
+<p>Furthermore, the information the message publisher needs to provide to establish a successful connection to the router and send a message is not the same a message consumer needs to provide to successfully connect to the router and receive a message (yes, for this protocol receive-side endpoints need to actively connect to the router and request message delivery).</p>
+<p>One important fact that can be derived from this is that because of the presence of the intermediate router (and there could be more than one involved), the client and server addressing schemes will not be the same. That's because there's a very loose coupling between the message publishers (clients) and message consumers (services) because one does not know anything about the other and <em>can't address it directly</em>. </p>
+<p>And this directly affects the WSDL generation issue that Scott mentions. <em>If the client can't address the service endpoint directly, how could the service generate a WSDL description of it that is immediately useful for a potential client to use without it having to always rewrite the address specified in the service description?</em> This is definitely something that I had briefly thought about before, but didn't give it much importance originally, but Scott's comment makes me realize I should focus a bit more on that.</p>
+<p>I can think of at least two ways to work around this issue by taking advantage of a couple of features at the protocol level, but I'm not entirely happy with either one. It might very well be that I'll need to constraint the channel a bit for the WSDL generation but it should still prove useful, I think.</p>
+<div class="wlWriterSmartContent" id="0767317B-992E-4b12-91E0-4F059A8CECA8:db453cb9-1540-4c2b-b3f3-d6ba8c1513a8" contenteditable="false" style="margin: 0px; padding: 0px; display: inline;">Technorati tags: <a href="http:&#47;&#47;technorati.com&#47;tags&#47;Windows%20Communication%20Foundation" rel="tag">Windows Communication Foundation</a>, <a href="http:&#47;&#47;technorati.com&#47;tags&#47;WCF%20Extensibility" rel="tag">WCF Extensibility</a></div><!--end_raw--></p>

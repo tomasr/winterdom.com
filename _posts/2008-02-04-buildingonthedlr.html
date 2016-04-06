@@ -1,0 +1,79 @@
+---
+layout: post
+status: publish
+published: true
+title: Building On The DLR
+author:
+  display_name: Tomas Restrepo
+  login: tomasr
+  email: tomas@winterdom.com
+  url: http://winterdom.com/
+author_login: tomasr
+author_email: tomas@winterdom.com
+author_url: http://winterdom.com/
+wordpress_id: 25
+wordpress_url: http://winterdom.com/2008/02/buildingonthedlr
+date: '2008-02-04 04:48:06 +0000'
+date_gmt: '2008-02-04 04:48:06 +0000'
+categories:
+- ".NET"
+- DLR
+tags: []
+comments:
+- id: 26
+  author: piter
+  author_email: piter.protsyk@gmail.com
+  author_url: http://www.protsyk.com/cms
+  date: '2008-02-07 07:26:04 +0000'
+  date_gmt: '2008-02-07 07:26:04 +0000'
+  content: |
+    Nicely done!
+    <a href="http:&#47;&#47;protsyk.com&#47;cms&#47;?p=161" rel="nofollow">Here is an example of working simple DLR language</a>. It is good for learning DLR.
+---
+<p><!--start_raw-->
+<p>I've been playing for some time now with the Dynamic Language Runtime. At first I started simply playing around with its <a href="http:&#47;&#47;www.winterdom.com&#47;Weblog&#47;CommentView.aspx?title=HostingIronRubyWithTheDLR&amp;date=2007-11-08">hosting interfaces</a>, but later I realized I really wanted to check more closely how it worked, so I started building a very simple language on top of it.</p>
+<p>My intention isn't to build a full fledged language out of it, but simply use it to explore interesting aspects of the DLR. It's been a bit complex and frustrating at times because there really isn't much documentation yet [1] on how the DLR works (and how to build on it), but it's been a lot of fun, too!</p>
+<p>Fortunately, there's plenty of source code to study when you're looking at the DLR. On the small scale, there's the <a href="http:&#47;&#47;www.iunknown.com&#47;2007&#47;11&#47;lolcode-on-dlr.html">DLR version</a> of LOLCODE! as well as the ToyScript sample included with the DLR in the <a href="http:&#47;&#47;www.codeplex.com&#47;IronPython&#47;Release&#47;ProjectReleases.aspx?ReleaseId=9219">IronPython 2.0</a> alpha bits. </p>
+<p>Much larger samples are obviously both the IronPython 2.0 and <a href="http:&#47;&#47;www.ironruby.net&#47;">IronRuby</a> source code, but they are complex enough that it can be difficult to understand how they are using the DLR sometimes (I'm starting to get a feel for how IronRuby does it, but that probably will only last until the next big changeset is merged into the SVN repository :-)).</p>
+<p><strong>Note:</strong> I don't know if the LOLCODE! sample has been recently updated, but the DLR has changed quite a bit since then, so it might require a few changes around to get it to build.</p>
+<p>A most interesting source of current information on the DLR can be found in <a href="http:&#47;&#47;blogs.msdn.com&#47;mmaly&#47;">Martin Maly's blog</a>, and it is definitely recommended if you're interested in targeting the DLR. It took me a bit to finally grok what he was talking about but after that it helped quite a bit!</p>
+<p><strong>Note:</strong> Do take everything I mention here with a large grain of salt. After all, I'm just a hobbyist playing with the DLR, not someone implementing a real language on it.</p><br />
+<h2>Targeting the DLR</h2>
+<p>There are several reasons why building an interpreter&#47;compiler on top of the DLR makes sense, and obviously the most significant one is that it takes an awful lot of work of your hands. The DLR provides you with:</p>
+<ul>
+<li>Most of the hosting infrastructure needed to build a script interpreter. It also provides you with a common API (the hosting API) you can use to use your language from different applications and uses.</li>
+<li>An MSIL code generator: You hand it an Abstract Syntax Tree and it will take care of generating the necessary MSIL. </li>
+<li>Dynamic behaviors: To a large degree, you can build a language on top of the DLR where you don't have to care about what the expressions you're manipulating evaluate to at runtime. This makes building a bunch of stuff fairly trivial for you, and actually makes it a lot easier to get up and running with something that works (for some definition of work). </li>
+<li>Bunch of other stuff</li> </ul>
+<p>Indeed, the DLR takes care of a lot of the grunt work off building a working compiler&#47;interpreter.</p>
+<p>So how do you actually target the DLR?</p>
+<p>Turns out that getting started with the DLR isn't all that hard. First you need to get your hands on a copy of the DLR, which you can do either from the IronPython 2.0 alpha bits or from the IronRuby SVN repository. Personally, I've been going with the IronRuby bits since it's more convenient.</p>
+<p>Then you need to write the code. There are a few things you need to get this up and running:</p>
+<p><strong>Connect:</strong> You need provide a way for the DLR to know about your language: How to parse it and how to generate code for it. In the current incarnation of the DLR [2] this is done by implementing a LanguageContext derived class. </p>
+<p>You can start with a pretty simple implementation of this, which just creates the ActionBinder (more of this in a minute) and that implements the ParseSourceCode() method. </p>
+<p>It may be that at some point in time you'll want to make your language known to the DLR so that you can use conveniences like the Script class to quickly parse&#47;compile&#47;evaluate scripts in your language. This can be easily done by using the RegisterLanguageContext() method of the ScriptDomainManager class.</p>
+<p><strong>Binding:</strong> You'll also need to implement an ActionBinder derived class and override the methods from it that are relevant to your language. As I understand it, the binder is responsible for making a bunch of language-specific decisions about how the DLR should generate code for your language, like for example which type conversions are supported (and how they should be implemented). Again, you can start with a pretty minimal binder class and then grow it as needed.</p>
+<p><strong>Generating Code:</strong> With this in place you can actually get to the good stuff. You're responsible for actually parsing scripts in you're language. Normally, you'd write your lexer and parser using whatever compiler writing tool you like (or by hand), and then use them to build an Abstract Syntax Tree that represents constructs in your language. </p>
+<p>This means that you can build a high-level AST that's close to the concepts and semantics your language needs, but even then it doesn't need to be very complex to start with (and in some cases, it can be fairly thin). Then, you translate it to a DLR AST, which is basically a tree of nodes in the Microsoft.Scripting.Ast namespace. </p>
+<p>There are tons of lower-level constructs in the core DLR AST, ranging from creating type and member definitions to operators and method calls. Most of what you actually deal with here are expressions (almost everything is, naturally, an expression), which you can create using the methods of the Ast class (yes, there's both an Ast namespace and an Ast class), like Ast.Call() or Ast.Assign().</p>
+<p>This brings me back to the ParseSourceCode() method: What you return here is, in fact, a DLR tree of what should be executed, as a node of type CodeBlock (basically, a function). As long as you build the right AST, things should mostly work.</p><br />
+<h2>How I'm using the DLR</h2>
+<p>I started writing my simple language using the <a href="http:&#47;&#47;plas.fit.qut.edu.au&#47;gppg&#47;">Garden Points Parser Generator</a> (GPPG) as it's fairly simple to use and my syntax is also pretty simple. I haven't had much trouble with this yet (took me a bit to remember the lex&#47;yacc-like syntax from my college days), but then again, my needs are simple.</p>
+<p>Right now, I've used it to explore very specific parts of the DLR, mostly code blocks and method invocation [3], so naturally the functionality currently implemented is very limited:</p>
+<ul>
+<li>I can define both named and unnamed functions, and both global and local functions are supported.</li>
+<li>It can create instances of arbitrary .NET classes (haven't bothered to really support value types yet).</li>
+<li>It can invoke the defined functions (duh!) as well as instance methods&#47;properties in .NET objects.</li>
+<li>Closures are mostly supported (they are fairly trivial to support with the DLR)</li> </ul>
+<p>Surprisingly enough, I haven't bother to implement any built-in function or operators, so there's not really much you can do with variables yet, but that's high on my TODO list.</p><br />
+<h2>Some things I've learned about the DLR</h2>
+<p>Working with the DLR has been pretty fun, but one thing I've realized is that the current implementation doesn't really provide very good tooling for language developers. </p>
+<p>One of the tools the DLR gives you to diagnose issues is the ability to dump ASTs or Rules, and this is very helpful (though it occasionally breaks down if you generate incorrect code). Sometimes, however, it isn't enough to diagnose what's going on when the DLR is doing what you don't expect. </p>
+<p>In particular, there are substantial pieces of th<br />
+e code that actually gets executed that gets generated by AST fragments that are not created directly by your ParseSourceCode() method, and it can be pretty hard to diagnose whether that actually makes sense or not (or even if it really makes sense). </p>
+<p>Yes, the DLR has a bunch of internal asserts on debug builds, but I've found most of them useless from the outside. Mostly, they tell you that something in your AST isn't valid, but rarely "why", unless you're very familiar with the internals of the DLR itself. </p>
+<p>Another issue I've run into is that the DLR makes a bunch of assumptions about what you give it, and despite the fact that most of the DLR has extensive sanity checks throughout the code, sometimes some of these assumptions are not validating, leaving you to deal with IndexOutOfBounds or NullReferenceExceptions from deep inside the DLR.</p>
+<p>I've been able to work around this things, sometimes with the help of the DLR samples, and sometimes with the help of the occasional comment in the DLR source, but finding those isn't always easy. I do expect, however, most of these issues will get sorted out with time and documentation, but meanwhile, expect to spend some time on it.</p>
+<p>I'll cover a few specific things I've run into in a follow-up post.</p>
+<p>[1] Completely understandable at this early stage :-)   <br>[2] Current as in "what's in the IronRuby SVN repository today".    <br>[3] I've actually rewritten method invocation 3 times at least, exploring some of the options the DLR gives you for that.</p>
+<div class="wlWriterSmartContent" id="scid:0767317B-992E-4b12-91E0-4F059A8CECA8:f63ad649-6257-4d3a-9d90-234a4730b759" style="margin: 0px; padding: 0px; display: inline;">Technorati tags: <a href="http:&#47;&#47;technorati.com&#47;tags&#47;Dynamic%20Language%20Runtime" rel="tag">Dynamic Language Runtime</a>, <a href="http:&#47;&#47;technorati.com&#47;tags&#47;DLR" rel="tag">DLR</a>, <a href="http:&#47;&#47;technorati.com&#47;tags&#47;.NET" rel="tag">.NET</a></div><hints id="hah_hints"></hints><!--end_raw--></p>

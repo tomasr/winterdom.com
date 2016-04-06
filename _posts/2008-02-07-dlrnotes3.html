@@ -1,0 +1,43 @@
+---
+layout: post
+status: publish
+published: true
+title: DLR Notes 3
+author:
+  display_name: Tomas Restrepo
+  login: tomasr
+  email: tomas@winterdom.com
+  url: http://winterdom.com/
+author_login: tomasr
+author_email: tomas@winterdom.com
+author_url: http://winterdom.com/
+wordpress_id: 15
+wordpress_url: http://winterdom.com/2008/02/dlrnotes3
+date: '2008-02-07 07:00:33 +0000'
+date_gmt: '2008-02-07 07:00:33 +0000'
+categories:
+- ".NET"
+- DLR
+tags: []
+comments: []
+---
+<p><!--start_raw-->
+<p>Last time I talked a bit about Call Actions; now let's talk a bit about another kind of action: InvokeMember actions. As their name implies, these are useful for calling instance methods on .NET objects. </p>
+<p>I struggled a bit with InvokeMember actions because they are act a little differently than Call actions. In particular, I was confused why sometimes InvokeMember actions seemed to require an extra expression in the argument list to work, when compared to Call actions. Fortunately, Dino Viehland clarified the reason for this, though it took me a lot of trial and error for his explanation to finally "click". I'll explain this in a moment. </p>
+<p>To create a new InvokeMember action, you need the name of the method to invoke, the result type (like with a Call action, typeof(object) might suffice), the CallSignature and a list of expressions to use an arguments. </p>
+<p>The CallSignature structure is interesting, because it can be used to provide information about how to interpret the call arguments. For example, it can be used to point out if an argument is the instance expression, if it's a named argument and so on (check the ArgumentKind enumeration for all the options). Filling in the CallSignature correctly is key to getting the correct behavior. </p>
+<p>Here's what initially confused me about how InvokeMember works. Consider two different scenarios of how an InvokeMember action can be used to call a regular instance method: </p>
+<ol>
+<li>You create a simple CallSignature that does not have an argument with ArgumentKind.Instance. In this case, building an InvokeMember action is very similar to building a Call action: first the "target" expression (which evaluates to the object on which to invoke the method), followed by the expressions representing the actual arguments to the call. </li>
+<li>You build a CallSignature with an explicit Instance argument (usually the first one). Now, the call arguments need to be a bit more complex, defined as:
+<ol>
+<li>The callable object (an expression evaluating to it, actually). </li>
+<li>The target expression evaluating to the object on which to invoke the method. </li>
+<li>Zero or more expressions representing the actual arguments to the method. </li>     </ol>   </li> </ol>
+<p>The reason this can be confusing is because this "Callable object" <em>should not appear</em> in the CallSignature you create to build the InvokeMember action: It really is a "hidden" parameter, so if you're calling a method requiring 3 arguments, you'd create a CallSignature listing 4 arguments (instance + actual args) but provide an expression array containing 5 expressions as the arguments to Ast.Action.InvokeMember().</p>
+<p><strong>But what is this Callable object?</strong> If you are thinking that it must be similar to what I called "Callable Object" when using Call Actions, you'd be right. Basically, the callable object argument can be used to provide a helper object that can help either make the actual call at runtime or, if it implements IDynamicObject, build the rule used by the DLR to invoke the actual method. [1]</p>
+<p>Notice however, that unlike our sample last time, your GetRule<T> implementation will need to create a rule for DynamicActionKind.InvokeMember instead. One thing that is confusing is that you can use scenario (2) above but simply provide the target object as the first expression (that is, pass it twice), then the call will work as well directly, matching the behavior of scenario (1) [2].</p>
+<p>In either way, the ability to use a Callable Object provides an easy way to hook the member invocation process to tweak how the call is made, which is a very useful capability in a dynamic language. </p>
+<p>For example, IronRuby implements IDynamicObject in its built-in module and class objects (RubyModule and RubyClass, respectively) and are used to resolve method calls to ruby objects; you can look at how the default rule for InvokeMember actions is created inside MakeRuleForInvokeMember() method of the RubyBinder class. If I understand the code correctly, IronRuby takes advantage of this capability to implement method_missing. You can also check how calls to real .NET methods&#47;properties are resolved to the original methods in RubyClass.TryGetClrMember().</p>
+<p><strong>[1]</strong> By now you can realize this pattern applies to all types of actions, not just Call and InvokeMember.    <br><strong>[2]</strong> In this case, a default rule is provided by the ActionBinder.MakeRule<T>() method, which you can also override and customize in your language binder implementation.</p>
+<div class="wlWriterSmartContent" id="scid:0767317B-992E-4b12-91E0-4F059A8CECA8:a741a210-32d7-4939-8578-25b93c4de569" style="margin: 0px; padding: 0px; display: inline;">Technorati tags: <a href="http:&#47;&#47;technorati.com&#47;tags&#47;Dynamic%20Language%20Runtime" rel="tag">Dynamic Language Runtime</a>, <a href="http:&#47;&#47;technorati.com&#47;tags&#47;DLR" rel="tag">DLR</a>, <a href="http:&#47;&#47;technorati.com&#47;tags&#47;.NET" rel="tag">.NET</a></div><hints id="hah_hints"></hints><!--end_raw--></p>

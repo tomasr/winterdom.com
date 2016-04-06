@@ -1,0 +1,48 @@
+---
+layout: post
+status: publish
+published: true
+title: WCF Channel Listeners
+author:
+  display_name: Tomas Restrepo
+  login: tomasr
+  email: tomas@winterdom.com
+  url: http://winterdom.com/
+author_login: tomasr
+author_email: tomas@winterdom.com
+author_url: http://winterdom.com/
+wordpress_id: 495
+wordpress_url: http://winterdom.com/2007/04/wcfchannellisteners
+date: '2007-04-09 08:18:09 +0000'
+date_gmt: '2007-04-09 08:18:09 +0000'
+categories:
+- WCF
+tags: []
+comments: []
+---
+<p><!--start_raw-->
+<p>Almost&nbsp;two months ago, I wrote a <a href="http:&#47;&#47;www.winterdom.com&#47;weblog&#47;2007&#47;02&#47;14&#47;WritingAWCFTransportChannelPart1.aspx">couple</a> of <a href="http:&#47;&#47;www.winterdom.com&#47;weblog&#47;2007&#47;02&#47;19&#47;WritingAWCFTransportChannelPart2.aspx">entries</a> on writing custom transport channels for Windows Communication Foundation. Those entries and a few that followed on defining URI schemes for transport channels were based on some stuff I was working on at the time. Unfortunately,&nbsp;I got sidetrack with some stuff I had at hand and the project was laid by the side way until this week, when started working on it again.</p>
+<p>So last week I rewrote my previous <a href="http:&#47;&#47;www.winterdom.com&#47;weblog&#47;2007&#47;02&#47;20&#47;URIsAndWCFTransportChannels.aspx">URI</a> <a href="http:&#47;&#47;www.winterdom.com&#47;weblog&#47;2007&#47;02&#47;21&#47;URIsInWCFTransportsContinued.aspx">scheme</a>, and even got a [basic] IOutputChannel implementation up and running. It's not much, but it feels good to have something working to&nbsp;build&nbsp;upon :-). From what I learned, The ChannelFactory and Output Channel (in it's various forms) is a fairly logical and even somewhat simple model (only made more complex because of the multitude of output channel models to choose from).</p>
+<p>Today, though, I started pondering on how to create my ChannelListener and IInputChannel implementation in order to be able to expose WCF services through my custom transport channel. I've got mixed impressions about the model so far. <strong>Warning:</strong> There's a bit of ranting below (hopefully not much).</p>
+<p>Let's consider for a minute here the shape that a ChannelListener has. Basically, a channel listener exposes a set of methods to the WCF runtime to interact with it, in a sort of state-oriented fashion: OnOpen(), OnWaitForChannel(), OnAcceptChannel(), OnClose() and OnAbort(). Each one also has corresponding BeginXXX() and EndXXX() methods following the asynchronous pattern [1].</p>
+<p>At first sight, this set of methods seem make a lot of sense. If you're familiar with programming TCP&#47;IP sockets, then you'll quickly draw some parallels between this model and the familiar Socket operations:</p>
+<ul>
+<li>OnOpen() -> Bind() + Listen()</li>
+<li>OnWaitForChannel() + OnAcceptChannel() -> Accept()</li>
+<li>OnClose() -> Close()</li></ul>
+<p>The OnWaitForChannel() and OnAcceptChannel() methods basically follow the pattern: 1) Wait until a connection has been accepted and then 2) create the input channel for the accepted connection, which is why I say that both together sort of relate to the single Accept() method in a Socket.</p>
+<p>Having drawn this parallel one might think that this is very good! After all, we were able to draw an immediate parallel to an existing and common network model to base our channel on. However, I don't&nbsp;quite agree with this. Instead, I find the channel listener model to be a bit more awkward, complex and intrusive than I'd strictly necessary. Let me explain why.</p>
+<p>The first issue I have with this model is that it is pretty daunting. Part of this a lot to do with the fact that all operations have both synchronous and asynchronous variants (this is also true for channel factories, but they are simpler), making it seem far more complex than it really is to the new developer (a.k.a. "me"). However, it is not clear <em>at all</em> just when exactly the WCF runtime will decide to call the synchronous or the asynchronous variants of each method. It most certainly does not appear to be discussed in the documentation, or if it is, it's not very easy to find out.</p>
+<p>A second and bigger issue is with the API model itself. I mentioned above that to me the model resembled the Sockets programming model. That's obviously good news if your transport protocol is built natively on top of TCP&#47;IP Sockets. But what if it isn't? More to the point, what if the transport protocol has no notion <em>at all</em>&nbsp;of <strong>"accept"</strong> operation?&nbsp;Or what happens if that operation is hidden well beneath the guts of a "high"&nbsp;&nbsp;level transport&nbsp;API that&nbsp;exposes a completely different model (a common thing for Line of Business (LOB) adapters)?</p>
+<p><a href="http:&#47;&#47;blogs.msdn.com&#47;drnick&#47;">Nicholas Allen</a> solves the issue for his <a href="http:&#47;&#47;blogs.msdn.com&#47;drnick&#47;archive&#47;2006&#47;05&#47;02&#47;585612.aspx">File transport channel</a>&nbsp;by simply throwing an exception from OnAccept(), which is probably not the best workaround this issue because of the performance implications. </p>
+<p>More important than this, however, is that the documentation is not very clear on what the play between the WCF runtime (the service dispatcher in this case?) and the channel stack is with respect to WaitForChannel() and friends. Does it do a closed loop where WaitForChannel() is supposed to introduce waiting until a new client is ready to be serviced? What happen if you don't introduce a wait here and instead simply returns true? Does it cause the WCF engine to bog down creating (accepting) miriads of channels? If your channel has no accept model (i.e. if it has no notion of client-specific connections), should your channel listener create essentially a single input channel to do all its work?</p>
+<p>One thing that I found somewhat surprising in the WCF model for input channels and channel listeners, however, is that the execution of both of them is driven by the WCF runtime. The channel and listener are not really autonomous, but instead respond to requests done from the WCF runtime, i.e. the runtime asks you to accept a connection, it asks you to create a channel, it asks you to receive a message and so on. In other words, it's a very <em><strong>imperative model</strong></em>.</p>
+<p><img height="245" src="http:&#47;&#47;www.winterdom.com&#47;weblog&#47;content&#47;binary&#47;WindowsLiveWriter&#47;WCFChannelListeners_10A5D&#47;ChannelListeners1%5B3%5D.gif" width="500"> </p>
+<p>What's a bit uncomfortable about this is that, from a messaging perspective, things are the other way around: the listener and the input channel drive the execution of the service above them! (a <em><strong>reactive model</strong></em>). My very uneducated guess is that this might have been done to keep the input and output models a bit more symmetric, as well as to make it easier to implement the WS-* protocols built on the upper layers of the channel model (remember that things like WS-RM are implemented as&nbsp;layered channels sitting on top of the transport channel) [2].</p>
+<p><img height="194" src="http:&#47;&#47;www.winterdom.com&#47;weblog&#47;content&#47;binary&#47;WindowsLiveWriter&#47;WCFChannelListeners_10A5D&#47;ChannelListeners2%5B3%5D.gif" width="433"> </p>
+<p>If the model was reactive, then most of the async&#47;sync versions would not be really needed to implement an input channel and channel factory, instead all it would need would be for WCF to give it a way to call back into the runtime to notify it that a new client session has been created&#47;destroyed or a new message has arrived. This seems to me like a more natural model for the receive side, but perhaps it is just a personal preference :-).</p>
+<p>In a following article I'll let you know the results of this excercise and how I worked around this issues for my own channel listener implementation.</p>
+<p><strong>[1]</strong> Actually, the core interfaces are built on the async methods, while the sync versions are added then by the base classes, but looking at this the other way around makes it simpler to illustrate.</p>
+<p><strong>[2]</strong> One could imagine performance and scalability&nbsp;reasons for doing it this way, as well. Perhaps the designers wanted to force channel developers to keep their hands off the threading model as much as possible so that the WCF runtime could be in control most of the time on how threads from the threadpool are used to service channels, but this is an even more unsubstantiated guess...</p>
+<div class="wlWriterSmartContent" id="0767317B-992E-4b12-91E0-4F059A8CECA8:f5e4ea33-2aad-4779-9d98-3dfb688bd7b7" contenteditable="false" style="padding-right: 0px; display: inline; padding-left: 0px; padding-bottom: 0px; margin: 0px; padding-top: 0px">Techno<br />
+rati tags: <a href="http:&#47;&#47;technorati.com&#47;tags&#47;Windows%20Communication%20Foundation" rel="tag">Windows Communication Foundation</a>, <a href="http:&#47;&#47;technorati.com&#47;tags&#47;WCF" rel="tag">WCF</a>, <a href="http:&#47;&#47;technorati.com&#47;tags&#47;WCF%20Channels" rel="tag">WCF Channels</a></div><!--end_raw--></p>

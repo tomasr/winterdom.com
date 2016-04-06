@@ -1,0 +1,36 @@
+---
+layout: post
+status: publish
+published: true
+title: RPC vs. Messaging
+author:
+  display_name: Tomas Restrepo
+  login: tomasr
+  email: tomas@winterdom.com
+  url: http://winterdom.com/
+author_login: tomasr
+author_email: tomas@winterdom.com
+author_url: http://winterdom.com/
+wordpress_id: 743
+wordpress_url: http://winterdom.com/2003/03/rpcvsmessaging
+date: '2003-03-27 19:27:46 +0000'
+date_gmt: '2003-03-27 19:27:46 +0000'
+categories:
+- Web Services
+tags: []
+comments: []
+---
+<p><!--start_raw--><a href="http:&#47;&#47;dotnetweblogs.com&#47;Yassers&#47;">Yasser</a> has <a href="http:&#47;&#47;dotnetweblogs.com&#47;Yassers&#47;archive&#47;03262003.aspx">been</a> <a href="http:&#47;&#47;dotnetweblogs.com&#47;Yassers&#47;archive&#47;03252003.aspx">battling</a> the RPC vs. Messaging debate with <a href="http:&#47;&#47;radio.weblogs.com&#47;0101134&#47;">Chris Kinsman</a>. Plenty of interesting comments.</p>
+<p>But please bear with this Web Services newbie [1] while I try to present some of my thoughts on the matter, and hopefully clear some things up for myself...</p></p>
+<p>I totally agree with Yasser's assertion that the difference between messaging and RPC starts at design time (I'd even go a bit further and say that the architecture could potentially be pretty influenced by this choice). And this applies to whatever messaging&#47;rpc platform you're on, not just WebServices.</p></p>
+<p>I, too, used to be convinced that WebServices were all about RPC [looks ashamed in the other direction...], but lately, I've come to my senses and seen the light on the beauty that is Doc&#47;Literal SOAP messaging. Thanks to <a href="http:&#47;&#47;www.intertwingly.net&#47;blog&#47;">Sam</a>, <a href="http:&#47;&#47;www.keithba.net&#47;blog&#47;">Keith</a>, <a href="http:&#47;&#47;radio.weblogs.com&#47;0108971&#47;">Clemens</a>, <a href="http:&#47;&#47;dotnetweblogs.com&#47;Yassers&#47;">Yasser</a> and anyone bitching about REST (too many to name) for that.</p></p>
+<p>However, I disagree about some of the comments made about why RPC dominates over the Messaging model. Sure, the tools and SOAP's HTTP binding have something to do with it [2], but I don't think that's the crux of the matter. To me, it's mostly about architectural styles. Most people don't know are only used to the RPC model. It's natural, if you approach things from the same side you approach a common programming language.</p></p>
+<p>I finally decided to talk about these topics and blatantly expose my vast ignorance on the subject for all to see, because it's one topic I've been struggling with lately (even within the context of the application we're currently working on). I've been trying to set up a mental framework for thinking about this and seeing what possible role messaging could play in our application's architecture (I'm not the architect, but that doesn't have to stop me thinking, right?).</p></p>
+<p>And I've actually found some resistance (both in myself, as well as in others) when I bring these topics up, and it's not easy to deal with. I think the largest resistance is about the scenarios where messaging can be effectively applied, and I have yet to find something comprehensive in this area (any pointers?). For example, many people believe that messaging only applies for one-way or async interaction patterns. However, many people try to model all interactions in some sort of Request-Almost-Immediate-Response&#47;Can't-Do-Anything-While-We-Wait-for-it model, which is immediately mapped to RPC-style interactions (which does model it very nicely, I'll admit). What I'm trying to say is: I'd love to know and understand more about the topic and be able to take better advantage of it, so if anyone can share any pointers, I'd really appreciate it!</p></p>
+<p>The Interop argument Yasser brings up for messaging is certainly a good one, but that assumes one cares about interop. Allow me to say that most people don't give a dead ratt's ass about interop. Seriously, they don't. Not because they shouldn't, but because they don't know they should. It's easy to ignore the interop argument if you don't think you'll need it just because there's no <strike>white elephant</strike> external system in sight. And of course, there's the old argument against intentional schemas [3]: <em>it's all XML anyway so it's ready to interoperate, right?</em></p></p>
+<p>OK, I guess this did turn into a rant, couldn't help it :)</p></p>
+<p>[1] meaning I haven't read all the specs and don't know them by heart :)<br&#47;><br />
+[2] Count my vote on loosening SOAP's grip on HTTP and letting SOAPAction burn in hell for all eternity<br&#47;><br />
+[3] by <em>intentional schemas</em> I refer to schemas explicitly defined with an intent or motive, versus <em>unintentional schemas</em> resulting through other methods, such as whatever comes out of a serialized DataSet.<br />
+</p><br />
+<!--end_raw--></p>

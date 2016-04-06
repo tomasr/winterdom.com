@@ -1,0 +1,70 @@
+---
+layout: post
+status: publish
+published: true
+title: Choosing an Scheduler Service for Workflows in ASP.NET
+author:
+  display_name: Tomas Restrepo
+  login: tomasr
+  email: tomas@winterdom.com
+  url: http://winterdom.com/
+author_login: tomasr
+author_email: tomas@winterdom.com
+author_url: http://winterdom.com/
+wordpress_id: 914
+wordpress_url: http://winterdom.com/2006/04/choosinganschedulerserviceforworkflowsinaspnet
+date: '2006-04-28 14:25:23 +0000'
+date_gmt: '2006-04-28 14:25:23 +0000'
+categories:
+- Architecture
+- WinFX
+- Workflow
+tags: []
+comments: []
+---
+<p><!--start_raw-->
+<p>The <a href="http:&#47;&#47;blogs.msdn.com&#47;advancedworkflow">Advanced Workflow</a><br />
+blog has an <a href="http:&#47;&#47;blogs.msdn.com&#47;advancedworkflow&#47;archive&#47;2006&#47;04&#47;25&#47;583392.aspx">interesting<br />
+post</a> on choosing the correct scheduling service for the Windows Workflow<br />
+Runtime when you are going to be running workflows&nbsp;from within&nbsp;ASP.NET<br />
+applications. The recommendation is to use the ManualWorkflowSchedulerService<br />
+instead of the DefaultWorkflowSchedulerService that is normally used in other<br />
+scenarios, because it forces an explicit model instead of stealing threads from<br />
+the ASP.NET Thread Pool.</p></p>
+<p>The benefit of this is that it solved some potential problems under stress<br />
+and guarantees a more optimal use of the threads available. The downside is that<br />
+it becomes the responsability of the developer and the ASP.NET application that<br />
+hosts the runtime choosing when to allow workflows to be executed. In other<br />
+words, the flow of the execution context from regular ASP.NET code to Workflow<br />
+Code becomes explicit: you have to choose when to yield your execution thread<br />
+over to the workflow runtime. This is significant because you are responsible<br />
+for doing this every time, including when&nbsp;indirect behavior in the workflow<br />
+is triggered, such as a long-running workflow getting reloaded for execution, or<br />
+when a delay fires. Basically, I think this means that your developer<br />
+responsability as a workflow scheduler is somewhat more complex than just<br />
+calling workflows when necessary (there are quite a lot of discussions about<br />
+this topic over on the <a href="http:&#47;&#47;forums.microsoft.com&#47;MSDN&#47;ShowForum.aspx?ForumID=122&amp;SiteID=1">WF<br />
+forums</a>).</p></p>
+<p><span id="_ctl0_MainContent_PostFlatView"><span>Personally my opinion is: while<br />
+hosting WF in ASP.NET can be seen as useful (and possibly simpler for some<br />
+scenarios), this is only an acceptable for short-lived workflows such as page<br />
+flows (modeling page interactions). ASP.NET most certainly is not, to me, an<br />
+acceptable hosting environment for long-running workflows. <br><br>Now, I'll be<br />
+honest and tell you that I don't know what an alternative hosting model might<br />
+be. Most likely, we won't have&nbsp;some&nbsp;kind of really robust hosting<br />
+environment until (and if) BizTalk 200X (with X>6) ships with WF facilities<br />
+built-in (and I don't know how much change we'll need to see in WF itself for<br />
+this to be a reality). </span></span></p></p>
+<p><span><span>I would consider hosting my long-running workflows inside a<br />
+Windows Service instead, and take advantage of the SCM facilities for automatic<br />
+restarting of failed services, and possibly look into clustering the service in<br />
+an active&#47;passive fashion. This does bring a few problems with it, of course,<br />
+and will take quite a bit more work, since it requires you to implement<br />
+communicating the workflows in your custom host with the external applications<br />
+that access it, but that can be helped by exposing workflows as WCF services (a<br />
+pattern advocated in the <a href="http:&#47;&#47;blogs.msdn.com&#47;advancedworkflow&#47;archive&#47;2006&#47;04&#47;25&#47;583392.aspx">post</a>,<br />
+as well).</span></span></p></p>
+<p><span><span><strong>Update:</strong> <a href="http:&#47;&#47;blogs.msdn.com&#47;pandrew&#47;">Paul Andrew</a> posts about <a href="http:&#47;&#47;blogs.msdn.com&#47;pandrew&#47;archive&#47;2006&#47;04&#47;28&#47;586181.aspx">upcoming<br />
+changes</a> to the ManualWorkflowSchedulerService post-Beta2.2 which should<br />
+alleviate some of the issues with ASP.NET Hosting.</span></span></p></p>
+<p>&nbsp;</p><!--end_raw--></p>

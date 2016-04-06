@@ -1,0 +1,57 @@
+---
+layout: post
+status: publish
+published: true
+title: Serialization Formatters - Part 2
+author:
+  display_name: Tomas Restrepo
+  login: tomasr
+  email: tomas@winterdom.com
+  url: http://winterdom.com/
+author_login: tomasr
+author_email: tomas@winterdom.com
+author_url: http://winterdom.com/
+wordpress_id: 410
+wordpress_url: http://winterdom.com/2002/04/serializationformatterspart2
+date: '2002-04-29 19:15:05 +0000'
+date_gmt: '2002-04-29 19:15:05 +0000'
+categories:
+- ".NET"
+tags: []
+comments: []
+---
+<p><!--start_raw-->
+<p><font color="#669933">Scheduling Objects</font></p></p>
+<p>Serialization Formatters are supposed to be able to serialize a graph of<br />
+objects correctly. This implies it has to be able to cope with a graph in which<br />
+two different objects A and B reference a third one, C, <i>without</i><br />
+writing C twice to the stream. This is very important because when the graph is<br />
+deserialized again, you must guarantee the identity of the reinflated C, and<br />
+the references to it.</p></p>
+<p>This can be fairly easily done via a simple process called <i>scheduling</i>,<br />
+which consists of the following elements:</p></p>
+<div align="left">
+<ul>
+<li>
+Each object is assigned a unique ID, ensuring that you can spot two references<br />
+pointing to the same object, as in the case above.</li></p>
+<li>
+Objects are scheduled for serialization through a FIFO queue, so instead of<br />
+writing an object as soon as you see a reference to ir, you schedule it for<br />
+later serialization, but <i>only if you haven't seen the same object before</i>.</li><br />
+</ul><br />
+</div></p>
+<p>These two requirements are fairly easy to deal with since the .NET framework<br />
+already supports them. Generating object IDs is done with the <code>ObjectIDGenerator</code><br />
+class, which takes care of identifying objects for you and keeps track of which<br />
+objects you've already dealt with. IDs generated with it are all positive<br />
+64-bit integral values. To generate an ID for an object, all you need to do is<br />
+call the <code>GetId()</code> method which will give you a new ID if this is<br />
+the first time the object has been seen, or the original ID if it isn't, and<br />
+tell you so (via de firstTime out argument).<br />
+</p></p>
+<p>The second requirement, queuing, can be dealt with by using the<br />
+<code>System.Collections.Queue</code> class. </p></p>
+<p>You can find an example of a simple class that does both of these<br />
+things <a href="&#47;dev&#47;dotnet&#47;ObjectScheduler.cs.txt">here</a>. As you will<br />
+see, it's extremely easy to do so.</p><!--end_raw--></p>

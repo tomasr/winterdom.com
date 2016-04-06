@@ -1,0 +1,26 @@
+---
+layout: post
+status: publish
+published: true
+title: Make sure TrackingDatabase is up to date
+author:
+  display_name: Tomas Restrepo
+  login: tomasr
+  email: tomas@winterdom.com
+  url: http://winterdom.com/
+author_login: tomasr
+author_email: tomas@winterdom.com
+author_url: http://winterdom.com/
+wordpress_id: 180
+wordpress_url: http://winterdom.com/2006/08/makesuretrackingdatabaseisuptodate
+date: '2006-08-05 14:03:38 +0000'
+date_gmt: '2006-08-05 14:03:38 +0000'
+categories:
+- ".NET"
+- WinFX
+- Workflow
+tags: []
+comments: []
+---
+<p><!--start_raw-->Just one tip in case it happens to you: If you're updating to the latest .NET FX 3.0 builds, and you're using Windows Workflow Foundation, make sure you update any tracking and persistence databases you're using to the latest schema [1]. <br><br>I ran into this with a Tracking database I had created incorrectly with the WF Beta 2 schema, and was causing the WF runtime to hang&#47;freeze as soon as I enabled the SqlTrackingService.<br><br>[1] You'll find the necessary SQL Scripts to create your databases in the "%windir%\Microsoft.NET\Framework\v3.0\Windows Workflow Foundation\SQL\EN" folder<br>
+<p></p><!--end_raw--></p>

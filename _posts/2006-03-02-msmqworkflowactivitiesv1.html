@@ -1,0 +1,82 @@
+---
+layout: post
+status: publish
+published: true
+title: MSMQ Workflow Activities, V1
+author:
+  display_name: Tomas Restrepo
+  login: tomasr
+  email: tomas@winterdom.com
+  url: http://winterdom.com/
+author_login: tomasr
+author_email: tomas@winterdom.com
+author_url: http://winterdom.com/
+wordpress_id: 946
+wordpress_url: http://winterdom.com/2006/03/msmqworkflowactivitiesv1
+date: '2006-03-02 18:46:00 +0000'
+date_gmt: '2006-03-02 18:46:00 +0000'
+categories:
+- WinFX
+- Workflow
+tags: []
+comments:
+- id: 664
+  author: Amitava
+  author_email: amitava.kumar@hotmail.com
+  author_url: ''
+  date: '2007-06-15 02:22:17 +0000'
+  date_gmt: '2007-06-15 02:22:17 +0000'
+  content: |
+    I am new to WWF. I want to make a Windows application which supports me to serialize my workflow as I make my workflow jump from one machine to other. I mean, activity "Create Order" should be done in Machine A and "Approve Order" should be in Machine B. I tried serializing my workflow through SQL Server but how to take that to another machine through MSMQ? Also which workflow should I use? Sequential or event driven i.e. State Machine? As my ultimate aim is to get the workflow understand the last status of the client application when it starts the manager or server application.
+    Please let me know any example or link that can help.
+---
+<p><!--start_raw--><P>I've just uploaded a set of sample Windows Workflow Foundation activities for Microsoft Message Queue in the Winterdom.Workflow.Activities.Msmq assembly.</P><br />
+<P>The MsmqSendActivity allows you to send a .NET object as an MSMQ message by just binding the activity to one of your workflow's properties and selecting the appropriate formatter (XmlMessageFormatter or BinaryFormatter). If the queue is transactional, you can put the activity inside a TransactionalScope activity.</P><br />
+<P><IMG src="http:&#47;&#47;www.winterdom.com&#47;weblog&#47;content&#47;binary&#47;MsmqActivities_Ex.jpg" border=0></P><br />
+<P>The MsmqReceiveActivity allows you to receive an MSMQ message into a typed .NET object; the activity will do the deserialization based on the selected formatter. The activity can also be used inside an EventDrivenActivity so you can use it inside a Listen shape or in a StateMachine workflow to trigger state changes.</P><br />
+<P>The samples include the following features:</P><br />
+<UL><br />
+<LI>Bindable properties, through both direct and attached dependency properties.<br />
+<LI>Design-Time support: each activity has a customized appearance. The MsmqReceiveActivity also shows the use of a custom activity designer to synthetize a property at design-time that supports binding.<br />
+<LI>Validation support: Both activities contain sample validators to ensure the required properties are configured correctly.</LI></UL><br />
+<P>Here's a sample of how they could be used in XOML:</P></p>
+<div class='codebg'><code><span class="Function"><</span><span class="Function">SequentialWorkflowActivity</span><br &#47;><br />
+<span class="Function">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="Type">x</span><span class="Comment">:</span><span class="Type">Class</span>=<span class="String">"TestApp.SampleWorkflow2"</span><br &#47;><br />
+<span class="Function">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="Type">x</span><span class="Comment">:</span><span class="Type">Name</span>=<span class="String">"SampleWorkflow2"</span><br &#47;><br />
+<span class="Function">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="Type">xmlns</span><span class="Comment">:</span><span class="Type">ns0</span>=<span class="String">"clr-namespace:Winterdom.Workflow.Activities.Msmq;Assembly=Winterdom.Workflow.Activities.Msmq, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null"</span><br &#47;><br />
+<span class="Function">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="Type">xmlns</span><span class="Comment">:</span><span class="Type">x</span>=<span class="String">"<a href="http:&#47;&#47;schemas.microsoft.com&#47;winfx&#47;2006&#47;xaml">http:&#47;&#47;schemas.microsoft.com&#47;winfx&#47;2006&#47;xaml</a>"</span><br &#47;><br />
+<span class="Function">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="Type">xmlns</span>=<span class="String">"<a href="http:&#47;&#47;schemas.microsoft.com&#47;winfx&#47;2006&#47;xaml&#47;workflow">http:&#47;&#47;schemas.microsoft.com&#47;winfx&#47;2006&#47;xaml&#47;workflow</a>"</span><span class="Function">></span><br &#47;><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="Function"><</span><span class="Function">TransactionScopeActivity</span><span class="Function">&nbsp;</span><span class="Type">x</span><span class="Comment">:</span><span class="Type">Name</span>=<span class="String">"SendScope"</span><span class="Function">></span><br &#47;><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="Function"><</span><span class="Function">TransactionScopeActivity</span><span class="Comment">.</span><span class="Function">TransactionOptions</span><span class="Function">></span><br &#47;><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="Function"><</span><span class="Function">WorkflowTransactionOptions</span><span class="Function">&nbsp;</span><span class="Type">TimeoutDuration</span>=<span class="String">"00:00:30"</span><br &#47;><br />
+<span class="Function">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="Type">IsolationLevel</span>=<span class="String">"Serializable"</span><span class="Function">&nbsp;&#47;></span><br &#47;><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="Identifier"></TransactionScopeActivity</span><span class="Comment">.</span><span class="Identifier">TransactionOptions></span><br &#47;><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="Function"><</span><span class="Tag">ns0</span><span class="Comment">:</span><span class="Function">MsmqSendActivity</span><br &#47;><br />
+<span class="Function">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="Type">x</span><span class="Comment">:</span><span class="Type">Name</span>=<span class="String">"SendMessage"</span><br &#47;><br />
+<span class="Function">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="Type">Queue</span>=<span class="String">"{ActivityBind SampleWorkflow2,Path=QUEUE}"</span><br &#47;><br />
+<span class="Function">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="Type">Label</span>=<span class="String">"{ActivityBind SampleWorkflow2,Path=_labelToSend}"</span><br &#47;><br />
+<span class="Function">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="Type">IsTransactionalQueue</span>=<span class="String">"True"</span><span class="Function">></span><br &#47;><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="Function"><</span><span class="Tag">ns0</span><span class="Comment">:</span><span class="Function">MsmqSendActivity</span><span class="Comment">.</span><span class="Function">MessageToSend</span><span class="Function">></span><br &#47;><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="Function"><</span><span class="Function">ActivityBind</span><span class="Function">&nbsp;</span><span class="Type">Name</span>=<span class="String">"SampleWorkflow2"</span><span class="Function">&nbsp;</span><span class="Type">Path</span>=<span class="String">"_customerToSend"</span><span class="Function">&nbsp;&#47;></span><br &#47;><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="Identifier"></</span><span class="Tag">ns0</span><span class="Comment">:</span><span class="Identifier">MsmqSendActivity</span><span class="Comment">.</span><span class="Identifier">MessageToSend></span><br &#47;><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="Identifier"></</span><span class="Tag">ns0</span><span class="Comment">:</span><span class="Identifier">MsmqSendActivity></span><br &#47;><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="Identifier"></TransactionScopeActivity></span><br &#47;><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="Function"><</span><span class="Tag">ns0</span><span class="Comment">:</span><span class="Function">MsmqReceiveActivity</span><br &#47;><br />
+<span class="Function">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span class="Type">x</span><span class="Comment">:</span><span class="Type">Name</span>=<span class="String">"ReceiveMessage"</span><br &#47;><br />
+<span class="Function">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span class="Type">Queue</span>=<span class="String">"{ActivityBind SampleWorkflow2,Path=QUEUE}"</span><br &#47;><br />
+<span class="Function">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span class="Type">ns0</span><span class="Comment">:</span><span class="Type">MsmqReceiveActivity</span><span class="Comment">.</span><span class="Type">Label</span>=<span class="String">"{ActivityBind SampleWorkflow2,Path=_labelReceived}"</span><br &#47;><br />
+<span class="Function">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span class="Type">MessageType</span>=<span class="String">"{x:Type TestApp.Customer}"</span><br &#47;><br />
+<span class="Function">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span class="Type">Label</span>=<span class="String">"{x:Null}"</span><span class="Function">></span><br &#47;><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="Function"><</span><span class="Tag">ns0</span><span class="Comment">:</span><span class="Function">MsmqReceiveActivity</span><span class="Comment">.</span><span class="Function">MessageReceived</span><span class="Function">></span><br &#47;><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="Function"><</span><span class="Function">ActivityBind</span><span class="Function">&nbsp;</span><span class="Type">Name</span>=<span class="String">"SampleWorkflow2"</span><span class="Function">&nbsp;</span><span class="Type">Path</span>=<span class="String">"_customerReceived"</span><span class="Function">&nbsp;&#47;></span><br &#47;><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="Identifier"></</span><span class="Tag">ns0</span><span class="Comment">:</span><span class="Identifier">MsmqReceiveActivity</span><span class="Comment">.</span><span class="Identifier">MessageReceived></span><br &#47;><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="Identifier"></</span><span class="Tag">ns0</span><span class="Comment">:</span><span class="Identifier">MsmqReceiveActivity></span><br &#47;><br />
+<span class="Identifier"></SequentialWorkflowActivity></span><br />
+</code></div><br />
+<P>If you plan to use the MsmqReceiveActivity, you'll need to configure the MsmqListenerService service into the WorkflowRuntime, like this:</P></p>
+<div class='codebg'><code>WorkflowRuntime workflowRuntime <span class="Operator">=</span>&nbsp;<span class="Statement">new</span>&nbsp;WorkflowRuntime<span class="Operator">(</span><span class="String">"ConsoleApplication"</span><span class="Operator">);</span><br &#47;><br />
+workflowRuntime<span class="Operator">.</span>AddService<span class="Operator">(</span><span class="Statement">new</span>&nbsp;MsmqListenerService<span class="Operator">());</span><br />
+</code></div><br />
+<P>Update: The sample activities can be downloaded from <A href="http:&#47;&#47;www.winterdom.com&#47;dev&#47;wwf&#47;MsmqActivities.zip">here</A>.</P><br />
+<P>I hope to improve them and add new functionality (if I can) to them, so if you have any comments&#47;bugs&#47;features, do let me know! One feature I would definitely like to implement is correlation support, but as of now I'm not entirely sure what the best approach for that might be.</P><br />
+<P></P><!--end_raw--></p>

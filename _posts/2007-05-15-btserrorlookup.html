@@ -1,0 +1,31 @@
+---
+layout: post
+status: publish
+published: true
+title: BtsErrorLookup
+author:
+  display_name: Tomas Restrepo
+  login: tomasr
+  email: tomas@winterdom.com
+  url: http://winterdom.com/
+author_login: tomasr
+author_email: tomas@winterdom.com
+author_url: http://winterdom.com/
+wordpress_id: 705
+wordpress_url: http://winterdom.com/2007/05/btserrorlookup
+date: '2007-05-15 07:39:14 +0000'
+date_gmt: '2007-05-15 07:39:14 +0000'
+categories:
+- BizTalk
+- Tools
+tags: []
+comments: []
+---
+<p><!--start_raw-->
+<p>I've been spelunking a bit the last couple of days digging again into BizTalk Adapters, and one of the things that can be pretty frustrating is trying to lookup what the HRESULT codes returned by the BizTalk Messaging Engine when batch operations fail mean.&nbsp;Usually this involves digging around using Reflector until you stump into the constants having some of the error codes in them.</p>
+<p>I was a bit fed up with this, so I ended up writing <a href="http:&#47;&#47;www.winterdom.com&#47;dev&#47;bts&#47;BtsErrorLookup.cs.txt">BtsErrorLookup</a>. This is a simple command line utility that will take an HRESULT code (in hex format) and print out all known interpretations for that value. For now, it has all the HRESULT constants in BizTalk 2006 I found from the transport proxy, xml validator component and all assembler&#47;disassemblers.</p>
+<p>Here's an example run:</p>
+<p><font face="Lucida Console">NEWTON> BtsErrorLookup.exe 0xc0c01463<br>0xc0c01463: BtsErrorDisassemblerCannotGetDocspecByName (Xml Disassembler Component)<br>0xc0c01463: BtsErrorDisassemblerCannotLoadDocspecByName (Flat File Disassembler Component)<br>0xc0c01463: BTS_E_DISASSEMBLER_CANNOT_GET_DOCSPEC_BY_NAME (BTF Disassembler Component)</font></p>
+<p><font face="Lucida Console">NEWTON> BtsErrorLookup.exe 0xC0C0162E<br>0xc0c0162e: BTS_E_NO_BACKUP_TRANSPORT (Transport Proxy)</font></p>
+<p>Be aware that there are a lot of undocumented HRESULT codes that it will not find, but if anyone knows the meaning of one, ping me and I'll add it to the utility.</p>
+<div class="wlWriterSmartContent" id="0767317B-992E-4b12-91E0-4F059A8CECA8:bad78aa5-8efd-4fb6-beb5-09bde7e316f7" contenteditable="false" style="padding-right: 0px; display: inline; padding-left: 0px; padding-bottom: 0px; margin: 0px; padding-top: 0px">Technorati tags: <a href="http:&#47;&#47;technorati.com&#47;tags&#47;BizTalk" rel="tag">BizTalk</a></div><!--end_raw--></p>

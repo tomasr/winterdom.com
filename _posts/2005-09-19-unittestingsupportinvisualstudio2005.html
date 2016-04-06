@@ -1,0 +1,44 @@
+---
+layout: post
+status: publish
+published: true
+title: Unit Testing support in Visual Studio 2005
+author:
+  display_name: Tomas Restrepo
+  login: tomasr
+  email: tomas@winterdom.com
+  url: http://winterdom.com/
+author_login: tomasr
+author_email: tomas@winterdom.com
+author_url: http://winterdom.com/
+wordpress_id: 206
+wordpress_url: http://winterdom.com/2005/09/unittestingsupportinvisualstudio2005
+date: '2005-09-19 05:44:37 +0000'
+date_gmt: '2005-09-19 05:44:37 +0000'
+categories:
+- ".NET"
+tags: []
+comments:
+- id: 152
+  author: Paul Laudeman
+  author_email: paul.laudeman-junk@gmail.com
+  author_url: http://www.codebetter.com/blogs/paul.laudeman
+  date: '2005-09-20 05:30:06 +0000'
+  date_gmt: '2005-09-20 05:30:06 +0000'
+  content: |
+    <p>Absolutely agree about your NUnit comparisons and where the VSTS experience is a bit awkward. Sure, you can put the namespace in yourself in the filter, but when you're developing a particular class and are interested in testing a particular method at a given time, then it's hard to drill down into the list to find it.</p>
+---
+<p><!--start_raw-->One of the features I'm really excited about in Visual Studio Team System is the Unit testing features, and how they are deeply integrated with the code coverage tools and the overall set of metrics that Team Foundation Server enables. This is very, very cool.</p>
+<p>However, after working with them for a while, I do have a few things I find myself wishing for, particularly as a former user of NUnit:</p></p>
+<ol>
+<li><b>Integration:</b> It's great to have all the Unit Testing and Code Coverage tools integrated into the IDE. However, it sometimes feels to me like they are just packed together and not really all that integrated. The one thing that hurts me most is having to deal with multiple windows: One to see select the tests to run (the Test Manager or Test View Windows), another one to see the test execution results, another one to see the detailed error message from a failed test, and yet another one to see the code coverage results for the test.
+<p>What I'd like to see is a more close integration and get rid of all the window switching. At the very least, I would like to see the Test Manager and Test Results windows integrated into a single window I can run my tests from and interactively watch them get executed and the result. This would really make my life easier.</p><br />
+</li></p>
+<li><b>Test Lists:</b> The ability to group sets of tests is very nice. However, I feel that it has two downsides:
+<ol>
+<li>It misses the basic sweetspot in presenting tests that NUnit offers: Group tests by namespace and containing class and present them as a tree, by default. This is by far my favourite feature of the NUnit GUI tool.</li>
+<li>It is based on grouping individual tests methods, instead of grouping test classes together. This makes little sense to me, as I believe that the way you would develop your tests would be focused, as with all other aspects of development, in creating related tests together in the same test class. Thus, only in very rare cases I would think of grouping together in a list two methods of one test class (leaving another out) with, say, three other methods from a second test class (again, leaving two other methods out). If I found out I needed to do this, it would really "smell" poorly to me, telling me I need to refactor my own tests.</li><br />
+</ol><br />
+</li><br />
+</ol></p>
+<p>I do realize its a little too late to be saying this, but it just happens that it wasn't until a couple of weeks ago that I started working hard with the unit testing features in VS 2005. And, after all, this is just my opinion, I'm sure plenty of you out there like it just the way it is now :)</p><!--end_raw--></p>

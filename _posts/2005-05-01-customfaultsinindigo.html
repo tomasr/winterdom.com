@@ -1,0 +1,133 @@
+---
+layout: post
+status: publish
+published: true
+title: Custom Faults in Indigo
+author:
+  display_name: Tomas Restrepo
+  login: tomasr
+  email: tomas@winterdom.com
+  url: http://winterdom.com/
+author_login: tomasr
+author_email: tomas@winterdom.com
+author_url: http://winterdom.com/
+wordpress_id: 712
+wordpress_url: http://winterdom.com/2005/05/customfaultsinindigo
+date: '2005-05-01 15:31:45 +0000'
+date_gmt: '2005-05-01 15:31:45 +0000'
+categories:
+- WCF
+- WinFX
+tags: []
+comments: []
+---
+<p><!--start_raw-->When building an Indigo based service, you might need to signal an error to your clients.<br />
+Normally, one would expect to be able do this normally by simply throwing an exception from a service method, just like in ASP.NET. However, this doesn't seem to be the case with Indigo: all I'm seeing happening is the client hanging and getting no response at all from the server, and then failing with a closed connection. I would've expected at least an HTTP 500 error back, or something telling me that something bad happened during the request execution, but no dice.</p>
+<p>I did notice, however, that during development you can enable an option instructing Indigo to serialize the exception messages as strings and put those into the returned soap fault, allowing you to get some extra details on the exception on the client side. To do this, you can enable the ReturnUnknownExceptionsAsFaults behavior on the service, either by code or by configuration file. Here's an example of the former:</p></p>
+<pre><code>[ ServiceBehavior(ReturnUnknownExceptionsAsFaults=true) ]<br />
+public class ...<br />
+</code></pre></p>
+<p>With this option enabled, exceptions are returned to the client correctly, arriving as exceptions of the System.ServiceModel.UnknownFault class. One thing to notice when using this attribute is that you need to apply it to the service implementation class, not the service interface definition, so watch out for that.</p></p>
+<p><b>Real Faults</b></p></p>
+<p>This is all well and good, but not very useful by itself. In most cases, you'll want a stronger contract than some error string lying around in your faults. If you need to provide detailed and useful error information to your clients in a way that they can access it easily, you'll want to make sure your service returns a custom XML fragment inside the <Detail> element of the Soap Fault instead, containing detailed error information (whatever that means for your service implementation).</p></p>
+<p>Indigo provides an easy way to do this by returning custom faults from your operations instead of simple exceptions. To do this, you can create a DataContract class that represents your fault's details, and then, inside your methods, throw an instace of the Fault<T> type inside it. Consider the following sample:</p></p>
+<pre><code><br />
+[DataContract]<br />
+public class InvalidNameFault<br />
+{<br />
+[DataMember]<br />
+public string Description;<br />
+[DataMember]<br />
+public string NameUsed;<br />
+}<br />
+[ServiceContract]<br />
+public interface IFaultyService<br />
+{<br />
+[OperationContract]<br />
+[FaultContract(typeof(InvalidNameFault))]<br />
+string Hello(string name);<br />
+} &#47;&#47; interface IFaultyService<br />
+public class FaultyService : IFaultyService<br />
+{<br />
+public string Hello(string name)<br />
+{<br />
+&#47;&#47; fault if name contains "Tomas"<br />
+if ( name.IndexOf("Tomas") >= 0 ) {<br />
+InvalidNameFault details = new InvalidNameFault();<br />
+details.NameUsed = name;<br />
+details.Description =<br />
+"An unrecognized name was passed to the service";<br />
+throw new Fault<InvalidNameFault>(details);<br />
+}<br />
+return "Hello " + name;<br />
+}<br />
+}<br />
+</code></pre></p>
+<p>As you can see, I just defined a custom class to carry the fault information as a DataContract (InvalidNameFault), which contains a couple of data members serialized as part of the fault. Also, notice that inside the implementation of the Hello() method, we just create an instance of the InvalidNameFault class, fill it out, and then wrap it in an instance of the Fault<InvalidNameFault> class. This last statement is what causes Indigo to return serialize our custom class as part of the Soap Fault.</p></p>
+<p>On the client side, if we're building with Indigo, a nice thing is that we can catch an instance of the typed Fault class and easily access the information serialized into the Fault Details:</p></p>
+<pre><code><br />
+FaultyServiceProxy proxy =<br />
+new FaultyServiceProxy(epa, binding);<br />
+try {<br />
+string hello = proxy.Hello("Tomas Restrepo");<br />
+Console.WriteLine(hello);<br />
+} catch ( Fault<InvalidNameFault> e ) {<br />
+Console.WriteLine("{0}: {1}", e.Detail.Description, e.Detail.NameUsed);<br />
+}<br />
+</code></pre></p>
+<p>The most interesting thing of this whole thing is that Indigo can make your custom faults part of the service contract. Notice how I use the [FaultContract] attribute in the operation declaration, telling Indigo that a possible fault returned by my service contains custom information in the form of the InvalidNameFault contract. What's really cool about this is that this information will actually surface as part of the service description in the WSDL:</p></p>
+<pre><code><br />
+<?xml version="1.0" encoding="utf-8"?><br />
+<wsdl:definitions xmlns:s0="http:&#47;&#47;tempuri.org&#47;Imports" xmlns:soap="http:&#47;&#47;schemas.xmlsoap.org&#47;wsdl&#47;soap&#47;" xmlns:tm="http:&#47;&#47;microsoft.com&#47;wsdl&#47;mime&#47;textMatching&#47;" xmlns:soapenc="http:&#47;&#47;schemas.xmlsoap.org&#47;soap&#47;encoding&#47;" xmlns:mime="http:&#47;&#47;schemas.xmlsoap.org&#47;wsdl&#47;mime&#47;" xmlns:tns="http:&#47;&#47;tempuri.org&#47;" xmlns:i0="http:&#47;&#47;tempuri.org&#47;Bindings" xmlns:s="http:&#47;&#47;www.w3.org&#47;2001&#47;XMLSchema" xmlns:soap12="http:&#47;&#47;schemas.xmlsoap.org&#47;wsdl&#47;soap12&#47;" xmlns:http="http:&#47;&#47;schemas.xmlsoap.org&#47;wsdl&#47;http&#47;" targetNamespace="http:&#47;&#47;tempuri.org&#47;" xmlns:wsdl="http:&#47;&#47;schemas.xmlsoap.org&#47;wsdl&#47;"><br />
+<wsdl:import namespace="http:&#47;&#47;tempuri.org&#47;Bindings" location="&#47;FaultyService?wsdl=wsdl1" &#47;><br />
+<wsdl:types><br />
+<s:schema targetNamespace="http:&#47;&#47;tempuri.org&#47;Imports"><br />
+<s:import schemaLocation="&#47;FaultyService?xsd=xsd0" namespace="http:&#47;&#47;tempuri.org&#47;" &#47;><br />
+<s:import schemaLocation="&#47;FaultyService?xsd=xsd2" namespace="http:&#47;&#47;schemas.datacontract.org&#47;2004&#47;07&#47;Winterdom.Samples.Indigo.Faults" &#47;><br />
+</s:schema><br />
+</wsdl:types><br />
+<wsdl:message name="IFaultyService_Hello_InputMessage"><br />
+<wsdl:part name="parameters" element="tns:Hello" &#47;><br />
+</wsdl:message><br />
+<wsdl:message name="IFaultyService_Hello_OutputMessage"><br />
+<wsdl:part name="parameters" element="tns:HelloResponse" &#47;><br />
+</wsdl:message><br />
+<wsdl:message name="IFaultyService_Hello_InvalidNameFault_FaultMessage"><br />
+<wsdl:part name="detail" xmlns:q1="http:&#47;&#47;schemas.datacontract.org&#47;2004&#47;07&#47;Winterdom.Samples.Indigo.Faults" element="q1:InvalidNameFault" &#47;><br />
+</wsdl:message><br />
+<wsdl:portType name="IFaultyService"><br />
+<wsdl:operation name="Hello"><br />
+<wsdl:input wsa:Action="http:&#47;&#47;tempuri.org&#47;IFaultyService&#47;Hello" message="tns:IFaultyService_Hello_InputMessage" xmlns:wsa="http:&#47;&#47;schemas.xmlsoap.org&#47;ws&#47;2004&#47;08&#47;addressing" &#47;><br />
+<wsdl:output wsa:Action="http:&#47;&#47;tempuri.org&#47;IFaultyService&#47;HelloResponse" message="tns:IFaultyService_Hello_OutputMessage" xmlns:wsa="http:&#47;&#47;schemas.xmlsoap.org&#47;ws&#47;2004&#47;08&#47;addressing" &#47;><br />
+<wsdl:fault wsa:Action="http:&#47;&#47;schemas.xmlsoap.org&#47;ws&#47;2004&#47;08&#47;addressing&#47;fault" name="InvalidNameFault" message="tns:IFaultyService_Hello_InvalidNameFault_FaultMessage" xmlns:wsa="http:&#47;&#47;schemas.xmlsoap.org&#47;ws&#47;2004&#47;08&#47;addressing" &#47;><br />
+</wsdl:operation><br />
+</wsdl:portType><br />
+<wsdl:service name="service"><br />
+<wsdl:port name="WSProfileBinding_IFaultyService_port" binding="i0:WSProfileBinding_IFaultyService"><br />
+<soap12:address location="http:&#47;&#47;localhost:8188&#47;FaultyService" &#47;><br />
+<EndpointReference xmlns="http:&#47;&#47;schemas.xmlsoap.org&#47;ws&#47;2004&#47;08&#47;addressing"><br />
+<Address>http:&#47;&#47;localhost:8188&#47;FaultyService</Address><br />
+</EndpointReference><br />
+</wsdl:port><br />
+</wsdl:service><br />
+</wsdl:definitions><br />
+</code></pre></p>
+<p>Indigo will also generate the custom WSDL necessary for the custom fault class:</p></p>
+<pre><code><br />
+<?xml version="1.0" encoding="utf-8"?><br />
+<xs:schema xmlns:tns="http:&#47;&#47;schemas.datacontract.org&#47;2004&#47;07&#47;Winterdom.Samples.Indigo.Faults" xmlns:ser="http:&#47;&#47;schemas.microsoft.com&#47;2003&#47;10&#47;Serialization&#47;" elementFormDefault="qualified" targetNamespace="http:&#47;&#47;schemas.datacontract.org&#47;2004&#47;07&#47;Winterdom.Samples.Indigo.Faults" xmlns:xs="http:&#47;&#47;www.w3.org&#47;2001&#47;XMLSchema"><br />
+<xs:import schemaLocation="&#47;FaultyService?xsd=xsd1" namespace="http:&#47;&#47;schemas.microsoft.com&#47;2003&#47;10&#47;Serialization&#47;" &#47;><br />
+<xs:complexType name="InvalidNameFault"><br />
+<xs:sequence><br />
+<xs:element name="Description" nillable="true" type="ser:string" &#47;><br />
+<xs:element name="NameUsed" nillable="true" type="ser:string" &#47;><br />
+<xs:sequence minOccurs="0" maxOccurs="unbounded"><br />
+<xs:element ref="ser:VersionDelimiter" &#47;><br />
+<xs:any minOccurs="0" maxOccurs="unbounded" namespace="##targetNamespace" processContents="lax" &#47;><br />
+</xs:sequence><br />
+</xs:sequence><br />
+<xs:attributeGroup ref="ser:TypeAttributes" &#47;><br />
+</xs:complexType><br />
+<xs:element name="InvalidNameFault" nillable="true" type="tns:InvalidNameFault" &#47;><br />
+</xs:schema><br />
+</code></pre><!--end_raw--></p>

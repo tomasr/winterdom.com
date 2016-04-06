@@ -1,0 +1,62 @@
+---
+layout: post
+status: publish
+published: true
+title: Vista Hanging at the Logon Screen
+author:
+  display_name: Tomas Restrepo
+  login: tomasr
+  email: tomas@winterdom.com
+  url: http://winterdom.com/
+author_login: tomasr
+author_email: tomas@winterdom.com
+author_url: http://winterdom.com/
+wordpress_id: 20
+wordpress_url: http://winterdom.com/2007/02/vistahangingatthelogonscreen
+date: '2007-02-11 18:53:02 +0000'
+date_gmt: '2007-02-11 18:53:02 +0000'
+categories:
+- Vista
+tags: []
+comments:
+- id: 22
+  author: Ayende Rahien
+  author_email: Ayende@ayende.com
+  author_url: http://www.ayende.com/Blog/
+  date: '2007-02-11 21:30:01 +0000'
+  date_gmt: '2007-02-11 21:30:01 +0000'
+  content: |
+    Looks like something that is often caused when the domain controller is down.
+- id: 23
+  author: Tomas Restrepo
+  author_email: tomas@winterdom.com
+  author_url: http://www.winterdom.com/weblog/
+  date: '2007-02-12 04:35:38 +0000'
+  date_gmt: '2007-02-12 04:35:38 +0000'
+  content: |
+    Problem is the machine is not part of a domain :)
+- id: 24
+  author: Michael Kane
+  author_email: ''
+  author_url: ''
+  date: '2007-03-06 07:28:41 +0000'
+  date_gmt: '2007-03-06 07:28:41 +0000'
+  content: |
+    Could you give some more details on how to fix this, provided you were able to find a fix? This is happening on my girlfriends laptop at the current time.
+    michaelkane13 -at- gmail.com
+- id: 25
+  author: Tomas Restrepo
+  author_email: tomas@winterdom.com
+  author_url: http://www.winterdom.com/weblog/
+  date: '2007-03-08 03:39:27 +0000'
+  date_gmt: '2007-03-08 03:39:27 +0000'
+  content: |
+    @Michael: I'm not sure, but I *think* it was caused by Toshiba's bluetooth stack. At least it never happened again after I uninstalled it.
+---
+<p><!--start_raw-->
+<p>Since a couple of weeks ago, I've been having a pretty annoying problem with Vista. Basically, what happens is that I start my machine, enter my password at the logon screen (or use the fingerprint logon), and then, when the "Welcome" text appears while the logon is in progress, Vista just hangs there.</p>
+<p>Actually, the machine doesn't really hang or crash. In fact, it seems that Vista itself is in good shape:&nbsp;Parts of the keyboard are responsive (i.e. pressing caps lock or num lock clearly still triggers a response), CPU doesn't get pegged (in fact it's idle), no paging, and pressing the shutdown button seems to try to initiate a clean shutdown.</p>
+<p>Instead, what seems to happen is that the&nbsp;cursor disappears and something blocks windows from transitioning from the logon desktop to the user desktop. This has happened to me at least 4 times, and it does not seem to matter if the machine has been clean booted or if it just came out of hibernation or sleep. I haven't updated recently any software or drivers that I believe might be related to how logon works, and the fingerprint reader software worked for at least 1.5 months just fine without causing any issues, so I'm not sure if they are the culprit</p>
+<p>Any ideas?</p>
+<div class="wlWriterSmartContent" id="0767317B-992E-4b12-91E0-4F059A8CECA8:2500a1d2-ff00-4d12-add3-771a2d951d78" contenteditable="false" style="padding-right: 0px; display: inline; padding-left: 0px; padding-bottom: 0px; margin: 0px; padding-top: 0px">Technorati tags: <a href="http:&#47;&#47;technorati.com&#47;tags&#47;Vista" rel="tag">Vista</a></div>
+<p>.</p><!--end_raw--></p>

@@ -1,0 +1,213 @@
+---
+layout: post
+status: publish
+published: true
+title: Fix Message Encoding Custom Pipeline Component Sample
+author:
+  display_name: Tomas Restrepo
+  login: tomasr
+  email: tomas@winterdom.com
+  url: http://winterdom.com/
+author_login: tomasr
+author_email: tomas@winterdom.com
+author_url: http://winterdom.com/
+wordpress_id: 384
+wordpress_url: http://winterdom.com/2006/01/fixmessageencodingcustompipelinecomponentsample
+date: '2006-01-31 14:08:45 +0000'
+date_gmt: '2006-01-31 14:08:45 +0000'
+categories:
+- BizTalk
+tags: []
+comments:
+- id: 1008
+  author: Smithesh
+  author_email: psmithesh@gmail.com
+  author_url: ''
+  date: '2009-07-02 07:17:03 +0000'
+  date_gmt: '2009-07-02 07:17:03 +0000'
+  content: "Hi Tomas\r\nWill this component encode from one encoding format to another.
+    For eg from SHIFT- JIS to EBCDIK(Katakana).\r\nOr it will just set the encoding
+    type that is used in the message. Please give a reply.\r\nThanks\r\nSmithesh"
+- id: 1010
+  author: Tomas Restrepo
+  author_email: tomas@winterdom.com
+  author_url: http://winterdom.com/
+  date: '2009-07-02 12:41:15 +0000'
+  date_gmt: '2009-07-02 12:41:15 +0000'
+  content: It will not transcode the message; all it does is make sure BizTalk knows
+    what encoding it is in so that it can decode it appropriately.
+- id: 1079
+  author: Sachin
+  author_email: sachin.lade@gmail.com
+  author_url: ''
+  date: '2009-08-11 09:55:48 +0000'
+  date_gmt: '2009-08-11 09:55:48 +0000'
+  content: "Hi Tomas,\r\n\r\nWill this Dll work on 64 - bit machine. It works fine
+    with 32- bit machine but we have found problems executing it on 64 bit.\r\n\r\nCan
+    you please let us know about this.\r\n\r\nThanks in advance.\r\n\r\nRegards,\r\nSachin."
+- id: 1084
+  author: Tomas Restrepo
+  author_email: tomas@winterdom.com
+  author_url: http://winterdom.com/
+  date: '2009-08-12 02:43:06 +0000'
+  date_gmt: '2009-08-12 02:43:06 +0000'
+  content: "@Sachin: To be honest, I haven't tried it myself (or touched that code
+    in a while), as I don't have a 64-bit biztalk installation at the moment. However,
+    if you've got an error message or any info about reproducing the problem, let
+    me know (here or an email would do fine) and I'll see what I can do to help you
+    resolve it."
+- id: 1122
+  author: Jay
+  author_email: jaychugh@hotmail.com
+  author_url: ''
+  date: '2009-09-09 20:53:13 +0000'
+  date_gmt: '2009-09-09 20:53:13 +0000'
+  content: I am Using your Fix message encoding tool at a decode stage while I am
+    using EDI disassembler on disassemble stage but I am getting same generic message
+    (no disassemble stage can recognize the data ). I can use the same body of a message
+    write that in a file and use FILE as a transport, that work just fine but if I
+    try to pick same message using MSMQ with EDI disassembler pipeline, it gives me
+    a same error each time.I am not sure which Encoding I should pick though I have
+    tried almost all which make sense to me.
+- id: 1125
+  author: Tomas Restrepo
+  author_email: tomas@winterdom.com
+  author_url: http://winterdom.com/
+  date: '2009-09-11 02:39:18 +0000'
+  date_gmt: '2009-09-11 02:39:18 +0000'
+  content: "@Jay: It might depend on how exactly you're sending the message over MSMQ
+    (I've talked about this before, see http:&#47;&#47;winterdom.com&#47;2008&#47;04&#47;biztalk2006msmqandbiztalk2002
+    ). Also, to be honest, I don't know if the EDI Disassembler pays attention to
+    the same charset property that the XML and FF disassemblers do, that's something
+    I'd need to look into."
+- id: 1431
+  author: Ryan CrawCour
+  author_email: ryancrawcour@gmail.com
+  author_url: ''
+  date: '2010-04-20 00:07:23 +0000'
+  date_gmt: '2010-04-20 00:07:23 +0000'
+  content: Tomas, will this component work with the FlatFileDisassembler as well,
+    or only with the XmlDisassembler?
+- id: 1433
+  author: Ryan CrawCour
+  author_email: ryancrawcour@gmail.com
+  author_url: ''
+  date: '2010-04-20 00:27:10 +0000'
+  date_gmt: '2010-04-20 00:27:10 +0000'
+  content: What is the difference between the "Set Message Encoding" component and
+    the "Fix Message Encoding" component, i get both from the downloaded dll.
+- id: 1434
+  author: Ryan CrawCour
+  author_email: ryancrawcour@gmail.com
+  author_url: ''
+  date: '2010-04-20 00:44:00 +0000'
+  date_gmt: '2010-04-20 00:44:00 +0000'
+  content: "Once i opened your source your comments made my previous question redundant
+    :)\r\n\r\nFix - Fixes the encoding of incoming XML messages\r\nSet - Sets the
+    encoding to use when sending out messages\r\n\r\nbtw. i also tested this with
+    FlatFileDisassembler and this works just fine :D\r\n\r\nThanks Tomas! Great work!"
+- id: 1672
+  author: Farzad Jalali
+  author_email: Farzad@jalali.co.uk
+  author_url: ''
+  date: '2011-02-16 09:37:15 +0000'
+  date_gmt: '2011-02-16 09:37:15 +0000'
+  content: "Hi Tomas,\r\n\r\nThanks for your solution, I'm a bit beginner in BizTalk
+    server , so perhaps my question is silly ;)\r\n\r\n I've downloaded the solution
+    but I don't know how to put it on my pipeline!\r\ncould you please tell me how
+    should I import your dll in pipeline step by step .\r\n\r\nMany thanks,\r\nFarzad"
+- id: 1673
+  author: Tomas Restrepo
+  author_email: tomas@winterdom.com
+  author_url: http://winterdom.com/
+  date: '2011-02-16 12:26:47 +0000'
+  date_gmt: '2011-02-16 12:26:47 +0000'
+  content: '@Farzad: Build the custom pipeline component; close VS; put the new dll
+    in the gac and copy it to the "Pipeline Components" folder under your Biztalk
+    installation folder; restart VS... when editing a pipeline, the new component
+    should appear on the toolbox (if not, just right click on it and do a Choose Items)'
+- id: 1702
+  author: Vishal Sharma
+  author_email: vpng2007@gmail.com
+  author_url: ''
+  date: '2011-04-13 08:28:57 +0000'
+  date_gmt: '2011-04-13 08:28:57 +0000'
+  content: "Hi,\r\n\r\nI have used ur Pipeline.It is gr8 code, thanks.\r\nBut i want
+    to catch the exception in case of an invalid xml being inputted.\r\ncan u  help
+    me in that.\r\n\r\nthanks again,\r\nVishal Sharma"
+- id: 1742
+  author: Julian
+  author_email: jberlin@capgemini.com
+  author_url: ''
+  date: '2011-06-21 20:23:12 +0000'
+  date_gmt: '2011-06-21 20:23:12 +0000'
+  content: "Hi Tomas, how are you doing ?\r\nI am having some troubles, I trying to
+    use the Fix encodign component, and I made several tests and the resulted XML
+    has always weird symbols just before the root, so I am having the following exception:\r\n\r\n\r\nThe
+    service instance will remain suspended until administratively resumed or terminated.
+    \r\nIf resumed the instance will continue from its last persisted state and may
+    re-throw the same unexpected exception.\r\nInstanceId: 7c605e4b-0eaf-4308-a026-a4258a3e2413\r\nShape
+    name: ExportAssociate\r\nShapeId: f42d9bfe-fdb9-42a2-819c-c0a94452852c\r\nException
+    thrown from: segment 2, progress 18\r\nInner exception: Root element is missing.\r\n
+    \       \r\nException type: XmlException\r\nSource: System.Xml\r\nTarget Site:
+    Void Throw(System.Exception)\r\nThe following is a stack trace that identifies
+    the location where the exception occured\r\n\r\n   at System.Xml.XmlTextReaderImpl.Throw(Exception
+    e)\r\n   at System.Xml.XmlTextReaderImpl.ParseDocumentContent()\r\n   at System.Xml.XmlTextReaderImpl.Read()\r\n
+    \  at System.Xml.XmlLoader.Load(XmlDocument doc, XmlReader reader, Boolean preserveWhitespace)\r\n
+    \  at System.Xml.XmlDocument.Load(XmlReader reader)\r\n   at System.Xml.XmlDocument.LoadXml(String
+    xml)\r\n   at CapGemini.Adecco.AW.Bts.SE.Wrapper.ExportAssociate.GetXmlValue(String
+    sXmlAssociate, String sField)\r\n   at CapGemini.Adecco.AW.Bts.SE.IEM_ExportAssociate.segment2(StopConditions
+    stopOn)\r\n   at Microsoft.XLANGs.Core.SegmentScheduler.RunASegment(Segment s,
+    StopConditions stopCond, Exception&amp; exp)\r\n\r\n\r\nheader of the resulted
+    XML is as follows, note there are some weird symbols just before the root:\r\n\r\n&iuml;&raquo;&iquest;\r\n...\r\n...\r\n\r\n
+    \   \r\nI am using it with Biztalk 2010 and VS2010. which could be the problem
+    ?\r\nthanks a lot and grear job !!"
+- id: 1749
+  author: Tomas Restrepo
+  author_email: tomas@winterdom.com
+  author_url: http://winterdom.com/
+  date: '2011-07-03 02:52:30 +0000'
+  date_gmt: '2011-07-03 02:52:30 +0000'
+  content: "@Julian: Those strange characters are probably a BOM (Byte Order Mark).
+    Can you open up the message in a hex editor and see what they are? You should
+    be able to figure out the right encoding from that."
+- id: 1762
+  author: BTS
+  author_email: steven08@gmail.com
+  author_url: http://btscommerceinternational.fr
+  date: '2011-07-31 13:34:08 +0000'
+  date_gmt: '2011-07-31 13:34:08 +0000'
+  content: Nice tutorial, thanks for the share !
+- id: 1850
+  author: Zsanett
+  author_email: zsanett27@yahoo.com
+  author_url: ''
+  date: '2011-11-25 23:54:25 +0000'
+  date_gmt: '2011-11-25 23:54:25 +0000'
+  content: 'Check this one for furhter explanation on how this all works for Flat
+    Files: http:&#47;&#47;maximelabelle.wordpress.com&#47;2010&#47;05&#47;20&#47;an-encodingtranscoder-custom-pipeline-component&#47;'
+---
+<p><!--start_raw-->
+<p>I've just posted a new sample (very simple one, by the way) custom pipeline component for BizTalk Server: The <a href="http:&#47;&#47;www.winterdom.com&#47;dev&#47;bts&#47;EncodingComponent.zip">FixEncodingComponent</a>. What this sample does is allow you to tell the XmlDisassembler exactly using which encoding or Charset it should interpret the message in.</p></p>
+<p>
+<p>This alleviates the problem sometimes where you get an incoming XML message on which the XmlDisassembler barfs because it cannot figure out on it's own what the message's encoding is to process it.  According to the BizTalk documentation, here's the rules the XmlDisassembler uses to figure out a message's encoding:</p></p></p>
+<ol>
+<li>If a byte order mark exists in the data, encoding information is determined from it.</li>
+<li>Otherwise, if the IBaseMessagePart.Charset property is set, the encoding specified there is used.</li>
+<li>Otherwise if the XML declaration is present in the XML document, the encoding specified there is used, provided the XML declaration is ANSI.</li>
+<li>Otherwise, UTF-8 encoding is used.</li><br />
+</ol></p>
+<p>
+<p>Option 2 is what the FixEncodingComponent does, since it is by far the simplest one and doesn't require fiddling around with the message stream, which is both slower and error prone. Here's how to use it:</p></p></p>
+<ol>
+<li>Create a new custom receive pipeline</li>
+<li>Add the XmlDisassembler to the pipeline and configure it to your need.</li>
+<li>Add the FixEncodingComponent to the pipeline in the Decode stage, so that it is run before the XmlDisassembler.
+<p><img src="http:&#47;&#47;www.winterdom.com&#47;weblog&#47;images&#47;FixEncoding_Use.jpg"&#47;></p><br />
+</li></p>
+<li>Set the Encoding parameter of the component in the Property Explorer to the encoding you want to use. To make this easier, the component implements a custom UITypeEditor that pops up a list of all the encodings supported by the .NET framework:
+<p><img src="http:&#47;&#47;www.winterdom.com&#47;weblog&#47;images&#47;FixEncoding_EncodingList.jpg"&#47;></p><br />
+</li><br />
+</ol></p>
+<p>
+<p>I've included in the sample a test project that uses routing between ports and includes a test XML message encoded in IBM EBCDIC (International) encoding (the File -> Advanced Save Options command in Visual Studio is pretty helpful for this). To see the pipeline component in action, just configure the receive location with the standard XmlReceive pipeline and with the custom pipeline included in the sample and notice how one fails and how the other one works :)</p></p><!--end_raw--></p>

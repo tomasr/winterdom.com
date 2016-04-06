@@ -1,0 +1,26 @@
+---
+layout: post
+status: publish
+published: true
+title: VC++.NET and Unmanaged Debugging
+author:
+  display_name: Tomas Restrepo
+  login: tomasr
+  email: tomas@winterdom.com
+  url: http://winterdom.com/
+author_login: tomasr
+author_email: tomas@winterdom.com
+author_url: http://winterdom.com/
+wordpress_id: 487
+wordpress_url: http://winterdom.com/2002/04/vcnetandunmanageddebugging
+date: '2002-04-03 09:41:50 +0000'
+date_gmt: '2002-04-03 09:41:50 +0000'
+categories:
+- ".NET"
+tags: []
+comments: []
+---
+<p><!--start_raw--><a href="http:&#47;&#47;www.iunknown.com&#47;">John Lam</a> recently <a href="http:&#47;&#47;www.iunknown.com&#47;Weblog&#47;pragmaunmanaged.html">commented</a> that the managed debugger on VC++.NET cannot evaluate pointers on managed code. He's right on the money, of course, and I just ran into this limitation a couple of days ago.<br />
+His idea of using <code>#pragma unmananged</code> directives to ensure the relevant code is compiled as native, thus allowing the native debugger to take over, is a good one.</p>
+<p>However, my personal preference right now for dealing with this situation is splitting my code in two: One unmananged static library (.LIB) project containing all native code, and a second managed library (.DLL&#47;.EXE) that links against the unmanaged .LIB. I've found this works very nicely (and works with the debugger, too), and keeps the code cleaner.</p><br />
+<!--end_raw--></p>

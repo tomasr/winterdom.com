@@ -1,0 +1,199 @@
+---
+layout: post
+status: publish
+published: true
+title: BizTalk Ports with PowerShell
+author:
+  display_name: Tomas Restrepo
+  login: tomasr
+  email: tomas@winterdom.com
+  url: http://winterdom.com/
+author_login: tomasr
+author_email: tomas@winterdom.com
+author_url: http://winterdom.com/
+wordpress_id: 831
+wordpress_url: http://winterdom.com/2006/09/biztalkportswithpowershell
+date: '2006-09-07 07:10:05 +0000'
+date_gmt: '2006-09-07 07:10:05 +0000'
+categories:
+- BizTalk
+- PowerShell
+tags: []
+comments:
+- id: 741
+  author: Pavetiran Thinamani
+  author_email: pavetirant@datacom.co.nz
+  author_url: ''
+  date: '2009-05-04 03:44:06 +0000'
+  date_gmt: '2009-05-04 03:44:06 +0000'
+  content: "Hi, I am looking for a script to check the status of Send ports and out
+    the results to a text file.\r\nCan that be written in VB?\r\n\r\nRegards\r\nPavetiran"
+- id: 742
+  author: tomasr
+  author_email: tomas@winterdom.com
+  author_url: http://winterdom.com/
+  date: '2009-05-04 03:50:36 +0000'
+  date_gmt: '2009-05-04 03:50:36 +0000'
+  content: "@Pavetiran: Possible? Yes. The sample admin scripts that ship with BizTalk
+    should help you get started (there are a few that are in VBScript, while the others
+    are in C#, but it shouldn't be too hard to translate to VB.NET)."
+- id: 441214
+  author: Anand
+  author_email: anarathi@gmail.com
+  author_url: ''
+  date: '2015-02-12 23:59:13 +0000'
+  date_gmt: '2015-02-12 23:59:13 +0000'
+  content: "Hi There,\r\n\r\ni am running the function as below\r\nfunction bts-set-recv-loc-status($name,
+    $status)\r\n{\r\n   $recvloc = get-wmiobject MSBTS_ReceiveLocation `\r\n      -namespace
+    'root\\MicrosoftBizTalkServer' `\r\n      -filter \"Name='$name'\"\r\n   \r\n
+    \  switch ( $status )\r\n   {\r\n      'disable' { [void]$recvloc.Disable() }\r\n
+    \     'enable' { [void]$recvloc.Enable() }\r\n   }\r\n}\r\n\r\n$name='ReceiveLocation_Message_From_DTV_DS_SS'\r\n$status='enable'\r\n\r\n\r\nbts-set-recv-loc-status
+    $name $status\r\n\r\nbut it is not updating the sendport status. woul dyou please
+    help."
+---
+<p><!--start_raw-->
+<p>Here's another sample PowerShell script, this time&nbsp;to manage BizTalk Server ports and receive locations. This one can:</p></p>
+<ul>
+<li>List all send ports<br />
+</li>
+<li>List all receive ports and their associated receive locations<br />
+</li>
+<li>List all send port groups and what send ports are associated with each one<br />
+</li>
+<li>Enable&#47;Disable a receive location<br />
+</li>
+<li>Start&#47;Stop&#47;Enlist&#47;Unenlist a send port</li></ul></p>
+<p>Here's the code:</p></p>
+<div class="codebg"><code><span class="Comment">#</span><br><br />
+<span class="Comment"># declare our parameters: the action to take</span><br><br />
+<span class="Comment">#</span><br><br />
+<span class="Keyword">param</span>(<br><br />
+&nbsp;&nbsp; <span class="Type">[string]</span>&nbsp;<span class="Identifier">$action</span>=$(<span class="Keyword">throw</span>&nbsp;<span class="String">'need action'</span>),<br><br />
+&nbsp;&nbsp; <span class="Type">[string]</span>&nbsp;<span class="Identifier">$name</span>,<br><br />
+&nbsp;&nbsp; <span class="Type">[string]</span>&nbsp;<span class="Identifier">$status</span><br><br />
+)<br><br />
+<br><br />
+<br><br />
+<span class="Comment">#</span><br><br />
+<span class="Comment"># Helper function to list all WMI objects of</span><br><br />
+<span class="Comment"># a given type</span><br><br />
+<span class="Comment">#</span><br><br />
+<span class="Keyword">function</span>&nbsp;<span class="Function">bts-list</span>-objs(<span class="Identifier">$kind</span>)<br><br />
+{<br><br />
+&nbsp;&nbsp; <span class="Statement">get-wmiobject</span>&nbsp;<span class="Identifier">$kind</span>&nbsp;`<br><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;-namespace <span class="String">'root\MicrosoftBizTalkServer'</span><br><br />
+}<br><br />
+<br><br />
+<span class="Comment">#</span><br><br />
+<span class="Comment"># display all information about a receive port</span><br><br />
+<span class="Comment">#</span><br><br />
+<span class="Keyword">function</span>&nbsp;<span class="Function">bts-display</span>-<span class="Statement">recv-port</span>(<span class="Identifier">$port</span>)<br><br />
+{<br><br />
+&nbsp;&nbsp; <span class="Identifier">$portname</span>&nbsp;= <span class="Identifier">$port</span>.Name<br><br />
+&nbsp;&nbsp; <span class="Identifier">$portname</span><br><br />
+&nbsp;&nbsp; <span class="Identifier">$recvlocs</span>&nbsp;= <span class="Statement">get-wmiobject</span>&nbsp;MSBTS_ReceiveLocation `<br><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;-namespace <span class="String">'root\MicrosoftBizTalkServer'</span>&nbsp;`<br><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;-<span class="Keyword">filter</span>&nbsp;<span class="String">"ReceivePortName='$portName'"</span><br><br />
+<br><br />
+&nbsp;&nbsp; <span class="Identifier">$recvlocs</span>&nbsp;| ft Name, AdapterName, InboundTransportURL, IsDisabled<br><br />
+}<br><br />
+<br><br />
+<span class="Comment">#</span><br><br />
+<span class="Comment"># display all information about a send port group</span><br><br />
+<span class="Comment">#</span><br><br />
+<span class="Keyword">function</span>&nbsp;<span class="Function">bts-display</span>-<span class="Statement">send-port</span>-group(<span class="Identifier">$group</span>)<br><br />
+{<br><br />
+&nbsp;&nbsp; <span class="Identifier">$groupname</span>&nbsp;= <span class="Identifier">$group</span>.Name<br><br />
+&nbsp;&nbsp; <br><br />
+&nbsp;&nbsp; <span class="Identifier">$ports</span>&nbsp;= <span class="Statement">get-wmiobject</span>&nbsp;MSBTS_SendPortGroup2SendPort `<br><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;-namespace <span class="String">'root\MicrosoftBizTalkServer'</span>&nbsp;`<br><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;-<span class="Keyword">filter</span>&nbsp;<span class="String">"SendPortGroupName='$groupName'"</span><br><br />
+<br><br />
+&nbsp;&nbsp; <span class="Identifier">$groupname</span><br><br />
+&nbsp;&nbsp; <span class="Repeat">foreach</span>&nbsp;(<span class="Identifier">$port</span>&nbsp;<span class="Keyword">in</span>&nbsp;<span class="Identifier">$ports</span>) { <span class="String">"`t"</span>&nbsp;+ <span class="Identifier">$port</span>.SendPortName }<br><br />
+}<br><br />
+<br><br />
+<span class="Comment">#</span><br><br />
+<span class="Comment"># enable or disable the specified</span><br><br />
+<span class="Comment"># receive location</span><br><br />
+<span class="Comment">#</span><br><br />
+<span class="Keyword">function</span>&nbsp;<span class="Function">bts-set</span>-<span class="Statement">recv-loc</span>-status(<span class="Identifier">$name</span>, <span class="Identifier">$status</span>)<br><br />
+{<br><br />
+&nbsp;&nbsp; <span class="Identifier">$recvloc</span>&nbsp;= <span class="Statement">get-wmiobject</span>&nbsp;MSBTS_ReceiveLocation `<br><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;-namespace <span class="String">'root\MicrosoftBizTalkServer'</span>&nbsp;`<br><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;-<span class="Keyword">filter</span>&nbsp;<span class="String">"Name='$name'"</span><br><br />
+&nbsp;&nbsp; <br><br />
+&nbsp;&nbsp; <span class="Conditional">switch</span>&nbsp;( <span class="Identifier">$status</span>&nbsp;)<br><br />
+&nbsp;&nbsp; {<br><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="String">'disable'</span>&nbsp;{ <span class="Type">[void]</span><span class="Identifier">$recvloc</span>.Disable() }<br><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="String">'enable'</span>&nbsp;{ <span class="Type">[void]</span><span class="Identifier">$recvloc</span>.Enable() }<br><br />
+&nbsp;&nbsp; }<br><br />
+}<br><br />
+<br><br />
+<span class="Comment">#</span><br><br />
+<span class="Comment"># controls a send port</span><br><br />
+<span class="Comment">#</span><br><br />
+<span class="Keyword">function</span>&nbsp;<span class="Function">bts-set</span>-<span class="Statement">send-port</span>-status(<span class="Identifier">$name</span>, <span class="Identifier">$status</span>)<br><br />
+{<br><br />
+&nbsp;&nbsp; <span class="Identifier">$sendport</span>&nbsp;= <span class="Statement">get-wmiobject</span>&nbsp;MSBTS_sendPort `<br><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;-namespace <span class="String">'root\MicrosoftBizTalkServer'</span>&nbsp;`<br><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;-<span class="Keyword">filter</span>&nbsp;<span class="String">"Name='$name'"</span><br><br />
+<br><br />
+&nbsp;&nbsp; <span class="Conditional">switch</span>&nbsp;( <span class="Identifier">$status</span>&nbsp;)<br><br />
+&nbsp;&nbsp; {<br><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="String">'start'</span>&nbsp;{ <span class="Type">[void]</span><span class="Identifier">$sendport</span>.Start() }<br><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="String">'stop'</span>&nbsp;{ <span class="Type">[void]</span><span class="Identifier">$sendport</span>.Stop() }<br><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="String">'enlist'</span>&nbsp;{ <span class="Type">[void]</span><span class="Identifier">$sendport</span>.Enlist() }<br><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="String">'unenlist'</span>&nbsp;{ <span class="Type">[void]</span><span class="Identifier">$sendport</span>.UnEnlist() }<br><br />
+&nbsp;&nbsp; }<br><br />
+}<br><br />
+<br><br />
+<span class="Keyword">function</span>&nbsp;<span class="Function">is-valid</span>-opt(<span class="Identifier">$check</span>, <span class="Identifier">$options</span>)<br><br />
+{<br><br />
+&nbsp;&nbsp; <span class="Repeat">foreach</span>&nbsp;( <span class="Identifier">$val</span>&nbsp;<span class="Keyword">in</span>&nbsp;<span class="Identifier">$options</span>&nbsp;)<br><br />
+&nbsp;&nbsp; {<br><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="Conditional">if</span>&nbsp;( <span class="Identifier">$check</span>&nbsp;-<span class="Operator">eq</span>&nbsp;<span class="Identifier">$val</span>&nbsp;) { <br><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span class="Keyword">return</span>&nbsp;<span class="Identifier">$true</span><br><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<br><br />
+&nbsp;&nbsp; }<br><br />
+}<br><br />
+<br><br />
+<span class="Comment">#</span><br><br />
+<span class="Comment"># main script</span><br><br />
+<span class="Comment">#</span><br><br />
+<span class="Conditional">switch</span>&nbsp;( <span class="Identifier">$action</span>&nbsp;)<br><br />
+{<br><br />
+&nbsp;&nbsp; <span class="String">'list-send-ports'</span>&nbsp;{<br><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="Statement">bts-list</span>-objs(<span class="String">'MSBTS_SendPort'</span>) | ft Name, PTAddress, Status<br><br />
+&nbsp;&nbsp; }<br><br />
+&nbsp;&nbsp; <span class="String">'list-send-port-groups'</span>&nbsp;{<br><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="Statement">bts-list</span>-objs(<span class="String">'MSBTS_SendPortGroup'</span>) | %{ <span class="Statement">bts-display</span>-<span class="Statement">send-port</span>-group(<span class="Identifier">$_</span>) }<br><br />
+&nbsp;&nbsp; }<br><br />
+&nbsp;&nbsp; <span class="String">'list-recv-ports'</span>&nbsp;{<br><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="Statement">bts-list</span>-objs(<span class="String">'MSBTS_ReceivePort'</span>) | %{ <span class="Statement">bts-display</span>-<span class="Statement">recv-port</span>(<span class="Identifier">$_</span>) }<br><br />
+&nbsp;&nbsp; }<br><br />
+&nbsp;&nbsp; <span class="String">'set-recv-loc-status'</span>&nbsp;{<br><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="Conditional">if</span>&nbsp;( !(<span class="Operator">is</span>-<span class="Statement">valid-opt</span>&nbsp;<span class="Identifier">$status</span>&nbsp;(<span class="String">'enable'</span>, <span class="String">'disable'</span>)) )<br><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{<br><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span class="Keyword">throw</span>&nbsp;<span class="String">'invalid status'</span><br><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<br><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="Conditional">if</span>&nbsp;( (<span class="Identifier">$name</span>&nbsp;-<span class="Operator">eq</span>&nbsp;<span class="String">''</span>) -<span class="Operator">or</span>&nbsp;(<span class="Identifier">$name</span>&nbsp;-<span class="Operator">eq</span>&nbsp;<span class="Identifier">$null</span>) )<br><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{<br><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span class="Keyword">throw</span>&nbsp;<span class="String">'you must supply the receive location name'</span><br><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<br><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="Statement">bts-set</span>-<span class="Statement">recv-loc</span>-status <span class="Identifier">$name</span>&nbsp;<span class="Identifier">$status</span><br><br />
+&nbsp;&nbsp; }<br><br />
+&nbsp;&nbsp; <span class="String">'set-send-port-status'</span>&nbsp;{<br><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="Conditional">if</span>&nbsp;( !(<span class="Operator">is</span>-<span class="Statement">valid-opt</span>&nbsp;<span class="Identifier">$status</span>&nbsp;(<span class="String">'start'</span>, <span class="String">'stop'</span>, <span class="String">'enlist'</span>, <span class="String">'unenlist'</span>)) )<br><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{<br><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span class="Keyword">throw</span>&nbsp;<span class="String">'invalid status'</span><br><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<br><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="Conditional">if</span>&nbsp;( (<span class="Identifier">$name</span>&nbsp;-<span class="Operator">eq</span>&nbsp;<span class="String">''</span>) -<span class="Operator">or</span>&nbsp;(<span class="Identifier">$name</span>&nbsp;-<span class="Operator">eq</span>&nbsp;<span class="Identifier">$null</span>) )<br><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{<br><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span class="Keyword">throw</span>&nbsp;<span class="String">'you must supply the send port name'</span><br><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<br><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="Statement">bts-set</span>-<span class="Statement">send-port</span>-status <span class="Identifier">$name</span>&nbsp;<span class="Identifier">$status</span><br><br />
+&nbsp;&nbsp; }<br><br />
+}<br />
+</code></div></p>
+<p>Enjoy!</p><!--end_raw--></p>

@@ -1,0 +1,27 @@
+---
+layout: post
+status: publish
+published: true
+title: More SQL Adapter deployment woes
+author:
+  display_name: Tomas Restrepo
+  login: tomasr
+  email: tomas@winterdom.com
+  url: http://winterdom.com/
+author_login: tomasr
+author_email: tomas@winterdom.com
+author_url: http://winterdom.com/
+wordpress_id: 123
+wordpress_url: http://winterdom.com/2005/07/moresqladapterdeploymentwoes
+date: '2005-07-11 16:24:43 +0000'
+date_gmt: '2005-07-11 16:24:43 +0000'
+categories:
+- BizTalk
+tags: []
+comments: []
+---
+<p><!--start_raw--><br />
+I've talked about problems deploying BizTalk Server 2004 solutions that use the SQL adapter in the <a href="http:&#47;&#47;www.winterdom.com&#47;weblog&#47;archives&#47;000496.html">past</a>. Here's another trick that might help you resolve problems with it:</p>
+<p>When you use BTSDeploy.exe with a binding file that creates ports that use the SQL adapter, the adapter will try to verify that the settings specified in the port configuration make sense. As part of that, it will try to connect to the specified server and database using the connection string configured in the port.</p></p>
+<p>Normally, people configure the ports to use SQL Server integrated authentication, and ensure that the user used to run their BizTalk Host Instances have access to the database. However, as it turns out, when you configure the port using BTSDeploy, the SQL adapter will indeed connect with integrated security, but under the context of the user running BTSDeploy, <i>not</i> under the context of the host instance user. Thus, if the user running BTSDeploy does not have access to the DB (and normally shouldn't have), then deployment will fail.</p></p>
+<p><b>Lesson:</b> Grant access to the DB to the user doing the solution deployment, and then remove it as soon as the ports have been succesfully created on BizTalk.</p><!--end_raw--></p>

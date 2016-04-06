@@ -1,0 +1,35 @@
+---
+layout: post
+status: publish
+published: true
+title: get-hash
+author:
+  display_name: Tomas Restrepo
+  login: tomasr
+  email: tomas@winterdom.com
+  url: http://winterdom.com/
+author_login: tomasr
+author_email: tomas@winterdom.com
+author_url: http://winterdom.com/
+wordpress_id: 148
+wordpress_url: http://winterdom.com/2008/12/gethash
+date: '2008-12-19 04:58:13 +0000'
+date_gmt: '2008-12-19 04:58:13 +0000'
+categories:
+- PowerShell
+tags: []
+comments:
+- id: 97
+  author: halr9000
+  author_email: hal@halr9000.com
+  author_url: http://halr9000.com/
+  date: '2008-12-21 09:25:36 +0000'
+  date_gmt: '2008-12-21 09:25:36 +0000'
+  content: |
+    FYI, PSCX (http:&#47;&#47;www.codeplex.com&#47;PowerShellCX) includes a Get-Hash cmdlet.
+---
+<p><!--start_raw-->
+<p>I&rsquo;ve been recently working a lot with cryptographic hashes and sometimes it was useful to be able to check results or hash strings on my own while debugging or diagnosing something.</p>
+<p>I started doing this so much, that ended up creating a few Windows PowerShell functions to deal with this:</p>
+<div class="codebg"><code><span class="Keyword">function</span>&nbsp;<span class="Function">convert-tobinhex</span>(<span class="Identifier">$array</span>) {<br>&nbsp;&nbsp; <span class="Identifier">$str</span> = <span class="Statement">new-object</span> system.text.stringbuilder<br>&nbsp;&nbsp; <span class="Identifier">$array</span> | %{<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span class="Type">[void]</span><span class="Identifier">$str</span>.Append(<span class="Identifier">$_</span>.ToString(<span class="String">'x2'</span>));<br>&nbsp;&nbsp; }<br>&nbsp;&nbsp; <span class="Keyword">return</span>&nbsp;<span class="Identifier">$str</span>.ToString()<br>}<br><span class="Keyword">function</span>&nbsp;<span class="Function">convert-frombinhex</span>(<span class="Type">[string]</span><span class="Identifier">$binhex</span>) {<br>&nbsp;&nbsp; <span class="Identifier">$arr</span> = <span class="Statement">new-object</span> byte[] (<span class="Identifier">$binhex</span>.Length&#47;<span class="Number">2</span>)<br>&nbsp;&nbsp; <span class="Repeat">for</span> ( <span class="Identifier">$i</span>=<span class="Number">0</span>; <span class="Identifier">$i</span> -<span class="Operator">lt</span>&nbsp;<span class="Identifier">$arr</span>.Length; <span class="Identifier">$i</span>++ ) {<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span class="Identifier">$arr</span>[<span class="Identifier">$i</span>] = <span class="Type">[Convert]</span>::ToByte(<span class="Identifier">$binhex</span>.substring(<span class="Identifier">$i</span>*<span class="Number">2</span>,<span class="Number">2</span>), <span class="Number">16</span>)<br>&nbsp;&nbsp; }<br>&nbsp;&nbsp; <span class="Keyword">return</span>&nbsp;<span class="Identifier">$arr</span><br>}<br><span class="Keyword">function</span>&nbsp;<span class="Function">get-hash</span>(<span class="Identifier">$value</span>, <span class="Identifier">$hashalgo</span> = <span class="String">'MD5'</span>) {<br>&nbsp;&nbsp; <span class="Identifier">$tohash</span> = <span class="Identifier">$value</span><br>&nbsp;&nbsp; <span class="Conditional">if</span> ( <span class="Identifier">$value</span> -<span class="Operator">is</span>&nbsp;<span class="Type">[string]</span> ) {<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span class="Identifier">$tohash</span> = <span class="Type">[text.encoding]</span>::UTF8.GetBytes(<span class="Identifier">$value</span>)<br>&nbsp;&nbsp; }<br>&nbsp;&nbsp; <span class="Identifier">$hash</span> = <span class="Type">[security.cryptography.hashalgorithm]</span>::Create(<span class="Identifier">$hashalgo</span>)<br>&nbsp;&nbsp; <span class="Keyword">return</span>&nbsp;<span class="Statement">convert-tobinhex</span>(<span class="Identifier">$hash</span>.ComputeHash(<span class="Identifier">$tohash</span>));<br>} </code></div>
+<p>Not very efficient, but does the trick.</p><!--end_raw--></p>

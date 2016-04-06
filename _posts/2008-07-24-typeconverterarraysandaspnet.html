@@ -1,0 +1,41 @@
+---
+layout: post
+status: publish
+published: true
+title: TypeConverter, Arrays and ASP.NET
+author:
+  display_name: Tomas Restrepo
+  login: tomasr
+  email: tomas@winterdom.com
+  url: http://winterdom.com/
+author_login: tomasr
+author_email: tomas@winterdom.com
+author_url: http://winterdom.com/
+wordpress_id: 889
+wordpress_url: http://winterdom.com/2008/07/typeconverterarraysandaspnet
+date: '2008-07-24 15:02:49 +0000'
+date_gmt: '2008-07-24 15:02:49 +0000'
+categories:
+- ".NET"
+- ASP.NET
+tags: []
+comments: []
+---
+<p><!--start_raw-->
+<p>I've been spending a bunch of time today doing some customization of some ASP.NET custom controls (yes, I know!). One of the things I needed to get working was decent design time support for a property of the control that returned an array of a simple custom structure. </p>
+<div class="codebg"><code><span class="Operator">[</span>Browsable<span class="Operator">(</span><span class="Boolean">true</span><span class="Operator">)]</span>      <br &#47;><span class="Statement">public</span> MyStruct<span class="Operator">[]</span> StructData <span class="Operator">{</span>      <br &#47;>&#160;&#160; <span class="csharpProperties">get</span>&#160;<span class="Operator">{</span>&#160;<span class="Statement">return</span> _structData<span class="Operator">;</span>&#160;<span class="Operator">}</span>      <br &#47;>&#160;&#160; <span class="csharpProperties">set</span>&#160;<span class="Operator">{</span> _structData <span class="Operator">=</span> value<span class="Operator">;</span>&#160;<span class="Operator">}</span>      <br &#47;><span class="Operator">}</span> </code></div>
+<p>This should've been simple, but it took me a far longer time than I expected to get working correctly. Getting the basic design time work done wasn't too much of a problem; since the property type was an array and not a custom collection, the default editors did the right thing and offered a good design time experience out of the box.</p>
+<p>However, you still need to provide the designers and ASP.NET a way to store the property contents as an string, so that you can use markup to specify the value of the property. </p>
+<p>Time to write a <a href="http:&#47;&#47;msdn.microsoft.com&#47;en-us&#47;library&#47;system.componentmodel.typeconverter.aspx">TypeConverter</a>! I went ahead and wrote a simple TypeConverter that would take a string and return an array of structs based on its contents, or take an array and return a string based on the values in it. Nothing fancy.</p>
+<p>I then enabled the type converter by using the <a href="http:&#47;&#47;msdn.microsoft.com&#47;en-us&#47;library&#47;system.componentmodel.typeconverterattribute.aspx">TypeConverterAttribute</a> on the property declaration:</p>
+<div class="codebg"><code><span class="Operator">[</span>Browsable<span class="Operator">(</span><span class="Boolean">true</span><span class="Operator">),</span>      <br &#47;>TypeConverter<span class="Operator">(</span><span class="Statement">typeof</span><span class="Operator">(</span>MyStructArrayConverter<span class="Operator">))]</span>      <br &#47;><span class="Statement">public</span> MyStruct<span class="Operator">[]</span> StructData <span class="Operator">{</span>      <br &#47;>&#160;&#160; <span class="csharpProperties">get</span>&#160;<span class="Operator">{</span>&#160;<span class="Statement">return</span> _structData<span class="Operator">;</span>&#160;<span class="Operator">}</span>      <br &#47;>&#160;&#160; <span class="csharpProperties">set</span>&#160;<span class="Operator">{</span> _structData <span class="Operator">=</span> value<span class="Operator">;</span>&#160;<span class="Operator">}</span>      <br &#47;><span class="Operator">}</span> </code></div>
+<p>Once I added this, the designer worked right away. I could change the array contents in the designer, and it would get serialized into the aspx page markup correctly. Loading the page worked as well and all values would be correctly deserialized. </p>
+<p>I thought I was home free until I tried to actually build the ASP.NET site (this was on a VS WebSite, not a Web Application Project). As soon as the ASP.NET compiler tried to compile the ASPX page hosting the control, it would error out with the dreaded error message:</p>
+<div class="codebg"><code>Page.aspx (web): Object reference not set to an instance of an object. </code></div>
+<p>That's it. No stack trace, no more details at all. I knew it was related to the TypeConverter, but that one was working correctly (already tested and verified). Checking further, I came to the conclusion that the error would appear every time that my TypeConverter.ConvertFrom() implementation would return an array with a non-zero size (useful, huh?).</p>
+<p>So the array conversion was working perfectly, but ASP.NET was choking on the values contained in the array. At this point I realized the problem wasn't with the TypeConverter itself, but with how the ASP.NET was manipulating the values returned to generate the code from the ASPX page.</p>
+<p>After much head-scratching and finding little explicit documentation about the issue I ran into this <a href="http:&#47;&#47;msdn.microsoft.com&#47;en-us&#47;library&#47;ayybcxe5(VS.71).aspx">documentation piece</a> on MSDN. The last section in the article talks about how "To implement a type converter that produces constructor-based property initialization code".</p>
+<p>Based on that, I wrote my yet another custom TypeConverter that, following the guidelines on the article, implemented ConvertTo to convert from a MyStruct value to a corresponding InstanceDescriptor object. I applied this second TypeConverter to the struct declaration itself:"</p>
+<div class="codebg"><code><span class="Operator">[</span>Serializable<span class="Operator">,</span>      <br &#47;>TypeConverter<span class="Operator">(</span><span class="Statement">typeof</span><span class="Operator">(</span>MyStructConverter<span class="Operator">))]</span>      <br &#47;><span class="Statement">public</span>&#160;<span class="Type">struct</span> MyStruct <span class="Operator">{</span>      <br &#47;>&#160;&#160; <span class="Comment">&#47;&#47;...</span>      <br &#47;><span class="Operator">}</span> </code></div>
+<p>And lo and behold, this time it worked perfectly: No complication errors anymore! Hopefully, next time I run against this and have forgotten again all about TypeConverters and its brethren, I'll remember to look here for hints :-).</p>
+<div class="wlWriterSmartContent" id="scid:0767317B-992E-4b12-91E0-4F059A8CECA8:075488bd-4221-4213-9b7d-1eb1a01797b8" style="padding-right: 0px; display: inline; padding-left: 0px; padding-bottom: 0px; margin: 0px; padding-top: 0px">Technorati tags: <a href="http:&#47;&#47;technorati.com&#47;tags&#47;ASP.NET" rel="tag">ASP.NET</a>, <a href="http:&#47;&#47;technorati.com&#47;tags&#47;TypeConverter" rel="tag">TypeConverter</a></div><!--end_raw--></p>

@@ -1,0 +1,61 @@
+---
+layout: post
+status: publish
+published: true
+title: COM+ and wrong framework version
+author:
+  display_name: Tomas Restrepo
+  login: tomasr
+  email: tomas@winterdom.com
+  url: http://winterdom.com/
+author_login: tomasr
+author_email: tomas@winterdom.com
+author_url: http://winterdom.com/
+wordpress_id: 537
+wordpress_url: http://winterdom.com/2003/11/comandwrongframeworkversion
+date: '2003-11-03 19:34:12 +0000'
+date_gmt: '2003-11-03 19:34:12 +0000'
+categories:
+- Enterprise Services
+tags: []
+comments:
+- id: 361
+  author: Bruce
+  author_email: bwill@microsoft.com
+  author_url: http://blogs.gotdotnet.com/bwill
+  date: '2003-11-04 07:38:49 +0000'
+  date_gmt: '2003-11-04 07:38:49 +0000'
+  content: |
+    <p>I believe Q330227 addresses this.</p>
+- id: 362
+  author: Greg Reinacker
+  author_email: gregr@rassoc.com
+  author_url: http://www.rassoc.com/gregr/weblog
+  date: '2003-11-04 08:23:11 +0000'
+  date_gmt: '2003-11-04 08:23:11 +0000'
+  content: |
+    <p>Could this (<a href="http:&#47;&#47;www.rassoc.com&#47;gregr&#47;weblog&#47;archive.aspx?post=637)" rel="nofollow">http:&#47;&#47;www.rassoc.com&#47;gregr&#47;weblog&#47;archive.aspx?post=637)</a> be related?</p>
+- id: 363
+  author: Greg Reinacker
+  author_email: gregr@rassoc.com
+  author_url: http://www.rassoc.com/gregr/weblog
+  date: '2003-11-04 08:24:07 +0000'
+  date_gmt: '2003-11-04 08:24:07 +0000'
+  content: |
+    <p>Oops, that link was broken (picked up the second parenthesis).  It should be:</p>
+    <p><a href="http:&#47;&#47;www.rassoc.com&#47;gregr&#47;weblog&#47;archive.aspx?post=637" rel="nofollow">http:&#47;&#47;www.rassoc.com&#47;gregr&#47;weblog&#47;archive.aspx?post=637</a></p>
+- id: 364
+  author: Tomas Restrepo
+  author_email: tomasr@mvps.org
+  author_url: http://www.winterdom.com/weblog
+  date: '2003-11-04 11:04:17 +0000'
+  date_gmt: '2003-11-04 11:04:17 +0000'
+  content: |
+    <p>Bruce,<br &#47;>
+    Thanks, will check.<br &#47;>
+    Greg, dunno if that's exactly the same case. I waws hoping to avoid using configuration files, but I have that one as a last resource to try :)</p>
+---
+<p><!--start_raw-->Has someone else run across this? We've been seeing on some of our developer's machines a case where a COM+ server application running .NET Serviced Components compiled with v1.0 of the framework loads version v1.1 if that's <b>also</b> installed on the machine as well, which is obviously the wrong thing to do, as it can cause a whole lot of trouble with object serialization, for example (most easily seen if you pass DataSets around).</p>
+<p>There's a <a href="http:&#47;&#47;support.microsoft.com&#47;default.aspx?scid=kb;en-us;328925&amp;Product=complus">KB article</a> discussing this problem with Win2k, which SP4 fixes, but we're seeing this on Windows XP machines, and I can't seem to find a corresponding article discussing XP.... (and yes, the machine seems to be fully patched, according to Windows Update, at least).</p></p>
+<p>Unfortunate as it is, just switching to another framework version is not exactly an option here (we're talking 200.000+ lines of code, so switching ain't exactly as easy as just recompiling), and unfortunately, the dev has to work on another app that does require v1.1 :(</p></p>
+<p>Any ideas?</p><!--end_raw--></p>

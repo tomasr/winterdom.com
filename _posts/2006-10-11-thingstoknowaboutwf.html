@@ -1,0 +1,69 @@
+---
+layout: post
+status: publish
+published: true
+title: Things to know about WF
+author:
+  display_name: Tomas Restrepo
+  login: tomasr
+  email: tomas@winterdom.com
+  url: http://winterdom.com/
+author_login: tomasr
+author_email: tomas@winterdom.com
+author_url: http://winterdom.com/
+wordpress_id: 868
+wordpress_url: http://winterdom.com/2006/10/thingstoknowaboutwf
+date: '2006-10-11 19:26:56 +0000'
+date_gmt: '2006-10-11 19:26:56 +0000'
+categories:
+- WinFX
+- Workflow
+tags: []
+comments:
+- id: 581
+  author: Scott Allen
+  author_email: scott@OdeToCode.com
+  author_url: http://www.OdeToCode.com/blogs/scott/
+  date: '2006-10-12 07:39:47 +0000'
+  date_gmt: '2006-10-12 07:39:47 +0000'
+  content: |
+    The ASP.NET team published the source code to the built in ASP.NET providers to make life easier for developers who need to implement custom providers. It's difficult to implement a robust,non-trivial provider, and having this source is a great benefit.
+    I think it would be a boon for the WF ecosystme if the team published source code for the base activity library, persistence, tracking, and shared connection services. To write a bulletproof, non-trivial custom activity you need to master a lot of nuances. The best examples of how to approach this work would be to have the BAL implementation available as a reference.
+- id: 582
+  author: Tomas Restrepo
+  author_email: tomas@winterdom.com
+  author_url: http://www.winterdom.com/weblog/
+  date: '2006-10-12 07:47:47 +0000'
+  date_gmt: '2006-10-12 07:47:47 +0000'
+  content: |
+    That's a great idea Scott, I like it. I think we do agree on the core issue: Source is needed, please :)
+- id: 583
+  author: Paul Andrew
+  author_email: pandrew1@hotmail.com
+  author_url: http://blogs.msdn.com/pandrew
+  date: '2006-10-16 20:42:03 +0000'
+  date_gmt: '2006-10-16 20:42:03 +0000'
+  content: |
+    The services aren't nearly as bad as it's been suggested. We worked hard on these and they will be supported by Microsoft. They aren't toys. Check out my blog response to the original post by Harry.
+    Regards,
+    Paul
+- id: 584
+  author: Tomas Restrepo
+  author_email: tomas@winterdom.com
+  author_url: http://www.winterdom.com/weblog/
+  date: '2006-10-16 21:05:58 +0000'
+  date_gmt: '2006-10-16 21:05:58 +0000'
+  content: |
+    Thanks for the comment! Interesting post, I'll certainly be linking to it in a separate entry. That said, I've never said  that WF is a toy; if I did, I wouldn't be spending as much time on it writing about it and coding for it. Heck, in fact it was you who suggested they were only examples in a thread in the WF forums, if I remember correctly ;)
+    That said, I do have a certain things about I feel strongly about (and have commented on previously) where I think that the focus on extensibility and on providing a host-agnostic engine proves frustrating for people trying to use WF. Just to be perfectly clear, I think this is mostly a problem of expectations, and I think perhaps MS has provided a somewhat confusing message on the topic. On one hand, you've been touting workflow as being "everywhere" and I'm sure you guys want as many people using WF as possible. On the other hand, a lot of what's provided for V1 I feel is not what people really expect when they think of workflow, and particularly not what they expect when they talk about "human workflow" as such.
+    Besides this, the current implementation of WF is, in a sense, a rough start more useful as is directly to either people who already build embedded workflow engines (i.e. K2.NET, and so forth) or people willing to do a significant investment in writing their own infrastructure to support WF in their own scenarios (even if they are fairly common ones). I think that a lot of people currently trying to use WF (and far more to come once it is released) will find themselves in those positions when they initially didn't expect to, thus causing them frustration (like the several cases one could point out in the WF forums) and in many cases extra work they were not aware would be needed.
+    Now, that said, I do think that WF is a *great start* towards the goals MS set, but a start nonetheless. I'm very confident the following releases after V1 will get us something far nearer what  a lot of people expect when they talk about workflow and get us more robust hosting infrastructure&#47;facilities, and I'm very interested in seeing how the next BizTalk version after 2006R2 incorporates WF technologies (particularly since I do a lot of BizTalk work and have been working with it for the past few years).
+---
+<p><!--start_raw-->
+<p><a href="http:&#47;&#47;devhawk.net&#47;">Harry Pierson</a> comments <a href="http:&#47;&#47;devhawk.net&#47;2006&#47;10&#47;09&#47;Things+I+Didnt+Realize+About+WF.aspx">here</a> and <a href="http:&#47;&#47;devhawk.net&#47;2006&#47;10&#47;11&#47;More+Stuff+I+Didnt+Know+About+WF.aspx">here</a> about "stuff he didn't know about WF". Pay attention; some good tidbits of knowledge you'll find in there. Pay particular attention when he says which features of WF as implemented on V1 are "toys"; it will save you a lot of grief down the road.</p>
+<p>This is something that, as much as I like WF, I feel very strongly about, and I've had some <a href="http:&#47;&#47;forums.microsoft.com&#47;MSDN&#47;ShowPost.aspx?PostID=310252&amp;SiteID=1">discussions</a> (not very succesful, mind you) on this topic in the past. I understand the fact that there are limitations on what could be implemented for a V1 product, and I do understand that because of the extensible and host-agnostic architecture of WF it was difficult to provide anymore out of the box for V1.&nbsp;I do fully recognize the goodness in the WF architecture (there is a <em>lot</em> to like, really). However, that was never my point.</p>
+<p>You know, it's fine if that was the intention, really. What I really don't like is that if indeed those services were merely examples&#47;toys intented to show they should have never been part of the core product in the first place. As Harry correctly points out, they should've been samples included in the SDK will full source code (what good is an example binary assembly with no code, reflector notwithstanding?).</p>
+<p>Making them part of the core product is, frankly, <em>deceiving</em> and will cause many people to think they are production ready services they can fully rely on for real world scenarios (and yes, that includes things like multi-server&#47;cluster&#47;load-balanced deployments and the like; those are must-have features for a product of this kind, imho), particularly since the documentation doesn't say outright what the limitations of them are.</p>
+<p>It never hurts to ask again :-)</p>
+<div class="wlWriterSmartContent" id="d7bf807d-7bb0-458a-811f-90c51817d5c2:73f2dd40-f742-49ff-828e-0a90591ce780" contenteditable="false" style="padding-right: 0px; display: inline; padding-left: 0px; padding-bottom: 0px; margin: 0px; padding-top: 0px">
+<p><span class="TagSite">Technorati:</span> <a href="http:&#47;&#47;technorati.com&#47;tag&#47;Windows+Workflow+Foundation" rel="tag" class="tag">Windows Workflow Foundation</a>, <a href="http:&#47;&#47;technorati.com&#47;tag&#47;WF" rel="tag" class="tag">WF</a><br &#47;><!-- StartInsertedTags: Windows Workflow Foundation, WF :EndInsertedTags --></p></div><!--end_raw--></p>

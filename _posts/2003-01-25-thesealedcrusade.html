@@ -1,0 +1,47 @@
+---
+layout: post
+status: publish
+published: true
+title: The Sealed Crusade
+author:
+  display_name: Tomas Restrepo
+  login: tomasr
+  email: tomas@winterdom.com
+  url: http://winterdom.com/
+author_login: tomasr
+author_email: tomas@winterdom.com
+author_url: http://winterdom.com/
+wordpress_id: 585
+wordpress_url: http://winterdom.com/2003/01/thesealedcrusade
+date: '2003-01-25 09:21:47 +0000'
+date_gmt: '2003-01-25 09:21:47 +0000'
+categories:
+- ".NET"
+tags: []
+comments:
+- id: 396
+  author: Dilip
+  author_email: sorry@nospam.bye
+  author_url: ''
+  date: '2003-01-25 11:21:53 +0000'
+  date_gmt: '2003-01-25 11:21:53 +0000'
+  content: |
+    <p>I feel y'all miss Chris' point.  all he is saying is whether it makes sense to derive or not is too limiting a decision to be made at the language level.  whether it adds complexity to your code or not is a function of your programming style.  you can cut vegetables with your kitchen knife or if you feel like it you can cut your toe.  its upto you -- don't blame the knife.<br &#47;>
+    </p>
+- id: 397
+  author: Tomas Restrepo
+  author_email: tomasr@mvps.org
+  author_url: http://www.winterdom.com/weblog
+  date: '2003-01-25 11:34:05 +0000'
+  date_gmt: '2003-01-25 11:34:05 +0000'
+  content: |
+    <p>Dilip,</p>
+    <p>Actually, that last sentence you point out is a double-edged sword: It can cut both ways. </p>
+    <p>Consider that same principle applied in the other direction: Don't blame sealed because it can be misused.</p>
+---
+<p><!--start_raw-->Our favorite all around <a href="http:&#47;&#47;www.sellsbrothers.com">geek</a> <a href="http:&#47;&#47;www.sellsbrothers.com&#47;spout&#47;#sealedSucks">rants</a> this week on the use of <code>sealed</code>.</p>
+<p>Sorry, Chris, but I beg to differ. I consider sealing a powerful abstraction. Sure, it limits the possibility of using extension by derivation, but so what? In many cases, it doesn't make much sense to derive at all. In others, it might add such complexity as to make it impractical (or at least too costly). And if I'm writing the code, then <i>I may not want to allow it</i>. So what?</p></p>
+<p>Sure, it's easy to complain when you're not the one testing and supporting the extra complexity, but what the hell :) [1]</p></p>
+<p>However, what really struck me hard was Chris' comment that <quote>"The C++ community survived very nicely without sealed for a decade..."</quote>. Are you serious? That's a really crappy argument. The C++ community has lived for a decade without the concept of proper language-defined interfaces, a decent way to define abstract base classes, and a half-assed way to make things internal to modules [2]. Would you do away with <code>interface</code>, <code>abstract</code> and <code>internal</code> accessibility, too?</p></p>
+<p>[1] OK, granted, I'll agree with you it is a feature that can easily be misused, and that the .NET framework designers may have been a bit too keen on its usage.<br />
+<br&#47;>[2] OK, so this one is not exactly the same. And for those that didn't quite get it, I'm talking about unnamed namespaces and internal linkage.</p><!--end_raw--></p>

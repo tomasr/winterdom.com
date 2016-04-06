@@ -1,0 +1,26 @@
+---
+layout: post
+status: publish
+published: true
+title: Playing with Roslyn and VSIX
+author:
+  display_name: Tomas Restrepo
+  login: tomasr
+  email: tomas@winterdom.com
+  url: http://winterdom.com/
+author_login: tomasr
+author_email: tomas@winterdom.com
+author_url: http://winterdom.com/
+wordpress_id: 1495
+wordpress_url: http://winterdom.com/?p=1495
+date: '2014-11-11 02:52:51 +0000'
+date_gmt: '2014-11-11 02:52:51 +0000'
+categories:
+- Visual Studio
+tags: []
+comments: []
+---
+<p>I have been playing a bit with the Roslyn APIs in Visual Studio "14". Since I am a big fan of VS editor extensions, my first attempt was building something simple: A Visual Studio tagger that would colorize uses of parameter variables and field variables in code:</p>
+<p><a href="http:&#47;&#47;winterdom.com&#47;wp-content&#47;uploads&#47;2014&#47;11&#47;RoslynColorizer.png"><img src="http:&#47;&#47;winterdom.com&#47;wp-content&#47;uploads&#47;2014&#47;11&#47;RoslynColorizer.png" alt="Roslyn Colorizer" width="360" height="168" class="alignnone size-full wp-image-1496" &#47;></a></p>
+<p>The code is ugly as it is, and does not use the Roslyn Async API, which is something I'd like to look into later on. I'm also not entirely sure if there's a better way to build such a thing (Roslyn has it's own concept of classification, but not sure if that is extensible). It was fun, though!</p></p>
+<p>Code can be found <a href="https:&#47;&#47;github.com&#47;tomasr&#47;roslyn-colorizer">here</a></p></p>

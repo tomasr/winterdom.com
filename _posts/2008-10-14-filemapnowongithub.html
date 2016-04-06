@@ -1,0 +1,93 @@
+---
+layout: post
+status: publish
+published: true
+title: FileMap now on GitHub
+author:
+  display_name: Tomas Restrepo
+  login: tomasr
+  email: tomas@winterdom.com
+  url: http://winterdom.com/
+author_login: tomasr
+author_email: tomas@winterdom.com
+author_url: http://winterdom.com/
+wordpress_id: 132
+wordpress_url: http://winterdom.com/2008/10/filemapnowongithub
+date: '2008-10-14 16:51:00 +0000'
+date_gmt: '2008-10-14 16:51:00 +0000'
+categories:
+- ".NET"
+tags: []
+comments:
+- id: 1254
+  author: Peter Uys
+  author_email: peter@uyses.com
+  author_url: ''
+  date: '2009-12-10 06:50:23 +0000'
+  date_gmt: '2009-12-10 06:50:23 +0000'
+  content: "Hi Tomas,\r\n\r\nI was wondering whether FileMap would help me achieve
+    the following: I have 2 apps: App_Collector collects data and writes a 60Kb csv
+    file to disk every 3 minutes. The second app, App_Displayer, displays the data
+    stored in the files. App_collector  runs all the time, but App_Displayer does
+    not, and when App_Displayer starts up it needs to read the 144 most recently stored
+    csv files in order to display what it needs to. App_Displayer takes several minutes
+    to read and process the 144 files, which is way too long.  If App_Collector stored
+    the most recent 144 files in memory, could FileMap be used so that App_Displayer
+    could get the data directly from App_Collector, in much less time than reading
+    the data from csv files on the disk?\r\n\r\nRegards,\r\nPeter"
+- id: 1255
+  author: Tomas Restrepo
+  author_email: tomas@winterdom.com
+  author_url: http://winterdom.com/
+  date: '2009-12-10 12:16:19 +0000'
+  date_gmt: '2009-12-10 12:16:19 +0000'
+  content: You could certainly do that, though you'd need to write some extra control
+    information into memory so that the reader could figure out where each one begins
+    and ends. However, I'm not sure how "easy" it would be to get working reliably
+    given how you'd need to basically allocate a big chunk of shared memory and then
+    handle it as some sort of circular buffers (so you'd need to do some serious interprocess
+    synchronization to avoid the writer and reader stepping on each others toes).
+- id: 1256
+  author: Peter Uys
+  author_email: peter@uyses.com
+  author_url: ''
+  date: '2009-12-12 23:53:32 +0000'
+  date_gmt: '2009-12-12 23:53:32 +0000'
+  content: "Thanks for your reply Tomas.  I will take a look and let you know what
+    I come up with.  The easy part is that Collector only writes and Displayer only
+    reads. I will use a mutex for IPC synchronization.\r\n\r\nDid you see that .NET
+    (Beta 2) has a System.IO.MemoryMappedFiles which seems to contain all the memory
+    mapped file io classes&#47;calls one would need, but I cannot wait until 4.0 is
+    released, a pity."
+- id: 1766
+  author: Florian
+  author_email: stanzy@gmx.de
+  author_url: ''
+  date: '2011-08-11 07:46:16 +0000'
+  date_gmt: '2011-08-11 07:46:16 +0000'
+  content: "Hello Thomas,\r\n\r\nfirst thanks for the excellent library! \r\nI have
+    an issue regarding the license.\r\nBased on the requirements of the project I
+    am working in I would have to make minor changes on the implementation itself
+    but LGPL would not allw me to do that (or at least to deploy the changed version
+    alongside with the other files of my project) if I got that right.\r\nActually
+    I think those changes would be commonly usefull, so maybe you just might want
+    to accept the changes and change the public version of FileMap.\r\n\r\nThe changes
+    are: \r\n1. Introducing SafeHandles instead of IntPtrs to make sure the FileMaps
+    are cleaned up in case of an ungracefull shutdown of the application.\r\n2. Making
+    The SafeHandle accessible from outside to make own Windows API-Calls to i.e. WriteFile()
+    from outside of the FileMap class possible (just like FileStream makes its SafeHandle
+    acessible).\r\n\r\nIf you are not interested in changing the public source, would
+    you probably just give me your ok to change the sources in my local version of
+    the FileMap project, so that I can use it for my project?\r\n\r\nBest regards"
+- id: 1781
+  author: asd.and.Rizzo
+  author_email: asd.and.Rizzo@gmail.com
+  author_url: ''
+  date: '2011-09-06 07:13:48 +0000'
+  date_gmt: '2011-09-06 07:13:48 +0000'
+  content: "Hello Thomas,\r\nI fully support Florian.\r\nDo not let your good work
+    not to be used by those who is on .NET <=3.5.\r\nThanks"
+---
+<p><!--start_raw-->
+<p>After a few years, people still ask about my old <a href="http:&#47;&#47;winterdom.com&#47;dev&#47;dotnet&#47;index.html">FileMap library</a>, a .NET wrapper for the Memory Mapped Files Win32 API, and I get occasional bug reports about it. It&rsquo;s hard to believe I wrote the original code over 5 years ago!</p>
+<p>Anyway, I&rsquo;ve now cleaned up the code (alongside some of those fixes), and posted it to a <a href="http:&#47;&#47;github.com&#47;tomasr&#47;filemap&#47;">GitHub repository</a> as well. I&rsquo;ve now updated the code to Visual Studio 2008 and cleaned up the unit tests.</p><!--end_raw--></p>

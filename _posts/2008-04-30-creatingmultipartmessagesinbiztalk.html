@@ -1,0 +1,29 @@
+---
+layout: post
+status: publish
+published: true
+title: Creating Multi-Part Messages in BizTalk
+author:
+  display_name: Tomas Restrepo
+  login: tomasr
+  email: tomas@winterdom.com
+  url: http://winterdom.com/
+author_login: tomasr
+author_email: tomas@winterdom.com
+author_url: http://winterdom.com/
+wordpress_id: 728
+wordpress_url: http://winterdom.com/2008/04/creatingmultipartmessagesinbiztalk
+date: '2008-04-30 20:35:20 +0000'
+date_gmt: '2008-04-30 20:35:20 +0000'
+categories:
+- BizTalk
+tags: []
+comments: []
+---
+<p><!--start_raw-->
+<p>Last year I wrote an entry about adding <a href="http:&#47;&#47;www.winterdom.com&#47;weblog&#47;2006&#47;08&#47;17&#47;ArbitraryBinaryAttachmentsToMultiPartMessages.aspx">arbitrary binary attachments</a> to a Multi-Part message in BizTalk 2006 using a helper C# component. That entry has been fairly popular (as far as BizTalk posts go, which is not usually much!), and I occasionally get questions about it.</p>
+<p>The sample uses a bit of clever code to insert arbitrary attachments into an existing XLANGMessage instance during construction. However, it's not very clear that this is actually a supported scenario and so there's always a chance it might get you into trouble.</p>
+<p>I recently thought of another way, possibly much better supported to accomplish the same in BizTalk 2006, though with a little performance hit: Use the Invoke Pipelines feature in BizTalk 2006 Orchestrations.</p>
+<p>Basically, the idea would be to create a custom pipeline component (depending on what you need it could be a regular encoding&#47;pre-assemble or an assembler component), generate a new multi-part message in it, and return that to the orchestration.</p>
+<p>I haven't tried it yet, but I think it should work.</p>
+<div class="wlWriterSmartContent" id="scid:0767317B-992E-4b12-91E0-4F059A8CECA8:0ba88b33-571f-45bb-a1bc-936bb484a6e0" style="padding-right: 0px; display: inline; padding-left: 0px; padding-bottom: 0px; margin: 0px; padding-top: 0px">Technorati tags: <a href="http:&#47;&#47;technorati.com&#47;tags&#47;BizTalk" rel="tag">BizTalk</a></div><!--end_raw--></p>

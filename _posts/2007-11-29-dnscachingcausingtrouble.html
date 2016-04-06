@@ -1,0 +1,46 @@
+---
+layout: post
+status: publish
+published: true
+title: DNS Caching Causing Trouble
+author:
+  display_name: Tomas Restrepo
+  login: tomasr
+  email: tomas@winterdom.com
+  url: http://winterdom.com/
+author_login: tomasr
+author_email: tomas@winterdom.com
+author_url: http://winterdom.com/
+wordpress_id: 776
+wordpress_url: http://winterdom.com/2007/11/dnscachingcausingtrouble
+date: '2007-11-29 14:34:43 +0000'
+date_gmt: '2007-11-29 14:34:43 +0000'
+categories:
+- Vista
+tags: []
+comments:
+- id: 522
+  author: Juan Carlos Figueroa
+  author_email: jcfigueroa@gmail.com
+  author_url: ''
+  date: '2008-01-05 18:37:16 +0000'
+  date_gmt: '2008-01-05 18:37:16 +0000'
+  content: |
+    Hi Tomas
+    I installed Windows Vista on my new laptop Latitude D830 and I began to have your same problems with the DNS client cache and specially with the caching of "server failures". I read a MS KB article that help to me to resolve the problem: <a href="http:&#47;&#47;support.microsoft.com&#47;kb&#47;928233&#47;en-us" rel="nofollow">http:&#47;&#47;support.microsoft.com&#47;kb&#47;928233&#47;en-us</a>
+    Best regards,
+    JC
+---
+<p><!--start_raw-->
+<p>Lately, I've been having quite a bit of problems at home with DNS and my Internet connection. The problem started manifesting by pages simply refusing to open in Firefox, constantly getting the "this page cannot be displayed" dialog as soon as I tried to open the page. </p>
+<p>Hitting F5 to refresh usually didn't work, and closing and reopening Firefox didn't work either. Sometimes (but not always), if I switched to IE7 and tried the exact same URL, it would open, and if I switched right away to Firefox, it would load there as well. Annoying, but most importantly, it didn't work always either. Sometimes the site refused to load in IE7 as well.</p>
+<p>I was really stumped about this issue, but it was starting to be obvious by now that this was some sort of DNS problem. I have my router configured to use the <a href="http:&#47;&#47;www.opendns.com&#47;">OpenDNS</a> servers instead of my ISP ones (as those are pretty flaky), so I would switched them temporarily to pick the servers from DHCP instead. It worked, but only for a little while; soon the error would start manifesting itself again. </p>
+<p>What was even more puzzling was that my other laptop, running Ubuntu doesn't seem to be much affected by the problem, and my sister's WinXP machine hasn't had much trouble, either.</p>
+<p>I still don't know exactly what the problem is, but it appears the problem is that my old Microsoft MN-700 wireless router is starting to get flaky and rejects a lot of DNS requests, but only momentarily. For example, if a page refused to open, sometimes I could go into the console and try to do a TRACERT command on the server and get a DNS error back, but if I ran it right away through NSLOOKUP, it would correctly resolve the host name.</p>
+<p>So, if the DNS errors are only short-lived flukes, why is it giving me so much trouble and seems so persisting (even surviving process restarts)? It would appear that the problem is Windows Vista itself. </p>
+<p>As far as I can see, it appears that the DNS Client Cache on Vista is way too aggressive, and tends to cache the "results" of failed DNS queries a bit too much (or at least more than previous windows versions). So what would happen is that when I tried to open a web page, and the DNS query failed, it would get inserted into the DNS cache and keep failing until the entry expired and was removed from the cache. </p>
+<p>This became pretty obvious when I started dumping the contents of the DNS Client Cache using the "ipconfig &#47;displaydns" command and could see entries like this on the cache:</p>
+<p>www.winterdom.com   <br &#47;>----------------------------------------    <br &#47;>Server failure of type A</p>
+<p>Running the "ipconfig &#47;flushdns" command would remove the entry from the cache and let Vista retry it, so that was one possible option to deal with the issue until I get a new router (pretty soon, hopefully). However, that's too annoying, so for now I've simply disabled the DNS cache in vista by shutting down the "DNS Client" (aka "dnscache") service. The problem still happens, but now pressing hitting refresh (F5) usually manages to open the page successfully. You can find more information about the DNS Cache on this <a href="http:&#47;&#47;support.microsoft.com&#47;kb&#47;318803">KB entry</a> (though it talks about WinXP and WinServer2K3).</p>
+<p>Why DNS server failures are cached by Vista makes absolutely no sense to me. I can understand caching negative DNS responses, but not server failures! On the other hand, I haven't sat down with a protocol analyzer to see what exactly DNS response the router is sending out.</p>
+<div class="wlWriterSmartContent" id="scid:0767317B-992E-4b12-91E0-4F059A8CECA8:ed67f4b8-4996-4065-b4dc-996255d55c5e" style="padding-right: 0px; display: inline; padding-left: 0px; float: none; padding-bottom: 0px; margin: 0px; padding-top: 0px">Technorati tags: <a href="http:&#47;&#47;technorati.com&#47;tags&#47;DNS" rel="tag">DNS</a>, <a href="http:&#47;&#47;technorati.com&#47;tags&#47;Networking" rel="tag">Networking</a></div><!--end_raw--></p>

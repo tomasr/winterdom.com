@@ -1,0 +1,96 @@
+---
+layout: post
+status: publish
+published: true
+title: FixEncoding Pipeline Component for BizTalk 2004
+author:
+  display_name: Tomas Restrepo
+  login: tomasr
+  email: tomas@winterdom.com
+  url: http://winterdom.com/
+author_login: tomasr
+author_email: tomas@winterdom.com
+author_url: http://winterdom.com/
+wordpress_id: 924
+wordpress_url: http://winterdom.com/2006/03/fixencodingpipelinecomponentforbiztalk2004
+date: '2006-03-24 15:45:39 +0000'
+date_gmt: '2006-03-24 15:45:39 +0000'
+categories:
+- BizTalk
+tags: []
+comments:
+- id: 639
+  author: Rich
+  author_email: rwallacejr@gmail.com
+  author_url: ''
+  date: '2006-03-27 13:41:57 +0000'
+  date_gmt: '2006-03-27 13:41:57 +0000'
+  content: |
+    Hey Tomas,
+    I tried to download the component, but I get a 404.  Looking forward to seeing the solution, and thanks agiain for the time.
+    -Rich
+- id: 640
+  author: Rich
+  author_email: rwallacejr@gmail.com
+  author_url: ''
+  date: '2006-03-28 14:18:45 +0000'
+  date_gmt: '2006-03-28 14:18:45 +0000'
+  content: |
+    Hey Tomas,
+    I'm still dead in the water...no clue what I'm doing wrong.  May I send you an email on my details and maybe we can grind a little bit to figure something out that I may be missing?
+    Thanks,
+    -Rich
+- id: 641
+  author: Bernd
+  author_email: BB@PROCAD.DE
+  author_url: ''
+  date: '2006-09-13 09:14:46 +0000'
+  date_gmt: '2006-09-13 09:14:46 +0000'
+  content: |
+    Hi Tomas,
+    I try to work with your tools for biztalk 2004 but it doesn't work.
+    I have a pipeline and create a flatefile and use the fix encoding after the flatfile assembler. The encoding makes no changes.
+    Thanks,
+    Bernd
+- id: 642
+  author: Tomas Restrepo
+  author_email: tomasr@mvps.org
+  author_url: http://www.winterdom.com/weblog/
+  date: '2006-09-13 09:18:02 +0000'
+  date_gmt: '2006-09-13 09:18:02 +0000'
+  content: |
+    Bern,
+    If this is on a send pipeline, you should pick up the updated version of the component which includes the SetEncodingComponent, and put it *before* the flat file assembler (i.e. in the Pre-Assemble stage of the pipeline).
+- id: 643
+  author: Rich
+  author_email: rwallacejr@gmail.com
+  author_url: http://richwallace.net
+  date: '2007-02-27 07:07:03 +0000'
+  date_gmt: '2007-02-27 07:07:03 +0000'
+  content: |
+    Hi Tomas,
+    Me again :)
+    I was curious, if I use your component in a Send pipeline component, can I essentially send my outgoing messages to MSMQ where the consuming applications that expect the ActiveXMEssageFormatter format will still work?  I was thinking of adding the component to my 'Pre-Assemble' and follow that up with the Xml Assembler in the 'Assemble' area and that *should* set the encoding correctly, I hope?
+    -Rich
+- id: 644
+  author: Tomas Restrepo
+  author_email: tomas@winterdom.com
+  author_url: http://www.winterdom.com/weblog/
+  date: '2007-02-27 16:21:35 +0000'
+  date_gmt: '2007-02-27 16:21:35 +0000'
+  content: |
+    Rich,
+    You can certainly use my component in a send pipeline, but be sure to use the SetEncodingComponent I mention here (http:&#47;&#47;www.winterdom.com&#47;weblog&#47;CommentView,guid,8eb8776b-4de3-421f-a620-eecda74d07dc.aspx) or just set the properties in your orchestration as necessary. That said, if you're using the ActiveXMessageFormatter with BizTalk 2004, you'll be in trouble, because the MSMQ adapter in 2004 doesn't expose a way to set the BodyType property that's needed for the ActiveXMessageFormatter to understand that the message is encoded as a string (see http:&#47;&#47;www.winterdom.com&#47;weblog&#47;2006&#47;01&#47;31&#47;MSMQActiveXFormatterStringsAndBizTalk2006.aspx)
+- id: 645
+  author: Rich
+  author_email: rwallacejr@gmail.com
+  author_url: http://richwallace.net
+  date: '2007-02-28 06:14:51 +0000'
+  date_gmt: '2007-02-28 06:14:51 +0000'
+  content: |
+    Thank you, sir....and there lies my issue, the subscribing applications do expect the ActiveXMessageFormatter and I am on BTS 2004.  Ah well, I'm using a custom .NET component called within an Expression shape now, but looks like I'll have to wait until I can get BTS upgraded.
+    Thanks again!
+    -Rich
+---
+<p><!--start_raw-->I've just <a href="http:&#47;&#47;www.winterdom.com&#47;dev&#47;bts&#47;EncodingComponent2004.zip">uploaded</a> a version of my <a href="http:&#47;&#47;www.winterdom.com&#47;weblog&#47;2006&#47;01&#47;31&#47;FixMessageEncodingCustomPipelineComponentSample.aspx">Fix Encoding Pipeline Component</a> I had written for BizTalk Server 2006 that has been retro-ported to BizTalk Server 2004. <br><br>The code is not exactly the same and it is not so pretty, but mostly because&nbsp; the .NET Frramework 1.1 does not have functionality to enumerate supported encodings (not even <a href="http:&#47;&#47;www.winterdom.com&#47;weblog&#47;2006&#47;01&#47;31&#47;FrameworkAPIInconsistencyWithEncodings.aspx">half baked</a> like v2.0), so I hardcoded a list of encodings for the dropdown, which I hope are supported :-).<br><br>Keep in mind you'll need to GAC the component in order for the custom UITypeEditor to work!. Enjoy.<br>
+<p></p><!--end_raw--></p>

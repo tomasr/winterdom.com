@@ -1,0 +1,195 @@
+---
+layout: post
+status: publish
+published: true
+title: SMTP Adapter in BTS2006 and HTML formatted messages
+author:
+  display_name: Tomas Restrepo
+  login: tomasr
+  email: tomas@winterdom.com
+  url: http://winterdom.com/
+author_login: tomasr
+author_email: tomas@winterdom.com
+author_url: http://winterdom.com/
+wordpress_id: 182
+wordpress_url: http://winterdom.com/2005/08/smtpadapterinbts2006andhtmlformattedmessages
+date: '2005-08-15 07:56:04 +0000'
+date_gmt: '2005-08-15 07:56:04 +0000'
+categories:
+- BizTalk
+tags: []
+comments:
+- id: 793
+  author: Aarthi
+  author_email: aarthisrinivasan@aol.com
+  author_url: ''
+  date: '2009-05-19 18:11:53 +0000'
+  date_gmt: '2009-05-19 18:11:53 +0000'
+  content: "I would really appreciate if you could tell me the link to download the
+    RawString project.\r\nYour help is appreciated a lot."
+- id: 796
+  author: Tomas Restrepo
+  author_email: tomas@winterdom.com
+  author_url: http://winterdom.com/
+  date: '2009-05-19 18:36:01 +0000'
+  date_gmt: '2009-05-19 18:36:01 +0000'
+  content: "Aarthi: The code for RawString is included within the BizTalk server documentation:\r\nhttp:&#47;&#47;msdn.microsoft.com&#47;en-us&#47;library&#47;ms962963.aspx"
+- id: 1097
+  author: Sascha
+  author_email: storzi@x-mail.net
+  author_url: ''
+  date: '2009-08-19 13:20:49 +0000'
+  date_gmt: '2009-08-19 13:20:49 +0000'
+  content: I thought you need a pipeline component with a MIME &#47; SMIME encoder
+    to be able to send mails?
+- id: 1098
+  author: Tomas Restrepo
+  author_email: tomas@winterdom.com
+  author_url: http://winterdom.com/
+  date: '2009-08-20 12:30:59 +0000'
+  date_gmt: '2009-08-20 12:30:59 +0000'
+  content: "@Sasha: No, not in this case. The SMIME encoder is mostly to encrypt&#47;sign
+    messages"
+- id: 1345
+  author: Claudiu
+  author_email: claudiu.herman@fraserhealth.ca
+  author_url: ''
+  date: '2010-03-31 16:57:18 +0000'
+  date_gmt: '2010-03-31 16:57:18 +0000'
+  content: Hi Tomas. I am battling with this for 2 weeks now. In BizTalk 2006, I receive
+    a text file in my orchestration, the file contains the subject and the body of
+    the email, and I need to attach two PDF files to my email, these files reside
+    on the disk. Most of the work is done; I build my email and send it through a
+    dynamic port. It reaches the destination, but has no attachments. I know it&rsquo;s
+    not my provider&#47;firewall because I built a C# program to email and the attachments
+    reach their destinations. I could use this class in my orchestration but somehow
+    I feel like using the SMTP capabilities built inside BizTalk (SMTP.Attachments).
+    Any idea where I go wrong? I can send you more details if needed.
+- id: 1346
+  author: Claudiu
+  author_email: claudiu.herman@fraserhealth.ca
+  author_url: ''
+  date: '2010-03-31 16:58:51 +0000'
+  date_gmt: '2010-03-31 16:58:51 +0000'
+  content: Forgot to say "Thank you" :-)
+- id: 1347
+  author: Tomas Restrepo
+  author_email: tomas@winterdom.com
+  author_url: http://winterdom.com/
+  date: '2010-03-31 18:30:53 +0000'
+  date_gmt: '2010-03-31 18:30:53 +0000'
+  content: 'Claudiu: It''s hard to know what might be wrong without more details,
+    but if I had to guess, I''d say you''re setting the adapter properties wrong.
+    Are you setting SMTP.MessagePartsAttachments = 0?'
+- id: 1350
+  author: Claudiu
+  author_email: claudiu.herman@fraserhealth.ca
+  author_url: ''
+  date: '2010-03-31 23:31:38 +0000'
+  date_gmt: '2010-03-31 23:31:38 +0000'
+  content: "Tomas, sorry for the late reply. This is what I have in my Construct Message&#47;Expression
+    shape: \r\n\r\nemailOut.EmailBody = new APRN.CustomMessages.RawString(bodySgm);\r\nemailOut.EmailBody(Microsoft.XLANGs.BaseTypes.ContentType)
+    = \"text&#47;html\"; \r\nemailOut(SMTP.SMTPHost) = operation.SmtpServer;\r\nemailOut(SMTP.From)
+    = operation.FromEmailAddress; \r\nemailOut(SMTP.EmailBodyFileCharset) = \"UTF-8\";\r\nemailOut(SMTP.MessagePartsAttachments)
+    = 2; \r\nemailOut(SMTP.Subject) = subjectSgm;  \r\nemailOut(SMTP.Attachments)
+    = attachments;\r\nSendAPRNEmailPort(Microsoft.XLANGs.BaseTypes.Address) = \"mailto:\"
+    + emailAddress; \r\n\r\nThe emailOut message is a multi-part message with one
+    part: EmailBody of type RawString. The variables bodySgm, operation.SmtpServer,
+    operation.FromEmailAddress, subjectSgm, attachments and emailAddress are dynamically
+    generated inside my orchestration by various assemblies. Variable 'attachments'
+    is of type string and holds something like: 'C:\\file01.pdf|C:\\file02.pdf|'.
+    \r\n\r\nTomas, I can provide more details, just let me know. Million thanks for
+    your help."
+- id: 1351
+  author: Tomas Restrepo
+  author_email: tomas@winterdom.com
+  author_url: http://winterdom.com/
+  date: '2010-03-31 23:33:46 +0000'
+  date_gmt: '2010-03-31 23:33:46 +0000'
+  content: 'Cliaudiu: Well, you''re setting SMTP.MessagePartsAttachments = 2, which
+    tells it to send extra message parts as attachments (and you have none), so of
+    course it will ignore SMTP.Attachments. Try setting it to 0 instead.'
+- id: 1352
+  author: Claudiu
+  author_email: claudiu.herman@fraserhealth.ca
+  author_url: ''
+  date: '2010-04-01 00:06:24 +0000'
+  date_gmt: '2010-04-01 00:06:24 +0000'
+  content: "Tomas, that did the trick. That, plus me deleting the MIME Send Pipeline
+    and using a Pass Through. \r\nThank you Tomas, you rock!"
+- id: 1576
+  author: rgoli
+  author_email: rgoli@cincom.com
+  author_url: ''
+  date: '2010-09-24 05:35:25 +0000'
+  date_gmt: '2010-09-24 05:35:25 +0000'
+  content: "Hi,\r\nThank you for settingup such a wonderful blog. I am workin gon
+    a biztalk project and for 1 module I am using POP3 adapter which receives PO in
+    text.html format. the PO is recived by the receive location and I am placing the
+    message body as aMsgID.txt on a local folder. I problem I am facing is the message
+    is losing its format in the Message body. For example the message that I send
+    in email is\r\n&#47;**********************&#47;\r\n&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&ndash;\r\nOrder
+    To : 72914 | Purchase Order No.: B8947851\r\nT&amp;F ALL STATES PTY LTD (T&amp;F
+    ALL STATES P| From Customer No. : 463\r\nPO BOX 696 | Order Date : 14 Jun 2010
+    Mon\r\n| Delivery Req`d On : 16 Jun 2010 Wed\r\nREGENTS PARK Phone: (02) 8594
+    780 begin_of_the_skype_highlighting              (02) 8594 780      end_of_the_skype_highlighting|
+    Required Time :\r\nNSW 2143 Fax: stuart.boydel| Cost Centre : M189\r\n&#47;***********************&#47;\r\nthe
+    message that Biztalk return is below\r\n&#47;********************&#47;\r\n&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;\r\n&mdash;&mdash;&ndash;\r\nOrder
+    To : 72914 | Purchase Order No.: B8947851\r\nT&amp;F ALL STATES PTY LTD (T&amp;F
+    ALL STATES P| From Customer No. : 463\r\nPO BOX 696 | Order Date : 14 Jun\r\n2010
+    Mon\r\n| Delivery Req`d On : 16 Jun\r\n2010 Wed\r\nREGENTS PARK Phone: (02) 8594
+    780 begin_of_the_skype_highlighting              (02) 8594 780      end_of_the_skype_highlighting|
+    Required Time :\r\nNSW 2143 Fax: stuart.boydel| Cost Centre : M189\r\n&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;\r\n&mdash;&mdash;&ndash;\r\n\r\nIt
+    looks like Biztalk is adding a Carriage Return after a certain length on each
+    line.\r\nthis will be a problem for be because using this output I will have to
+    create a flat file schema and go from there.\r\n\r\nThe setting tha tI put pn
+    my pop3 adapter are\r\napply MIME -False\r\ncontent type &ndash; text&#47;html\r\nbody
+    part &ndash; 0\r\n\r\nIn my pipeline MIMDE Decode settings are\r\nAllow MIME MEssage
+    &ndash; false\r\nBodyPart content type &ndash; empty\r\nbodypartindex -1\r\nvalidcrl
+    -false\r\nPlease help me in this regard.\r\nthank you,\r\nRegards\r\nrgoli"
+- id: 1586
+  author: prasad
+  author_email: velpulaprasad80@gmail.com
+  author_url: ''
+  date: '2010-10-08 11:00:34 +0000'
+  date_gmt: '2010-10-08 11:00:34 +0000'
+  content: "HI,\r\n I have one problem wired form last 2 weeks..\r\nI ma sending the
+    mail Attachemnt and body using customsnd pipeline.\r\nlike this I have multi Biztalk
+    applications.\r\nmy problem is all are sending perfect like attachemnt as a attachment
+    boby as body.. but one application is not delivery the same its delivery to mail
+    body and attachment both as attachments.\r\n\r\nand here funny thing is when i
+    ma sending to excect  xchange server i ma geeting the perfect.\r\nbut if I ma
+    using exchange server its got wired to me. both are switched(body and attachemnt)\r\n\r\nplease
+    let me give solution.\r\n\r\ni ma using Microsoft.Samples.BizTalk.XlangCustomFormatters.RawString
+    for body..."
+---
+<p><!--start_raw--><a href="http:&#47;&#47;blogs.msdn.com&#47;richardbpi&#47;">Richard Seroter</a> has a good post <a href="http:&#47;&#47;blogs.msdn.com&#47;richardbpi&#47;archive&#47;2005&#47;08&#47;15&#47;451760.aspx">here</a> on using the improved SMTP adapter in BizTalk Server 2006 and the options it provides. One question he asks is how to use it to send HTML-formatted messages but using dynamic content, instead of just a static one.</p>
+<p>I've managed to do this successfully using our good old RawString friend and multi-part message types. For this, I create a multi-part message type (let's call it EMailType) and adding two parts for it: the first one will hold the email's body (EmailBody, marked with Message Body part=true) and is of type RawString, while the second holds the actual original BizTalk message you want to add as an attachment (let's call it OriginalMessage).</p></p>
+<p>Then, all I have to do is create a new message of type EMailType and initialize it in a message assignment shape like this:</p></p>
+<pre><code>msgbody = new System.Text.StringBuilder();<br />
+msgbody.AppendLine("<html><body>");<br />
+msgbody.AppendLine("
+<p>The attached document failed on processing in BizTalk Server.</p>");<br />
+msgbody.AppendLine("
+<p><b>Error details:</b></p>
+<p>");<br />
+msgbody.AppendLine("Error Description: <i>" + FailedMessage(ErrorReport.Description) + "</i><br&#47;>");<br />
+&#47;&#47;msgbody.AppendLine("Message Type: " + FailedMessage(ErrorReport.MessageType) + "<br&#47;>");<br />
+msgbody.AppendLine("Error Type: " + FailedMessage(ErrorReport.ErrorType) + "<br&#47;>");<br />
+msgbody.AppendLine("Failure Category: " + System.Convert.ToString(FailedMessage(ErrorReport.FailureCategory)) + "<br&#47;>");<br />
+msgbody.AppendLine("Failure Code: " + FailedMessage(ErrorReport.FailureCode) + "<br&#47;>");<br />
+msgbody.AppendLine("Receive Port Name: " + FailedMessage(ErrorReport.ReceivePortName) + "<br&#47;>");<br />
+msgbody.AppendLine("Receive Location: <b>" + FailedMessage(ErrorReport.InboundTransportLocation) + "</b></p>");<br />
+msgbody.AppendLine("</body></html>");<br />
+EMail.EmailBody = new Microsoft.Samples.BizTalk.XlangCustomFormatters.RawString(msgbody.ToString());<br />
+EMail.EmailBody(Microsoft.XLANGs.BaseTypes.ContentType) = "text&#47;html";<br />
+EMail.OriginalMessage = FailedMessage;<br />
+EMail(SMTP.Subject) = "Failed error message notification";<br />
+EMail(SMTP.From) = "someone@somewhere.com";<br />
+EMail(SMTP.EmailBodyFileCharset) = "UTF-8";<br />
+EMail(SMTP.SMTPHost) = "localhost";<br />
+EMail(SMTP.MessagePartsAttachments) = 2;<br />
+</code></pre></p>
+<p>As you can probably guess, this is an HTML version of the HandlingFailures sample included with BizTalk 2006. The key parts to notice here is how we just create into a StringBuilder the entire HTML message content, construted dynamically. Once that's done, we assign the resulting string to the RawString object in out EmailBody member of the email and set the part's ContentType Context property to "text&#47;html". Do notice we assign the PART's context property, not to the entire message. The second thing to notice is that we configure the SMTP.MessagePartsAttachments context property of the message to 2, which tells the SMTP adapter to use the part marked with Message Body Part=true as the email's body, and attach all remaining parts as message attachments.</p></p>
+<p>You can download the entire example <a href="http:&#47;&#47;www.winterdom.com&#47;dev&#47;bts&#47;HandlingFailures.zip">here</a>. Notice you'll need to get the RawString project from the BTS documentation, though. (Speaking of which, I really think RawString should be part of the core BizTalk API, it's too useful not to).</p><br />
+<!--end_raw--></p>

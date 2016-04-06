@@ -1,0 +1,40 @@
+---
+layout: post
+status: publish
+published: true
+title: 'PipelineTesting: Creating Pipelines'
+author:
+  display_name: Tomas Restrepo
+  login: tomasr
+  email: tomas@winterdom.com
+  url: http://winterdom.com/
+author_login: tomasr
+author_email: tomas@winterdom.com
+author_url: http://winterdom.com/
+wordpress_id: 873
+wordpress_url: http://winterdom.com/2007/07/pipelinetestingcreatingpipelines
+date: '2007-07-23 21:23:16 +0000'
+date_gmt: '2007-07-23 21:23:16 +0000'
+categories:
+- BizTalk
+tags: []
+comments: []
+---
+<p><!--start_raw-->
+<p>Here are some options I'm exploring for creating pipelines for testing.</p>
+<p><strong>1. Using default pipelines</strong></p>
+<p>To use standard pipelines right now you need to reference Microsoft.BizTalk.DefaultPipelines and do something like this:</p>
+<pre><span style="color: blue">using</span> Microsoft.BizTalk.DefaultPipelines;<br />
+<span style="color: green">&#47;&#47; ...</span><br />
+ReceivePipelineWrapper receivePipeline =<br />
+PipelineFactory.CreateReceivePipeline(<span style="color: blue">typeof</span>(XMLReceive));</pre></p>
+<p>Not hard, but a bit inconvenient. Instead, I'm thinking of:</p>
+<pre>ReceivePipelineWrapper pipeline = Pipelines.Xml.NewReceive();</pre></p>
+<p><strong>2. Creating a pipeline from scratch</strong></p></p>
+<p>To create a pipeline from scratch in the current code you need create an empty pipeline and add each component at the proper stage. Unfortunately, the API here is pretty generic, and thus very verbose. Here's what I'm thinking of:</p>
+<pre>SendPipelineWrapper pipeline = Pipelines.NewSend()<br />
+.AddAssembler(<span style="color: blue">new</span> XmlAsmComp())<br />
+.AddEncder(<span style="color: blue">new</span> MIME_SMIME_Encoder())<br />
+.End();</pre></p>
+<p>I'm also thinking about doing something to make it easier to use built-in assembler&#47;disassembler components with specific schemas, as this is pretty hard to do with the current version without using a pre-compiled pipeline (because of how the properties in the components are defined).</p></p>
+<div class="wlWriterSmartContent" id="0767317B-992E-4b12-91E0-4F059A8CECA8:01a1cd6f-2792-498a-b87f-de114153de63" contenteditable="false" style="padding-right: 0px; display: inline; padding-left: 0px; padding-bottom: 0px; margin: 0px; padding-top: 0px">Technorati tags: <a href="http:&#47;&#47;technorati.com&#47;tags&#47;BizTalk" rel="tag">BizTalk</a>, <a href="http:&#47;&#47;technorati.com&#47;tags&#47;Testing" rel="tag">Testing</a></div><!--end_raw--></p>

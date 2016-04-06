@@ -1,0 +1,38 @@
+---
+layout: post
+status: publish
+published: true
+title: VS2008 and VSSettings files
+author:
+  display_name: Tomas Restrepo
+  login: tomasr
+  email: tomas@winterdom.com
+  url: http://winterdom.com/
+author_login: tomasr
+author_email: tomas@winterdom.com
+author_url: http://winterdom.com/
+wordpress_id: 685
+wordpress_url: http://winterdom.com/2007/09/vs2008andvssettingsfiles
+date: '2007-09-10 18:27:42 +0000'
+date_gmt: '2007-09-10 18:27:42 +0000'
+categories:
+- ".NET"
+tags: []
+comments:
+- id: 460
+  author: Bomb
+  author_email: thatshot00000001@lol.com
+  author_url: http://none.com
+  date: '2007-10-18 19:30:24 +0000'
+  date_gmt: '2007-10-18 19:30:24 +0000'
+  content: |
+    <b>How do i set a .vssettings file?</b>
+    Thank you.
+---
+<p><!--start_raw-->
+<p>I was setting up my Orcas VM again to play a bit with some VS2008 stuff. As part of my usual rituals, one of the first things I'll do is import my old VS2005 settings from a .VSSETTINGS file I keep around. Mostly it works fine, and much better in beta 2 than it used to work on previous builds (though it will still cause a couple of warnings).</p>
+<p>That said, I did run into two minor, but annoying things, related to Font and Color settings:</p>
+<ol>
+<li>Why, ohh why, did the XAML designer guys add <em>yet another</em> complete set of color settings for XAML code? Isn't XAML after all XML? Why couldn't they just use the base XML color settings and maybe add a couple of new options, instead of a complete new set?<br>I mean, I appreciate having flexibility, but there's a point after which too much configuration options is just annoying. Many Visual Studio color scheme setting files around (from those that do share it) don't really include the full set of color bindings (for example, many just have the base code options and <em>maybe</em> html&#47;xml settings, but not very often); now if you want to share a quality color scheme for VS2008 you need to configure <em>and</em> test yet another complete set of colors? ouch!</li>
+<li>The import seems to truncate some of the Fonts and Color settings. In particular, it seems to completely ignore colors for User Types (Enums), User Types (Interfaces), User Types (Value Types) and User Types (Delegates), setting them up with some other color (not sure yet where it picked it from). I guess this is probably a simple bug in the importer, but not sure it's worth reporting (unlikely to be fixed at this stage).</li></ol>
+<div class="wlWriterSmartContent" id="scid:0767317B-992E-4b12-91E0-4F059A8CECA8:37bcb93b-e774-4cc2-9008-a46bdbe8862d" style="padding-right: 0px; display: inline; padding-left: 0px; padding-bottom: 0px; margin: 0px; padding-top: 0px">Technorati tags: <a href="http:&#47;&#47;technorati.com&#47;tags&#47;Visual%20Studio%202008" rel="tag">Visual Studio 2008</a></div><!--end_raw--></p>

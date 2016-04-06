@@ -1,0 +1,58 @@
+---
+layout: post
+status: publish
+published: true
+title: Filtering Child Activities on a Composite Activity
+author:
+  display_name: Tomas Restrepo
+  login: tomasr
+  email: tomas@winterdom.com
+  url: http://winterdom.com/
+author_login: tomasr
+author_email: tomas@winterdom.com
+author_url: http://winterdom.com/
+wordpress_id: 1042
+wordpress_url: http://winterdom.com/2006/09/filteringchildactivitiesonacompositeactivity
+date: '2006-09-10 11:04:51 +0000'
+date_gmt: '2006-09-10 11:04:51 +0000'
+categories:
+- WinFX
+- Workflow
+tags: []
+comments: []
+---
+<p><!--start_raw-->
+<p>If you're creating a custom composite activity, you might need to restrict whether a given activity can be inserted as a child at a specific point of your composite activity when working on the Workflow Designer. Fortunately, this is actually fairly easy using the designer facilities in Windows Workflow Foundation. </p>
+<p>Let's quickly sample this by building a custom CodeFirstSequentialActivity, which is a simple sequential composite activity that requires that the first child activity in the sequence is a CodeActivity. Other than that, any other type of activity can be a child.</p>
+<p>First, we'll create a custom designer class for our activity, which we'll inherit from the SequenceDesigner class. In it, we'll override the CanInsertActivities method, in which we'll do a simple test: If the insertion point is the first one on our composite activities, then we'll check that the first activity being dropped&#47;inserted is indeed a CodeFirstActivity, and, if so, just return false to block the designer from inserting the child activities:</p></p>
+<div class='codebg'><code><span class="StorageClass">public</span>&nbsp;<span class="StorageClass">class</span>&nbsp;CodeFirstSequentialActivityDesigner : SequenceDesigner<br &#47;><br />
+{<br &#47;><br />
+&nbsp;&nbsp; <span class="StorageClass">public</span>&nbsp;<span class="StorageClass">override</span>&nbsp;<span class="Type">bool</span>&nbsp;CanInsertActivities(HitTestInfo insertLocation, <br &#47;><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;System.Collections.ObjectModel.ReadOnlyCollection<Activity> activitiesToInsert)<br &#47;><br />
+&nbsp;&nbsp; {<br &#47;><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="Type">bool</span>&nbsp;canDo = <span class="Statement">base</span>.CanInsertActivities(insertLocation, activitiesToInsert);<br &#47;><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;CompositeActivity theActivity = Activity <span class="Statement">as</span>&nbsp;CompositeActivity;<br &#47;><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="Conditional">if</span>&nbsp;( theActivity != <span class="Constant">null</span>&nbsp;)<br &#47;><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{<br &#47;><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span class="Comment">&#47;&#47; first activity in can only be a CodeActivity</span><br &#47;><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span class="Conditional">if</span>&nbsp;( insertLocation.MapToIndex() == <span class="Number">0</span>&nbsp;)<br &#47;><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br &#47;><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="Conditional">if</span>&nbsp;( !(activitiesToInsert[<span class="Number">0</span>] <span class="Statement">is</span>&nbsp;CodeActivity) )<br &#47;><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{<br &#47;><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span class="Repeat">return</span>&nbsp;<span class="Constant">false</span>;<br &#47;><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<br &#47;><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<br &#47;><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<br &#47;><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="Repeat">return</span>&nbsp;canDo;<br &#47;><br />
+&nbsp;&nbsp; }<br &#47;><br />
+}<br />
+</code></div></p>
+<p>Then, it's just a matter of associating our custom designer with our activity:</p></p>
+<div class='codebg'><code>[Designer(<span class="Statement">typeof</span>(CodeFirstSequentialActivityDesigner))]<br &#47;><br />
+<span class="StorageClass">class</span>&nbsp;CodeFirstSequentialActivity : CompositeActivity<br &#47;><br />
+{<br &#47;><br />
+&nbsp;&nbsp; <span class="Comment">&#47;&#47; ...</span><br &#47;><br />
+}<br />
+</code></div></p>
+<p>A nice thing about this is that this will block Drag & Drop operations as well as custom trying to copy&#47;paste activities into our custom composite activities, without having to handle both operations as different things.</p></p>
+<p>One thing to watch out, though, is that this only takes care of the designer. You'll also want to create a <a href="http:&#47;&#47;www.winterdom.com&#47;weblog&#47;2006&#47;02&#47;17&#47;SimpleWFActivityValidator.aspx">custom activity validator</a> that validates that child activities&nbsp;are of the right type.</p><!--end_raw--></p>

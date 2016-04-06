@@ -1,0 +1,45 @@
+---
+layout: post
+status: publish
+published: true
+title: Poison Messages and Ordered Processing
+author:
+  display_name: Tomas Restrepo
+  login: tomasr
+  email: tomas@winterdom.com
+  url: http://winterdom.com/
+author_login: tomasr
+author_email: tomas@winterdom.com
+author_url: http://winterdom.com/
+wordpress_id: 581
+wordpress_url: http://winterdom.com/2007/02/poisonmessagesandorderedprocessing
+date: '2007-02-12 06:55:14 +0000'
+date_gmt: '2007-02-12 06:55:14 +0000'
+categories:
+- Architecture
+- WCF
+tags: []
+comments:
+- id: 132082
+  author: Custom XML Validator for Throwing Multiple Errors - BizTalk lessons from
+    the field - Site Home - MSDN Blogs
+  author_email: ''
+  author_url: http://blogs.msdn.com/b/nabeelp/archive/2011/02/16/custom-xml-validator-for-throwing-multiple-errors.aspx
+  date: '2014-04-24 11:23:47 +0000'
+  date_gmt: '2014-04-24 11:23:47 +0000'
+  content: "[&#8230;] an incoming message fails validation it can be regarded as a
+    &ldquo;poison message&rdquo;&nbsp; (http:&#47;&#47;winterdom.com&#47;2007&#47;02&#47;poisonmessagesandorderedprocessing),
+    and should not be allowed to process further through the solution.&nbsp; Instead,
+    details of why [&#8230;]"
+---
+<p><!--start_raw-->
+<p><a href="http:&#47;&#47;blogs.msdn.com&#47;drnick&#47;">Nicholas Allen</a> has been posting some really great entries on <a href="http:&#47;&#47;blogs.msdn.com&#47;drnick&#47;archive&#47;2007&#47;02&#47;09&#47;poison-message-handling.aspx">Poison Message handling</a> in WCF and specifically the options the <a href="http:&#47;&#47;blogs.msdn.com&#47;drnick&#47;archive&#47;2007&#47;02&#47;12&#47;msmq-and-poison-messages.aspx">MSMQ binding</a> offers for that. He also mentions that MSMQ v4 (Longhorn server?) will support some new features to make this easier: Retry Queues. Very interesting stuff.</p>
+<p>One thing I wanted to comment on to hopefully complement a bit Nicholas' explanations is the relationship between poison messages and in-order processing.</p>
+<p>The term "poison messages" might seem to relate to a kind of malicious attack; that is, something intentional. However, that's not necessarily true. A poison message is in essence anything that prevents you from continuing processing by failing repeatedly. This could be something unintentional but well intented, like receiving a malformed message from a trusted business partner that you still need to process.</p>
+<p>If you don't need to guarantee in-order processing of the received messages, then dealing with poison messages can be dealt very efficiently in an asynchronous fashion like the one Nicholas describes: You move the problem message somewhere else, and continue processing the messages on the incoming queue; meanwhile you deal with the message,&nbsp;possibly&nbsp;fix it&nbsp;and eventually feed it back into the&nbsp;incoming queue for processing.</p>
+<p>However, if you <em>do</em> need to guarantee in-order processing of received messages, this is not an option. If the poison message was a valid business message (like a malformed order from one of your big customers), you can't simply move the message and continue processing. Instead, the situation needs to be resolved in a <em>synchronous</em> fashion: you must inspect and resolve the problem message before you continue processing.</p>
+<p>Normally, doing this requires some manual intervention from an operator or analyst, but it also requires your service to proactively deal with this situations. At the least, a responsible application will suspend all processing when it detects a poison message and raise alerts so that the operator knows a problem ocurrs. Notice that it will need to suspend processing, but it doesn't mean it needs to stop receiving messages altogether. Normally, you'll still receive messages and queue them for later processing.</p>
+<p>The operator or analyst would then inspect the problem message and determine if it's not something important (or if it indeed was a malicious message) and discard it. If he&#47;she determines it is a valid request message, he&#47;she might need to fix it by hand or with appropriate tools (for example: remove an invalid character that was causing problems or change the message encoding) and then feed it back to the service. In the latter case, you need to provide a way to put the message back into the processing queue in <em>the right position</em> (i.e. at the beginning) and in either case you need to provide a way for the operator to ask the service to restart processing of received messages.</p>
+<p>One possible way to support feeding messages to the service for immediate processing and not having to mess around with the incoming queues is to provide private alternative endpoints that bypass the normal receive queues. Fortunately, doing this with WCF is easy because you can expose a single service as multiple endpoints using different bindings, for example, expose an alternative HTTP-based endpoint besides the main MSMQ based one. In BizTalk, for example, one would do it by having an alternative receive location (for this purpose usually a FILE receive location works very well).</p>
+<p>One thing to keep in mind is that it's important that these alternate endpoints are private only, are not advertised and are kept secure, as they could be used by rogue agents to disrupt your in-order processing mechanisms.</p>
+<div class="wlWriterSmartContent" id="0767317B-992E-4b12-91E0-4F059A8CECA8:5cb19a61-7a58-406d-884c-5ea620dbece0" contenteditable="false" style="padding-right: 0px; display: inline; padding-left: 0px; padding-bottom: 0px; margin: 0px; padding-top: 0px">Technorati tags: <a href="http:&#47;&#47;technorati.com&#47;tags&#47;Windows%20Communication%20Foundation" rel="tag">Windows Communication Foundation</a>, <a href="http:&#47;&#47;technorati.com&#47;tags&#47;WCF" rel="tag">WCF</a>, <a href="http:&#47;&#47;technorati.com&#47;tags&#47;Architecture" rel="tag">Architecture</a></div><!--end_raw--></p>

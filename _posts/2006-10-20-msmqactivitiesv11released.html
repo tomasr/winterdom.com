@@ -1,0 +1,132 @@
+---
+layout: post
+status: publish
+published: true
+title: MsmqActivities v1.1 Released
+author:
+  display_name: Tomas Restrepo
+  login: tomasr
+  email: tomas@winterdom.com
+  url: http://winterdom.com/
+author_login: tomasr
+author_email: tomas@winterdom.com
+author_url: http://winterdom.com/
+wordpress_id: 179
+wordpress_url: http://winterdom.com/2006/10/msmqactivitiesv11released
+date: '2006-10-20 16:44:00 +0000'
+date_gmt: '2006-10-20 16:44:00 +0000'
+categories:
+- ".NET"
+- WinFX
+- Workflow
+tags: []
+comments:
+- id: 125
+  author: Jon Flanders
+  author_email: jon.flanders@gmail.com
+  author_url: http://www.masteringbiztalk.com/
+  date: '2006-10-20 20:33:22 +0000'
+  date_gmt: '2006-10-20 20:33:22 +0000'
+  content: |
+    Hey Tomas - sorry I missed your earlier entry - but why not just have your service hook into the WorkflowLoaded event?  That way if a Workflow came up from the persistence store and you didn't have a listener - you could recreate it from the Workflow definition (e.WorkflowInstance.GetWorkflowDefinition()).
+- id: 126
+  author: Tomas Restrepo
+  author_email: tomas@winterdom.com
+  author_url: http://www.winterdom.com/weblog/
+  date: '2006-10-20 20:44:03 +0000'
+  date_gmt: '2006-10-20 20:44:03 +0000'
+  content: |
+    Jon,
+    I thought about doing something similar, but I was under the impression that wouldn't quite work. Here's what I was thinking:
+    If the workflow is "stuck" waiting for the MSMQ message to arrive at the queue, and the host is unloaded, then when the host was reloaded the workflow instance wouldn't have been reloaded by the engine because it was idled and not running  (at least that's what I understood from our earlier discussion in the forums). If so, hooking into the WorkflowLoaded event wouldn't do me any good as it is precisely my MsmqListenerService the one would be responsible for "waking" the workflow.
+    Besides of this, I don't see how hooking into the WorkflowLoaded event would've saved me the trouble of keeping track of the active subscriptions in a persistent store. Maybe I'm missing something, in which case I'd sure appreciate a hint :)
+- id: 127
+  author: Jon Flanders
+  author_email: jon.flanders@gmail.com
+  author_url: http://www.masteringbiztalk.com/
+  date: '2006-10-20 22:00:20 +0000'
+  date_gmt: '2006-10-20 22:00:20 +0000'
+  content: |
+    I think you are correct that handling WorkflowLoaded won't work in this case -sorry I wasn't thinking it throught.
+    I am still concerned about your approach (essentially another persistence service to take care of).  Especially in light of:
+    a) How will this work in a mulit-host instance environment
+    b) How will it stay consistent with the state of the workflow itself (what if your service gets out of sync with the current state of the workflow).
+    Which is why I would prefer some system that used the metadata of the activity instance itself - I would lean toward SqlPersistenceService.GetAllWorkflows  - which would allow you to get the activity metadata without having to load it into memory.  OTOH - this is only on the OOB persistence service.
+- id: 128
+  author: Dub
+  author_email: atrusov@gmail.com
+  author_url: ''
+  date: '2007-03-15 04:36:04 +0000'
+  date_gmt: '2007-03-15 04:36:04 +0000'
+  content: |
+    bug (SqlMsmqSubscriptionPersistenceService.cs):
+    public SqlMsmqSubscriptionPersistenceService(string connString)
+    {
+    if ( String.IsNullOrEmpty(<b>_connectionString</b>) )
+    throw new ArgumentNullException("connString");
+    _connectionString = connString;
+    }
+- id: 129
+  author: Tomas Restrepo
+  author_email: tomas@winterdom.com
+  author_url: http://www.winterdom.com/weblog/
+  date: '2007-03-15 16:25:03 +0000'
+  date_gmt: '2007-03-15 16:25:03 +0000'
+  content: |
+    Dub,
+    Absolutely right. I've fixed it and updated the download. Thanks!
+- id: 756
+  author: Larry
+  author_email: larrywa@microsoft.com
+  author_url: ''
+  date: '2009-05-11 15:23:20 +0000'
+  date_gmt: '2009-05-11 15:23:20 +0000'
+  content: "Hi Tomas,\r\n\r\nIt appears this handles the situation where we would
+    need to have the context information like is supplied with the wsHttpContext and
+    other context related bindings.  Although I can write a custom binding for the
+    ReceiveActivity to connect to MSMQ, MSMQ does not have the context information.\r\n\r\nHow
+    are you getting the instance ID?"
+- id: 757
+  author: Tomas Restrepo
+  author_email: tomas@winterdom.com
+  author_url: http://winterdom.com/
+  date: '2009-05-11 17:35:06 +0000'
+  date_gmt: '2009-05-11 17:35:06 +0000'
+  content: 'Larry: Not sure I understand the question. Are you referring to the Workflow
+    Instance ID stored in the subscription db?'
+- id: 759
+  author: Larry
+  author_email: larrywa@microsoft.com
+  author_url: ''
+  date: '2009-05-12 16:06:55 +0000'
+  date_gmt: '2009-05-12 16:06:55 +0000'
+  content: Yes, I am referring to the workflow instance ID.
+- id: 760
+  author: Tomas Restrepo
+  author_email: tomas@winterdom.com
+  author_url: http://winterdom.com/
+  date: '2009-05-12 17:25:29 +0000'
+  date_gmt: '2009-05-12 17:25:29 +0000'
+  content: "Larry: If you look at the code, the workflow instance id is obtained in
+    the runtime service (MsmqListenerService), in the Subscribe() method simply by
+    using WorkflowEnvironment.WorkflowInstanceId.\r\n\r\nThe Subscribe() method is
+    called by the MsmqReceiveActivity from its implementation of IEventActivity.Subscribe()"
+---
+<p><!--start_raw-->
+<p></p>
+<p>I&rsquo;ve just <a href="http:&#47;&#47;www.winterdom.com&#47;dev&#47;wwf&#47;MsmqActivities.zip">uploaded</a> a new release (v1.1) of my <a href="http:&#47;&#47;www.winterdom.com&#47;weblog&#47;2006&#47;03&#47;03&#47;MSMQWorkflowActivitiesV1.aspx">MSMQ Activities</a> for Windows Workflow Foundation. This release does a few general fixes and polishes a few things here and there, but the largest change is a modification of the MsmqListenerService runtime service used by the MsmqReceiveActivity to listen to the MSMQ queues. This change is aimed at improving the situation I talked about on <a href="http:&#47;&#47;www.winterdom.com&#47;weblog&#47;2006&#47;10&#47;16&#47;EventActivitiesAndPersistentSubscriptions.aspx">this past entry</a>. Basically, this is something that will be very handy to ensure the activities work even when the hosting process dies unexpectedly and is restarted.
+<p>As part of this release, a new interface is introduced in the component: IMsmqSubscriptionPersistenceService (sorry for the long name). This interface is used by the MsmqListenerService to handle persistence of all subscriptions created at runtime to a given MSMQ Queue. This interface has three methods that are consumed by the listener service:
+<ul>
+<li><em><font color="#008000">Persist(string host, MsmqSubscription subscription):<br></font></em>This method should take the specified subscription and save it to a persistent storage, and is called when an MsmqReceiveActivity subscribes to a given MSMQ Queue. <br>This method is called inside a System.Transactions.TransactionScope so that the listener service can abort the persistence if anything happens after that.<br></li>
+<li><em><font color="#008000">IEnumerable<MsmqSubscription> LoadAll(string host):</font><br></em>This method is called when the listener service is started (right after the WorkflowEngine is started on the process, in fact) to get a list of all subscriptions stored for the given host. For each subscription that is loaded, the listener service configures again a listener on the queue the subscription relates to.<br></li>
+<li><em><font color="#008000">Remove(MsmqSubscription subscription):</font></em><br>This method is called when a MsmqReceiveActivity removes a subscription to a queue. It should delete any record kept about the specified subscription in the persistent storage.</li></ul>
+<p>The host argument to Persist() and LoadAll() is a very basic mechanism to allow you to keep a single persistent storage for subscriptions coming from multiple applications (i.e. multiple processes&#47;machines hosting the WorkflowRuntime). The host name to use is specified when you create the MsmqListenerService instance either through an argument in a new constructor overload, or through the configuration file through the &ldquo;hostname&rdquo; attribute. If you do not specify a hostname, the value &ldquo;default&rdquo; will be used instead. Be careful to always set the hostname explicitly if you&rsquo;re going to be sharing the persistence storage.</p>
+<p>Out of the box, I provide two implementations of the IMsmqSubscriptionPersistenceService interface:</p>
+<ul>
+<li><em><font color="#008000">NullMsmqSusbcriptionPersistenceService:</font></em> This is an empty implementation that doesn&rsquo;t do anything. It can be used if you simply don&rsquo;t want or need to support subscription persistence.<br></li>
+<li><em><font color="#008000">SqlMsmqSubscriptionPersistenceService:</font></em> This implementation stores all subscriptions as records in a table in a SQL Server database called &ldquo;MsmqSubscriptions&rdquo;. </li></ul>
+<p><img height="345" src="http:&#47;&#47;www.winterdom.com&#47;weblog&#47;content&#47;binary&#47;WindowsLiveWriter&#47;MsmqActivitiesv1.1Released_F7D2&#47;MsmqSubs_DB%5B20%5D.png" width="621"> </p>
+<p>You can select which implementation to use by simply adding it to the WorkflowRuntime&rsquo;s runtime services collection (either through code or through the configuration file). In the case of the SQL implementation, you&rsquo;ll need to provide the connection string to the database to use either through the constructor or through the &ldquo;ConnectionString&rdquo; attribute in the configuration XML.</p>
+<p>Notice that you because of this, you could easily plug in your own custom persistence implementation to support other databases or repositories. One cool thing is that the WorkflowRuntime in essence acts here as an Inversion of Control (IoC) implementation for anything running on the Windows Workflow Foundation platform!</p>
+<div class="wlWriterSmartContent" id="d7bf807d-7bb0-458a-811f-90c51817d5c2:49f76c10-7d6e-483e-ab5e-936242c1feb6" contenteditable="false" style="padding-right: 0px; display: inline; padding-left: 0px; padding-bottom: 0px; margin: 0px; padding-top: 0px">
+<p><span class="TagSite">Technorati:</span> <a href="http:&#47;&#47;technorati.com&#47;tag&#47;Windows+Workflow+Foundation" rel="tag" class="tag">Windows Workflow Foundation</a>, <a href="http:&#47;&#47;technorati.com&#47;tag&#47;WF" rel="tag" class="tag">WF</a>, <a href="http:&#47;&#47;technorati.com&#47;tag&#47;MSMQ" rel="tag" class="tag">MSMQ</a><br &#47;><!-- StartInsertedTags: Windows Workflow Foundation, WF, MSMQ :EndInsertedTags --></p></div><!--end_raw--></p>

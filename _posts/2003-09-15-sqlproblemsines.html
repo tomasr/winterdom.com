@@ -1,0 +1,40 @@
+---
+layout: post
+status: publish
+published: true
+title: SQL problems in ES?
+author:
+  display_name: Tomas Restrepo
+  login: tomasr
+  email: tomas@winterdom.com
+  url: http://winterdom.com/
+author_login: tomasr
+author_email: tomas@winterdom.com
+author_url: http://winterdom.com/
+wordpress_id: 489
+wordpress_url: http://winterdom.com/2003/09/sqlproblemsines
+date: '2003-09-15 20:05:40 +0000'
+date_gmt: '2003-09-15 20:05:40 +0000'
+categories:
+- Enterprise Services
+tags: []
+comments:
+- id: 347
+  author: Morten Abrahamsen
+  author_email: spam@morty.info
+  author_url: http://morty.info
+  date: '2003-09-16 02:16:24 +0000'
+  date_gmt: '2003-09-16 02:16:24 +0000'
+  content: |
+    <p>As a word of advice, get SP4 on the servers soon. We have a fairly large ES system running and we had all sorts of wierd unexplainable problems while running SP3.</p>
+    <p><br &#47;>
+    0x8004D00E is usually caused by having a stored procedure, or a SQL statement, that produces a SQL Error. These can be trapped using local tx, but when you move to dist tx this will no longer work. The entire dist tx will be abortet on the first SQL failure. Have you recently moved from local TX to ES&#47;Dist TX ?<br &#47;>
+    </p>
+---
+<p><!--start_raw-->Has anyone run into any problems with connecting to SQL Server 2000 database servers from within ServicedComponents that use the declarative transaction service in COM+?</p>
+<p>The reason I ask is because while stabilizing the code base for our project, and doing a few tests with a third party product, we've run into a few snags that don't seem to repro, yet come up fairly often...</p></p>
+<p>The first of them is when you get up the dreaded 0x8004D00E error, also known as "The transaction has already been implicitly or explicitly committed or aborted", which seems to come up in even pretty simple cases. I still have yet to determine what causes the problem, but most of the time shutting down the SQL Server engine and the MSDTC service on the database server and restarting them, then shutting down the COM+ server applications seems to resolve the issue.</p></p>
+<p>The second one is actually somewhat uglier. While doing some tests with a third party transaction integration engine (especifically Unisys OpenTI product which I mentioned in another post) to have it call .NET ServiceComponents, we ran into a few cases where any transaction coming from the OpenTI side would cause the SqlConnection::Open() call in the .NET component to fail with a nice "unspecified error" error message (specifically, a ComException with the E_FAIL HRESULT (0x80004005). </p></p>
+<p>The really annoying part of this last error was the fact that no other information was provided at all about the exception... no entries on the event log anywhere, no SQL Server errors... nothing! And what seemed like an even worse problem was that as far as I could see, the SqlClient provided left the failed connection on the pool, which caused subsequent calls to the component to fail for the same reason, even if they weren't coming in through the transaction gateway.</p></p>
+<p>OK, so the last one is a fairly esoteric error, but trying to find out what the problem is is turning out to be quite painful. Ohh, and BTW, the machines in question are all running Win2k SP3 (yeah, time to move to SP4, I know).</p></p>
+<p>Any Ideas?</p><!--end_raw--></p>

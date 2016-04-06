@@ -1,0 +1,29 @@
+---
+layout: post
+status: publish
+published: true
+title: Porting C++ Code to 64-bits
+author:
+  display_name: Tomas Restrepo
+  login: tomasr
+  email: tomas@winterdom.com
+  url: http://winterdom.com/
+author_login: tomasr
+author_email: tomas@winterdom.com
+author_url: http://winterdom.com/
+wordpress_id: 748
+wordpress_url: http://winterdom.com/2008/10/portingccodeto64bits
+date: '2008-10-17 14:01:00 +0000'
+date_gmt: '2008-10-17 14:01:00 +0000'
+categories:
+- C++
+tags: []
+comments: []
+---
+<p><!--start_raw-->
+<p>Back in the good old days I spent far more time writing C++ code than other things (well, there was no C# back then!). In those days, the initial support for 64-bit compilation was added to the Platform SDK (now the Windows SDK&hellip; again!).</p>
+<p>At that time I couldn&rsquo;t even dream of getting access to a 64-bit machine, and only very recently was able to get one. However, I still thought that learning to write portable 32&#47;64-bit code the way the SDK prescribed was a good idea and so got used to it a bit. </p>
+<p>It wasn&rsquo;t actually all that hard. A big chunk of it was just being careful about integral&#47;pointer conversions, using the new SDK data types like INT_PTR, ULONG_PTR and friends, and being wary of memory alignment issues. Just that would take you a long way on the right path. It was particularly easy when you were starting from scratch.</p>
+<p>Since I do a lot less C++ these days, I had put a lot of that knowledge in the back of my head. Recently, however, I started looking into making some initial changes to an existing C++ code base to start cleaning up stuff for porting to 64-bits. </p>
+<p>On the plus side, the Visual C++ compiler gives you a lot of really good warnings on problematic spots, either by actually compiling with the 64-bit compiler or by using the old &#47;Wp64 switch on the regular 32-bit one (though the switch is deprecated now). <a href="http:&#47;&#47;msdn.microsoft.com&#47;en-us&#47;library&#47;bb427430(VS.85).aspx">Documentation</a> on the Windows SDK about 64-bit porting issues is also fairly good.</p>
+<p>On the negative side, it can still be a bit of a drag; it&rsquo;s a lot more challenging to modify an existing, complex code base than starting writing portable code from scratch. Still, it&rsquo;s been an interesting experience ;-).</p><!--end_raw--></p>

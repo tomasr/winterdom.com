@@ -1,0 +1,32 @@
+---
+layout: post
+status: publish
+published: true
+title: 'PS: Executing string as a command'
+author:
+  display_name: Tomas Restrepo
+  login: tomasr
+  email: tomas@winterdom.com
+  url: http://winterdom.com/
+author_login: tomasr
+author_email: tomas@winterdom.com
+author_url: http://winterdom.com/
+wordpress_id: 888
+wordpress_url: http://winterdom.com/2008/01/psexecutingstringasacommand
+date: '2008-01-21 18:00:36 +0000'
+date_gmt: '2008-01-21 18:00:36 +0000'
+categories:
+- PowerShell
+tags: []
+comments: []
+---
+<p><!--start_raw-->
+<p>Recently I was writing a small script for Powershell and I needed to call an external program from my script. However, I wanted to be able to put keep the directory the executable was located in in a variable; you know, like one usually does in regular batch files. </p>
+<p>After searching around using google, I found that you can execute the contents of a string as a command by prefixing it with '&amp;', like this:</p>
+<div>&amp;<font color="#800000">'c:\windows\system32\calc.exe'</font></div>
+<p>This is fine if you've got a simple literal string. However, if you want to use the value of one or more variables in it, you of course need to switch to using double quotes instead, like this:</p>
+<div><font color="#35687d">$JDKHOME</font> = <font color="#800000">"C:\Program Files\Java\jdk1.5.0_06\bin"</font>     <br &#47;>&amp;<font color="#800000">"$JDKHOME\native2ascii.exe"</font>&#160;<font color="#800000">"$name.temp"</font>&#160;<font color="#35687d">$name</font> -encoding utf-<font color="#800000">8</font></div>
+<p>Turns out you can actually execute the contents of a variable as a command, which I wasn't expecting to work at first:</p>
+<div><font color="#35687d">$MYCMD</font> = <font color="#800000">'write-host'</font>     <br &#47;>&amp;<font color="#35687d">$MYCMD</font>&#160;<font color="#800000">'hello world'</font></div>
+<p>Pretty nifty!</p>
+<div class="wlWriterSmartContent" id="scid:0767317B-992E-4b12-91E0-4F059A8CECA8:a8e6bbe8-ae7d-489e-92e6-f7d3093a980b" style="padding-right: 0px; display: inline; padding-left: 0px; padding-bottom: 0px; margin: 0px; padding-top: 0px">Technorati tags: <a href="http:&#47;&#47;technorati.com&#47;tags&#47;PowerShell" rel="tag">PowerShell</a></div><!--end_raw--></p>

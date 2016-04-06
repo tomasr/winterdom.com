@@ -1,0 +1,43 @@
+---
+layout: post
+status: publish
+published: true
+title: 'PipelineTesting: Improvements and Standard Components'
+author:
+  display_name: Tomas Restrepo
+  login: tomasr
+  email: tomas@winterdom.com
+  url: http://winterdom.com/
+author_login: tomasr
+author_email: tomas@winterdom.com
+author_url: http://winterdom.com/
+wordpress_id: 63
+wordpress_url: http://winterdom.com/2007/07/pipelinetestingimprovementsandstandardcomponents
+date: '2007-07-28 10:37:07 +0000'
+date_gmt: '2007-07-28 10:37:07 +0000'
+categories:
+- BizTalk
+tags: []
+comments: []
+---
+<p><!--start_raw-->
+<p>I've been tweaking the PipelineTesting API further as I use it and write the unit tests for it. Here are some of the improvements I've made on the pipeline creation syntax:</p>
+<ol>
+<li>The NewReceive()&#47;NewSend() methods were renamed to just Receive() and Send(), across all creation functions. This leads to a slightly shorter and more readable (imho) syntax.</li>
+<li>The End() method in the builder classes is now optional; as they now provide an implicit conversion operator to ReceivePipelineWrapper and SendPipelineWrapper respectively. I think this is one change that was really needed to make the syntax more palatable, and means you can now do this:</li></ol>
+<pre>ReceivePipelineWrapper pipeline = Pipelines.Receive()<br />
+.AddValidator(<span style="color: blue;">new</span> XmlValidator());<br />
+</pre></p>
+<p>I think this looks much better.</p></p>
+<p><strong>Creating standard components</strong></p></p>
+<p>One of the problems with the current PipelineTesting version is that while it allows you to use one of the standard assembler&#47;disassembler components on an empty pipeline, it provides no help doing so. Using them can be pretty annoying because there's no easy way to add document and envelope schemas.</p></p>
+<p>The cause for this is that the relevant properties in the standard Xml&#47;FF assembler and disassembler components use types defined in Microsoft.BizTalk.Component.Utilities.dll. The types themselves are public (and even <a href="http:&#47;&#47;msdn2.microsoft.com&#47;en-us&#47;library&#47;ms969627.aspx">somewhat documented</a>), but the assembly can only be found in the GAC, which means referencing it in tests projects is a pain in the neck. </p></p>
+<p>To save yourself the trouble from having to do this, the new PipelineTesting API will also expose classes to make it easier to create and configure the standard XML and Flat File assembler and disassembler components. Here's an example of the syntax I'm implementing:</p>
+<pre>XmlAssembler asm = Assembler.Xml()<br />
+.WithDocumentSpec<Schema1_NPP>()<br />
+.WithEnvelopeSpec<SimpleEnv>()<br />
+.WithPreserveBom(<span style="color: maroon;">true</span>);<br />
+SendPipelineWrapper pipeline = Pipelines.Send()<br />
+.AddAssembler(asm);<br />
+<span style="color: green;">&#47;&#47;   ...</span></pre></p>
+<div class="wlWriterSmartContent" id="0767317B-992E-4b12-91E0-4F059A8CECA8:951ec56a-6795-4613-9cfa-614b59603944" contenteditable="false" style="margin: 0px; padding: 0px; display: inline;">Technorati tags: <a href="http:&#47;&#47;technorati.com&#47;tags&#47;BizTalk" rel="tag">BizTalk</a>, <a href="http:&#47;&#47;technorati.com&#47;tags&#47;Testing" rel="tag">Testing</a></div><!--end_raw--></p>

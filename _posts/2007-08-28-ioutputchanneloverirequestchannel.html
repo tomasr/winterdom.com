@@ -1,0 +1,102 @@
+---
+layout: post
+status: publish
+published: true
+title: IOutputChannel over IRequestChannel
+author:
+  display_name: Tomas Restrepo
+  login: tomasr
+  email: tomas@winterdom.com
+  url: http://winterdom.com/
+author_login: tomasr
+author_email: tomas@winterdom.com
+author_url: http://winterdom.com/
+wordpress_id: 562
+wordpress_url: http://winterdom.com/2007/08/ioutputchanneloverirequestchannel
+date: '2007-08-28 20:25:30 +0000'
+date_gmt: '2007-08-28 20:25:30 +0000'
+categories:
+- WCF
+tags: []
+comments:
+- id: 380
+  author: Udi Dahan - The Software Simplis
+  author_email: Blog@UdiDahan.com
+  author_url: http://udidahan.weblogs.us
+  date: '2007-08-28 21:57:04 +0000'
+  date_gmt: '2007-08-28 21:57:04 +0000'
+  content: |
+    I've tried this and it doesn't work for me over BasicHttp (I haven't checked the rest). The exception that I get is "System.Net.HttpListenerException: The process cannot access the file because it is being used by another process..."
+    Any ideas?
+- id: 381
+  author: Tomas Restrepo
+  author_email: tomas@winterdom.com
+  author_url: http://www.winterdom.com/weblog/
+  date: '2007-08-29 04:20:33 +0000'
+  date_gmt: '2007-08-29 04:20:33 +0000'
+  content: |
+    Udi:
+    The code I posted sure works for a *client*-side channel (I tested it, and I'd be happy to send you the sample code if you want it). I'm curious, though, are you trying to create this way a *server*-side channel? Otherwise, HttpListener shouldn't get involved at all!
+    If you don't mind sharing some code, I'd be happy to take a look at...
+- id: 382
+  author: Udi Dahan - The Software Simplis
+  author_email: Blog@UdiDahan.com
+  author_url: http://udidahan.weblogs.us
+  date: '2007-08-29 14:26:26 +0000'
+  date_gmt: '2007-08-29 14:26:26 +0000'
+  content: |
+    Oh, I see. I'm looking for server-side channels. That's why it isn't working for me.
+- id: 383
+  author: Tomas Restrepo
+  author_email: tomas@winterdom.com
+  author_url: http://www.winterdom.com/weblog/
+  date: '2007-08-29 14:52:51 +0000'
+  date_gmt: '2007-08-29 14:52:51 +0000'
+  content: |
+    Udi: Any reason why you need to manipulate the stack at the channel level on the receive side? Sounds to me like it's easier to just use a generic one-way service contract with a catch-all operation and let ServiceHost do its thing normally; but if you can clarify your needs, I'm sure we can find something more suited to them.
+- id: 1810
+  author: Calling One-Way WCF Service using IOutputChannel &laquo; debug mode&#8230;&#8230;
+  author_email: ''
+  author_url: http://debugmode.net/2011/10/15/calling-one-way-wcf-service-using-ioutputchannel/
+  date: '2011-10-15 14:16:37 +0000'
+  date_gmt: '2011-10-15 14:16:37 +0000'
+  content: "[...] Note: This post is inspired by one of the chapter from book Essential
+    WCF. I tried to put the content in my way. Thanks to the original author. I strongly
+    recommend you to read this post http:&#47;&#47;winterdom.com&#47;2007&#47;08&#47;ioutputchanneloverirequestchannel
+    [...]"
+---
+<p><!--start_raw-->
+<p><a href="http:&#47;&#47;udidahan.weblogs.us&#47;">Udi Dahan</a> <a href="http:&#47;&#47;udidahan.weblogs.us&#47;2007&#47;08&#47;28&#47;ioutputchannel-and-irequestchannel-more-wcf-angst&#47;">ranted a bit</a> about the WCF transport channel model and it's extensive use of generics. More to the point, Udi was running into some trouble trying to simply send a message, one way, over an arbitrary transport channel that could either be one way or not. The problem he runs into is dealing in a generic fashion with the different <a href="http:&#47;&#47;blogs.msdn.com&#47;drnick&#47;archive&#47;2006&#47;03&#47;07&#47;544724.aspx">Channel Shapes</a> that WCF exposes.</p>
+<p>I commented on his blog that maybe it would be possible for him to use a custom binding and using the OneWayBindingElement binding element to "change" the shape of the underlying, two-way channel into a single-way channel he could use by just coding against the IOutputChannel interface. Udi responsed:</p><br />
+<blockquote>
+<p>"I&rsquo;m trying to write transports for NServiceBus which will make use of the WCF bindings. So, since BasicHttpBinding only supports IRequestChannel and not IOutputChannel I have to deal with this. It&rsquo;s just nuts that there isn&rsquo;t some more useful shared interface between them."&nbsp;</p></blockquote>
+<p>From his description, I gather that Udi is (with good intentions of keeping things simple) equating channels with standard bindings, but this isn't quite so. The BasicHttpBinding is just a binding; not a channel itself. However, this standard&nbsp;binding will certainly force a matched two-way channel shape (IRequestChannel) based on the underlying transport channel used (HttpTransportChannel&#47;HttpsTransportChannel). </p>
+<p>There's nothing inherently wrong about creating a new binding that is based on one of the standard channels but has extra binding elements layered on top. Here's a sample:</p>
+<pre>EndpointAddress epa =<br />
+<span style="color: blue">new</span> EndpointAddress(<span style="color: maroon">"http:&#47;&#47;localhost:8254&#47;myservice&#47;myserv.svc"</span>);<br />
+WSHttpBinding wsHttp = <span style="color: blue">new</span> WSHttpBinding(SecurityMode.None, <span style="color: maroon">false</span>);<br />
+CustomBinding binding = CreateOneWayBinding(wsHttp);<br />
+<span style="color: green">&#47;&#47; could also be</span><br />
+<span style="color: green">&#47;&#47; CreateOneWayBinding(new BasicHttpBinding());</span><br />
+IChannelFactory<IOutputChannel> factory =<br />
+binding.BuildChannelFactory<IOutputChannel>();<br />
+factory.Open();<br />
+IOutputChannel channel = factory.CreateChannel(epa);<br />
+Message myMessage = Message.CreateMessage(<br />
+binding.MessageVersion, <span style="color: maroon">"Process"</span>, <span style="color: maroon">"some sample contents"</span><br />
+);<br />
+channel.Open();<br />
+channel.Send(myMessage);<br />
+channel.Close();<br />
+factory.Close();</pre></p>
+<p>The CreateOneWayBinding() method used in the sample above is fairly simple:</p>
+<pre><span style="color: blue">static</span> CustomBinding CreateOneWayBinding(Binding baseBinding)<br />
+{<br />
+List<BindingElement> elems = <span style="color: blue">new</span> List<BindingElement>();<br />
+elems.Add(<span style="color: blue">new</span> OneWayBindingElement());<br />
+elems.AddRange(baseBinding.CreateBindingElements());<br />
+<span style="color: blue">return</span> <span style="color: blue">new</span> CustomBinding(elems);<br />
+}</pre></p>
+<p>It basically creates a new CustomBinding based on the binding elements of the original binding (in this case one of the standard ones) and then layers the OneWayBindingElement, channel shape changing element on top. </p></p>
+<p><strong>Note:</strong>&nbsp;For some reason, this would not work if message security was enabled with the WSHttpBinding, but I didn't spent too much time looking at what the issue was, but otherwise works fine with the WSHttpBinding, BasicHttpBinding and NetTcpBinding, which is enough to make it useful on its own.</p></p>
+<div class="wlWriterSmartContent" id="0767317B-992E-4b12-91E0-4F059A8CECA8:ddcc67f8-2566-4d38-a3dd-8868eef541ac" contenteditable="false" style="padding-right: 0px; display: inline; padding-left: 0px; padding-bottom: 0px; margin: 0px; padding-top: 0px">Technorati tags: <a href="http:&#47;&#47;technorati.com&#47;tags&#47;Windows%20Communication%20Foundation" rel="tag">Windows Communication Foundation</a></div><!--end_raw--></p>

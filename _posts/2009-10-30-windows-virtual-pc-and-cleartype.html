@@ -1,0 +1,58 @@
+---
+layout: post
+status: publish
+published: true
+title: Windows Virtual PC and ClearType
+author:
+  display_name: Tomas Restrepo
+  login: tomasr
+  email: tomas@winterdom.com
+  url: http://winterdom.com/
+author_login: tomasr
+author_email: tomas@winterdom.com
+author_url: http://winterdom.com/
+wordpress_id: 1305
+wordpress_url: http://winterdom.com/2009/10/windows-virtual-pc-and-cleartype
+date: '2009-10-30 13:04:36 +0000'
+date_gmt: '2009-10-30 13:04:36 +0000'
+categories:
+- Windows
+tags: []
+comments:
+- id: 1191
+  author: John Vottero
+  author_email: JVottero@mvpsi.com
+  author_url: http://www.JAMSScheduler.com
+  date: '2009-10-30 19:42:18 +0000'
+  date_gmt: '2009-10-30 19:42:18 +0000'
+  content: "I agree completely!  Doesn't Microsoft have experts in usability?  How
+    could they have ever thought that a shell extension was a good idea for Virtual
+    PC?  Shell extensions are for things that could potentially work with any file
+    in the filesystem.  \r\n\r\nUndo disks are also much harder to use than in VPC
+    2007."
+- id: 1324
+  author: John Breakwell
+  author_email: GreenGoblin@msn.com
+  author_url: http://blogs.msdn.com/johnbreakwell
+  date: '2010-03-09 13:06:34 +0000'
+  date_gmt: '2010-03-09 13:06:34 +0000'
+  content: I'm running the old Virtual PC 2007 on Windows 7. Installs OK and seems
+    to run fine.
+- id: 1675
+  author: Daniel
+  author_email: p9535422@live.com
+  author_url: ''
+  date: '2011-02-18 06:31:16 +0000'
+  date_gmt: '2011-02-18 06:31:16 +0000'
+  content: Thank you! I was going crazy trying to get cleartype back on my Win2003
+    VPC.
+---
+<p>After repaving my desktop machine (which is my main work machine) with Windows 7, I tried the <a href="http:&#47;&#47;www.microsoft.com&#47;windows&#47;virtual-pc&#47;">Windows Virtual PC</a> for Windows 7 RC to run the few Virtual PC-based Virtual Machines I still use occasionally. It worked, though I didn&rsquo;t bother installing the updated integration components (formerly known as Virtual Machine Guest Additions) for a while which caused a number of issues.</p>
+<p>This week I took a bit of time to uninstall the RC and install the RTM version of Windows Virtual PC. Notice that I have no interest in XP mode, merely in running my existing VMs, many of which are running Windows Server 2003.</p>
+<p>A couple of things worth pointing out from this sad experience:</p>
+<ul>
+<li>Updating Virtual PC from the RC to RTM took me 4 reboots. Seriously screwed up in this day and age, but I fully blame it on&hellip;</li>
+<li>The ungodly bad UI that Windows Virtual PC uses. The old Virtual PC console was a bad UI, but getting rid of it and replacing it with a shell extension, and one that forces you to keep your virtual machine definition files in a specific folder and has terrible usability was an incredibly stupid choice. No wonder so many reboots are needed for any updates, since Windows Explorer will get in the way.</li>
+<li>After updating the integration components on my Windows Server 2003 virtual machines, imagine my surprise at seeing: (a) virtual pc locking the VM and wanting me to log in pretty often, (b) no way to change VM resolution from inside the VM and without ClearType being used to render fonts at all.</li> </ul>
+<p>And then I remembered what causes this: Windows Virtual PC sort of ditches the old display rendering and instead will use RDP to access your VM (so you&rsquo;re pretty much working in a sort of embedded RDP client). Windows Server 2003 didn&rsquo;t support ClearType over RDP originally, so I went hunting for <a href="http:&#47;&#47;support.microsoft.com&#47;kb&#47;946633">KB946633</a> and install it on my VM. One more restart, and ClearType was enabled.</p>
+<p>This is supposed to be progress, ladies and gentlemen.</p></p>

@@ -1,0 +1,50 @@
+---
+layout: post
+status: publish
+published: true
+title: Solving the Virtual PC Network Problems
+author:
+  display_name: Tomas Restrepo
+  login: tomasr
+  email: tomas@winterdom.com
+  url: http://winterdom.com/
+author_login: tomasr
+author_email: tomas@winterdom.com
+author_url: http://winterdom.com/
+wordpress_id: 7
+wordpress_url: http://winterdom.com/2006/11/solvingthevirtualpcnetworkproblems
+date: '2006-11-04 09:10:39 +0000'
+date_gmt: '2006-11-04 09:10:39 +0000'
+categories:
+- Development
+tags: []
+comments:
+- id: 4
+  author: Wes
+  author_email: ''
+  author_url: ''
+  date: '2006-12-29 07:08:46 +0000'
+  date_gmt: '2006-12-29 07:08:46 +0000'
+  content: |
+    I'm with you on doing my development in VMs. Thanks for this useful information! Since it's not very straightforward, could you elaborate on how you got the loopback adapter installed and configured?
+- id: 5
+  author: Tomas Restrepo
+  author_email: tomas@winterdom.com
+  author_url: http://www.winterdom.com/weblog/
+  date: '2006-12-29 07:12:02 +0000'
+  date_gmt: '2006-12-29 07:12:02 +0000'
+  content: |
+    Wes,
+    I don't remember the exact steps; but I believe you need to go to the Device Manager, right click on the Computer icon and select the option "Add Legacy Hardware"; then, find network adapters and look for the Microsoft Loopback Adapter somewhere in there.
+---
+<p><!--start_raw-->
+<p>I do all my development inside Virtual PC virtual machines, and except for some performance issues I've talked about in the past, it does work rather well. However, one thing that kept bugging me was the networking was flaky, particularly when I was connected through the wireless network (i.e. 90% of the time). Things like not being able to see the host machine from the guest machine and vice versa.</p>
+<p>About a month ago I settled on a configuration which has made it far more comfortable to use and with a lot less hassle, and it goes somewhat like this:</p>
+<ol>
+<li>Add the MS Loopback Adapter to your physical machine, with a static IP Address (this is actually harder to do than it sounds; it took me about half an hour to find how to install it). </li>
+<li>Configure all my virtual machines with 3 network cards: One tied to the wireless card, one tied to the ethernet card, and one tied to the loopback adapter.</li>
+<li>Configure the first two cards with DHCP, and the last one with a static IP different from the host machine's one.</li>
+<li>Add entries in the host files of all machines using the static ip addresses to enable quick name resolution.</li></ol>
+<p>With this configuration, I can ensure that virtual machines can always see the host machine (yay!), and at the same time, they should get real network access regardless of whether I'm connecting through a cable or the wireless.</p>
+<div class="wlWriterSmartContent" id="d7bf807d-7bb0-458a-811f-90c51817d5c2:bebfbe67-14f2-41ea-825f-4b4d0b8c0d6d" contenteditable="false" style="padding-right: 0px; display: inline; padding-left: 0px; padding-bottom: 0px; margin: 0px; padding-top: 0px">
+<p><span class="TagSite">Technorati:</span> <a href="http:&#47;&#47;technorati.com&#47;tag&#47;Virtual+PC" rel="tag" class="tag">Virtual PC</a>, <a href="http:&#47;&#47;technorati.com&#47;tag&#47;VPC" rel="tag" class="tag">VPC</a>, <a href="http:&#47;&#47;technorati.com&#47;tag&#47;Network" rel="tag" class="tag">Network</a><br &#47;><!-- StartInsertedTags: Virtual PC, VPC, Network :EndInsertedTags --></p></div><!--end_raw--></p>

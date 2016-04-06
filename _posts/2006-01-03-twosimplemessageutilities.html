@@ -1,0 +1,84 @@
+---
+layout: post
+status: publish
+published: true
+title: Two simple Message Utilities
+author:
+  display_name: Tomas Restrepo
+  login: tomasr
+  email: tomas@winterdom.com
+  url: http://winterdom.com/
+author_login: tomasr
+author_email: tomas@winterdom.com
+author_url: http://winterdom.com/
+wordpress_id: 300
+wordpress_url: http://winterdom.com/2006/01/twosimplemessageutilities
+date: '2006-01-03 11:23:39 +0000'
+date_gmt: '2006-01-03 11:23:39 +0000'
+categories:
+- BizTalk
+tags: []
+comments: []
+---
+<p><!--start_raw-->Two fairly common operations in BizTalk Server 2004&#47;6 are creating new messages from XML literal strings, as well as getting the XML text out of an existing BizTalk message in an orchestration.</p>
+<p>The first option is very useful when creating new messages from scratch. However, the method I show here is not very useful for complex messages, because it would be very hard to maintain an read. For those scenarios, I really recommend Scott Colestock's option of <a href="http:&#47;&#47;www.traceofthought.net&#47;PermaLink,guid,c1164c59-72e2-49e2-be7a-47e4e8dc46d4.aspx">creating messages from embedded resources</a> in .NET assemblies; it's a much better option.<br />
+</p></p>
+<p>Here's some very small, yet useful piece of code to accomplish these tasks:</p></p>
+<pre><code><br />
+&#47;&#47;<br />
+&#47;&#47; XmlHelper.cs<br />
+&#47;&#47;<br />
+&#47;&#47; Author:<br />
+&#47;&#47;    Tomas Restrepo (tomasr@mvps.org)<br />
+&#47;&#47;<br />
+using System;<br />
+using System.IO;<br />
+using System.Xml;<br />
+using Microsoft.XLANGs.BaseTypes;<br />
+using System;<br />
+using System.IO;<br />
+using System.Xml;<br />
+using Microsoft.XLANGs.BaseTypes;<br />
+namespace Winterdom.BizTalk.Util<br />
+{<br />
+&#47;&#47;&#47;<br />
+<summary>
+&#47;&#47;&#47; Helper BizTalk class to deal with XML Based<br />
+&#47;&#47;&#47; messages<br />
+&#47;&#47;&#47; </summary><br />
+public class XmlHelper<br />
+{<br />
+&#47;&#47;&#47;<br />
+<summary>
+&#47;&#47;&#47; Creates a typed BizTalk message<br />
+&#47;&#47;&#47; out of a string containing valid XML.<br />
+&#47;&#47;&#47; </summary><br />
+&#47;&#47;&#47; <remarks><br />
+&#47;&#47;&#47; This does not validate the message at all.<br />
+&#47;&#47;&#47; </remarks><br />
+&#47;&#47;&#47;
+<param name="xml">XML content</param><br />
+&#47;&#47;&#47; <returns>The BizTalk Message</returns><br />
+public static XmlDocument CreateMessage(string xml)<br />
+{<br />
+XmlDocument doc = new XmlDocument();<br />
+doc.LoadXml(xml);<br />
+return doc;<br />
+}<br />
+&#47;&#47;&#47;<br />
+<summary>
+&#47;&#47;&#47; Returns a string containing the XML from the message<br />
+&#47;&#47;&#47; </summary><br />
+&#47;&#47;&#47;
+<param name="part">Message</param><br />
+&#47;&#47;&#47; <returns>The xml</returns><br />
+public static string GetMessageXml(XLANGPart part)<br />
+{<br />
+Stream s = (Stream)part.RetrieveAs(typeof(Stream));<br />
+using ( StreamReader reader = new StreamReader(s) ) {<br />
+return reader.ReadToEnd();<br />
+}<br />
+}<br />
+} &#47;&#47; class XmlHelper<br />
+} &#47;&#47; namespace Winterdom.BizTalk.Util<br />
+</code></pre><!--end_raw--></p>

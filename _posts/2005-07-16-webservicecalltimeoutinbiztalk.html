@@ -1,0 +1,46 @@
+---
+layout: post
+status: publish
+published: true
+title: Web Service Call Timeout in BizTalk
+author:
+  display_name: Tomas Restrepo
+  login: tomasr
+  email: tomas@winterdom.com
+  url: http://winterdom.com/
+author_login: tomasr
+author_email: tomas@winterdom.com
+author_url: http://winterdom.com/
+wordpress_id: 135
+wordpress_url: http://winterdom.com/2005/07/webservicecalltimeoutinbiztalk
+date: '2005-07-16 16:05:46 +0000'
+date_gmt: '2005-07-16 16:05:46 +0000'
+categories:
+- BizTalk
+tags: []
+comments:
+- id: 81
+  author: Peter Young
+  author_email: petery@rivio.com
+  author_url: ''
+  date: '2006-04-11 00:11:53 +0000'
+  date_gmt: '2006-04-11 00:11:53 +0000'
+  content: |
+    Thanks for the clarification and pointer. I ran into the exact problem was confused by the Microsoft's documentation about setting SOAP.ClientConnectionTimeout.
+---
+<p><!--start_raw-->If you are calling a Web Service from a BizTalk Server 2004 Orchestration, you might have encountered cases where the WebServices takes too long to execute and BizTalk times out the request, and perhaps you've wondered how to instruct BizTalk to wait just a little bit longer. As it happens, this can actually be done. The secret is to set the <code>SOAP.ClientConnectionTimeout</code> property on the request message you send to the WebService.</p>
+<p>However, the documentation does not quite specify what the appropriate value for this property should be. All it says is <i>"Specifies the time-out period of waiting for a response from the server. If set to zero (0), the system will calculate the time-out based on the request message size."</i>. So, let me clear this up for you.</p></p>
+<p>The <code>SOAP.ClientConnectionTimeout</code> property is actually specified in milliseconds, so, for example, if you want a timeout of 200 seconds, you can do the following on a Message Assignment during message construction:</p></p>
+<pre><code><br />
+MyRequestMessage(SOAP.ClientConnectionTimeout) = 200000;<br />
+</code></pre></p>
+<p>The trick here is to understand that this property esentially maps to the Timeout property of the SoapHttpClientProtocol class. This is actually quite logical once you realize that when you add a Web Reference to a BizTalk project it essentially generates a client side proxy class similar to how it works for regular .NET projects.</p></p>
+<p>However, while looking around the SOAP adapter code (using good old <a href="http:&#47;&#47;www.aisto.com&#47;roeder&#47;dotnet&#47;">Reflector</a>) trying to understand this property better, I came around something somewhat surprising: You can't specify an infinite timeout like you can for regular WS proxies by setting the timeout to -1, and it appears the use of 0 to "calculate the time-out based on the request message size" is somewhat of a misnomer.</p></p>
+<p>Here's the thing: If you look at the code for the Prepare() method of the Microsoft.BizTalk.Soap.SoapMessage class, you'll notice that the Timeout property of the underlying proxy class instance is <i>only set if the SOAP.ClientConnectionTimeout property has a value greater than 0</i>. So, if you specify -1, or 0, the value is actually ignored. The actual code is something like this:</p></p>
+<pre><code>int num1 = this.ClientConnectionTimeout;<br />
+if (num1 > 0)<br />
+{<br />
+this.SetProperty("Timeout", num1);<br />
+Interop.Diagnostics.TraceMessage(8, "Setting Timeout property to '{0}'.", num1);<br />
+}<br />
+</code></pre><!--end_raw--></p>

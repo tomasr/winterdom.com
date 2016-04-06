@@ -1,0 +1,30 @@
+---
+layout: post
+status: publish
+published: true
+title: TortoiseSVN and Putty
+author:
+  display_name: Tomas Restrepo
+  login: tomasr
+  email: tomas@winterdom.com
+  url: http://winterdom.com/
+author_login: tomasr
+author_email: tomas@winterdom.com
+author_url: http://winterdom.com/
+wordpress_id: 976
+wordpress_url: http://winterdom.com/2008/03/tortoisesvnandputty
+date: '2008-03-07 05:52:03 +0000'
+date_gmt: '2008-03-07 05:52:03 +0000'
+categories:
+- Tools
+tags: []
+comments: []
+---
+<p><!--start_raw-->
+<p>Last week, I was trying to connect to an SVN repository over SSH, using <a href="http:&#47;&#47;tortoisesvn.net&#47;">TortoiseSVN</a> and <a href="http:&#47;&#47;www.chiark.greenend.org.uk&#47;~sgtatham&#47;putty&#47;">Putty</a>. I found a the <a href="http:&#47;&#47;tortoisesvn.net&#47;ssh_howto">faq</a> on how to configure everything and checked it to make sure I was doing everything right.</p>
+<p>I tried to connect. TortoiseSVN asked for my certificate password. And then, nothing. I could see that indeed TortoiseSVN was connecting to the SSH server; but just sat there doing nothing. I had to kill it several times to abort the connection. </p>
+<p>I had already tried connecting using Putty directly, and that seemed to work, so I kept checking my settings, but for the life of me I couldn't figure out what the deal was.</p>
+<p>Eventually, I figured out what the deal was:</p>
+<p><img style="border-right: 0px; border-top: 0px; border-left: 0px; border-bottom: 0px" height="442" alt="puttyssh" src="http:&#47;&#47;www.winterdom.com&#47;weblog&#47;content&#47;binary&#47;WindowsLiveWriter&#47;TortoiseSVNandPutty_7AFC&#47;puttyssh_3.png" width="456" border="0" &#47;> </p>
+<p>See that "Don't start a shell or command at all" checkbox? Yep; that should <em>NOT</em> have been checked, as it prevented the server from starting svnserve to handle the SVN connection. Don't know why I had checked it before, but everything worked as soon as I removed it from my Putty profile.</p>
+<div class="wlWriterSmartContent" id="scid:0767317B-992E-4b12-91E0-4F059A8CECA8:0a746a00-aa00-46c7-ab2d-f3626528be6c" style="padding-right: 0px; display: inline; padding-left: 0px; padding-bottom: 0px; margin: 0px; padding-top: 0px">Technorati tags: <a href="http:&#47;&#47;technorati.com&#47;tags&#47;Putty" rel="tag">Putty</a>, <a href="http:&#47;&#47;technorati.com&#47;tags&#47;TortoiseSVN" rel="tag">TortoiseSVN</a>, <a href="http:&#47;&#47;technorati.com&#47;tags&#47;SSH" rel="tag">SSH</a>, <a href="http:&#47;&#47;technorati.com&#47;tags&#47;SVN" rel="tag">SVN</a></div><!--end_raw--></p>

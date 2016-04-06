@@ -1,0 +1,76 @@
+---
+layout: post
+status: publish
+published: true
+title: IRequestChannel and One-Way Contracts
+author:
+  display_name: Tomas Restrepo
+  login: tomasr
+  email: tomas@winterdom.com
+  url: http://winterdom.com/
+author_login: tomasr
+author_email: tomas@winterdom.com
+author_url: http://winterdom.com/
+wordpress_id: 871
+wordpress_url: http://winterdom.com/2009/02/irequestchannelandonewaycontracts
+date: '2009-02-04 18:53:45 +0000'
+date_gmt: '2009-02-04 18:53:45 +0000'
+categories:
+- WCF
+tags: []
+comments:
+- id: 587
+  author: larsw
+  author_email: ''
+  author_url: http://larswilhelmsen.com/
+  date: '2009-02-05 07:23:43 +0000'
+  date_gmt: '2009-02-05 07:23:43 +0000'
+  content: |
+    Hi Thomas,
+    Love your work - keep it up!
+    I've been planning a XMPP ("Jabber") Transport Channel with support for XEP-0072; SOAP over XMPP for some time (or, the idea dawned on me some time ago, and I'm about to pick it up again).
+    Do you have any advice (in general) where to look for good resources on custom transport channels? I've read Dr. Nick's blog posts - but do you know of any good sample implementations?
+    Coming to think of it, I know that the ActiveMQ project have a WCF channel, so I better check it out.
+    --larsw
+- id: 588
+  author: tomasr
+  author_email: tomas@winterdom.com
+  author_url: http://winterdom.com/weblog/
+  date: '2009-02-06 04:46:04 +0000'
+  date_gmt: '2009-02-06 04:46:04 +0000'
+  content: |
+    @Lars: I've posted a few links in the past with wcf channel resources, like this: <a href="http:&#47;&#47;winterdom.com&#47;weblog&#47;2007&#47;02&#47;14&#47;WritingAWCFTransportChannelPart1.aspx" rel="nofollow">http:&#47;&#47;winterdom.com&#47;weblog&#47;2007&#47;02&#47;14&#47;WritingAWCFTransportChannelPart1.aspx</a>
+    Some of the links there, are, unfortunately, dead now. Also, here's another good WCF channel sample: <a href="http:&#47;&#47;weblogs.shockbyte.com.ar&#47;rodolfof&#47;archive&#47;2007&#47;07&#47;15&#47;wcf-mail-transport-channel.aspx" rel="nofollow">http:&#47;&#47;weblogs.shockbyte.com.ar&#47;rodolfof&#47;archive&#47;2007&#47;07&#47;15&#47;wcf-mail-transport-channel.aspx</a>
+- id: 2338
+  author: gaody
+  author_email: gaody_001@hotmail.com
+  author_url: ''
+  date: '2012-04-17 02:30:24 +0000'
+  date_gmt: '2012-04-17 02:30:24 +0000'
+  content: "Hi,I'm very intresting in your words \"Once I changed my custom encoder
+    to ignore the empty message, it worked just fine.\";\r\nI'm new in WCF,Could you
+    tell me how to change encoder to ignor the empty message by programming?thank
+    \ you"
+- id: 2343
+  author: Tomas Restrepo
+  author_email: tomas@winterdom.com
+  author_url: http://winterdom.com/
+  date: '2012-04-18 00:26:11 +0000'
+  date_gmt: '2012-04-18 00:26:11 +0000'
+  content: "@gaody: that's something really that will be specific to your encoder,
+    but in general, you could check the bytes passed into the encoder or the stream
+    provided by the caller."
+---
+<p><!--start_raw-->
+<p>I&rsquo;ve been working this week on implementing some custom WCF transport channels. The one I was working on initially is a two-way send channel, so, naturally, I decided to begin by having my channel implement the <a href="http:&#47;&#47;msdn.microsoft.com&#47;en-us&#47;library&#47;system.servicemodel.channels.irequestchannel.aspx">IRequestChannel</a> shape.</p>
+<p>This was working fine until I decided to try a one-way operation on top of my two-way channel, which was interesting because I was not implementing an equivalent part of the transport supporting <a href="http:&#47;&#47;msdn.microsoft.com&#47;en-us&#47;library&#47;system.servicemodel.channels.ioutputchannel.aspx">IOutputChannel</a>.</p>
+<p>I was expecting it to fail right from the start, but, surprisingly enough, it almost worked. That is, the transport channel was called, executed, and only bombed when the WCF stack ran into the unexpected response message. The error message I was seeing was something like this:</p>
+<div class="codebg"><code>System.ServiceModel.ProtocolException: The one-way operation returned a non-null message with Action=''.</code></div>
+<p>Looking around, I realized a couple of things: First of all, the built-in HTTP transports in WCF also implement only IRequestChannel, and yet, somehow, they still manage to work just fine in this case.
+<p>The second thing that came to mind was that I was using a custom <a href="http:&#47;&#47;msdn.microsoft.com&#47;en-us&#47;library&#47;system.servicemodel.channels.messageencoder.aspx">MessageEncoder</a>. Granted, it was a very rough and crappy encoder, but it was mostly enough for me to test a few things about my custom transport.
+<p>That last part sparked something deep in my memory: I seemed to vaguely remember something about encoders that might be related, so I turned right away to the best source for everything WCF related: <a href="http:&#47;&#47;blogs.msdn.com&#47;drnick&#47;">Nicholas Allen</a>&rsquo;s blog.
+<p>Fortunately, Dr. Nick did not disappoint! In one of his articles about writing a <a href="http:&#47;&#47;blogs.msdn.com&#47;drnick&#47;archive&#47;2006&#47;08&#47;18&#47;705470.aspx">custom POX Message Encoder</a>, he included this little gem:<br />
+<blockquote>
+<p>&ldquo;One of the properties of the standard message encoders is that they only surface up messages that have a non-empty message body.&rdquo;</p></blockquote>
+<p>That was indeed what I was seeing: My custom transport was indeed returning a message from <a href="http:&#47;&#47;msdn.microsoft.com&#47;en-us&#47;library&#47;system.servicemodel.channels.irequestchannel.request.aspx">IRequestChannel.Request()</a>, but it had no content at all (something particular to the kind of request I was making over the one-way channel).
+<p>Once I changed my custom encoder to ignore the empty message, it worked just fine.  <!--end_raw--></p>

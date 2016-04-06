@@ -1,0 +1,36 @@
+---
+layout: post
+status: publish
+published: true
+title: ASP.NET Postbacks and Viewstate Considered Harmful
+author:
+  display_name: Tomas Restrepo
+  login: tomasr
+  email: tomas@winterdom.com
+  url: http://winterdom.com/
+author_login: tomasr
+author_email: tomas@winterdom.com
+author_url: http://winterdom.com/
+wordpress_id: 278
+wordpress_url: http://winterdom.com/2006/08/aspnetpostbacksandviewstateconsideredharmful
+date: '2006-08-18 08:56:24 +0000'
+date_gmt: '2006-08-18 08:56:24 +0000'
+categories:
+- ".NET"
+- ASP.NET
+tags: []
+comments: []
+---
+<p><!--start_raw-->
+<p><a href="http:&#47;&#47;staff.interesource.com&#47;james&#47;">James Higgs</a> posted an <a href="http:&#47;&#47;staff.interesource.com&#47;james&#47;aug06&#47;viewstate_postbacks_harmful.htm">interesting rant</a> here on the Postback and Viewstate mechanism in ASP.NET, saying they can turn an application into a nightmare to maintain.</p>
+<p>While I'm not sure I'd agree that I would never use them (I certainly have and probably end up doing it again because I'm a lazy bastard), James makes some really strong points against both mechanisms, and I do tend to agree (in principle at least) with most of them. They certainly reflect on things that bothered me about the ASP.NET execution model since the beginning:</p>
+<ul>
+<li>The core foundation in ASP.NET is really strong, and way cool: IHttpHandler's, HttpModules and so on are really powerful mechanisms.</li>
+<li>ASP.NET by default is totally built around post-backs, which are really annoying for navigation. This improved somewhat in v2.0, but the model makes things that were really easy in old ASP (<em>yuck, who would've thought I'd be saying that!</em>) because its model reflected fairly closely the GET&#47;POST paradigm inherent to HTTP, and allowed you good control as to where to use each one. By contrast, ASP.NET pretty much expects you to use POST 99% of the time, with the implications:</li>
+<ul>
+<li>Bookmarking can be made pretty impossible in some scenarios if you're not careful</li>
+<li>You can end up with a lot of useless redirects which could've simply being done by taking the user to a different page directly&nbsp;from the browser (again, somewhat improved in v2.0)</li>
+<li>Back&#47;Forward buttons don't always work as you intended them</li>
+<li>Link controls that use Javascript and post-backs for navigation. Who the heck came up with such a crappy idea? They also completely screw the navigation experience by making it impossible to open the link in a new tab&#47;window.</li></ul>
+<li>Viewstate... well, is there anything good to say on it? </li></ul>
+<p>The good part about all of this is that ASP.NET continues to improve, and certainly there are a lot of good things in v2.0, and I'm hopeful yet about what the next versions will bring to the table on these fronts.</p><!--end_raw--></p>

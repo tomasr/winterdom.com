@@ -1,0 +1,41 @@
+---
+layout: post
+status: publish
+published: true
+title: Instrumenting Unmatched Message Handlers
+author:
+  display_name: Tomas Restrepo
+  login: tomasr
+  email: tomas@winterdom.com
+  url: http://winterdom.com/
+author_login: tomasr
+author_email: tomas@winterdom.com
+author_url: http://winterdom.com/
+wordpress_id: 667
+wordpress_url: http://winterdom.com/2006/12/instrumentingunmatchedmessagehandlers
+date: '2006-12-19 13:02:43 +0000'
+date_gmt: '2006-12-19 13:02:43 +0000'
+categories:
+- QuickCounters
+- WCF
+- WinFX
+tags: []
+comments: []
+---
+<p><!--start_raw-->
+<p>One pretty cool feature in WCF Service Contracts are Unmatched Message Handlers, which can catch any call made to an operation with an arbitrary SOAPAction value not already handled explicitly by other operations in the contract. An unmatched message handler is defined by specifying the SOAP Action for the operation with the value "*", like this:</p>
+<pre class="csharpcode">[OperationContract(Action=<span class="str">"*"</span>)]</pre></p>
+<p>Unfortunately, the current release of the WCF support in QuickCounters doesn't quite work with unmatched message handlers. I really want to correct this and support this, so I thought I'd share what the issues are and how I'm working to fix them; I'm hoping you guys like the proposed solutions, and if not, I'm open to hearing proposals :-). There are two different problems I've identified so far:</p></p>
+<p><strong>Instrumentation</strong></p></p>
+<p>The first problem is with the instrumentation itself. When&nbsp;our IDispatchMessageInspector implementation is created, we build <a href="http:&#47;&#47;www.winterdom.com&#47;weblog&#47;2006&#47;10&#47;21&#47;OperationDescriptionAndTheSOAPAction.aspx">a map of the operations</a> in the service contract matching SOAP Action with the actual operation&nbsp;name. What happens right now is that if you have an unmatched message handler in the contract then an entry gets created in the map matching "*" to the name of the operation. This is not only wrong, it's useless because when the inspector gets the actual request message, it fails to find the operation in the map (since the action will contain an arbitrary value) and will fault.</p></p>
+<p>Fixing this issue is fortunately very easy. What I'm doing right now is that when building the operation map I take note of the unmatched message handler operation, and then when the actual request message is received if the SOAP Action in the message is not found in the operations map, I just use the unmatched message handler operation found before.</p></p>
+<p><strong>Metadata</strong></p></p>
+<p>The second problem is somewhat uglier. The current QuickCounters release has two different ways to generate the QuickCounters configuration XML for a WCF service: one is an external tool (QCFromWsdl.exe) and the other is the built in metadata (<uri>&#47;qc) endpoint. </p></p>
+<p>Both mechanism work internally the same, producing the QC XML from the service's WSDL. The problem here is that an unmatched message handler operation will never show up (for obvious reasons) in the service description (WSDL), so the current tools just leave out that operation and the corresponding <RequestType&#47;> entry is not generated. The big problem with this is that even with the first problem fixed, if the request type is not in the configuration XML, then the corresponding performance counter&nbsp;never gets created and again, we fault&nbsp;at runtime. Not pretty.</p></p>
+<p>Obviously, one could argue that this could be fixed by hand&nbsp;by the developer&nbsp;by manually changing the QC configuration XML, but that's a bad solution and defeats the purpose of generating it automatically. So here's how I'm hoping to fix this in both tools:</p></p>
+<ol>
+<li>For the external QCFromWsdl.exe tool, I plan on adding a new command line argument: &#47;umh:<Name> which will make the tool introduce a new <RequestType&#47;> entry with the given name. This does mean you need to feed one extra parameter to the tool and make sure that whatever value you pass matches the actual operation name in the ServiceContract, but there's not much we can do to figure it out on our own just from the WSDL file.</li>
+<li>For the built-in metadata endpoint, things are a bit different, and I'm hoping here to be able to do the same automatically by figuring out the proper name for the unmatched message handler operation from the internal ContractDescription object. This is a much better solution because it should require no manual intervention from the developer to support.</li></ol>
+<p><strong>The Client Side?</strong></p></p>
+<p>The things described above should take care of the server-side issues. I'm still trying to figure out exactly what we'd do on the client side as I haven't looked too deep into the issue yet (although the basic client-side proxy instrumentation support is already done and working on normal operations just fine).</p></p>
+<div class="wlWriterSmartContent" id="0767317B-992E-4b12-91E0-4F059A8CECA8:464dc7d3-fd5e-4c35-a664-d51592301a18" contenteditable="false" style="margin: 0px; padding: 0px; display: inline;">Technorati tags: <a href="http:&#47;&#47;technorati.com&#47;tags&#47;Windows%20Communication%20Foundation" rel="tag">Windows Communication Foundation</a>, <a href="http:&#47;&#47;technorati.com&#47;tags&#47;WCF" rel="tag">WCF</a>, <a href="http:&#47;&#47;technorati.com&#47;tags&#47;QuickCounters" rel="tag">QuickCounters</a></div><!--end_raw--></p>

@@ -1,0 +1,48 @@
+---
+layout: post
+status: publish
+published: true
+title: IIS AppPool Identity SIDs
+author:
+  display_name: Tomas Restrepo
+  login: tomasr
+  email: tomas@winterdom.com
+  url: http://winterdom.com/
+author_login: tomasr
+author_email: tomas@winterdom.com
+author_url: http://winterdom.com/
+wordpress_id: 1461
+wordpress_url: http://winterdom.com/?p=1461
+date: '2014-05-16 13:57:47 +0000'
+date_gmt: '2014-05-16 13:57:47 +0000'
+categories:
+- Uncategorized
+tags: []
+comments:
+- id: 591875
+  author: Austin
+  author_email: austinian@gmail.com
+  author_url: ''
+  date: '2015-09-25 10:30:00 +0000'
+  date_gmt: '2015-09-25 10:30:00 +0000'
+  content: 'Would you mind if I copied your code (with attribution and a link) into
+    my ServerFault answer here: http:&#47;&#47;serverfault.com&#47;questions&#47;711470&#47;applicationpoolidentity-environment-variables-iis&#47;711473#711473
+    ?'
+---
+<p>Since Windows Vista came out, a bunch of different sets of "virtual account&quote; types have been added to the operating system. The most obvious one being Service accounts managed by the Service Control Manager, which belong to the "NET Service" authority and have the SID prefix "S-1-5-80". If we look at the documentation for these SIDs, we'll find that they are basically defined as "S-1-5-80-{SHA1(UNICODE(<service name in upper case>)}".</p></p>
+<p>IIS 7.X&#47;8.X also has its own set of virtual accounts, associated with the AppPoolIdentity. These belong to the "IIS AppPool" authority with base SID prefix "S-1-5-82". The way these application pool names convert to SIDs is basically the same as that of service accounts, with one little difference: The input to the SHA1 function is not the application pool name in uppercase, but in <i>lowercase</i>.</p></p>
+<p>Here's a very simple PowerShell function I wrote to make it easier to do these conversions:</p></p>
+<pre class='codebg'><code><span class="Keyword">function</span> <span class="Function">Get-SIDHash</span><span class="level16c">(</span><span class="level15c">[</span>String<span class="level15c">]</span><span class="Identifier">$sidPrefix</span>, <span class="level15c">[</span>String<span class="level15c">]</span><span class="Identifier">$user</span><span class="level16c">)</span> <span class="level16c">{</span><br />
+  <span class="Identifier">$userToHash</span> = <span class="Conditional">switch</span> <span class="level15c">(</span> <span class="Identifier">$sidPrefix</span> <span class="level15c">)</span> <span class="level15c">{</span><br />
+    <span class="String">'S-1-5-82'</span> <span class="level14c">{</span> <span class="Identifier">$user</span>.ToLower<span class="level13c">()</span> <span class="level14c">}</span><br />
+    <span class="Conditional">default</span> <span class="level14c">{</span> <span class="Identifier">$user</span>.ToUpper<span class="level13c">()</span> <span class="level14c">}</span><br />
+  <span class="level15c">}</span><br />
+  <span class="Identifier">$userBytes</span> = <span class="level15c">[</span>Text.Encoding<span class="level15c">]</span>::Unicode.GetBytes<span class="level15c">(</span><span class="Identifier">$userToHash</span><span class="level15c">)</span><br />
+  <span class="Identifier">$hash</span> = <span class="Statement">Convert-FromBinHex</span> <span class="level15c">(</span><span class="Statement">Get-Hash</span> <span class="Identifier">$userBytes</span> <span class="String">'SHA1'</span><span class="level15c">)</span><br />
+  <span class="Identifier">$sid</span> = <span class="Identifier">$sidPrefix</span><br />
+  <span class="Repeat">for</span> <span class="level15c">(</span> <span class="Identifier">$i</span>=<span class="Number">0</span>; <span class="Identifier">$i</span> -lt <span class="Number">5</span>; <span class="Identifier">$i</span>++ <span class="level15c">)</span> <span class="level15c">{</span><br />
+    <span class="Identifier">$sid</span> += <span class="String">'-'</span> + <span class="level14c">[</span>BitConverter<span class="level14c">]</span>::ToUInt32<span class="level14c">(</span><span class="Identifier">$hash</span>, <span class="Identifier">$i</span>*<span class="Number">4</span><span class="level14c">)</span><br />
+  <span class="level15c">}</span><br />
+  <span class="Identifier">$sid</span><br />
+<span class="level16c">}</span><br />
+</code></pre></p>

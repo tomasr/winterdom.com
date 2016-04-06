@@ -1,0 +1,41 @@
+---
+layout: post
+status: publish
+published: true
+title: BizTalk Send Adapters and Failures
+author:
+  display_name: Tomas Restrepo
+  login: tomasr
+  email: tomas@winterdom.com
+  url: http://winterdom.com/
+author_login: tomasr
+author_email: tomas@winterdom.com
+author_url: http://winterdom.com/
+wordpress_id: 105
+wordpress_url: http://winterdom.com/2008/02/biztalksendadaptersandfailures
+date: '2008-02-11 17:48:32 +0000'
+date_gmt: '2008-02-11 17:48:32 +0000'
+categories:
+- BizTalk
+tags: []
+comments: []
+---
+<p><!--start_raw-->
+<p>I've spent part of the weekend playing with some code for a BizTalk 2006 Send adapter, and while looking at the failure handling code, remember something that always struck me a bit odd about the model.</p>
+<p>BizTalk supports a several different ways of implementing a send adapter, depending on the complexity of the adapter and the capabilities it provides. An adapter can made to handle a single message at a time (but with likely multiple messages in parallel), or handle batches of messages. An adapter can also handle messages synchronously or asynchronously.</p>
+<p>Synchronous adapters are not really very desirable in general terms, unless the adapter itself doesn't do much work (like my <a href="http:&#47;&#47;www.winterdom.com&#47;weblog&#47;2005&#47;03&#47;06&#47;BizTalk2004NullSendAdapterSample.aspx">Null Send Adapter</a>, which does no work at all!). The reason for this is that a synchronous adapter will do its message processing directly in the thread provided by the BizTalk Messaging engine, thus blocking the thread temporarily and getting in the way of the Messaging Engine itself. Since the messaging engine threads are usually CPU bound, and the primary function of an adapter is to do I&#47;O, this isn't a very desirable scenario.</p>
+<p>However, there's something interesting about how the messaging engine accommodates synchronous adapters. When BizTalk wants to send a message through an adapter, it will call the adapter's IBTTransmitter.TransmitMessage() implementation [1].</p>
+<p>TransmitMessage() has a boolean return value. If the adapter returns true, it means that this was a synchronous send operation, and the message has been sent successfully. If an exception is raised, then the send operation will be failed. In either case, the messaging engine will do the right thing and process the message accordingly. If the adapter returns false, however, it means that the adapter will handle the message asynchronously and it's responsible for telling the messaging engine what [eventually] happened with the message.</p>
+<p>In practice, the last part is a lot harder than it sounds. Basically, a synchronous adapter is pretty worry free: It simply needs to return true or throw an exception, and the messaging engine does all the hard work. However, an asynchronous adapter has to do all the hard work itself, which includes:</p>
+<ul>
+<li>Deleting the message from the message box when it has been successfully sent.</li>
+<li>Submitting messages for retries according to their retry counts and retry intervals as configured in the send port configuration.</li>
+<li>Moving messages to the secondary transport configured in the send location if the retries have been exhausted.</li>
+<li>Suspending messages that could not otherwise be sent.</li>
+<li>All of this needs to be retried until the messaging engine acknowledges the operation successfully!</li> </ul>
+<p>As you can see it's a lot of responsibilities for the adapter developer; particularly the last part. See, if you tell the engine to delete a message, it might tell you that it couldn't do it (maybe there was contention on the message box); it's your responsibility to keep trying until it succeeds. Same story for all of the operations mentioned above. Getting all this right can be a bit tricky, as you can imagine (though the adapter framework in the SDK can help a bit here).</p>
+<p>Is this unnecessary? Not at all; it is quite required particularly for batched and transaction aware adapters, and it actually is quite flexible. It also allows adapters with special needs to make decisions about what the right action might be. For example, maybe your adapter must suspend a message without trying the secondary transport (ordered delivery requirements, maybe).</p>
+<p>The downside of this is that, if you were not interested in creating a batched adapter (or couldn't!), but did want to make it relatively efficient by not doing your work on the messaging engine threads, it's a whole lot of complexity you have to deal with. You can't simply tell the messaging engine "I'm done with this message" and have the right things happen anymore; instead you need to actually handle batches (containing a single message, but batches nonetheless) and implement the required semantics all on your own.</p>
+<p>Simple synchronous adapters are still useful though. It's an easy way to get started with your send adapter, verify that your core adapter logic works, and then move on to support asynchronous processing and batches, if you can support those.</p>
+<p><strong>[1]</strong> If the adapter supports batching, it will implement IBTBatchTransmitter instead of IBTTransmitter and the workflow will be different, but let's forget about that for now.</p>
+<div class="wlWriterSmartContent" id="scid:0767317B-992E-4b12-91E0-4F059A8CECA8:776b8f38-202e-48d9-adfe-62e76b7a9c9b" style="padding-right: 0px; display: inline; padding-left: 0px; padding-bottom: 0px; margin: 0px; padding-top: 0px">Technorati tags: <a href="http:&#47;&#47;technorati.com&#47;tags&#47;BizTalk%20Server" rel="tag">BizTalk Server</a></div><!--end_raw--></p>

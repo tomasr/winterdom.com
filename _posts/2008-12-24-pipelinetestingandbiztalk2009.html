@@ -1,0 +1,28 @@
+---
+layout: post
+status: publish
+published: true
+title: PipelineTesting and BizTalk 2009
+author:
+  display_name: Tomas Restrepo
+  login: tomasr
+  email: tomas@winterdom.com
+  url: http://winterdom.com/
+author_login: tomasr
+author_email: tomas@winterdom.com
+author_url: http://winterdom.com/
+wordpress_id: 734
+wordpress_url: http://winterdom.com/2008/12/pipelinetestingandbiztalk2009
+date: '2008-12-24 05:52:51 +0000'
+date_gmt: '2008-12-24 05:52:51 +0000'
+categories:
+- BizTalk
+tags: []
+comments: []
+---
+<p><!--start_raw-->
+<p>Now that the a public beta release of BizTalk Server 2009 is out, I thought I&rsquo;d download it and try building and testing <a href="http:&#47;&#47;github.com&#47;tomasr&#47;pipelinetesting&#47;wikis">PipelineTesting</a> on the new release.</p>
+<p>After downloading and installing the beta, I proceeded to import the existing Visual Studio 2005 project file into Visual Studio 2008 with the new BizTalk project system (a huge improvement over the old one, if I may say so [1]). The import worked just fine overall.</p>
+<p>The only change I had to make was remove the reference to PipelineObjects.dll from the projects and add it again with the new version in BizTalk 2009. The new version seems to be slightly different than the one in R2 (it&rsquo;s 3KB smaller), but I haven&rsquo;t looked closely to see what the differences might be.</p>
+<p>In either case, PipelineTesting builds perfectly with the new version, and all Unit Tests are still passing in the green!</p>
+<p>[1] I did hit a small snag with the project system: When building the imported solution, only the SampleSchemas project gets built, though all are selected to build in the configuration manager. Had to manually build the other projects from the project context menu.</p><!--end_raw--></p>

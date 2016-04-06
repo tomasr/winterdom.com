@@ -1,0 +1,92 @@
+---
+layout: post
+status: publish
+published: true
+title: Living with Resharper
+author:
+  display_name: Tomas Restrepo
+  login: tomasr
+  email: tomas@winterdom.com
+  url: http://winterdom.com/
+author_login: tomasr
+author_email: tomas@winterdom.com
+author_url: http://winterdom.com/
+wordpress_id: 220
+wordpress_url: http://winterdom.com/2007/02/livingwithresharper
+date: '2007-02-08 20:00:07 +0000'
+date_gmt: '2007-02-08 20:00:07 +0000'
+categories:
+- Tools
+tags: []
+comments:
+- id: 159
+  author: Ilya Ryzhenkov
+  author_email: orangy@jetbrains.com
+  author_url: ''
+  date: '2007-02-09 05:39:10 +0000'
+  date_gmt: '2007-02-09 05:39:10 +0000'
+  content: |
+    Thank you for feedback post, it is really interesting and useful to read people opinions. Let me help you once again :)
+    1. ReSharper color settings are configurable in VS Fonts &amp; Colors options. There is all you need to match your color style, except may be hierarchy icons on the left bar. We will check the latter and fix the issue.
+    2. Once you use ReSharper's refactorings, you most likely do not need what VS offers. In the General category of ReSharper options put a check near "Replace Visual Studio menu items by respective ReSharper onces". Top level "Refactor" menu will not be changed, so in case you still need VS refactorings - you can get them.
+    3. ReSharper keybindings can be exported and imported using standard VS system - Tools\Import and Export Settings
+    Hope this helps you get more from ReSharper :)
+- id: 160
+  author: Tomas Restrepo
+  author_email: tomas@winterdom.com
+  author_url: http://www.winterdom.com/weblog/
+  date: '2007-02-09 05:59:51 +0000'
+  date_gmt: '2007-02-09 05:59:51 +0000'
+  content: |
+    Many thanks again, Illya. Interesting that exporting the VS Key bindings will take Resharper shortcuts into account, and that the colors can be configured from VS options as well. Definitely need to check that out.
+    Regarding (2), I *do* have that option checked, and even so I get the two Refactor menus in the context menu, so there might be something causing conflicts. I'll try disabling it and enabling it again and see if that makes any difference.
+- id: 161
+  author: Ilya Ryzhenkov
+  author_email: orangy@jetbrains.com
+  author_url: ''
+  date: '2007-02-09 06:15:09 +0000'
+  date_gmt: '2007-02-09 06:15:09 +0000'
+  content: |
+    If the problem with (2) persist, you can try doing the following:
+    1. Open Tools\Customize dialog
+    2. Open Toolbars tab
+    3. Locate "Context Menus" pseudo-toolbar and check the box near it. You will see toolbar representing context menus.
+    4. Expand "Editor Context Menus", locate Refactor menu you don't need and drag'n'drop it out of menu.
+    Develop with pleasure!
+---
+<p><!--start_raw-->
+<p>A couple of weeks ago I <a href="http:&#47;&#47;www.winterdom.com&#47;weblog&#47;2007&#47;01&#47;26&#47;ResharperCodeRushAndOtherVSTools.aspx">talked a bit</a> about some of what I liked (and some I didn't like)&nbsp;about <a href="http:&#47;&#47;www.devexpress.com&#47;Products&#47;NET&#47;IDETools&#47;CodeRush&#47;">CodeRush</a>, and asked a few questions about <a href="http:&#47;&#47;www.jetbrains.com&#47;resharper&#47;">Resharper</a> and how it compared. Ilya Ryzhenkov, one of the developers at Jetbrains was extremely kind and answered some of my questions and encourage me to download the trial version and see what I thought about the product for myself.</p>
+<p>Here's what I've found after testing Resharper for a couple of weeks:</p>
+<p>Resharper feels less intrusive to me than CodeRush. That's not a bad thing about CodeRush, by the way. The reason CodeRush feels a bit more intrusive to me is that a) it has lots and lots and lots of templates and features and arrows and so on and b) it has a few things to make its features more visible and discoverable. All of that is good, in general terms, but it just feels a bit too "in your face" to me.</p>
+<p>The downside for Resharper here is that you won't discover some of its features unless you take a look through the&nbsp;Resharper menus. and try stuff out.</p>
+<p><strong>Keyboard Bindings</strong></p>
+<p>One of the things I mentioned the last time that caused me issues with CodeRush was how many of my favourite keyboard shortcuts it overrode. This hasn't been as much of a problem with Resharper, for two reasons: </p>
+<ol>
+<li><a href="http:&#47;&#47;www.winterdom.com&#47;weblog&#47;content&#47;binary&#47;WindowsLiveWriter&#47;LivingwithResharper_11E2E&#47;Resharper1%5B3%5D.png" atomicselection="true"><img style="border-right: 0px; border-top: 0px; border-left: 0px; border-bottom: 0px" height="219" src="http:&#47;&#47;www.winterdom.com&#47;weblog&#47;content&#47;binary&#47;WindowsLiveWriter&#47;LivingwithResharper_11E2E&#47;Resharper1_thumb%5B1%5D.png" width="240" align="right" border="0"></a>Resharper takes less keys away (since it doesn't do as much as CodeRush), and in particular I've found so far relatively few clashes with the key combinations I use the most. Most importantly, it doesn't take away so many of the regular code navigation keys (like Ctrl - Down&#47;Up arrow).</li>
+<li>Resharper has a pretty smart system that "notices" when you press a key combination once that it has a conflict and asks you whether you want to use the Resharper&nbsp;action or the regular Visual Studio action associated with the keyboard command. I've found myself reverting to the VS keys at time, and at others deciding that the Resharper functionality is better there.</li></ol>
+<p>Despite (2), I've&nbsp;hit&nbsp;&nbsp;a&nbsp;few snags here with Resharper. The first one is that I find the Resharper key conflict dialog a bit harder to read than necessary; it could really be improved a bit to make it clearer, in particular to make it more obvious what the Resharper command does. The second issue I have is that once you decide which key action you want to stick with and the conflict dialog closes, the action you selected doesn't execute right away, so you have to press it again!</p>
+<p>Another issue I ran into was when I ran into a conflict with the Shift+Tab combo. I selected to stick with the default VS action (decrease indent). Unlike other keys, however, this one didn't seem to "stick". I didn't get the Reshaper action, but neither the VS action, so I was left with no Shift+Tab and had to manually go to the Visual Studio options dialog to re-assign it to Edit.DecreaseLineIndent.</p>
+<p>My last issue with the keyboard is that Resharper assigns the F2 key by default to the Rename refactoring (which makes perfect sense as that's exactly what F2 does in most applications), but that conflicts with my bookmark navigation keys, which I'm not thrilled about :-)</p>
+<p><strong>Code Style</strong></p>
+<p>Resharper has some pretty extensive code style options for C#, and they seem to work far better than the built-in Visual Studio options. One thing here I really liked was that it tends (usually) to recognize when you intentionally do something in a different in style&nbsp;and leaves it alone.</p>
+<p>One issue I've seen, however, is when trying to use the "Reformat Code" option at the project level: At least a couple of times it has pegged Visual Studio with 100% CPU and hang, so I've had to kill it with task manager. At least one of those times it seemed some lengthy code generated Web Service proxies were the cause of the issue.</p>
+<p>Illya also pointed out to me a cool feature in Resharper: you can&nbsp;export your code style settings to an XML file (and import it back).&nbsp;You can also force a given style configuration for your team for your solution or associate a style configuration to your solution as an individual. In other words, Reshaper already does something like what I suggested for Visual Studio. My only complain here is that a) the code style settings in Resharper don't completely override how the VS editor formats code (tab settings for example don't seem to be included), and b) the feature could really be more discoverable.</p>
+<p><strong>Performance</strong></p>
+<p>Resharper does increase Visual Studio loading time, though it doesn't seem to be as bad as I was expecting. That said, loading a large Visual Studio solution (particularly with many referenced assemblies) with Resharper enabled the first time can take quite a while.</p>
+<p><strong>Other Stuff I liked in Resharper</strong></p>
+<ul>
+<li>It&nbsp;will show unused variables and unneeded using declarations by "graying them out".</li>
+<li>The color-coded pane right next to the vertical scrollbar that shows if potential improvements or code analysis warnings have been detected, making it easier to identify stuff to improve&#47;fix.</li>
+<li>It will warn you if an instance&nbsp;method doesn't depend on any other instance member and recommend. FxCop will catch those as well, but it's nice to be able to notice that right away.</li>
+<li><img height="66" src="http:&#47;&#47;www.winterdom.com&#47;weblog&#47;content&#47;binary&#47;WindowsLiveWriter&#47;LivingwithResharper_11E2E&#47;Resharper2%5B5%5D.png" width="121" align="right">I like the code navigation icons on the left of the code window: they allow you to easily navigate through a class hierarchy and method overrides. One thing I don't like though is that they seem to be a fixed gray background, which makes it look rather ugly in my color scheme :-) </li>
+<li>Resharper will warn you right away if you reference an invalid type&#47;member in a <see&#47;> element in an XML code comment.</li></ul>
+<p><strong>Other Stuff I don't like</strong></p>
+<ul>
+<li>Resharper uses several color-coded feedback mechanisms, including wavy underlining. Unfortunately, I&nbsp;haven't&nbsp;found any obvious way to change the colors used in them in the Resharper Options dialog.<br>One thing I did notice that is particularly annoying is that Resharper seems to have its own matching braces&#47;quotes highliting separate from the Visual Studio one. What then happens is that sometimes one kicks in, and sometimes another. That would not normally be a problem, except that again, Resharper uses its own colors for that, which clash heavily with my code scheme making the highlited code unreadable :-(</li>
+<li><img height="116" src="http:&#47;&#47;www.winterdom.com&#47;weblog&#47;content&#47;binary&#47;WindowsLiveWriter&#47;LivingwithResharper_11E2E&#47;Resharper3%5B9%5D.png" width="178" align="right"> Resharper's Refactor submenu in the code editor context menu is named exactly the same as Visual Studio's built-in one. I have trouble remembering which is which and end up loosing valuable time as a result. It would be nice if the name was different or it had an Icon or something to distinguish Resharper's from the VS built-in one.</li>
+<li>Resharper has a pretty complete Intellisense replacement, and it works very well, though it takes a bit getting used to. However, one thing I can't seem to get used to is the way tooltips for method arguments are presented: it seems to me a little bit more intrusive than necessary, tends to get in the way, and personally, I find it harder to read and navigate quickly than the regul<br />
+ar VS tooltips.</li>
+<li>While you can export and import Resharper code style settings, there does not appear an easy way to export and import the rest of the Resharper configuration. In particular, if&nbsp;I have already selected which Resharper key combinations you prefer over the VS original ones, I shouldn't have to do it all over again when I reinstall.</li></ul>
+<p><strong>Conclusion</strong></p>
+<p>Resharper is a great product and adds a lot of capabilities and features that really improve the Visual Studio experience. Sure, it has its snags, but we live with Visual Studio, don't we? ;-). Both Resharper and CodeRush are great products and any developer would be lucky to have either one on his&#47;her toolbox.</p>
+<div class="wlWriterSmartContent" id="0767317B-992E-4b12-91E0-4F059A8CECA8:c38b27ea-8687-425b-983c-9dde8d8476dd" contenteditable="false" style="padding-right: 0px; display: inline; padding-left: 0px; padding-bottom: 0px; margin: 0px; padding-top: 0px">Technorati tags: <a href="http:&#47;&#47;technorati.com&#47;tags&#47;Resharper" rel="tag">Resharper</a>, <a href="http:&#47;&#47;technorati.com&#47;tags&#47;CodeRush" rel="tag">CodeRush</a>, <a href="http:&#47;&#47;technorati.com&#47;tags&#47;Visual%20Studio" rel="tag">Visual Studio</a></div><!--end_raw--></p>

@@ -1,0 +1,31 @@
+---
+layout: post
+status: publish
+published: true
+title: ESBs, Application Integration and WS-*
+author:
+  display_name: Tomas Restrepo
+  login: tomasr
+  email: tomas@winterdom.com
+  url: http://winterdom.com/
+author_login: tomasr
+author_email: tomas@winterdom.com
+author_url: http://winterdom.com/
+wordpress_id: 715
+wordpress_url: http://winterdom.com/2005/05/esbsapplicationintegrationandws
+date: '2005-05-01 16:06:51 +0000'
+date_gmt: '2005-05-01 16:06:51 +0000'
+categories:
+- Web Services
+tags: []
+comments: []
+---
+<p><!--start_raw-->ESBs, Application Integration and WS-*<br />
+There has been some discussions going on lately on the need for ESBs and enterprise buses. One that particularly caught my attention was <a href="http:&#47;&#47;blogs.msdn.com&#47;richardt&#47;default.aspx">Richard Turner's</a> entry <a href="http:&#47;&#47;blogs.msdn.com&#47;richardt&#47;archive&#47;2005&#47;04&#47;28&#47;413159.aspx">here</a>. What really caught my eye was Richard's comment that:</p>
+<p><quote><i>The point I was trying to raise is that I am fundamentally at odds with the notion of buying and&#47;or building a communications "bus" for an enterprise. I am totally opposed to the idea of building enterprise apps on top of this "bus" which I hope will solve all my integration needs. Why? There are several reasons for my concerns, but it all essentially comes down to one thing: WS-*</i></quote></p></p>
+<p>My humble opinion on the matter (not being an expert on either ESBs nor WS-*) is that Richard's comment is, well, not very pragmatic and overly optimistic, at best. In theory, I'd agree 100%, it certainly sounds like a very compelling vision of the future. In practice, however, I can't see how this would ever be a reality.</p></p>
+<p>My reasons on this opinion are quite simple actually: Most companies have, and will always have, legacy infrastructure that run key parts of the business (after all, legacy is whatever you have in production, right?). There's tons and tons of money invested in these platforms and applications that people are just not gonna throw away because they don't support whatever flavor of the month spec is coming out into the market. The whole reason why application integration platforms like BizTalk Server are so successful is that they allow you to connect these disparate platforms (and even bring them into a Service Oriented Architecture) with fairly minimal investements (or at least much smaller than complete rewrite&#47;replacement).</p></p>
+<p>Sure, many vendors are updating their applications to support WebServices, but not all companies can afford the constant stream of updates (especially in large enterprise applications like ERPs) just to get that support (especially when they can do what needs to be done cheaper) and, most of all, a large part of what's our there in production is custom code that enterprises cannot afford to radically change to support WS-*.</p></p>
+<p>Now, perhaps I'm wrong and in a few years (few > 5) we might see this trend reversed and perhaps we might even see that indeed most applications support some sort of WS-* stack. However, at the pace the WS-* specs are moving along I can't see this being a reality. Even more, a few years later will even be in the really nice position of dealing with multiple incompatible versions of WS-* specs out there (a very possible scenario given that the specs themselves are complex and they won't be all 100% correct on their first release), and possibly multiple SOAP+WSDL+whatever (this is already happening with v1.2 of the specs about). Sure, platforms like Indigo will hopefully make this easier to deal with, but how many Indigo-like platforms will companies have to buy then for each platform they run, and what will be the cost of that?</p></p>
+<p>The meaning to me of all this is that integration and ESB-like infrastructure will very well still be needed to ensure that this disimilar WS-platforms can talk to each other and make management and interoperability of all the services around a reality.</p></p>
+<p>Then again, this is just my opinion....</p><!--end_raw--></p>

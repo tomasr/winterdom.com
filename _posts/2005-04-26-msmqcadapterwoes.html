@@ -1,0 +1,49 @@
+---
+layout: post
+status: publish
+published: true
+title: MSMQC Adapter Woes
+author:
+  display_name: Tomas Restrepo
+  login: tomasr
+  email: tomas@winterdom.com
+  url: http://winterdom.com/
+author_login: tomasr
+author_email: tomas@winterdom.com
+author_url: http://winterdom.com/
+wordpress_id: 703
+wordpress_url: http://winterdom.com/2005/04/msmqcadapterwoes
+date: '2005-04-26 16:11:32 +0000'
+date_gmt: '2005-04-26 16:11:32 +0000'
+categories:
+- BizTalk
+tags: []
+comments: []
+---
+<p><!--start_raw-->A couple months ago I was testing the MSMQ(C) adapter for BizTalk Server 2004 for a proof of concept I was working on. While overall it worked fine, I did run into a couple of problems with it which I cannot explain fully yet.</p>
+<p>As I wrote in a <a href="http:&#47;&#47;groups-beta.google.com&#47;group&#47;microsoft.public.biztalk.general&#47;browse_thread&#47;thread&#47;78b3b04cdd25b1e6&#47;0a1db6c84fa5e0f4">newsgroup post</a> some time ago, I was never able to actually get the adapter to send messages to transactional queues. Non-transactional queues worked fine, as well as receiving messages from a transactional queue, but not the other way around. Here's what I posted at that time:</p></p>
+<pre><code>Has anyone else noticed a problem with sending messages using the recently<br />
+released MSMQ adapter to transactional queues?<br />
+I've been trying to do it on my machine, and receiving works just fine, but<br />
+trying to send messages to a transactional queue keeps failing with the<br />
+following entry in the event log:<br />
+Event Type: Warning<br />
+Event Source: BizTalk Server 2004<br />
+Event Category: BizTalk Server 2004<br />
+Event ID: 5743<br />
+Date:  3&#47;10&#47;2005<br />
+Time:  6:23:43 PM<br />
+User:  N&#47;A<br />
+Computer: C-TRESTREPO<br />
+Description:<br />
+The adapter failed to transmit message going to send port<br />
+"FORMATNAME:DIRECT=OS:.\PRIVATE$\ALMACEN1". It will be retransmitted after<br />
+the retry interval specified for this Send Port. Details:"No such interface<br />
+supported".<br />
+For more information, see Help and Support Center at<br />
+http:&#47;&#47;go.microsoft.com&#47;fwlink&#47;events.asp.<br />
+Sending messages to non transactional queues works fine, though....<br />
+Any clues?<br />
+</code></pre></p>
+<p>I tried this in two different machines and ran into the same error, and I know other people are seeing <a href="http:&#47;&#47;groups-beta.google.com&#47;group&#47;microsoft.public.biztalk.general&#47;browse_frm&#47;thread&#47;3c8bd3723eb6bebc&#47;0914bbce8ce39e65">this</a>. However, I have yet to see a useful answer on what the cause is and how to correct it.</p></p>
+<p>The other problem I did run into on one machine, though I couldn't reproduce it was actually even stranger: In my old machine, the BizTalk Application Host would randomly hang during shutdown when the MSMQ adapter was installed on the machine, and the only way to get it to end was to forcefully kill it. Even more strange was that the application host service would hang during startup <i>if I had the MSMQ management console open at the same time!</i>. As soon as I closed it, the problem went immediately away. Talk about bizarro queues...</p><!--end_raw--></p>

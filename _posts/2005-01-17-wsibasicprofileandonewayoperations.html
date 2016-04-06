@@ -1,0 +1,31 @@
+---
+layout: post
+status: publish
+published: true
+title: WS-I Basic Profile and One-Way Operations
+author:
+  display_name: Tomas Restrepo
+  login: tomasr
+  email: tomas@winterdom.com
+  url: http://winterdom.com/
+author_login: tomasr
+author_email: tomas@winterdom.com
+author_url: http://winterdom.com/
+wordpress_id: 448
+wordpress_url: http://winterdom.com/2005/01/wsibasicprofileandonewayoperations
+date: '2005-01-17 17:19:37 +0000'
+date_gmt: '2005-01-17 17:19:37 +0000'
+categories:
+- Web Services
+tags: []
+comments: []
+---
+<p><!--start_raw-->I've been spending a few hours lately reading in more detail the different documents produced by the <a href="http:&#47;&#47;www.ws-i.org&#47;">WS-I</a>, in particular the WS-I <a href="http:&#47;&#47;www.ws-i.org&#47;Profiles&#47;BasicProfile-1.1-2004-08-24.html">Basic Profile 1.1</a>. One part that I found quite interesting was the rules on <a href="http:&#47;&#47;www.ws-i.org&#47;Profiles&#47;BasicProfile-1.1-2004-08-24.html#One-Way_Operations">One-Way Operations</a>.</p>
+<p>Particularly intriguing is rule R2727:</p></p>
+<p><quote><i>"For one-way operations, a CONSUMER MUST NOT interpret a successful HTTP response status code (i.e., 2xx) to mean the message is valid or that the receiver would process it."</i></quote>.</p></p>
+<p>While seamingly harmless, I think the implications of it are quite important. There are several interesting things at work here:</p></p>
+<ul>
+<li>The profile quite clearly mentions that you can't expect a 2xx level response to especify the message was processed or validated, merely that it was received by the server endpoint. This implies, to me at least, that in <i>every</i> one-way service you create there should be ways to eventually validate that the message was processed correctly or not, either manually (via logs) or automatically (via asynchronous responses to the message sender, which is not currently possible in a standarized way). Mind you, this is not news, it's the same as with other async technologies, such as Message Queues (except, or course, that message queuing systems usually have mechanisms in place to deal with this kind of situations like Dead-Letter and Journal queues, which make it somewhat easier to implement).</li>
+<li>The profile goes on to say that <i>"One-way operations do not produce SOAP responses. Therefore, the Profile prohibits sending a SOAP envelope in response to a one-way operation. This means that transmission of one-way operations can not result in processing level responses or errors. For example, a '500 Internal Server Error' HTTP response that contains a fault can not be returned in this situation."</i> and that <i>"The HTTP response to a one-way operation indicates the success or failure of the transmission of the message"</i>. From this, my personal interpretation is that a 500 level error should *only* be returned by the service endpoint in case of a transmission failure of some kind. What's not very clear to me is exactly what a "Transmission failure" is supposed to mean given the restrictions outlined above.</li><br />
+</ul></p>
+<p>Overall, though, I've enjoyed going over the WS-I documents... I've found them to be quite enlightening :)</p><!--end_raw--></p>

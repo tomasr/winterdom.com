@@ -1,0 +1,39 @@
+---
+layout: post
+status: publish
+published: true
+title: BizTalk Services, Cardspace and Console
+author:
+  display_name: Tomas Restrepo
+  login: tomasr
+  email: tomas@winterdom.com
+  url: http://winterdom.com/
+author_login: tomasr
+author_email: tomas@winterdom.com
+author_url: http://winterdom.com/
+wordpress_id: 133
+wordpress_url: http://winterdom.com/2007/04/biztalkservicescardspaceandconsole
+date: '2007-04-29 20:31:00 +0000'
+date_gmt: '2007-04-29 20:31:00 +0000'
+categories:
+- BizTalk
+- WCF
+- Web Services
+tags: []
+comments: []
+---
+<p><!--start_raw-->
+<p>I've spent some time playing with the recent <a href="http:&#47;&#47;labs.biztalk.net&#47;">BizTalk Services</a> CTP SDK (way cool stuff!), and ran into a weird error that perhaps others might run into: Sometimes, but not always, I would get an error when trying to use any of the BizTalk Services WCF extensions, like the relay channel, during initalization.</p>
+<p>For example, if I wanted to start the service part of the Echo sample included with the SDK, sometimes I'd get the following exception during the host.Open() call:</p><code>
+<p>Microsoft.ServiceModel.Relay.ServerErrorException: The server had an error while<br>processing request.<br>at Microsoft.ServiceModel.Relay.RelayListener.InitiateConnection()<br>at Microsoft.ServiceModel.Relay.RelayListener.OnOpen(TimeSpan timeout)<br>at System.ChannelFx.RefcountedCommunicationObject.Open(TimeSpan timeout)<br>at Microsoft.ServiceModel.Relay.RelayChannelListener.OnOpen(TimeSpan timeout) </p>
+<p>at System.ChannelFx.CommunicationObject.Open(TimeSpan timeout)<br>at System.ServiceModel.Dispatcher.ChannelDispatcher.OnOpen(TimeSpan timeout)<br>at System.ServiceModel.Channels.CommunicationObject.Open(TimeSpan timeout)<br>at System.ServiceModel.ServiceHostBase.OnOpen(TimeSpan timeout)<br>at System.ServiceModel.Channels.CommunicationObject.Open(TimeSpan timeout)<br>at System.ServiceModel.Channels.CommunicationObject.Open()<br>at Microsoft.ServiceModel.Relay.Samples.Program.Main(String[] args) in C:\Pro<br>gram Files\BizTalk Services SDK\Samples\EchoSample\Service\Program.cs:line 32 </code>
+<p>I couldn't figure out why this was happening at first because I couldn't always repro it. What I'd do then is just start closing stuff (thinking perhaps it was some sort of resource exhaustion) until it started working again. But then I noticed that whenever this was happening, the Cardspace Card Selector UI, when launched manually through the Control Panel, would fail to start up as well.&nbsp;I would get the following error and then the infospace.exe process would hang in memory until I manually killed it through Task Manager:
+<p><img height="107" src="http:&#47;&#47;www.winterdom.com&#47;weblog&#47;content&#47;binary&#47;WindowsLiveWriter&#47;BizTalkServicesCardspaceandConsole_13AC9&#47;CardspaceError%5B3%5D.png" width="500">
+<p>Checking the windows Application Log I'd see this:<br />
+<blockquote>
+<p><em>The Windows CardSpace user interface process failed in its initialization phase. This might be due to an error during the creation of the private desktop. Exception of type 'Microsoft.InfoCards.UIAgentInitializationException' was thrown. </em></p></blockquote>
+<p>Not very useful, but it was a place to start. I started looking again to see what I had running (all sorts of stuff) and trying stuff out until I found the culprit: <a href="http:&#47;&#47;sourceforge.net&#47;projects&#47;console">Console</a>. I love using Console instead of the regular cmd.exe plain because it is more configurable and&nbsp;has a tabbed interface. Plus, I have configured default shells for both cmd.exe and PowerShell that I can launch quickly with a single keystroke.
+<p>For some weird reason, though, it appears that the Cardspace Card Selector User Interface refuses to start on my Windows Server 2003 R2 virtual machine (VPC2007) as long as Console is running. Close Console, and both Cardspace&nbsp;and the BizTalk Services SDK samples start working again perfectly.
+<p>No idea why this happens, as the Cardspace UI works just fine even though Console is running on my main Vista machine, but there you go.
+<p>&nbsp;</p>
+<div class="wlWriterSmartContent" id="0767317B-992E-4b12-91E0-4F059A8CECA8:9d210442-2c6f-4ee7-bf3b-fee3ea25c100" contenteditable="false" style="padding-right: 0px; display: inline; padding-left: 0px; padding-bottom: 0px; margin: 0px; padding-top: 0px">Technorati tags: <a href="http:&#47;&#47;technorati.com&#47;tags&#47;BizTalk%20Services" rel="tag">BizTalk Services</a>, <a href="http:&#47;&#47;technorati.com&#47;tags&#47;Cardspace" rel="tag">Cardspace</a></div><!--end_raw--></p>

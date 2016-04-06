@@ -1,0 +1,43 @@
+---
+layout: post
+status: publish
+published: true
+title: WS-Addressing
+author:
+  display_name: Tomas Restrepo
+  login: tomasr
+  email: tomas@winterdom.com
+  url: http://winterdom.com/
+author_login: tomasr
+author_email: tomas@winterdom.com
+author_url: http://winterdom.com/
+wordpress_id: 870
+wordpress_url: http://winterdom.com/2003/04/wsaddressing
+date: '2003-04-16 18:23:35 +0000'
+date_gmt: '2003-04-16 18:23:35 +0000'
+categories:
+- Web Services
+tags: []
+comments:
+- id: 585
+  author: Simon Fell
+  author_email: sf@zaks.demon.co.uk
+  author_url: http://www.pocketsoap.com/weblog/
+  date: '2003-04-17 14:18:21 +0000'
+  date_gmt: '2003-04-17 14:18:21 +0000'
+  content: |
+    <p>for a one way SOAP message over HTTP, I'd expect either a 202 Accepted, or a 500 server fault response.</p>
+- id: 586
+  author: Tomas Restrepo
+  author_email: tomasr@mvps.org
+  author_url: http://www.winterdom.com/weblog
+  date: '2003-04-22 22:46:50 +0000'
+  date_gmt: '2003-04-22 22:46:50 +0000'
+  content: |
+    <p>True, 202 Accepted is what I wanted to say, and indeed sounds like the one I would've expected after remembering the one-way interaction style in WSDL.</p>
+---
+<p><!--start_raw-->Justin <a href="http:&#47;&#47;pinetree-tech.com&#47;weblog&#47;archives&#47;2003&#47;04&#47;16.shtml#too_quiet">complains</a> that no one has commented or answered his <a href="http:&#47;&#47;pinetree-tech.com&#47;weblog&#47;archives&#47;2003&#47;04&#47;15.shtml#000256 ">comments on WS-Addressing</a>. Since some of his comments are directly addressed to me, I think it's only fair to respond :)</p>
+<p>I've been looking into WS-Addressing, too, trying to understand the whole thing. I haven't quite contemplated all scenarios, but I think Justin's comments make a lot of sense, overall. I've got my own thoughts on WS-Routing, which I'll perhaps mention another time, but I do think there are some much more significant differences between it and WS-Addressing.</p></p>
+<p>But allow me to present a new design question. Justin proposes using the wsa:ReplyTo element to provide for immediate or deferred response of the message. I'm not quite sure how it would work out. I just can't see this making much sense, in a way. My first question is, how would the WSDL look like for a service that could either respond right away or via a callback message? I can think of a few ways, but none that are too clean. This is one case where I'd prefer to actually split the service in two: one sync, another async.</p></p>
+<p>The whole asynchronous Web Service idea has been nagging at me for a while, and Justin's introduction of wsa:ReplyTo provides a good context for me asking this question: What should the HTTP-response content be for a SOAP call that's basically one-way? (yes, I know I'm blatantly displaying my ignorance here...). Basically, it all boils down to: is a soap-envelope required on the response, and if so, why? [1] (iow, why wouldn't just a 200 Accepted response be enough). </p></p>
+<p>[1] One reason for this question is just considering alternative, non-HTTP soap bindings on one-way protocols, such as STMP or a Message Queueing system.</p><!--end_raw--></p>

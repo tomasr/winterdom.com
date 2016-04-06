@@ -1,0 +1,124 @@
+---
+layout: post
+status: publish
+published: true
+title: DynamicObject in C# 4.0
+author:
+  display_name: Tomas Restrepo
+  login: tomasr
+  email: tomas@winterdom.com
+  url: http://winterdom.com/
+author_login: tomasr
+author_email: tomas@winterdom.com
+author_url: http://winterdom.com/
+wordpress_id: 1233
+wordpress_url: http://winterdom.com/2009/05/dynamicobject-in-c-40
+date: '2009-05-20 10:16:00 +0000'
+date_gmt: '2009-05-20 10:16:00 +0000'
+categories:
+- ".NET"
+tags: []
+comments:
+- id: 849
+  author: 5 Articulos sobre VS2010 | Coded Style
+  author_email: ''
+  author_url: http://www.codedstyle.com/5-articulos-sobre-vs2010/
+  date: '2009-05-30 15:36:18 +0000'
+  date_gmt: '2009-05-30 15:36:18 +0000'
+  content: "[...] Restrepo ha escrito 5 excelentes art&iacute;culos sobre VS2010.
+    Aqu&iacute; la lista:  Installing VS2010 Beta 1 DynamicObject in C# 4.0 InvokePowerShell
+    Activity Problem Consuming WCF Service in BizTalk 2009 Comments on the WF 4.0
+    [...]"
+- id: 1243
+  author: Carl Weis
+  author_email: carlw@codelogix.com
+  author_url: http://www.codelogix.com
+  date: '2009-11-25 23:43:17 +0000'
+  date_gmt: '2009-11-25 23:43:17 +0000'
+  content: Can you email me this color scheme?
+- id: 1631
+  author: Dilip
+  author_email: rdilipk@gmail.com
+  author_url: ''
+  date: '2010-12-08 14:01:16 +0000'
+  date_gmt: '2010-12-08 14:01:16 +0000'
+  content: I like this color scheme too -- if you can upload it at http:&#47;&#47;studiostyl.es,
+    that'd be even better (or email it to me if you can)
+- id: 1703
+  author: Mukti
+  author_email: muktictg@gmail.com
+  author_url: ''
+  date: '2011-04-16 09:32:32 +0000'
+  date_gmt: '2011-04-16 09:32:32 +0000'
+  content: "using System;\r\nusing System.Collections.Generic;\r\nusing System.Dynamic;\r\nusing
+    System.Linq;\r\nusing System.Linq.Expressions;\r\nusing System.Text;\r\n\r\nnamespace
+    ConsoleApplication1 {\r\n   class DynamicTest : DynamicObject {\r\n      public
+    override bool TryInvokeMember(\r\n            InvokeMemberBinder binder, object[]
+    args,\r\n            out object result) {\r\n         var paramList = new Dictionary();\r\n
+    \        int i = 0;\r\n         foreach ( object obj in args ) {\r\n            string
+    name = binder.CallInfo.ArgumentNames.Count > i ?\r\n               binder.CallInfo.ArgumentNames[i]
+    : (\"param\" + i);\r\n            paramList.Add(name, obj);\r\n            i++;\r\n
+    \        }\r\n         WriteCall(binder.Name, paramList);\r\n         result =
+    null;\r\n         return true;\r\n      }\r\n\r\n      public void WriteCall(string
+    name, Dictionary paramList) {\r\n         Console.WriteLine(\"Executing: {0}\",
+    name);\r\n         foreach ( string key in paramList.Keys ) {\r\n            Console.WriteLine(\"\\t{0}:
+    {1}\", key, paramList[key]);\r\n         }\r\n      }\r\n   }\r\n   class Program
+    {\r\n      static void Main(string[] args) {\r\n         dynamic cl = new DynamicTest();\r\n
+    \        cl.MyMethodCall(count:12, value: \"this is a string\");\r\n      }\r\n
+    \  }\r\n}"
+- id: 1780
+  author: Nissim Aviv
+  author_email: avivnissim@gmail.com
+  author_url: ''
+  date: '2011-09-03 23:53:18 +0000'
+  date_gmt: '2011-09-03 23:53:18 +0000'
+  content: "Hi Mr.Tomas Restrepo\r\nThis is my first time visit your website, maybe
+    i'm too old (56) to learn c#, but i like\r\nto learn this software programing.
+    I have few books, but do not like them, they TALK\r\nto much,\r\nCan you give
+    me an advice what is the best way to learn?\r\nThanks\r\nNissim"
+---
+<p>Just some fooling around with DynamicObject and friends in C# 4.0:</p>
+<pre class="codebg"><code><br />
+<span class="Statement">using</span> System;<br />
+<span class="Statement">using</span> System.Collections.Generic;<br />
+<span class="Statement">using</span> System.Dynamic;<br />
+<span class="Statement">using</span> System.Linq;<br />
+<span class="Statement">using</span> System.Linq.Expressions;<br />
+<span class="Statement">using</span> System.Text;</p>
+<p><span class="StorageClass">namespace</span> ConsoleApplication1 {<br />
+   <span class="StorageClass">class</span> DynamicTest : DynamicObject {<br />
+      <span class="StorageClass">public</span> <span class="StorageClass">override</span> <span class="Type">bool</span> TryInvokeMember(<br />
+            InvokeMemberBinder binder, <span class="Type">object</span>[] args,<br />
+            <span class="Statement">out</span> <span class="Type">object</span> result) {<br />
+         var paramList = <span class="Statement">new</span> Dictionary<<span class="Type">string</span>, <span class="Type">object</span>>();<br />
+         <span class="Type">int</span> i = <span class="Number">0</span>;<br />
+         <span class="Repeat">foreach</span> ( <span class="Type">object</span> obj <span class="Statement">in</span> args ) {<br />
+            <span class="Type">string</span> name = binder.CallInfo.ArgumentNames.Count > i ?<br />
+               binder.CallInfo.ArgumentNames[i] : (<span class="String">"param"</span> + i);<br />
+            paramList.Add(name, obj);<br />
+            i++;<br />
+         }<br />
+         WriteCall(binder.Name, paramList);<br />
+         result = <span class="Constant">null</span>;<br />
+         <span class="Repeat">return</span> <span class="Constant">true</span>;<br />
+      }</p>
+<p>      <span class="StorageClass">public</span> <span class="Type">void</span> WriteCall(<span class="Type">string</span> name, Dictionary<<span class="Type">string</span>, <span class="Type">object</span>> paramList) {<br />
+         Console.WriteLine(<span class="String">"Executing: {0}"</span>, name);<br />
+         <span class="Repeat">foreach</span> ( <span class="Type">string</span> key <span class="Statement">in</span> paramList.Keys ) {<br />
+            Console.WriteLine(<span class="String">"</span><span class="SpecialChar">\t</span><span class="String">{0}: {1}"</span>, key, paramList[key]);<br />
+         }<br />
+      }<br />
+   }<br />
+   <span class="StorageClass">class</span> Program {<br />
+      <span class="StorageClass">static</span> <span class="Type">void</span> Main(<span class="Type">string</span>[] args) {<br />
+         dynamic cl = <span class="Statement">new</span> DynamicTest();<br />
+         cl.MyMethodCall(count:<span class="Number">12</span>, <span class="Statement">value</span>: <span class="String">"this is a string"</span>);<br />
+      }<br />
+   }<br />
+}<br />
+</code></pre></p>
+<p>Executing it outputs this:</p></p>
+<pre class="codebg">Executing: MyMethodCall<br />
+        count: 12<br />
+        value: this is a string<br />
+</code></pre></p>

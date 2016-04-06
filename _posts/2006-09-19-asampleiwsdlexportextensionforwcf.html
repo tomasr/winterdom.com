@@ -1,0 +1,205 @@
+---
+layout: post
+status: publish
+published: true
+title: A Sample IWsdlExportExtension for WCF
+author:
+  display_name: Tomas Restrepo
+  login: tomasr
+  email: tomas@winterdom.com
+  url: http://winterdom.com/
+author_login: tomasr
+author_email: tomas@winterdom.com
+author_url: http://winterdom.com/
+wordpress_id: 830
+wordpress_url: http://winterdom.com/2006/09/asampleiwsdlexportextensionforwcf
+date: '2006-09-19 06:35:27 +0000'
+date_gmt: '2006-09-19 06:35:27 +0000'
+categories:
+- WCF
+- WinFX
+- Web Services
+tags: []
+comments:
+- id: 1566
+  author: Tal
+  author_email: talg@netvision.net.il
+  author_url: http://blog.talgiladi.net
+  date: '2010-09-16 14:57:33 +0000'
+  date_gmt: '2010-09-16 14:57:33 +0000'
+  content: "Hi, \r\nHow do I declare this endpoing in the web config if the my service
+    is running on a web application?"
+- id: 1567
+  author: Tomas Restrepo
+  author_email: tomas@winterdom.com
+  author_url: http://winterdom.com/
+  date: '2010-09-16 15:06:05 +0000'
+  date_gmt: '2010-09-16 15:06:05 +0000'
+  content: "@Tal: You need to add it through the WCF configuration system. How to
+    add the code necessary for this is in http:&#47;&#47;winterdom.com&#47;2006&#47;10&#47;customwcfbehaviorsthroughappconfig"
+- id: 3027
+  author: Hassan Gulzar
+  author_email: hassan.gulzar@gmail.com
+  author_url: ''
+  date: '2012-09-06 12:22:11 +0000'
+  date_gmt: '2012-09-06 12:22:11 +0000'
+  content: "Hi! I think your research here can help me. I'm dealing with a very huge
+    WCF service and the generated wsdl is nilling everything by default.\r\n\r\nThing
+    is, so strings are actually nillable but some are not and my client is complaining.
+    If you can post the actual project, it'll be really helpful. I need to control
+    the contracts that can be nill or not. Thanks!"
+---
+<p><!--start_raw--><P><A href="http:&#47;&#47;www.winterdom.com&#47;weblog&#47;content&#47;binary&#47;ASampleIWsdlExportExtensionforWCF_11600&#47;WSDLNotice_WSDL10.jpg" atomicselection="true"><IMG style="BORDER-TOP-WIDTH: 0px; BORDER-LEFT-WIDTH: 0px; BORDER-BOTTOM-WIDTH: 0px; BORDER-RIGHT-WIDTH: 0px" height=217 src="http:&#47;&#47;www.winterdom.com&#47;weblog&#47;content&#47;binary&#47;ASampleIWsdlExportExtensionforWCF_11600&#47;WSDLNotice_WSDL_thumb8.jpg" width=300 align=right border=0></A> I've been playing for a few hours with implementing an <A href="http:&#47;&#47;windowssdk.msdn.microsoft.com&#47;en-us&#47;library&#47;system.servicemodel.description.iwsdlexportextension.aspx">IWsdlExportExtension</A> for&nbsp;Windows Communication Foundation&nbsp;in RC1, and thought some of you might be interested in this little sample. Basically&nbsp;you implement IWsdlExportExtension&nbsp;as a way to customize the WSDL generation process for a given&nbsp;service contract or service endpoint. Here I'll show a simple extension that will add a default notice (say a copyright notice) to the WSDL and XSDs that WCF generates for a given service.</P><br />
+<P><STRONG>Where to implement it</STRONG></P><br />
+<P>IWsdlExportExtension needs to be implemented in either a Contract or an Endpoint Behavior itself. Either way is possible, but while trying this I found out some differences between both approaches that are not immediately apparent from the documentation. </P><br />
+<P>The first is that the IWsdlExportExtension interface is composed of two different methods: ExportContract() and ExportEndpoint(). You need to be aware that in normal cases, the WCF runtime will call only one of this methods on your extension: If the extension is a contract behavior, then you'll want to implement ExportContract(); if it is an endpoint behavior you'll want to implement ExportEndpoint() instead.</P><br />
+<P><A href="http:&#47;&#47;www.winterdom.com&#47;weblog&#47;content&#47;binary&#47;ASampleIWsdlExportExtensionforWCF_11600&#47;WSDLNotice_XSD8.jpg" atomicselection="true"><IMG style="BORDER-TOP-WIDTH: 0px; BORDER-LEFT-WIDTH: 0px; BORDER-BOTTOM-WIDTH: 0px; BORDER-RIGHT-WIDTH: 0px" height=217 src="http:&#47;&#47;www.winterdom.com&#47;weblog&#47;content&#47;binary&#47;ASampleIWsdlExportExtensionforWCF_11600&#47;WSDLNotice_XSD_thumb6.jpg" width=300 align=right border=0></A> My first try was to implement my custom extension as a contract behavior. That worked, but it only got me so far. What I discovered was that if the extension is a contract behavior [1], then when ExportContract() is called only the base WSDL description for the service contract has been created, but none of the supporting XML Schemas will be available yet. However, if you implement the extension as an endpoint behavior, then it seems this is done late enough in the game for you to be able to access (and modify) the generated schemas, which is a good thing.</P><br />
+<P>For our sample extension we'll be implementing an endpoint behavior, which means our class will also need to implement IEndpointBehavior. The good news is that this implementation can be empty, since we don't actually need to implement any of the methods in the interface, and it's just a way to get WCF to use our IWsdlExportExtension.</P><br />
+<P><STRONG>Our Implementation</STRONG></P><br />
+<P>With that out of the way, implementing our extension is failry simple process. Here's what we want it to do:</P><br />
+<UL><br />
+<LI>We'll define a custom setting for our app.config file that holds the message we want to add to our exported WSDL and XSDs; we'll call it WsdlNotice.<br />
+<LI>For any exported WSDL, we want to set the top-level <documentation&#47;> element to whatever is configured in WsdlNotice.<br />
+<LI>For any exported schema files, we'll want to add a new top-level XSD annotation, on which we'll set the <xsd:documentation&#47;> element to whatever is configured in WsdlNotice</LI></UL><br />
+<P>So, here's our implementation with all the heavy lifting done inside the ExportEndpoint() method:</P><br />
+<DIV class=Section1><br />
+<STYLE><br />
+<!--<br />
+&#47;* Font Definitions *&#47;<br />
+@font-face<br />
+{font-family:"Cambria Math";<br />
+panose-1:2 4 5 3 5 4 6 3 2 4;<br />
+mso-font-charset:0;<br />
+mso-generic-font-family:roman;<br />
+mso-font-pitch:variable;<br />
+mso-font-signature:-1610611985 1107304683 0 0 159 0;}<br />
+&#47;* Style Definitions *&#47;<br />
+p.MsoNormal, li.MsoNormal, div.MsoNormal<br />
+{mso-style-unhide:no;<br />
+mso-style-qformat:yes;<br />
+mso-style-parent:"";<br />
+margin:0in;<br />
+margin-bottom:.0001pt;<br />
+mso-pagination:widow-orphan;<br />
+font-size:12.0pt;<br />
+font-family:"Times New Roman","serif";<br />
+mso-fareast-font-family:"Times New Roman";}<br />
+pre<br />
+{mso-style-unhide:no;<br />
+margin:0in;<br />
+margin-bottom:.0001pt;<br />
+mso-pagination:widow-orphan;<br />
+font-size:10.0pt;<br />
+font-family:"Courier New";<br />
+mso-fareast-font-family:"Times New Roman";}<br />
+span.SpellE<br />
+{mso-style-name:"";<br />
+mso-spl-e:yes;}<br />
+@page Section1<br />
+{size:8.5in 11.0in;<br />
+margin:1.0in 1.25in 1.0in 1.25in;<br />
+mso-header-margin:.5in;<br />
+mso-footer-margin:.5in;<br />
+mso-paper-source:0;}<br />
+div.Section1<br />
+{page:Section1;}<br />
+--><br />
+</STYLE><br />
+<PRE style="BACKGROUND: white"><SPAN style="COLOR: green">&#47;&#47;<br />
+&#47;&#47; <SPAN class=SpellE>WsdlNoticeBehavior.cs</SPAN><br />
+&#47;&#47;<?xml:namespace prefix = o &#47;><o:p></o:p></SPAN></PRE><PRE style="BACKGROUND: white"><SPAN style="COLOR: green">&#47;&#47; Author:<o:p></o:p></SPAN></PRE><PRE style="BACKGROUND: white"><SPAN style="COLOR: green">&#47;&#47;<SPAN style="mso-spacerun: yes">&nbsp;&nbsp;&nbsp; </SPAN>Tomas Restrepo (tomasr@mvps.org)<o:p></o:p></SPAN></PRE><PRE style="BACKGROUND: white"><SPAN style="COLOR: green">&#47;&#47;<o:p></o:p></SPAN></PRE><PRE style="BACKGROUND: white"><SPAN style="COLOR: black"><o:p>&nbsp;</o:p></SPAN></PRE><PRE style="BACKGROUND: white"><SPAN style="COLOR: blue">using</SPAN><SPAN style="COLOR: black"> System;<o:p></o:p></SPAN></PRE><PRE style="BACKGROUND: white"><SPAN style="COLOR: blue">using</SPAN><SPAN style="COLOR: black"> <SPAN class=SpellE>System.Collections</SPAN>;<o:p></o:p></SPAN></PRE><PRE style="BACKGROUND: white"><SPAN style="COLOR: blue">using</SPAN><SPAN style="COLOR: black"> <SPAN class=SpellE>System.Collections.Generic</SPAN>;<o:p></o:p></SPAN></PRE><PRE style="BACKGROUND: white"><SPAN style="COLOR: blue">using</SPAN><SPAN style="COLOR: black"> <SPAN class=SpellE>System.Runtime.Serialization</SPAN>;<o:p></o:p></SPAN></PRE><PRE style="BACKGROUND: white"><SPAN style="COLOR: blue">using</SPAN><SPAN style="COLOR: black"> <SPAN class=SpellE>System.ServiceModel</SPAN>;<o:p></o:p></SPAN></PRE><PRE style="BACKGROUND: white"><SPAN style="COLOR: blue">using</SPAN><SPAN style="COLOR: black"> <SPAN class=SpellE>System.ServiceModel.Channels</SPAN>;<o:p></o:p></SPAN></PRE><PRE style="BACKGROUND: white"><SPAN style="COLOR: blue">using</SPAN><SPAN style="COLOR: black"> <SPAN class=SpellE>System.ServiceModel.Description</SPAN>;<o:p></o:p></SPAN></PRE><PRE style="BACKGROUND: white"><SPAN style="COLOR: blue">using</SPAN><SPAN style="COLOR: black"> <SPAN class=SpellE>System.ServiceModel.Dispatcher</SPAN>;<o:p></o:p></SPAN></PRE><PRE style="BACKGROUND: white"><SPAN style="COLOR: blue">using</SPAN><SPAN style="COLOR: black"> <SPAN class=SpellE>System.Text</SPAN>;<o:p></o:p></SPAN></PRE><PRE style="BACKGROUND: white"><SPAN style="COLOR: blue">using</SPAN><SPAN style="COLOR: black"> <SPAN class=SpellE>System.Xml</SPAN>;<o:p></o:p></SPAN></PRE><PRE style="BACKGROUND: white"><SPAN style="COLOR: blue">using</SPAN><SPAN style="COLOR: black"> <SPAN class=SpellE>System.Xml.Schema</SPAN>;<o:p></o:p></SPAN></PRE><PRE style="BACKGROUND: white"><SPAN style="COLOR: blue">using</SPAN><SPAN style="COLOR: black"> <SPAN class=SpellE>System.Web.Services</SPAN>;<o:p></o:p></SPAN></PRE><PRE style="BACKGROUND: white"><SPAN style="COLOR: blue">using</SPAN><SPAN style="COLOR: black"> <SPAN class=SpellE>System.Web.Services.Description</SPAN>;<o:p></o:p></SPAN></PRE><PRE style="BACKGROUND: white"><SPAN style="COLOR: blue">using</SPAN><SPAN style="COLOR: black"> <SPAN class=SpellE>WsdlDescription</SPAN> = <SPAN class=SpellE>System.Web.Services.Description.ServiceDescription</SPAN>;<o:p></o:p></SPAN></PRE><PRE style="BACKGROUND: white"><SPAN style="COLOR: black"><o:p>&nbsp;</o:p></SPAN></PRE><PRE style="BACKGROUND: white"><SPAN style="COLOR: blue">namespace</SPAN><SPAN style="COLOR: black"> <SPAN class=SpellE>Winterdom.ServiceModel.Extensions</SPAN><o:p></o:p></SPAN></PRE><PRE style="BACKGROUND: white"><SPAN style="COLOR: black">{<o:p></o:p></SPAN></PRE><PRE style="BACKGROUND: white"><SPAN style="COLOR: black"><o:p>&nbsp;</o:p></SPAN></PRE><PRE style="BACKGROUND: white"><SPAN style="COLOR: black"><SPAN style="mso-spacerun: yes">&nbsp;&nbsp; </SPAN></SPAN><SPAN style="COLOR: blue">public</SPAN><SPAN style="COLOR: black"> </SPAN><SPAN style="COLOR: blue">class</SPAN><SPAN style="COLOR: black"> <SPAN class=SpellE>WsdlNoticeBehavior</SPAN><o:p></o:p></SPAN></PRE><PRE style="BACKGROUND: white"><SPAN style="COLOR: black"><SPAN style="mso-spacerun: yes">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN>: <SPAN class=SpellE>IWsdlExportExtension</SPAN>, <SPAN class=SpellE>IEndpointBehavior</SPAN><o:p></o:p></SPAN></PRE><PRE style="BACKGROUND: white"><SPAN style="COLOR: black"><SPAN style="mso-spacerun: yes">&nbsp;&nbsp; </SPAN>{<o:p></o:p></SPAN></PRE><PRE style="BACKGROUND: white"><SPAN style="COLOR: black"><o:p>&nbsp;</o:p></SPAN></PRE><PRE style="BACKGROUND: white"><SPAN style="COLOR: black"><SPAN style="mso-spacerun: yes">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN></SPAN><SPAN style="COLOR: blue">#region</SPAN><SPAN style="COLOR: black"> <SPAN class=SpellE>IWsdlExportExtension</SPAN> Implementation<o:p></o:p></SPAN></PRE><PRE style="BACKGROUND: white"><SPAN style="COLOR: black"><SPAN style="mso-spacerun: yes">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN></SPAN><SPAN style="COLOR: green">&#47;&#47;<o:p></o:p></SPAN></PRE><PRE style="BACKGROUND: white"><SPAN style="COLOR: green"><SPAN style="mso-spacerun: yes">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN>&#47;&#47; <SPAN class=SpellE>IWsdlExportExtension</SPAN> Implementation<o:p></o:p></SPAN></PRE><PRE style="BACKGROUND: white"><SPAN style="COLOR: green"><SPAN style="mso-spacerun: yes">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN>&#47;&#47;<o:p></o:p></SPAN></PRE><PRE style="BACKGROUND: white"><SPAN style="COLOR: black"><SPAN style="mso-spacerun: yes">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN></SPAN><SPAN style="COLOR: blue">public</SPAN><SPAN style="COLOR: black"> </SPAN><SPAN style="COLOR: blue">void</SPAN><SPAN style="COLOR: black"> <SPAN class=SpellE>ExportContract</SPAN>(<o:p></o:p></SPAN></PRE><PRE style="BACKGROUND: white"><SPAN style="COLOR: black"><SPAN style="mso-spacerun: yes">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN><SPAN class=SpellE>WsdlExporter</SPAN> exporter, <o:p></o:p></SPAN></PRE><PRE style="BACKGROUND: white"><SPAN style="COLOR: black"><SPAN style="mso-spacerun: yes">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</SPAN><SPAN class=SpellE>WsdlContractConversionContext</SPAN> context<o:p></o:p></SPAN></PRE><PRE style="BACKGROUND: white"><SPAN style="COLOR: black"><SPAN style="mso-spacerun: yes">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN>)<o:p></o:p></SPAN></PRE><PRE style="BACKGROUND: white"><SPAN style="COLOR: black"><SPAN style="mso-spacerun: yes">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN>{<o:p></o:p></SPAN></PRE><PRE style="BACKGROUND: white"><SPAN style="COLOR: black"><SPAN style="mso-spacerun: yes">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN></SPAN><SPAN style="COLOR: green">&#47;&#47; never called<o:p></o:p></SPAN></PRE><PRE style="BACKGROUND: white"><SPAN style="COLOR: black"><SPAN style="mso-spacerun: yes">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN>}<o:p></o:p></SPAN></PRE><PRE style="BACKGROUND: white"><SPAN style="COLOR: black"><o:p>&nbsp;</o:p></SPAN></PRE><PRE style="BACKGROUND: white"><SPAN style="COLOR: black"><SPAN style="mso-spacerun: yes">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN></SPAN><SPAN style="COLOR: blue">public</SPAN><SPAN style="COLOR: black"> </SPAN><SPAN style="COLOR: blue">void</SPAN><SPAN style="COLOR: black"> <SPAN class=SpellE>ExportEndpoint</SPAN>(<o:p></o:p></SPAN></PRE><PRE style="BACKGROUND: white"><SPAN style="COLOR: black"><SPAN style="mso-spacerun: yes">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN><SPAN class=SpellE>WsdlExporter</SPAN> exporter, <o:p></o:p></SPAN></PRE><PRE style="BACKGROUND: white"><SPAN style="COLOR: black"><SPAN style="mso-spacerun: yes">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</SPAN><SPAN class=SpellE>WsdlEndpointConversionContext</SPAN> context<o:p></o:p></SPAN></PRE><PRE style="BACKGROUND: white"><SPAN style="COLOR: black"><SPAN style="mso-spacerun: yes">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN>)<o:p></o:p></SPAN></PRE><PRE style="BACKGROUND: white"><SPAN style="COLOR: black"><SPAN style="mso-spacerun: yes">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN>{<o:p></o:p></SPAN></PRE><PRE style="BACKGROUND: white"><SPAN style="COLOR: black"><SPAN style="mso-spacerun: yes">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN></SPAN><SPAN class=SpellE><SPAN style="COLOR: blue">foreach</SPAN></SPAN><SPAN style="COLOR: black"> ( <SPAN class=SpellE>WsdlDescription</SPAN> <SPAN class=SpellE>wsdl</SPAN> </SPAN><SPAN style="COLOR: blue">in</SPAN><SPAN style="COLOR: black"> <SPAN class=SpellE>exporter.GeneratedW<br />
+sdlDocuments</SPAN> )<o:p></o:p></SPAN></PRE><PRE style="BACKGROUND: white"><SPAN style="COLOR: black"><SPAN style="mso-spacerun: yes">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN>{<o:p></o:p></SPAN></PRE><PRE style="BACKGROUND: white"><SPAN style="COLOR: black"><SPAN style="mso-spacerun: yes">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN></SPAN><SPAN style="COLOR: green">&#47;&#47; add the notice to the WSDL <<SPAN class=SpellE>documention</SPAN>&#47;> element<o:p></o:p></SPAN></PRE><PRE style="BACKGROUND: white"><SPAN style="COLOR: black"><SPAN style="mso-spacerun: yes">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN><SPAN class=SpellE>wsdl.Documentation</SPAN> = <SPAN class=SpellE>Properties.Settings.Default.WsdlNotice</SPAN>;<o:p></o:p></SPAN></PRE><PRE style="BACKGROUND: white"><SPAN style="COLOR: black"><SPAN style="mso-spacerun: yes">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN>}<o:p></o:p></SPAN></PRE><PRE style="BACKGROUND: white"><SPAN style="COLOR: black"><SPAN style="mso-spacerun: yes">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN></SPAN><SPAN style="COLOR: green">&#47;&#47; add a new XSD annotation with the documentation<o:p></o:p></SPAN></PRE><PRE style="BACKGROUND: white"><SPAN style="COLOR: green"><SPAN style="mso-spacerun: yes">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN>&#47;&#47; at the root of each generated schema<o:p></o:p></SPAN></PRE><PRE style="BACKGROUND: white"><SPAN style="COLOR: black"><SPAN style="mso-spacerun: yes">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN><SPAN class=SpellE>ICollection</SPAN> schemas = <SPAN class=SpellE>exporter.GeneratedXmlSchemas.Schemas</SPAN>();<o:p></o:p></SPAN></PRE><PRE style="BACKGROUND: white"><SPAN style="COLOR: black"><SPAN style="mso-spacerun: yes">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN></SPAN><SPAN class=SpellE><SPAN style="COLOR: blue">foreach</SPAN></SPAN><SPAN style="COLOR: black"> ( <SPAN class=SpellE>XmlSchema</SPAN> schema </SPAN><SPAN style="COLOR: blue">in</SPAN><SPAN style="COLOR: black"> schemas )<o:p></o:p></SPAN></PRE><PRE style="BACKGROUND: white"><SPAN style="COLOR: black"><SPAN style="mso-spacerun: yes">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN>{<o:p></o:p></SPAN></PRE><PRE style="BACKGROUND: white"><SPAN style="COLOR: black"><SPAN style="mso-spacerun: yes">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN><SPAN class=SpellE>XmlDocument</SPAN> doc = </SPAN><SPAN style="COLOR: blue">new</SPAN><SPAN style="COLOR: black"> <SPAN class=SpellE>XmlDocument</SPAN>();<o:p></o:p></SPAN></PRE><PRE style="BACKGROUND: white"><SPAN style="COLOR: black"><SPAN style="mso-spacerun: yes">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN><SPAN class=SpellE>XmlNode</SPAN> node =<o:p></o:p></SPAN></PRE><PRE style="BACKGROUND: white"><SPAN style="COLOR: black"><SPAN style="mso-spacerun: yes">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN><SPAN class=SpellE>doc.CreateTextNode</SPAN>(<SPAN class=SpellE>Properties.Settings.Default.WsdlNotice</SPAN>);<o:p></o:p></SPAN></PRE><PRE style="BACKGROUND: white"><SPAN style="COLOR: black"><SPAN style="mso-spacerun: yes">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN><SPAN class=SpellE>XmlSchemaDocumentation</SPAN> comment = </SPAN><SPAN style="COLOR: blue">new</SPAN><SPAN style="COLOR: black"> <SPAN class=SpellE>XmlSchemaDocumentation</SPAN>();<o:p></o:p></SPAN></PRE><PRE style="BACKGROUND: white"><SPAN style="COLOR: black"><SPAN style="mso-spacerun: yes">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN><SPAN class=SpellE>comment.Markup</SPAN> = </SPAN><SPAN style="COLOR: blue">new</SPAN><SPAN style="COLOR: black"> <SPAN class=SpellE>XmlNode</SPAN>[] { node };<o:p></o:p></SPAN></PRE><PRE style="BACKGROUND: white"><SPAN style="COLOR: black"><SPAN style="mso-spacerun: yes">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN><SPAN class=SpellE>XmlSchemaAnnotation</SPAN> annotation = </SPAN><SPAN style="COLOR: blue">new</SPAN><SPAN style="COLOR: black"> <SPAN class=SpellE>XmlSchemaAnnotation</SPAN>();<o:p></o:p></SPAN></PRE><PRE style="BACKGROUND: white"><SPAN style="COLOR: black"><SPAN style="mso-spacerun: yes">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN><SPAN class=SpellE>annotation.Items.Add</SPAN>(comment);<o:p></o:p></SPAN></PRE><PRE style="BACKGROUND: white"><SPAN style="COLOR: black"><SPAN style="mso-spacerun: yes">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN><SPAN class=SpellE>schema.Items.Insert</SPAN>(0, annotation);<o:p></o:p></SPAN></PRE><PRE style="BACKGROUND: white"><SPAN style="COLOR: black"><SPAN style="mso-spacerun: yes">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN>}<o:p></o:p></SPAN></PRE><PRE style="BACKGROUND: white"><SPAN style="COLOR: black"><SPAN style="mso-spacerun: yes">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN>}<o:p></o:p></SPAN></PRE><PRE style="BACKGROUND: white"><SPAN style="COLOR: black"><o:p>&nbsp;</o:p></SPAN></PRE><PRE style="BACKGROUND: white"><SPAN style="COLOR: black"><SPAN style="mso-spacerun: yes">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN></SPAN><SPAN style="COLOR: blue">#<SPAN class=SpellE>endregion</SPAN></SPAN><SPAN style="COLOR: black"> </SPAN><SPAN style="COLOR: green">&#47;&#47; <SPAN class=SpellE>IWsdlExportExtension</SPAN> Implementation</SPAN><SPAN style="COLOR: black"><o:p></o:p></SPAN></PRE><PRE style="BACKGROUND: white"><SPAN style="COLOR: black"><o:p>&nbsp;</o:p></SPAN></PRE><PRE style="BACKGROUND: white"><SPAN style="COLOR: black"><o:p>&nbsp;</o:p></SPAN></PRE><PRE style="BACKGROUND: white"><SPAN style="COLOR: black"><SPAN style="mso-spacerun: yes">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN></SPAN><SPAN style="COLOR: blue">#region</SPAN><SPAN style="COLOR: black"> <SPAN class=SpellE>IEndpointBehavior</SPAN> Implementation<o:p></o:p></SPAN></PRE><PRE style="BACKGROUND: white"><SPAN style="COLOR: black"><SPAN style="mso-spacerun: yes">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN></SPAN><SPAN style="COLOR: green">&#47;&#47;<o:p></o:p></SPAN></PRE><PRE style="BACKGROUND: white"><SPAN style="COLOR: green"><SPAN style="mso-spacerun: yes">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN>&#47;&#47; <SPAN class=SpellE>IContractBehavior</SPAN> Implementation<o:p></o:p></SPAN></PRE><PRE style="BACKGROUND: white"><SPAN style="COLOR: green"><SPAN style="mso-spacerun: yes">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN>&#47;&#47;<o:p></o:p></SPAN></PRE><PRE style="BACKGROUND: white"><SPAN style="COLOR: black"><SPAN style="mso-spacerun: yes">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN></SPAN><SPAN style="COLOR: blue">public</SPAN><SPAN style="COLOR: black"> </SPAN><SPAN style="COLOR: blue">void</SPAN><SPAN style="COLOR: black"> <SPAN class=SpellE>AddBindingParameters</SPAN>(<o:p></o:p></SPAN></PRE><PRE style="BACKGROUND: white"><SPAN style="COLOR: black"><SPAN style="mso-spacerun: yes">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN><SPAN class=SpellE>ServiceEndpoint</SPAN> endpoint, <o:p></o:p></SPAN></PRE><PRE style="BACKGROUND: white"><SPAN style="COLOR: black"><SPAN style="mso-spacerun: yes">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</SPAN><SPAN class=SpellE>BindingParameterCollection</SPAN> <SPAN class=SpellE>bindingParameters</SPAN><o:p></o:p></SPAN></PRE><PRE style="BACKGROUND: white"><SPAN style="COLOR: black"><SPAN style="mso-spacerun: yes">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN>)<o:p></o:p></SPAN></PRE><PRE style="BACKGROUND: white"><SPAN style="COLOR: black"><SPAN style="mso-spacerun: yes">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN>{<o:p></o:p></SPAN></PRE><PRE style="BACKGROUND: white"><SPAN style="COLOR: black"><SPAN style="mso-spacerun: yes">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN></SPAN><SPAN style="COLOR: green">&#47;&#47; not needed<o:p></o:p></SPAN></PRE><PRE style="BACKGROUND: white"><SPAN style="COLOR: black"><SPAN style="mso-spacerun: yes">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN>}<o:p></o:p></SPAN></PRE><PRE style="BACKGROUND: white"><SPAN style="COLOR: black"><o:p>&nbsp;</o:p><br />
+</SPAN></PRE><PRE style="BACKGROUND: white"><SPAN style="COLOR: black"><SPAN style="mso-spacerun: yes">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN></SPAN><SPAN style="COLOR: blue">public</SPAN><SPAN style="COLOR: black"> </SPAN><SPAN style="COLOR: blue">void</SPAN><SPAN style="COLOR: black"> <SPAN class=SpellE>ApplyClientBehavior</SPAN>(<o:p></o:p></SPAN></PRE><PRE style="BACKGROUND: white"><SPAN style="COLOR: black"><SPAN style="mso-spacerun: yes">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN><SPAN class=SpellE>ServiceEndpoint</SPAN> endpoint, <o:p></o:p></SPAN></PRE><PRE style="BACKGROUND: white"><SPAN style="COLOR: black"><SPAN style="mso-spacerun: yes">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</SPAN><SPAN class=SpellE>ClientRuntime</SPAN> <SPAN class=SpellE>clientRuntime</SPAN><o:p></o:p></SPAN></PRE><PRE style="BACKGROUND: white"><SPAN style="COLOR: black"><SPAN style="mso-spacerun: yes">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN>)<o:p></o:p></SPAN></PRE><PRE style="BACKGROUND: white"><SPAN style="COLOR: black"><SPAN style="mso-spacerun: yes">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN>{<o:p></o:p></SPAN></PRE><PRE style="BACKGROUND: white"><SPAN style="COLOR: black"><SPAN style="mso-spacerun: yes">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN></SPAN><SPAN style="COLOR: green">&#47;&#47; not needed<o:p></o:p></SPAN></PRE><PRE style="BACKGROUND: white"><SPAN style="COLOR: black"><SPAN style="mso-spacerun: yes">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN>}<o:p></o:p></SPAN></PRE><PRE style="BACKGROUND: white"><SPAN style="COLOR: black"><o:p>&nbsp;</o:p></SPAN></PRE><PRE style="BACKGROUND: white"><SPAN style="COLOR: black"><SPAN style="mso-spacerun: yes">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN></SPAN><SPAN style="COLOR: blue">public</SPAN><SPAN style="COLOR: black"> </SPAN><SPAN style="COLOR: blue">void</SPAN><SPAN style="COLOR: black"> <SPAN class=SpellE>ApplyDispatchBehavior</SPAN>(<o:p></o:p></SPAN></PRE><PRE style="BACKGROUND: white"><SPAN style="COLOR: black"><SPAN style="mso-spacerun: yes">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN><SPAN class=SpellE>ServiceEndpoint</SPAN> endpoint, <o:p></o:p></SPAN></PRE><PRE style="BACKGROUND: white"><SPAN style="COLOR: black"><SPAN style="mso-spacerun: yes">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</SPAN><SPAN class=SpellE>EndpointDispatcher</SPAN> dispatcher<o:p></o:p></SPAN></PRE><PRE style="BACKGROUND: white"><SPAN style="COLOR: black"><SPAN style="mso-spacerun: yes">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN>)<o:p></o:p></SPAN></PRE><PRE style="BACKGROUND: white"><SPAN style="COLOR: black"><SPAN style="mso-spacerun: yes">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN>{<o:p></o:p></SPAN></PRE><PRE style="BACKGROUND: white"><SPAN style="COLOR: black"><SPAN style="mso-spacerun: yes">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN></SPAN><SPAN style="COLOR: green">&#47;&#47; not needed<o:p></o:p></SPAN></PRE><PRE style="BACKGROUND: white"><SPAN style="COLOR: black"><SPAN style="mso-spacerun: yes">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN>}<o:p></o:p></SPAN></PRE><PRE style="BACKGROUND: white"><SPAN style="COLOR: black"><o:p>&nbsp;</o:p></SPAN></PRE><PRE style="BACKGROUND: white"><SPAN style="COLOR: black"><SPAN style="mso-spacerun: yes">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN></SPAN><SPAN style="COLOR: blue">public</SPAN><SPAN style="COLOR: black"> </SPAN><SPAN style="COLOR: blue">void</SPAN><SPAN style="COLOR: black"> Validate(<SPAN class=SpellE>ServiceEndpoint</SPAN> endpoint)<o:p></o:p></SPAN></PRE><PRE style="BACKGROUND: white"><SPAN style="COLOR: black"><SPAN style="mso-spacerun: yes">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN>{<o:p></o:p></SPAN></PRE><PRE style="BACKGROUND: white"><SPAN style="COLOR: black"><SPAN style="mso-spacerun: yes">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN></SPAN><SPAN style="COLOR: green">&#47;&#47; not needed<o:p></o:p></SPAN></PRE><PRE style="BACKGROUND: white"><SPAN style="COLOR: black"><SPAN style="mso-spacerun: yes">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN>}<o:p></o:p></SPAN></PRE><PRE style="BACKGROUND: white"><SPAN style="COLOR: black"><o:p>&nbsp;</o:p></SPAN></PRE><PRE style="BACKGROUND: white"><SPAN style="COLOR: black"><SPAN style="mso-spacerun: yes">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN></SPAN><SPAN style="COLOR: blue">#<SPAN class=SpellE>endregion</SPAN></SPAN><SPAN style="COLOR: black"> </SPAN><SPAN style="COLOR: green">&#47;&#47; <SPAN class=SpellE>IContractBehavior</SPAN> Implementation</SPAN><SPAN style="COLOR: black"><o:p></o:p></SPAN></PRE><PRE style="BACKGROUND: white"><SPAN style="COLOR: black"><o:p>&nbsp;</o:p></SPAN></PRE><PRE style="BACKGROUND: white"><SPAN style="COLOR: black"><SPAN style="mso-spacerun: yes">&nbsp;&nbsp; </SPAN>} </SPAN><SPAN style="COLOR: green">&#47;&#47; class <SPAN class=SpellE>WsdlNoticeBehavior</SPAN><o:p></o:p></SPAN></PRE><PRE style="BACKGROUND: white"><SPAN style="COLOR: black"><o:p>&nbsp;</o:p></SPAN></PRE><PRE style="BACKGROUND: white"><SPAN style="COLOR: black">} </SPAN><SPAN style="COLOR: green">&#47;&#47; namespace <SPAN class=SpellE>Winterdom.ServiceModel.Extensions</SPAN><o:p></o:p></SPAN></PRE></DIV><br />
+<P>Now we just need to add our behavior to the correct endpoint:</P><br />
+<DIV><br />
+<STYLE><br />
+<!--<br />
+&#47;* Font Definitions *&#47;<br />
+@font-face<br />
+{font-family:"Cambria Math";<br />
+panose-1:2 4 5 3 5 4 6 3 2 4;<br />
+mso-font-charset:0;<br />
+mso-generic-font-family:roman;<br />
+mso-font-pitch:variable;<br />
+mso-font-signature:-1610611985 1107304683 0 0 159 0;}<br />
+&#47;* Style Definitions *&#47;<br />
+p.MsoNormal, li.MsoNormal, div.MsoNormal<br />
+{mso-style-unhide:no;<br />
+mso-style-qformat:yes;<br />
+mso-style-parent:"";<br />
+margin:0in;<br />
+margin-bottom:.0001pt;<br />
+mso-pagination:widow-orphan;<br />
+font-size:12.0pt;<br />
+font-family:"Times New Roman","serif";<br />
+mso-fareast-font-family:"Times New Roman";}<br />
+pre<br />
+{mso-style-unhide:no;<br />
+margin:0in;<br />
+margin-bottom:.0001pt;<br />
+mso-pagination:widow-orphan;<br />
+font-size:10.0pt;<br />
+font-family:"Courier New";<br />
+mso-fareast-font-family:"Times New Roman";}<br />
+span.SpellE<br />
+{mso-style-name:"";<br />
+mso-spl-e:yes;}<br />
+@page Section1<br />
+{size:8.5in 11.0in;<br />
+margin:1.0in 1.25in 1.0in 1.25in;<br />
+mso-header-margin:.5in;<br />
+mso-footer-margin:.5in;<br />
+mso-paper-source:0;}<br />
+div.Section1<br />
+{page:Section1;}<br />
+--><br />
+</STYLE><br />
+<PRE style="BACKGROUND: white"><SPAN style="COLOR: black">Uri <SPAN class=SpellE>uri</SPAN> = </SPAN><SPAN style="COLOR: blue">new</SPAN><SPAN style="COLOR: black"> Uri("http:&#47;&#47;localhost:8188&#47;VoucherService");<o:p></o:p></SPAN></PRE><PRE style="BACKGROUND: white"><SPAN class=SpellE><SPAN style="COLOR: black">ServiceHost</SPAN></SPAN><SPAN style="COLOR: black"> host = <o:p></o:p></SPAN></PRE><PRE style="BACKGROUND: white"><SPAN style="COLOR: black"><SPAN style="mso-spacerun: yes">&nbsp;&nbsp;&nbsp;</SPAN></SPAN><SPAN style="COLOR: blue">new</SPAN><SPAN style="COLOR: black"> <SPAN class=SpellE>ServiceHost</SPAN>(</SPAN><SPAN class=SpellE><SPAN style="COLOR: blue">typeof</SPAN></SPAN><SPAN style="COLOR: black">(<SPAN class=SpellE>VoucherService</SPAN>), <SPAN class=SpellE>uri</SPAN>);<o:p></o:p></SPAN></PRE><PRE style="BACKGROUND: white"><SPAN style="COLOR: black"><o:p>&nbsp;</o:p></SPAN></PRE><PRE style="BACKGROUND: white"><SPAN class=SpellE><SPAN style="COLOR: black">WSHttpBinding</SPAN></SPAN><SPAN style="COLOR: black"> binding = </SPAN><SPAN style="COLOR: blue">new</SPAN><SPAN style="COLOR: black"> <SPAN class=SpellE>WSHttpBinding</SPAN>();<o:p></o:p></SPAN></PRE><PRE style="BACKGROUND: white"><SPAN class=SpellE><SPAN style="COLOR: black">ServiceEndpoint</SPAN></SPAN><SPAN style="COLOR: black"> endpoint = <o:p></o:p></SPAN></PRE><PRE style="BACKGROUND: white"><SPAN style="COLOR: black"><SPAN style="mso-spacerun: yes">&nbsp;&nbsp;&nbsp;</SPAN><SPAN class=SpellE>host.AddServiceEndpoint</SPAN>(</SPAN><SPAN class=SpellE><SPAN style="COLOR: blue">typeof</SPAN></SPAN><SPAN style="COLOR: black">(<SPAN class=SpellE>IVoucherService</SPAN>), binding, <SPAN class=SpellE>uri</SPAN>);<o:p></o:p></SPAN></PRE><PRE style="BACKGROUND: white"><SPAN class=SpellE><SPAN style="COLOR: black">endpoint.Behaviors.Add</SPAN></SPAN><SPAN style="COLOR: black">(</SPAN><SPAN style="COLOR: blue">new</SPAN><SPAN style="COLOR: black"> <SPAN class=SpellE>WsdlNoticeBehavior</SPAN>());<o:p></o:p></SPAN></PRE><PRE style="BACKGROUND: white"><SPAN class=SpellE><SPAN style="COLOR: black">host.Open</SPAN></SPAN><SPAN style="COLOR: black">();<o:p></o:p></SPAN></PRE></DIV><br />
+<P>Here's the configuration for our notice on our app.config file:</P><br />
+<DIV><br />
+<STYLE><br />
+<!--<br />
+&#47;* Font Definitions *&#47;<br />
+@font-face<br />
+{font-family:"Cambria Math";<br />
+panose-1:2 4 5 3 5 4 6 3 2 4;<br />
+mso-font-charset:0;<br />
+mso-generic-font-family:roman;<br />
+mso-font-pitch:variable;<br />
+mso-font-signature:-1610611985 1107304683 0 0 159 0;}<br />
+&#47;* Style Definitions *&#47;<br />
+p.MsoNormal, li.MsoNormal, div.MsoNormal<br />
+{mso-style-unhide:no;<br />
+mso-style-qformat:yes;<br />
+mso-style-parent:"";<br />
+margin:0in;<br />
+margin-bottom:.0001pt;<br />
+mso-pagination:widow-orphan;<br />
+font-size:12.0pt;<br />
+font-family:"Times New Roman","serif";<br />
+mso-fareast-font-family:"Times New Roman";}<br />
+pre<br />
+{mso-style-unhide:no;<br />
+margin:0in;<br />
+margin-bottom:.0001pt;<br />
+mso-pagination:widow-orphan;<br />
+font-size:10.0pt;<br />
+font-family:"Courier New";<br />
+mso-fareast-font-family:"Times New Roman";}<br />
+span.SpellE<br />
+{mso-style-name:"";<br />
+mso-spl-e:yes;}<br />
+@page Section1<br />
+{size:8.5in 11.0in;<br />
+margin:1.0in 1.25in 1.0in 1.25in;<br />
+mso-header-margin:.5in;<br />
+mso-footer-margin:.5in;<br />
+mso-paper-source:0;}<br />
+div.Section1<br />
+{page:Section1;}<br />
+--><br />
+</STYLE><br />
+<PRE style="BACKGROUND: white"><SPAN style="COLOR: blue"><</SPAN><SPAN class=SpellE><SPAN style="COLOR: maroon">userSettings</SPAN></SPAN><SPAN style="COLOR: blue">></SPAN><SPAN style="COLOR: black"><o:p></o:p></SPAN></PRE><PRE style="BACKGROUND: white"><SPAN style="COLOR: black"><SPAN style="mso-spacerun: yes">&nbsp;&nbsp; </SPAN></SPAN><SPAN style="COLOR: blue"><</SPAN><SPAN class=SpellE><SPAN style="COLOR: maroon">Winterdom</SPAN><SPAN style="COLOR: red">.ServiceModel.Extensions.Properties.Settings</SPAN></SPAN><SPAN style="COLOR: blue">></SPAN><SPAN style="COLOR: black"><o:p></o:p></SPAN></PRE><PRE style="BACKGROUND: white"><SPAN style="COLOR: black"><SPAN style="mso-spacerun: yes">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN></SPAN><SPAN style="COLOR: blue"><</SPAN><SPAN style="COLOR: maroon">setting </SPAN><SPAN style="COLOR: red">name</SPAN><SPAN style="COLOR: blue">="<SPAN class=SpellE>WsdlNotice</SPAN>"</SPAN><SPAN style="COLOR: red"> <SPAN class=SpellE>serializeAs</SPAN></SPAN><SPAN style="COLOR: blue">="String"></SPAN><SPAN style="COLOR: black"><o:p></o:p></SPAN></PRE><PRE style="BACKGROUND: white"><SPAN style="COLOR: black"><SPAN style="mso-spacerun: yes">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN></SPAN><SPAN style="COLOR: blue"><</SPAN><SPAN style="COLOR: maroon">value</SPAN><SPAN style="COLOR: blue">></SPAN><SPAN style="COLOR: black"><o:p></o:p></SPAN></PRE><PRE style="BACKGROUND: white"><SPAN style="COLOR: black"><SPAN style="mso-spacerun: yes">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN>This service description Copyright (C) 2006, Tomas Restrepo.<o:p></o:p></SPAN></PRE><PRE style="BACKGROUND: white"><SPAN style="COLOR: black"><SPAN style="mso-spacerun: yes">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN>All rights reserved.<o:p></o:p></SPAN></PRE><PRE style="BACKGROUND: white"><SPAN style="COLOR: black"><SPAN style="mso-spacerun: yes">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN></SPAN><SPAN style="COLOR: blue"></</SPAN><SPAN style="COLOR: maroon">value</SPAN><SPAN style="COLOR: blue">></SPAN><SPAN style="COLOR: black"><o:p></o:p></SPAN></PRE><PRE style="BACKGROUND: white"><SPAN style="COLOR: black"><SPAN style="mso-spacerun: yes">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN></SPAN><SPAN style="COLOR: blue"></</SPAN><SPAN style="COLOR: maroon">setting</SPAN><SPAN style="COLOR: blue">></SPAN><SPAN style="COLOR: black"><o:p></o:p></SPAN></PRE><PRE style="BACKGROUND: white"><SPAN style="COLOR: black"><SPAN style="mso-spacerun: yes">&nbsp;&nbsp; </SPAN></SPAN><SPAN style="COLOR: blue"></</SPAN><SPAN class=SpellE><SPAN style="COLOR: maroon">Winterdom.ServiceModel.Extensions.Properties.Settings</SPAN></SPAN><SPAN style="COLOR: blue">></SPAN><SPAN style="COLOR: black"><o:p></o:p></SPAN></PRE><PRE style="BACKGROUND: white"><SPAN style="COLOR: blue"></</SPAN><SPAN class=SpellE><SPAN style="COLOR: maroon">userSettings</SPAN></SPAN><SPAN style="COLOR: blue">></SPAN><SPAN style="COLOR: black"><o:p></o:p></SPAN></PRE></DIV><br />
+<P><STRONG>[1]</STRONG> A little off topic, but it might&nbsp;be&nbsp;worth mentioning that I'm not entirely comfortable with the way contract behaviors are implemented in WCF. Normally, one will want to define an attribute which implements IContractBehaviorAttribute to be able to attach your behavior to the specified contract in a nice way (from the API point of view). However, it feels totally unnatural&nbsp; for the attribute class to have to implement the actual behavior (including IWsdlExportExtension if that's your goal) in the same attribute class. I would've really expected to be able to define an attribute that instead determines the&nbsp;type that implemented the behavior instead, that being more in line with the pattern followed throughout the .NET Framework.</P><br />
+<DIV class=wlWriterSmartContent id=d7bf807d-7bb0-458a-811f-90c51817d5c2:9a2e9041-0a51-49e0-8955-46a6bac4cdb9 contentEditable=false style="PADDING-RIGHT: 0px; DISPLAY: inline; PADDING-LEFT: 0px; PADDING-BOTTOM: 0px; MARGIN: 0px; PADDING-TOP: 0px"><br />
+<P><SPAN class=TagSite><IMG alt=technorati src="http:&#47;&#47;www.winterdom.com&#47;images&#47;technorati.png"></SPAN> <A class=tag href="http:&#47;&#47;technorati.com&#47;tag&#47;WCF" rel=tag>WCF</A>, <A class=tag href="http:&#47;&#47;technorati.com&#47;tag&#47;Windows+Communication+Foundation" rel=tag>Windows Communication Foundation</A>, <A class=tag href="http:&#47;&#47;technorati.com&#47;tag&#47;WSDL" rel=tag>WSDL</A><BR><!-- StartInsertedTags: WCF, Windows Communication Foundation, WSDL :EndInsertedTags --></P></DIV><!--end_raw--></p>

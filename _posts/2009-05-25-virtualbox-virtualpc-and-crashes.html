@@ -1,0 +1,83 @@
+---
+layout: post
+status: publish
+published: true
+title: VirtualBox, VirtualPC and Crashes
+author:
+  display_name: Tomas Restrepo
+  login: tomasr
+  email: tomas@winterdom.com
+  url: http://winterdom.com/
+author_login: tomasr
+author_email: tomas@winterdom.com
+author_url: http://winterdom.com/
+wordpress_id: 1254
+wordpress_url: http://winterdom.com/2009/05/virtualbox-virtualpc-and-crashes
+date: '2009-05-25 21:25:00 +0000'
+date_gmt: '2009-05-25 21:25:00 +0000'
+categories:
+- Tools
+tags: []
+comments:
+- id: 831
+  author: zdeslav
+  author_email: zdeslav.vojkovic@gmail.com
+  author_url: ''
+  date: '2009-05-26 08:22:37 +0000'
+  date_gmt: '2009-05-26 08:22:37 +0000'
+  content: I also run this combo on an Q6600 and find this issue so annoying that
+    I decided to switch off virtualization  on whichever tool I use less (currently
+    its VPC, due to 'seamless window' feature and provided COM API which make VirtualBox
+    better choice for my needs).
+- id: 834
+  author: Ruiyi Zhang
+  author_email: ruiyizhang@gmail.com
+  author_url: ''
+  date: '2009-05-26 22:53:59 +0000'
+  date_gmt: '2009-05-26 22:53:59 +0000'
+  content: Writing one or two Powershell functions to conditionally launch these apps
+    may just be the answer to your issue.
+- id: 1043
+  author: Eric L
+  author_email: airrick@benco.com
+  author_url: ''
+  date: '2009-07-21 10:17:04 +0000'
+  date_gmt: '2009-07-21 10:17:04 +0000'
+  content: "i'm a long time VMWare user, but i wanted to look at the alternatives
+    for home (virtaulbox and window vrtual pc....ie free stuff).  so i crashed my
+    system twice (by running them at the same time) \r\n\r\nhowever, in my quick&#47;dirty
+    comparison, Virtualbox seems to be way better then windows virtaul pc (and i dont
+    plan on running windows xp mode);  faster, snapshots, linux support, better mouse&#47;keyboard
+    integration.\r\n\r\nI'm sure I'm missing something, what are the features of window
+    virtual pc that are better then virtualbox."
+- id: 1108
+  author: Luigi Bruno
+  author_email: phobos_lb@yahoo.it
+  author_url: ''
+  date: '2009-08-28 19:41:35 +0000'
+  date_gmt: '2009-08-28 19:41:35 +0000'
+  content: "I've recently installed Virtual PC 2007 on my Windows Vista Ultimate x64
+    machine, because I needed Virtual Network Driver provided by VPC to develop and
+    test .NET Compact Framework applications.\r\nWhen I turned on hardware virtualization
+    support in my BIOS I experimented a BSOD on VMM.SYS, but I can't find the reason."
+- id: 1148
+  author: Gonz
+  author_email: gonz@blather.com
+  author_url: http://www.ot-pizza.com/
+  date: '2009-10-02 09:26:36 +0000'
+  date_gmt: '2009-10-02 09:26:36 +0000'
+  content: "Eric L -- the one thing that's really nice about Virtual PC is that you
+    can drag+drop files between the host and guest systems using Windows Explorer,
+    which is really convenient compared to setting up shared folders.  Also, although
+    VirtualBox seems to run faster in general, VirtualBox seems to be significantly
+    slower when first installing an application&#47;OS.  For this reason, I prefer
+    VirtualPC where it makes sense.\r\n\r\nOn the other hand, VirtualBox has USB redirection
+    and the ability to run a 64-bit guest on a 32-bit host OS, which is really awesome."
+---
+<p>I take advantage of both <a href="http:&#47;&#47;www.virtualbox.org&#47;">VirtualBox</a> and <a href="http:&#47;&#47;www.microsoft.com&#47;windows&#47;virtual-pc&#47;">VirtualPC</a> as core parts of my development environment. I keep several sets of Virtual Machines around on both platforms that I use for core development (writing code) and testing on different platforms.</p>
+<p>Because of this, I&rsquo;m constantly switching between the two, depending on which VM I need to use to try something. I&rsquo;m finding myself using VirtualBox a lot lately because of the need to run a couple of VMs at the same time, which is something that it does quite a bit better than VirtualPC.</p>
+<p>I don&rsquo;t try to run both of them at the same time, nor do I need them to. I take advantage of hardware virtualization support in my desktop machine (which has an Intel Q6600 processor) in both platforms, which can speed things quite a bit.</p>
+<p>The problem, however, is that both tools seem to pretty much assume that they are the only ones that will try to probe the processor virtualization support. </p>
+<p>Occasionally, I&rsquo;ll make a mistake and click on the wrong icon in the Quick Launch toolbar and end up starting the wrong application. Sometimes I end up starting VPC when I&rsquo;m already working on VBox, and sometimes I&rsquo;ll end up starting VBox when I&rsquo;ve already got a VM in VPC open.</p>
+<p>The end result is almost always the same: Windows crashing right away with a Blue Screen of Death (BSOD), usually with a fault in vmm.sys.</p>
+<p>Again, I have no need to use both tools at the same time, but it sure would be nice if accidentally clicking the wrong icon didn&rsquo;t force me to spend 10 minutes while my machine comes back up and I can setup my environment as it was before the crash, and probably lose some recent work, as well!</p></p>

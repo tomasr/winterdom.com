@@ -1,0 +1,42 @@
+---
+layout: post
+status: publish
+published: true
+title: Attach&#47;Detach VHD
+author:
+  display_name: Tomas Restrepo
+  login: tomasr
+  email: tomas@winterdom.com
+  url: http://winterdom.com/
+author_login: tomasr
+author_email: tomas@winterdom.com
+author_url: http://winterdom.com/
+wordpress_id: 1312
+wordpress_url: http://winterdom.com/2010/02/attachdetach-vhd
+date: '2010-02-16 22:23:24 +0000'
+date_gmt: '2010-02-16 22:23:24 +0000'
+categories:
+- PowerShell
+tags: []
+comments:
+- id: 1429
+  author: Zuhaib
+  author_email: zuhaib@nerdpad.com
+  author_url: http://www.nerdpad.com/
+  date: '2010-04-19 19:29:51 +0000'
+  date_gmt: '2010-04-19 19:29:51 +0000'
+  content: What color theme is it? Where can I download it?
+---
+<p>Windows 7 has some nice and very welcome functionality for attaching&#47;detaching VHD files so that you can access files in them directly from the operating system, which is something I&rsquo;ve been finding very useful when working out of my laptop. Unfortunately, it&rsquo;s a bit of a drag to have to go through disk manager every time I want to use one of my VHD files.</p>
+<p>I started looking for a way to do this from the command line and discovered that <code>diskpart.exe</code> can do it, but the syntax is more than I can usually remember, so I just wrote these two quick PowerShell functions:</p>
+<pre class="codebg"><code><span class="Keyword">function</span> <span class="Function">add-vhd</span>(<span class="Identifier">$vhdfile</span>) {<br />
+   <span class="Identifier">$path</span> = <span class="Statement">resolve-path</span> <span class="Identifier">$vhdfile</span><br />
+   <span class="Identifier">$script</span> = <span class="String">"SELECT VDISK FILE=</span><span class="SpecialChar">`"</span><span class="Identifier">$path</span><span class="SpecialChar">`"`r`n</span><span class="String">ATTACH VDISK"</span><br />
+   <span class="Identifier">$script</span> | diskpart<br />
+}<br />
+<span class="Keyword">function</span> <span class="Function">remove-vhd</span>(<span class="Identifier">$vhdfile</span>) {<br />
+   <span class="Identifier">$path</span> = <span class="Statement">resolve-path</span> <span class="Identifier">$vhdfile</span><br />
+   <span class="Identifier">$script</span> = <span class="String">"SELECT VDISK FILE=</span><span class="SpecialChar">`"</span><span class="Identifier">$path</span><span class="SpecialChar">`"`r`n</span><span class="String">DETACH VDISK"</span><br />
+   <span class="Identifier">$script</span> | diskpart<br />
+}<br />
+</code></pre></p>

@@ -1,0 +1,49 @@
+---
+layout: post
+status: publish
+published: true
+title: BizTalk Transformation Maps
+author:
+  display_name: Tomas Restrepo
+  login: tomasr
+  email: tomas@winterdom.com
+  url: http://winterdom.com/
+author_login: tomasr
+author_email: tomas@winterdom.com
+author_url: http://winterdom.com/
+wordpress_id: 741
+wordpress_url: http://winterdom.com/2004/04/biztalktransformationmaps
+date: '2004-04-22 07:37:05 +0000'
+date_gmt: '2004-04-22 07:37:05 +0000'
+categories:
+- BizTalk
+tags: []
+comments:
+- id: 497
+  author: Marco Perestrello
+  author_email: marcoperestrello@gmail.com
+  author_url: ''
+  date: '2006-05-17 02:36:09 +0000'
+  date_gmt: '2006-05-17 02:36:09 +0000'
+  content: |
+    Very useful. There seem to be alot of options open for conversion and the mapper is just one of them.  We are using the mapper because it can be used by users with a more funcional profile, whereas other tools require more developer knowledge.
+---
+<p><!--start_raw-->The BizTalk Server 2004 schema mapping (transformation) facilities are used to transform a document instance from one schema into a new document with a different one (it also supports 1-* and *-1 and *-* transformations). The underlying transformation engine is the XSLT transformation engine.</p>
+<p>It is generally believed that the visual mapping tool found in BizTalk 2004 inside VS.NET 2003 produces XSLT code directly. Alas, this is incorrect. If you look at the .btm files with a text editor, you will soon see it is indeed an XML file, but one with a custom BizTalk format. What the .btm file actually does is describe the transformation in a sort of abstract way: What the source and destination schemas are, What links exists between nodes in the schemas, which functiods are used and so on.</p></p>
+<p>When you actually compile your BizTalk project, one of the BizTalk tools takes the .btm file as input and produces two intermediate files out of it: The xslt transformation, and a secondary XML file containing information on extension objects used (I'll cover that in a minute).</p></p>
+<p>How functoids used in your map manifest themselves in the output depends on their kind. We can basically separate them on two categories (I made up the names, their not official or anything):</p></p>
+<ul>
+<li>Structure functoids: These are functoids whose functionality can be represented directly in XSLT code. These are things like the loop functoid and so on, that are simply translated into their corresponding XSLT constructs.</li>
+<li>Code functoids: These are functoids that need to be "coded", and will simply pop up as inline C# (or whatever) code in the XSLT called using the msxsl:script facilities.</li><br />
+</ul></p>
+<p>So, what are extension objects used for? Well, they are used to represent calls to code implemented in external assemblies. If you use the Script functoid, and reference a .NET class, then an entry in the extension object XML file will be added that specifies the full typename of said class, and then, a call to that component will be introduced in the generated XSLT as a call to an XSLT extension object (hence the name). A basic XML extension object file looks like this:</p></p>
+<pre><code><ExtensionObjects><br />
+<ExtensionObject Namespace="http:&#47;&#47;whatever"<br />
+AssemblyName="full assembly name"<br />
+ClassName="The class used"<br />
+&#47;><br />
+</ExtensionObjects><br />
+</code></pre></p>
+<p>So, now you have your XSLT code. How does that get represented into an assembly?</p></p>
+<p>Each map in a project pop ups in the generated assembly as a .NET class derived from Microsoft.XLANGs.BaseTypes.TransformBase. Said class overrides a few methods in Transform base, the two most important of which are the getter methods for the XmlContent and XsltArgumentListContent properties. The first one returns a string containing the entire generated XSLT code (yes, it's encoded as a string literal, as opposed to a resource, go figure). The second one returns, you guessed it, a string with the contents of the extension object XML file. Two other interesting properties are SourceSchemas and TargetSchemas; you can guess what they do ;)</p></p>
+<p>So this was it for a basic overview of BizTalk Server 2004 maps. Hope this helps someone!</p><!--end_raw--></p>

@@ -1,0 +1,32 @@
+---
+layout: post
+status: publish
+published: true
+title: When Failure is faster than Success...
+author:
+  display_name: Tomas Restrepo
+  login: tomasr
+  email: tomas@winterdom.com
+  url: http://winterdom.com/
+author_login: tomasr
+author_email: tomas@winterdom.com
+author_url: http://winterdom.com/
+wordpress_id: 207
+wordpress_url: http://winterdom.com/2007/08/whenfailureisfasterthansuccess
+date: '2007-08-06 18:57:52 +0000'
+date_gmt: '2007-08-06 18:57:52 +0000'
+categories:
+- ".NET"
+tags: []
+comments: []
+---
+<p><!--start_raw-->
+<p>Yesterday morning I was going through some client&#47;server code I had written, mostly some custom serialization&#47;deserialization code. The code itself was working fine; I had decent set of unit tests for it. Instead, I was focusing on doing some integration testing as well as taking some measurements of how performance was when large object sets where serialized&#47;deserialized.</p>
+<p>The code itself is fairly simple, and although it uses XML as&nbsp;the serialization format, it still is fairly efficient (XmlReader&#47;Writer based code); however I needed to see how other factors would impact it. On the server side, I had built a TextWriter implementation on top of my networking stack, which made kept the code real simple.</p>
+<p>In my first test, I tried having it work with a small set of objects. The result? Doing real work 110ms; serializing the results and sending them over the wire? 1100ms. Not very good.</p>
+<p>Looking at it a bit more, I realized that the problem was that the underlying networking stack didn't do any buffering at all; if I send 3 bytes, it would send a TCP packet with those 3 bytes right away; since the XmlTextWriter class does a lot of&nbsp;WriteChar() calls on the underlying TextWriter, performance was abysmal.</p>
+<p>So I went ahead and implemented a simple buffering scheme inside my TextWriter object, and that worked fine. Second results? Doing real work: 85ms, serializing the results: 120ms.</p>
+<p>I then started looking at how it would perform with large object sets (as in like a few thousands of them). My first result? Doing real work: 6640ms, serializing the results? 130ms. That can't be right! Tried it a few more times; with always the same results.</p>
+<p>Indeed it wasn't right. Turned out that while I was sending small result sets; all was well because the serialized representation of the objects was smaller than the small buffer size I was testing initially with (about 4KB), but as soon as that went over that number, I started sending larger packages down the network fairly fast and the underlying&nbsp;network library&nbsp;would throw an exception after the second or third package was sent. So indeed, failing was turning out to be faster than succeeding!</p>
+<p>I didn't notice the exception that was occurring at first because the serialization code was wrapped with a try&#47;catch block that, if it trapped an exception, would serialize the error information and send it along the wire as well; which was pretty useless as that was precisely what was failing :-).</p>
+<div class="wlWriterSmartContent" id="0767317B-992E-4b12-91E0-4F059A8CECA8:601dcd6d-3ac6-424a-b5d9-8c8761628ee7" contenteditable="false" style="padding-right: 0px; display: inline; padding-left: 0px; padding-bottom: 0px; margin: 0px; padding-top: 0px">Technorati tags: <a href="http:&#47;&#47;technorati.com&#47;tags&#47;.NET" rel="tag">.NET</a>, <a href="http:&#47;&#47;technorati.com&#47;tags&#47;Coding" rel="tag">Coding</a></div><!--end_raw--></p>

@@ -1,0 +1,79 @@
+---
+layout: post
+status: publish
+published: true
+title: XPathNavigator vs. IXPathNavigable
+author:
+  display_name: Tomas Restrepo
+  login: tomasr
+  email: tomas@winterdom.com
+  url: http://winterdom.com/
+author_login: tomasr
+author_email: tomas@winterdom.com
+author_url: http://winterdom.com/
+wordpress_id: 951
+wordpress_url: http://winterdom.com/2003/05/xpathnavigatorvsixpathnavigable
+date: '2003-05-18 07:59:20 +0000'
+date_gmt: '2003-05-18 07:59:20 +0000'
+categories:
+- XML
+tags: []
+comments:
+- id: 669
+  author: Dare Obasanjo
+  author_email: kpako@yahoo.com
+  author_url: http://www.kuro5hin.org/user/Carnage4Life/diary
+  date: '2003-05-18 10:42:36 +0000'
+  date_gmt: '2003-05-18 10:42:36 +0000'
+  content: |
+    <p>Tomas, <br &#47;>
+    I'm probably most directly responsible for the design of the next incarnation of XPathNavigator and I'm well aware of the issues you point out and we plan to do something about them in the next version of the .NET Framework.</p>
+    <p>As for choosing XPathNavigator over IXPathNavigable, I'd prefer taking an XPathNavigator as a method parameter because an application may be handed a navigator not necessarily an instance of IXPathNavigable which it may want to pass to your method but would be SOL if you only accept IXPathNavigable. However taking a navigator means you burden your users with having to make CreateNavigator() calls. Most users prefer </p>
+    <p> xslTransform.Transform(doc, arglist, stream);</p>
+    <p>to </p>
+    <p> XPathNavigator nav = doc.CreateNavigator();<br &#47;>
+    xslTransform.Transform(nav, arglist, stream);</p>
+    <p>  </p>
+- id: 670
+  author: Tomas Restrepo
+  author_email: tomasr@mvps.org
+  author_url: http://www.winterdom.com/weblog
+  date: '2003-05-18 12:48:24 +0000'
+  date_gmt: '2003-05-18 12:48:24 +0000'
+  content: |
+    <p>Dare,<br &#47;>
+    Thanks for the comments. I'm afraid I don't quite get your last argument (wrong words?).</p>
+    <p>Am I right in understanding that you'd prefer to pass an XPathNavigator explicitly over just an IXPathNavigable?</p>
+- id: 671
+  author: Dare Obasanjo
+  author_email: kpako@yahoo.com
+  author_url: http://www.kuro5hin.org/user/Carnage4Life/diary/
+  date: '2003-05-18 13:05:38 +0000'
+  date_gmt: '2003-05-18 13:05:38 +0000'
+  content: |
+    <p>Tomas, <br &#47;>
+    People prefer to pass IXPathNavigable to explicitly calling CreateNavigator(). Of course, most of these people don't realize they are passing IXPathNavigable, all they know that is that it just works. </p>
+    <p> However I personally prefer that methods accept XPathNavigator. </p>
+    <p>I hope that explains it better. </p>
+---
+<p><!--start_raw-->
+<p>
+<font size="2">A few weeks ago, some debate sparked regarding the IBlogThis (now <a href="http:&#47;&#47;www.pocketsoap.com&#47;weblog&#47;stories&#47;2003&#47;04&#47;0023.html">IBlogExtension</a>)<br />
+interface, and, at that time, Don <a href="http:&#47;&#47;www.gotdotnet.com&#47;team&#47;dbox&#47;default.aspx#nn2003-04-09T02:04:45Z">suggested</a> using<br />
+IXPathNavigable or XPathNavigator over XmlDocument through the interface. And so,<br />
+we now have an IBlogExtension interface that uses IXPathNavigable indeed.</font><br />
+</p></p>
+<p>
+<font size="2">However, this raises a small question: Why would you prefer IXPathNavigable<br />
+over XPathNavigator directly? After all, the former has only one method (CreateNavigator())<br />
+so you can pretty much only use it to get an XPathNavigator instance anyway.</font><br />
+</p></p>
+<p>
+<font size="2">While on the topic, I figure this could be a good time to make a few<br />
+wishes regarding the Xml support in the .NET framework:&#160;Bridge the different<br />
+abstractions you guys provide! Overall, I really like the XML support in the framework<br />
+(especially compared to what we used to have before), but sometimes, you find significant<br />
+gaps in how the different abstractions provided interact. So yes, I'd like things<br />
+like an <a href="http:&#47;&#47;www.gotdotnet.com&#47;team&#47;dbox&#47;default.aspx#nn2003-04-09T12:06:02Z">XPathNavigatorReader</a> and<br />
+to be provided by the framework. Is that too much to ask? I think not.</font><br />
+</p><!--end_raw--></p>

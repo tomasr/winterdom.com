@@ -1,0 +1,46 @@
+---
+layout: post
+status: publish
+published: true
+title: BTS Transactional Adapter Issues
+author:
+  display_name: Tomas Restrepo
+  login: tomasr
+  email: tomas@winterdom.com
+  url: http://winterdom.com/
+author_login: tomasr
+author_email: tomas@winterdom.com
+author_url: http://winterdom.com/
+wordpress_id: 78
+wordpress_url: http://winterdom.com/2005/05/btstransactionaladapterissues
+date: '2005-05-21 07:38:00 +0000'
+date_gmt: '2005-05-21 07:38:00 +0000'
+categories:
+- BizTalk
+tags: []
+comments: []
+---
+<p><!--start_raw-->As part of a project we're working on for one of our clients, we built a transactional receive adapter for BizTalk Server 2004. The adapter itself is working just fine, and truth be told, it was far easier to write than I originally expected, which is good.</p>
+<p>However, we have been noticing something a little odd that has me worried a bit. The adapter we built is an isolated receive adapter and what we are seeing is that everytime the isolated host for the adapter is initialized (or rather, just after initializing the adapter into the hosting process), the following error is reported by BizTalk to the application event log:</p></p>
+<pre><code>Event Type: Error<br />
+Event Source: BizTalk Server 2004<br />
+Event Category: BizTalk Server 2004<br />
+Event ID: 6912<br />
+Date:  5&#47;20&#47;2005<br />
+Time:  11:22:44 AM<br />
+User:  N&#47;A<br />
+Computer: C-TRESTREPO<br />
+Description:<br />
+The following stored procedure call failed:<br />
+" { call admsvr_ReceiveLocation_GetAllInApp( ?)}".<br />
+SQL Server returned error string: "Distributed transaction completed. Either<br />
+enlist this session in a new transaction or the NULL transaction.".<br />
+</code></pre></p>
+<p>After doing a lot of digging and a lot of load testing, I've found out the following regarding the error:</p></p>
+<ul>
+<li>The error is caused by the BizTalk runtime trying to refresh the configuration cache inside the adapter's isolated host (i.e. our own process), not by the BizTalk application hosts.</li>
+<li>The error only appears to be triggered for the first or second configuration cache refresh after the adapter is initialized. I checked this by setting the cache refresh time to 5 seconds during load testing. Even after running for an extended period of time during high load with transactions commiting and aborting from multiple threads, the error doesn't appear to surface after that.</li>
+<li>The configuration cache in the isolated host <i>is</i> getting refreshed correctly, I checked by changing configuration on the receive locations used during load testing and seeing the changes picked up at the next refresh cycle with no problem. I also ran a SQL Server profiler trace during testing and the Stored Procedure still gets called every five seconds with no problems.</li><br />
+</ul></p>
+<p>Because of this pattern, I'm a little bit stumped as to what the cause of the problem is, and while it doesn't seem to cause any real problems, I'm not very interested in leaving the error popping around in the event log and not knowing what it is we're doing to cause it. Any ideas?</p><br />
+<!--end_raw--></p>

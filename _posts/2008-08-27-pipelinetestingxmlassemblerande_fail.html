@@ -1,0 +1,39 @@
+---
+layout: post
+status: publish
+published: true
+title: 'PipelineTesting: XML Assembler and E_FAIL'
+author:
+  display_name: Tomas Restrepo
+  login: tomasr
+  email: tomas@winterdom.com
+  url: http://winterdom.com/
+author_login: tomasr
+author_email: tomas@winterdom.com
+author_url: http://winterdom.com/
+wordpress_id: 981
+wordpress_url: http://winterdom.com/2008/08/pipelinetestingxmlassemblerande_fail
+date: '2008-08-27 19:33:51 +0000'
+date_gmt: '2008-08-27 19:33:51 +0000'
+categories:
+- BizTalk
+tags: []
+comments: []
+---
+<p><!--start_raw-->
+<p>Fellow BizTalk developer Bram Veldhoen was kind enough to send me some suggestions for a future version of my <a href="http:&#47;&#47;www.winterdom.com&#47;weblog&#47;2007&#47;08&#47;09&#47;PipelineTesting11Released.aspx">PipelineTesting</a> library, as well as with a question that could point to a potential bug in the library.</p>
+<p>The problem basically revolves around consuming a stream returned by the XML Assembler component in a send pipeline when testing under a library. What Bram noticed was that executing the pipeline would seem to work, but trying to read the body part stream of the output message would fail with a <code>ComException</code> with error code <code>0x8004005 (E_FAIL)</code>.</p>
+<p>I was fairly confident this should've been working, based on my own use of the library, but I sat down to test it just to make sure. What I discovered was that indeed this can happen if the pipeline context for the test is not aware of the schema for the message being processed by the pipeline. </p>
+<p>I added a new test to the library to make sure this was working correctly:</p>
+<div class="codebg"><code><span class="Operator">[</span>Test<span class="Operator">]</span>       <br &#47;><span class="Statement">public</span>&#160;<span class="Type">void</span> CanReadXmlAssemblerStream<span class="Operator">()</span>&#160;<span class="Operator">{</span>       <br &#47;>&#160;&#160; SendPipelineWrapper pipeline <span class="Operator">=</span> Pipelines<span class="Operator">.</span>Xml<span class="Operator">.</span>Send<span class="Operator">()</span>       <br &#47;>&#160;&#160;&#160;&#160;&#160; <span class="Operator">.</span>WithSpec<span class="Operator"><</span>Schema3_FF<span class="Operator">>();</span>       <br &#47;>&#160;&#160; IBaseMessage input <span class="Operator">=</span> MessageHelper<span class="Operator">.</span>CreateFromStream<span class="Operator">(</span>       <br &#47;>&#160;&#160;&#160;&#160;&#160; DocLoader<span class="Operator">.</span>LoadStream<span class="Operator">(</span><span class="String">"CSV_XML_SendInput.xml"</span><span class="Operator">)</span>       <br &#47;>&#160;&#160;&#160;&#160;&#160; <span class="Operator">);</span>       <br &#47;>&#160;&#160; IBaseMessage output <span class="Operator">=</span> pipeline<span class="Operator">.</span>Execute<span class="Operator">(</span>input<span class="Operator">);</span>       <br &#47;>&#160;&#160; Assert<span class="Operator">.</span>IsNotNull<span class="Operator">(</span>output<span class="Operator">);</span>       <br &#47;>&#160;&#160; <span class="Comment">&#47;&#47; doc should load fine</span>       <br &#47;>&#160;&#160; XmlDocument doc <span class="Operator">=</span>&#160;<span class="Statement">new</span> XmlDocument<span class="Operator">();</span>       <br &#47;>&#160;&#160; doc<span class="Operator">.</span>Load<span class="Operator">(</span>output<span class="Operator">.</span>BodyPart<span class="Operator">.</span>Data<span class="Operator">);</span>       <br &#47;>&#160;&#160; XmlNodeList fields <span class="Operator">=</span> doc<span class="Operator">.</span>SelectNodes<span class="Operator">(</span><span class="String">"&#47;&#47;*[local-name()='Field3']"</span><span class="Operator">);</span>       <br &#47;>&#160;&#160; Assert<span class="Operator">.</span>Greater<span class="Operator">(</span>fields<span class="Operator">.</span>Count<span class="Operator">,</span> 0<span class="Operator">);</span>       <br &#47;><span class="Operator">}</span> </code></div>
+<p>There are a few things to keep in mind about this issue:</p>
+<ol>
+<li>If you're using the XML Assembler, make sure your pipeline context has all the necessary schemas. There are three ways you can do this, depending on how you are creating the pipeline:
+<ol>
+<li>If you're using the original raw API, you can use the <code>AddDocSpec()</code> method of the <code>SendPipelineWrapper</code> class. </li>
+<li>If you're using the new, simple API, you can add the schema through the <code>WithSpec()</code> method, which is what the test above does. </li>
+<li>If you're using the simple API, but you're dynamically creating the pipeline, you can just add the schemas directly in the XmlAssembler configuration using the <code>WithDocumentSpec()</code> and <code>WithEnvelopeSpec()</code> methods (see the XmlAssembler.cs file for details). </li>     </ol>   </li>
+<li>Make sure you're testing the right thing. Sometimes, it's enough to make sure that the pipeline can be executed successfully. Remember, however, that pipelines are streaming beasts, so a lot of the work will oftentimes happen just when you read the resulting stream, thus causing the processing to happen.      <br &#47;>This is exactly the scenario we're seeing here today. </li> </ol>
+<p>The second point is really important, but, for some reason, I never put much emphasis in it when creating the library and when talking about it. I think this is important enough to warrant doing something about it.</p>
+<p>For starters, I've committed a few changes to the <a href="http:&#47;&#47;github.com&#47;tomasr&#47;pipelinetesting&#47;tree&#47;master">PipelineTesting repository</a>. Besides adding the test above, I've also added a few <code>ConsumeStream()</code> and <code>ReadString()</code> helper methods to the <code>MessageHelper</code> class to make it easier to validate your components work by simply reading the entire stream from a message. I'll add a few other helper methods for this later on, but the idea is to make it so that you can write less code for your tests.</p>
+<div class="wlWriterSmartContent" id="scid:0767317B-992E-4b12-91E0-4F059A8CECA8:0686b17b-e453-4cb6-b30c-b090c9340114" style="padding-right: 0px; display: inline; padding-left: 0px; padding-bottom: 0px; margin: 0px; padding-top: 0px">Technorati tags: <a href="http:&#47;&#47;technorati.com&#47;tags&#47;BizTalk" rel="tag">BizTalk</a>, <a href="http:&#47;&#47;technorati.com&#47;tags&#47;PipelineTesting" rel="tag">PipelineTesting</a></div><!--end_raw--></p>

@@ -1,0 +1,25 @@
+---
+layout: post
+status: publish
+published: true
+title: WCF ASP.NET Compatibility Mode
+author:
+  display_name: Tomas Restrepo
+  login: tomasr
+  email: tomas@winterdom.com
+  url: http://winterdom.com/
+author_login: tomasr
+author_email: tomas@winterdom.com
+author_url: http://winterdom.com/
+wordpress_id: 395
+wordpress_url: http://winterdom.com/2006/02/wcfaspnetcompatibilitymode
+date: '2006-02-02 05:10:27 +0000'
+date_gmt: '2006-02-02 05:10:27 +0000'
+categories:
+- WCF
+- WinFX
+tags: []
+comments: []
+---
+<p><!--start_raw-->My friend <a href="http:&#47;&#47;gecheverry.blogspot.com&#47;">Gustavo</a> pointed me over to <a href="http:&#47;&#47;blogs.msdn.com&#47;wenlong&#47;">Wenlong Dong</a>'s blog and his article on the <a href="http:&#47;&#47;blogs.msdn.com&#47;wenlong&#47;archive&#47;2006&#47;01&#47;23&#47;516041.aspx">ASP.NET Compatibility Mode</a> for WCF services hosted in IIS. Good stuff. The articles explains quite a bit of what goes behind hosted WCF services and how they interact with the ASP.NET engine.</p>
+<p>One observation in the article did strike me as curious. Wenlong says: <i>"Even though WCF V1 implements reliable session in the product, the session state is totally in memory and thus it does not survive when the AppDomain is recycled. It is also not persisted across different processes or servers for Web Garden and Web Farm scenarios."</i>. Maybe I have a different concept about reliability, but does someone care to explain what is reliable about the WCF session support, then, if it doesn't support this?</p><!--end_raw--></p>

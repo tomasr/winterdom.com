@@ -1,0 +1,66 @@
+---
+layout: post
+status: publish
+published: true
+title: Manipulating the SiteMapDataSource for ASP.NET 2.0 Menus
+author:
+  display_name: Tomas Restrepo
+  login: tomasr
+  email: tomas@winterdom.com
+  url: http://winterdom.com/
+author_login: tomasr
+author_email: tomas@winterdom.com
+author_url: http://winterdom.com/
+wordpress_id: 11
+wordpress_url: http://winterdom.com/2006/05/manipulatingthesitemapdatasourceforaspnet20menus
+date: '2006-05-15 17:38:56 +0000'
+date_gmt: '2006-05-15 17:38:56 +0000'
+categories:
+- ".NET"
+- ASP.NET
+tags: []
+comments:
+- id: 13
+  author: Jason
+  author_email: ''
+  author_url: ''
+  date: '2006-06-21 15:06:03 +0000'
+  date_gmt: '2006-06-21 15:06:03 +0000'
+  content: |
+    Why not just set the "StaticDisplayLevels" property on your menu control to "2"? That's what I do to show the top 2 levels as one level across my horizontal menu.
+- id: 14
+  author: Tomas Restrepo
+  author_email: tomasr@mvps.org
+  author_url: http://www.winterdom.com/weblog/
+  date: '2006-06-21 16:35:47 +0000'
+  date_gmt: '2006-06-21 16:35:47 +0000'
+  content: |
+    Jason,
+    Maybe I hosed up, but from my tests, StaticDisplayLevels doesn't force all items to display at the "same level", it  just forces the menu to render those levels in the static (i.e. always visible) part of the menu. I might be wrong, though.
+---
+<p><!--start_raw-->
+<p>I've been spending some time with ASP.NET 2.0 lately. There are many interesting and very useful new features (Master Pages for example being one of my favourites). Some features however require some more effort to make them work as you'd like (as everything, I guess).&nbsp;Two of those&nbsp;are the Menu and the SiteMapDataSource controls.</p></p>
+<p>Basically, what I was trying to achieve was a very basic top-level, horizontal&nbsp;navigation bar for the site I was working on. The first hurdle was getting the&nbsp;Menu control to&nbsp;generate even remotely useful HTML code, as by default it will generates a mess of nested HTML tables somewhat awkward to style using CSS. Fortunately, I had read <a href="http:&#47;&#47;weblogs.asp.net&#47;scottgu&#47;">ScottGu</a>'s entry on the <a href="http:&#47;&#47;weblogs.asp.net&#47;scottgu&#47;archive&#47;2006&#47;05&#47;02&#47;444850.aspx">CSS control adapters toolkit</a>, so I downloaded and took a look at the code and was able to use that to instead generate
+<ul> and
+<li> HTML tags that&nbsp;were be more workable. I did make a few modifications to the default adapter included in the tooklit to wrap my horizontal menu in <span> tags instead of
+<div> tags, which allowed me to put some other stuff next to the menu I needed.</p></p>
+<p>With that out of the way, I was running into a little bit of a snag. SiteMaps can only have a single root, which was&nbsp;ok by me and suited the site just fine. The problem was that I wanted the navigation bar to include both the top-level node in the SiteMap (i.e. "Home") as well as all the entries in the second level of the SiteMap (i.e. the real content pages). Having the SiteMapDataSource control driving the menu ignore the root of the SiteMap was not an option, and leaving it as is didn't fit the bill, either.</p></p>
+<p>I could've just used an external XML data source instead, but the SiteMap really worked for my purposes (and was used to drive a SiteMapPath control as well), and well, I'm a sucker for punishement and wanted to check out if I could beat this thing into submition. As it turns out, I could :-)</p></p>
+<p>What I did probably can be called an ugly hack: I created a SiteMapDataSource-derived control that overrides the GetHierarchicalView() method. In it, I grab the SiteMap, clone the root, remove the children and then create a new SiteMapNodeCollection that contains both the cloned root as well as the original second-level items, then return a new SiteMapHierarchicalDataSourceView created from that. Strangely enough it works. Here's what the code looks like (sort of):</p></p>
+<div class='codebg'><code><span class="Statement">public</span>&nbsp;<span class="Type">class</span>&nbsp;CustomSiteMapDataSource : SiteMapDataSource<br &#47;><br />
+<span class="Operator">{</span><br &#47;><br />
+&nbsp;&nbsp; <span class="Statement">protected</span>&nbsp;<span class="Type">override</span>&nbsp;HierarchicalDataSourceView GetHierarchicalView<span class="Operator">(</span><span class="Type">string</span>&nbsp;viewPath<span class="Operator">)</span><br &#47;><br />
+&nbsp;&nbsp; <span class="Operator">{</span><br &#47;><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;SiteMapNode root <span class="Operator">=</span>&nbsp;Provider<span class="Operator">.</span>RootNode<span class="Operator">;</span><br &#47;><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;SiteMapNode newRoot <span class="Operator">=</span>&nbsp;root<span class="Operator">.</span>Clone<span class="Operator">();</span><br &#47;><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;newRoot<span class="Operator">.</span>ChildNodes <span class="Operator">=</span>&nbsp;<span class="Statement">new</span>&nbsp;SiteMapNodeCollection<span class="Operator">();</span><br &#47;><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;SiteMapNodeCollection collection <span class="Operator">=</span>&nbsp;<span class="Statement">new</span>&nbsp;SiteMapNodeCollection<span class="Operator">();</span><br &#47;><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;collection<span class="Operator">.</span>Add<span class="Operator">(</span>newRoot<span class="Operator">);</span><br &#47;><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;collection<span class="Operator">.</span>AddRange<span class="Operator">(</span>root<span class="Operator">.</span>ChildNodes<span class="Operator">);</span><br &#47;><br />
+&nbsp;<br &#47;><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="Statement">return</span>&nbsp;<span class="Statement">new</span>&nbsp;SiteMapHierarchicalDataSourceView<span class="Operator">(</span>collection<span class="Operator">);</span><br &#47;><br />
+&nbsp;&nbsp; <span class="Operator">}</span><br &#47;><br />
+<span class="Operator">}</span><br />
+</code></div></p>
+<p>I then just had the Menu control get it's data from a CustomSiteMapDataSource object instead of a normal SiteMapDataSource. Note the code above doesn't have any decent error checking and most certainly will always return just the two top levels of the menu, but it worked for my purposes.</p></p>
+<p></p><!--end_raw--></p>

@@ -1,0 +1,46 @@
+---
+layout: post
+status: publish
+published: true
+title: Localizable date controls
+author:
+  display_name: Tomas Restrepo
+  login: tomasr
+  email: tomas@winterdom.com
+  url: http://winterdom.com/
+author_login: tomasr
+author_email: tomas@winterdom.com
+author_url: http://winterdom.com/
+wordpress_id: 271
+wordpress_url: http://winterdom.com/2005/12/localizabledatecontrols
+date: '2005-12-06 19:42:56 +0000'
+date_gmt: '2005-12-06 19:42:56 +0000'
+categories:
+- ".NET"
+tags: []
+comments:
+- id: 199
+  author: Carmai Constant
+  author_email: carmai.constant@servicecanada.gc.ca
+  author_url: ''
+  date: '2007-07-03 10:58:08 +0000'
+  date_gmt: '2007-07-03 10:58:08 +0000'
+  content: |
+    Hi Thomas,
+    Do you have a code sample for these controls?
+    Thanks
+- id: 200
+  author: Tomas Restrepo
+  author_email: tomas@winterdom.com
+  author_url: http://www.winterdom.com/weblog/
+  date: '2007-07-03 11:11:02 +0000'
+  date_gmt: '2007-07-03 11:11:02 +0000'
+  content: |
+    Carmai, Unfortunately, no; the code belonged to a client of my former employer. That said, I believe some commercial companies offer localizable datetime controls now...
+---
+<p><!--start_raw-->A few weeks ago I mentioned (if not here, somewhere els) I had been working on a replacement DateTimePicker control for one of our projects, because the base DateTimePicker control in Windows Forms did not really support the .NET style of globalization, as it is based on the native OS control which is only aware of the currently selected regional settings. The problem is that our application needed to be controled explicitly only by the culture selected in the Windows Application itself (CurrentCulture&#47;CurrentUICulture), and not have a mixed bag of controls in incompatible formats&#47;languages.</p>
+<p>However, I never did write about what the end result looked liked :)</p></p>
+<p>I'm not much of a control designer&#47;developer, but I must admit that writing windows forms controls can be very entertaining at times (and quite frustrating, others), but, if I may say so myself, I was quite pleased by the end result: A control that looked fairly similar to the original native MonthCalendar and DateTimePicker controls. Granted, they are simpler (they don't support a lot of the extra stuff the native ones support, which we didn't need, like multi-month display, or selection of date ranges), but they could certainly be extended if needed.</p></p>
+<p>And, of course, they actually do work based on the date formats selected in the current culture :). Here's a small screenshot of what they look like:</p></p>
+<p><img src="http:&#47;&#47;www.winterdom.com&#47;weblog&#47;images&#47;DateControls.jpg" alt="Controls Picture"&#47;></p></p>
+<p>While working with these, I did get a chance to explore a few very nifty new features in Windows Forms 2.0, like the new visual styles support in <a href="http:&#47;&#47;msdn2.microsoft.com&#47;en-us&#47;library&#47;system.windows.forms.visualstyles.aspx">System.Windows.Forms.VisualStyles</a>, the <a href="http:&#47;&#47;winfx.msdn.microsoft.com&#47;library&#47;default.asp?url=&#47;library&#47;en-us&#47;cpref&#47;html&#47;T_System_Windows_Forms_ToolStripControlHost.asp">ToolStripControlHost</a> class (for a cool example see <a href="http:&#47;&#47;blogs.msdn.com&#47;jfoscoding&#47;archive&#47;2005&#47;03&#47;03&#47;384430.aspx">here</a>), and all the cool stuff in the System.Globalization namespace.</p><!--end_raw--></p>

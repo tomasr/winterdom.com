@@ -1,0 +1,39 @@
+---
+layout: post
+status: publish
+published: true
+title: Workflow Complexity
+author:
+  display_name: Tomas Restrepo
+  login: tomasr
+  email: tomas@winterdom.com
+  url: http://winterdom.com/
+author_login: tomasr
+author_email: tomas@winterdom.com
+author_url: http://winterdom.com/
+wordpress_id: 957
+wordpress_url: http://winterdom.com/2006/08/workflowcomplexity
+date: '2006-08-18 13:02:24 +0000'
+date_gmt: '2006-08-18 13:02:24 +0000'
+categories:
+- ".NET"
+- Architecture
+- WinFX
+- Workflow
+tags: []
+comments: []
+---
+<p><!--start_raw-->
+<p><a href="http:&#47;&#47;www.softinsight.com&#47;bnoyes&#47;">Brian Noyes</a> postes here about the <a href="http:&#47;&#47;www.softinsight.com&#47;bnoyes&#47;PermaLink.aspx?guid=5e4dd2df-2d4b-4f03-a3ce-99c3c7b9202c">complexities</a> in developing for Windows Workflow Foundation. In general, I have to agree with his sentiment. Workflow in general is not trivial and requires approaching it with a somewhat different mindset, and it's no different with Workflow Foundation.</p>
+<p>Some of what Bryan talks about is caused in part by this conceptual model differences, and partly just because of the way WF works. But, up to a point, most of what he mentions is just the superficial issues. Things get far more complex once you start diving deeper into it, and there are quite a few issues that will bite you if you're not aware of the WF model.</p>
+<p>Some examples:</p>
+<ul>
+<li>The execution model is not exactly trivial (though it is extremely powerful). It has several points that are not very intuitive and the overal design-time experience might make you feel it should work different than what it actually does. For example:</li>
+<ul>
+<li>WF workflows (or rather activities) basically operate as prototype definitions at runtime. This can cause issues&nbsp;when manipulating properties, so&nbsp;you need to be careful to ensure you are manipulating the executing instance and not the prototype instance.</li>
+<li>The WF execution model and thus the behavior of running workflows can be substantially affected by what services are configured in the WF runtime. This can be quite surprising in some scenarios and can easily break your workflow definitions.</li>
+<li>The threading model in WF is far more complex than your regular .NET code (which is expected), but since there are multiple alternative scheduling services, they can also affect how your workflow definitions get executed with sometimes surprising results.</li></ul>
+<li>The extensibility model in WF is pretty amazing, and how the runtime is completely supported by a set of configurable and extensible services is one of the really strong points in WF. However, it also adds a lot to the complexity because what you tested and worked under one configuration might very well not work under another and it also means you need to be aware of the type of workflow you're building and the activities you're using and what services they require.</li>
+<li>Even with the Activity Binding facilities in WF (which are really cool), no-code (or little-code) workflows are still hard, and people will tend to escape this by using a lot of CodeActivities and event handlers to hook things together through code. This has both advantages and disadvantages.</li>
+<li>Creating new activities is easy. Creating <em>good</em> activities can be pretty hard.</li></ul>
+<p>None of this retracts overall from the WF platform; it's still a pretty&nbsp;important part of the .NET FX 3 platform; it just means you need to be well informed about what you're getting into if you decide to take advantage of it. At the end, it ain't no silver bullet.</p><!--end_raw--></p>

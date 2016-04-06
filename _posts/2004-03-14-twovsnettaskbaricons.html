@@ -1,0 +1,25 @@
+---
+layout: post
+status: publish
+published: true
+title: Two VS.NET Taskbar Icons
+author:
+  display_name: Tomas Restrepo
+  login: tomasr
+  email: tomas@winterdom.com
+  url: http://winterdom.com/
+author_login: tomasr
+author_email: tomas@winterdom.com
+author_url: http://winterdom.com/
+wordpress_id: 680
+wordpress_url: http://winterdom.com/2004/03/twovsnettaskbaricons
+date: '2004-03-14 10:40:48 +0000'
+date_gmt: '2004-03-14 10:40:48 +0000'
+categories:
+- ".NET"
+tags: []
+comments: []
+---
+<p><!--start_raw-->OK, this one seems to be happening all too often: While working on VS.NET 2003, I suddently end up with two different icons on the taskbar for a single instance of VS.NET. Curiously enough, one of them gets piled up with other Windows Explorer windows, not with the rest of VS.NET windows on the taskbar.</p>
+<p>But wait, it gets worse: After a while, VS.NET gets "stuck", meaning I can't minimize the VS.NET window (I can maximize it and restore it, and work on it without problems, though). After digging a while, it seems something inside VS.NET gets screwed and one of the windows seems to end up with the Desktop Window as its parent, which comepletely screws up the shell, aparently.</p></p>
+<p>Dunno if BizTalk has anything to do with it, but it seems to happen far more often while working on BizTalk projects than other kinds of projects, although opening up XML or XSD files inside VS.NET seems to trigger it sometimes, also...</p><!--end_raw--></p>

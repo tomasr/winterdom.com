@@ -1,0 +1,25 @@
+---
+layout: post
+status: publish
+published: true
+title: VPC, Performance and Intel 950 chipset
+author:
+  display_name: Tomas Restrepo
+  login: tomasr
+  email: tomas@winterdom.com
+  url: http://winterdom.com/
+author_login: tomasr
+author_email: tomas@winterdom.com
+author_url: http://winterdom.com/
+wordpress_id: 721
+wordpress_url: http://winterdom.com/2006/06/vpcperformanceandintel950chipset
+date: '2006-06-15 09:30:11 +0000'
+date_gmt: '2006-06-15 09:30:11 +0000'
+categories:
+- Development
+- Tools
+tags: []
+comments: []
+---
+<p><!--start_raw-->Lately, I've been getting a little fed up with the poor performance I was getting out of my virtual machines in Virtual PC 2004 (which I still prefer compared to using Virtual Server 2005 R2 directly). Performance was particularly bad on VPC image with SQL Server 2005, which has a nasty tendency of constantly using the processor and eating a lot of memory even when it's not being used (and BizTalk 2006 somewhat aggravates the issue). I've obviously done the common things like defragging the disk.<br><br>While looking for clues as to what the problem might be, I ran into KB article <a href="http:&#47;&#47;support.microsoft.com&#47;default.aspx?scid=kb;en-us;899525">899525 "When you run Virtual PC 2004 on a portable computer that uses the Intel Centrino 950 chipset, Virtual PC Performance is reduced"</a>. As it turns out, my laptop does indeed use the 950 chipset, so I thought this might be one of the issues I was running into and proceeded to call PSS and ask for the hotfix. <br><br>After I installed the hotfix and restarted my virtual machines, I noticed that performance improved quite a bit inside the guest OS: SQL Workbench and Visual Studio 2005 seemed more responsive, and overall the machine felt just better. Unfortunately, this seems to have had a nasty side effect: Now Virtual PC will hog down 100% of the real machine's CPU time when a virtual machine is running, <i>even</i> if the machine is paused! <br><br>I'm not sure if this will be an acceptable compromise yet, will keep trying and see if I can improve things somewhat.<br>
+<p></p><!--end_raw--></p>

@@ -1,0 +1,86 @@
+---
+layout: post
+status: publish
+published: true
+title: BizTalk and Single-Quoted Attributes in XML
+author:
+  display_name: Tomas Restrepo
+  login: tomasr
+  email: tomas@winterdom.com
+  url: http://winterdom.com/
+author_login: tomasr
+author_email: tomas@winterdom.com
+author_url: http://winterdom.com/
+wordpress_id: 767
+wordpress_url: http://winterdom.com/2006/10/biztalkandsinglequotedattributesinxml
+date: '2006-10-05 10:34:28 +0000'
+date_gmt: '2006-10-05 10:34:28 +0000'
+categories:
+- BizTalk
+- XML
+tags: []
+comments:
+- id: 515
+  author: Dexter Legeaspi
+  author_email: dalegaspi@gmail.com
+  author_url: http://www.dexterlegaspi.com/journal/
+  date: '2006-10-05 17:52:20 +0000'
+  date_gmt: '2006-10-05 17:52:20 +0000'
+  content: |
+    I just wrote a similar entry in my blog and wrote a decoding pipeline component:
+    http:&#47;&#47;www.dexterlegaspi.com&#47;journal&#47;?p=31
+- id: 516
+  author: Tomas Restrepo
+  author_email: tomasr@mvps.org
+  author_url: http://www.winterdom.com/weblog/
+  date: '2006-10-05 18:01:53 +0000'
+  date_gmt: '2006-10-05 18:01:53 +0000'
+  content: |
+    Dexter,
+    Cool! Just subscribed to your weblog as well, some nice articles you got there!
+- id: 517
+  author: Jan Eliasen
+  author_email: jan@eliasen.dk
+  author_url: http://www.eliasen.dk
+  date: '2006-10-06 01:11:50 +0000'
+  date_gmt: '2006-10-06 01:11:50 +0000'
+  content: |
+    Hi
+    Have you reported it to Microsoft? They will need to fix that to the next service pack and&#47;or BizTalk 2006 R2.
+    --
+    eliasen
+- id: 518
+  author: Tomas Restrepo
+  author_email: tomasr@mvps.org
+  author_url: http://www.winterdom.com/weblog/
+  date: '2006-10-06 05:33:50 +0000'
+  date_gmt: '2006-10-06 05:33:50 +0000'
+  content: |
+    Jan,
+    Not yet, but I'll try doing so if I have some free time when I get my support contract renewed :)
+---
+<p><!--start_raw-->
+<p>The <a href="http:&#47;&#47;www.w3.org&#47;TR&#47;xml">XML Specification</a> allows attribute values to be wrapped with either double quotes (") or single quotes ('). Normally, BizTalk Server, as a good standard-abiding&nbsp;citizen,&nbsp;has no&nbsp;problem with this. However, I had been seeing messages on the BizTalk newsgroup claiming that BizTalk would refuse to process XML documents using single quotes when the XML Disassembler component tried to parse the incoming message.</p>
+<p>I spent a few minutes researching this claim and found out that indeed there is some truth to this statement. Indeed it appears there is a bug in the XML Disassembler when it runs into documents using single quotes, but it only affects some documents.</p>
+<p>The first thing the XML Disassembler component does when it receives a message is probe it to see if it is indeed and XML message and try to "guess" the encoding it is in. As part of that it will look not only for a BOM (Byte Order Mark), but also for an <?xml?> declaration containing an encoding attribute.</p>
+<p>Here's the problem: if the encoding attribute in the xml declaration is wrapped in single quotes, the parsing fails. In other words: BizTalk has a real issue with a document that begins like this:</p>
+<p><?xml version='1.0' encoding='utf-8'?></p>
+<p>It does't have a problem with this, however:</p>
+<p><?xml version='1.0' encoding="utf-8"?></p>
+<p>In fact, as long as the encoding&nbsp;attribute is missing or is wrapped with double quotes, BizTalk will happily accept and correctly parse the message. If not, BizTalk will fail with the following error:</p>
+<p><font face="Lucida Console" color="#ff0000">There was a failure executing the receive pipeline: "Microsoft.BizTalk.DefaultPipelines.XMLReceive, Microsoft.BizTalk.DefaultPipelines, Version=3.0.1.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35" Source: "XML disassembler" Receive Port: "ReceivePort1" URI: "C:\temp\BizTalk\TestIn\*.xml" Reason: Length cannot be less than zero.<br>Parameter name: length</font></p>
+<p>Looking a bit throught the XML Disassembler code using reflector, it becomes very clear that the Probe() method of the XmlDasmComp class (i.e. the disassembler component) is fatally flawed, as it will attemtp to do a manual parsing of the&nbsp;<?xml?> declaration and explicitly expects the encoding attribute value to be wrapped in double quotes. Here's the relevant bit of code:</p>
+<div class="wlWriterSmartContent" id="57F11A72-B0E5-49c7-9094-E3A15BD5B5E6:09db438d-bb77-4086-80b1-436e32780e09" contenteditable="false" style="padding-right: 0px; display: inline; padding-left: 0px; float: none; padding-bottom: 0px; margin: 0px; padding-top: 0px">
+<pre style="background-color:White;">
+<div><!--<br />
+Code highlighting produced by Actipro CodeHighlighter (freeware)<br />
+http:&#47;&#47;www.CodeHighlighter.com&#47;<br />
+--><span style="color: #0000FF; ">if</span><span style="color: #000000; "> (text2.Contains(</span><span style="color: #000000; ">"</span><span style="color: #000000; ">encoding</span><span style="color: #000000; ">"</span><span style="color: #000000; ">))<br />
+{<br />
+text1 </span><span style="color: #000000; ">=</span><span style="color: #000000; "> text2.Substring(text2.IndexOf(</span><span style="color: #000000; ">"</span><span style="color: #000000; ">encoding</span><span style="color: #000000; ">"</span><span style="color: #000000; ">));<br />
+text1 </span><span style="color: #000000; ">=</span><span style="color: #000000; "> text1.Substring(text1.IndexOf(</span><span style="color: #000000; ">'</span><span style="color: #000000; ">"</span><span style="color: #000000; ">'</span><span style="color: #000000; ">) </span><span style="color: #000000; ">+</span><span style="color: #000000; "> </span><span style="color: #000000; ">1</span><span style="color: #000000; ">);<br />
+text1 </span><span style="color: #000000; ">=</span><span style="color: #000000; "> text1.Substring(</span><span style="color: #000000; ">0</span><span style="color: #000000; ">, text1.IndexOf(</span><span style="color: #000000; ">'</span><span style="color: #000000; ">"</span><span style="color: #000000; ">'</span><span style="color: #000000; ">));<br />
+}</span></div></pre></div></p>
+<p>Unfortunately, there's no easy workaround without actually modifying the incoming message either by hand or through a custom decoding pipeline component that can fix it..</p></p>
+<div class="wlWriterSmartContent" id="d7bf807d-7bb0-458a-811f-90c51817d5c2:fc11a861-9b82-4920-aa6b-96d428ffb906" contenteditable="false" style="padding-right: 0px; display: inline; padding-left: 0px; padding-bottom: 0px; margin: 0px; padding-top: 0px">
+<p><span class="TagSite">Technorati:</span> <a href="http:&#47;&#47;technorati.com&#47;tag&#47;BizTalk" rel="tag" class="tag">BizTalk</a>, <a href="http:&#47;&#47;technorati.com&#47;tag&#47;XML" rel="tag" class="tag">XML</a><br &#47;><!-- StartInsertedTags: BizTalk, XML :EndInsertedTags --></p></div><!--end_raw--></p>

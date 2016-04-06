@@ -1,0 +1,39 @@
+---
+layout: post
+status: publish
+published: true
+title: Backing Stuff Up
+author:
+  display_name: Tomas Restrepo
+  login: tomasr
+  email: tomas@winterdom.com
+  url: http://winterdom.com/
+author_login: tomasr
+author_email: tomas@winterdom.com
+author_url: http://winterdom.com/
+wordpress_id: 154
+wordpress_url: http://winterdom.com/2008/02/backingstuffup
+date: '2008-02-01 04:56:40 +0000'
+date_gmt: '2008-02-01 04:56:40 +0000'
+categories:
+- Personal
+- Tools
+tags: []
+comments: []
+---
+<p><!--start_raw-->
+<p>Jeff Atwood's post on <a href="http:&#47;&#47;www.codinghorror.com&#47;blog&#47;archives&#47;001045.html">backup strategies</a> made me reflect on what I was doing myself to keep my data safe. I don't really have a "backup strategy", though I do try to keep a good backup around (and I'm always careful to, for example, backup my laptop when I'm traveling with it).</p>
+<p>But definitely, I have some major holes in my current backup management. Currently, I have a very simplistic backup procedure:</p>
+<ol>
+<li>Every once in a while I back all my really important files (mail, pictures, documents and so on) over to an external drive that I usually keep connected to my laptop. My backups aren't really huge, so I can easily keep two versions around.</li>
+<li>Every once in a while (less often) I do a second backup into a 20GB small external drive (what used to be an Archos Gmini 120 MP3 player, now formatted using NTFS). This is small enough that I can easily put this somewhere else as a good second level backup.</li>
+<li>Regularly I do a third copy of my data into a DVD (yes, the backup of my core stuff still fits in a DVD with a bit of compression).</li> </ol>
+<p>For (1) and (2) I've been using Microsoft's <a href="http:&#47;&#47;www.microsoft.com&#47;windowsxp&#47;using&#47;digitalphotography&#47;prophoto&#47;synctoy.mspx">SyncToy</a> for a number of years, and for the most part it usually works OK (as long as you don't have too many read-only files and make sure no files are in use). It's not perfect, but it does the trick, though I guess I could easily replace it with a batch file and robocopy.</p>
+<p>There's one thing I haven't covered yet in my backups: Source Code. Actually, this is for the most part easy because most of it is in source control already, so I don't have too much of a need to back it up explicitly (and most of it is my client's servers, so I don't have to take care of it). I do keep a local CVS repository (yes, one day I'll migrate it off that, I promise!), which I do backup regularly as part of my backup sets.</p>
+<p>Though these simple mechanisms have worked for me so far, there are a few significant things I'd definitely like to improve:</p>
+<ol>
+<li>I'd definitely like to start keeping more offsite backups, and more often.</li>
+<li>I don't currently backup a number of things, particularly my music collection (ranging around 40GB now). If I lost it, I could rebuild it from a number of sources (CDs, emusic catalog and so on) but I would still lose some of it. Still, backing up that much data is a hassle. I'll probably end up getting a second large external drive for this once I finally get a desktop machine.</li> </ol>
+<p>A while ago I had given <a href="http:&#47;&#47;mozy.com&#47;">Mozy</a> a quick try, and rather liked the idea. The problem at that time was that our internet access here in Colombia still isn't all that very good (unless you're willing to pay very large sums of money for it). Specifically, we have very crappy upload speeds, which pretty much made a service like Mozy impossible to use effectively.</p>
+<p>Recently, after our local phone company started getting some competition this has changed a bit, and now they have doubled our upload speeds to a whooping 256Kbps (on good days!), so I decided to give Mozy a try again. It took all day, but I was able to create and upload a new 850MB backup of some of the most important stuff (mostly documents and such), so at least this gives me hope that I can start using this more effectively now. We'll see.</p>
+<div class="wlWriterSmartContent" id="scid:0767317B-992E-4b12-91E0-4F059A8CECA8:ad77676b-f3fb-4f27-ac34-3c5bf45d539e" style="padding-right: 0px; display: inline; padding-left: 0px; padding-bottom: 0px; margin: 0px; padding-top: 0px">Technorati tags: <a href="http:&#47;&#47;technorati.com&#47;tags&#47;Backups" rel="tag">Backups</a></div><!--end_raw--></p>

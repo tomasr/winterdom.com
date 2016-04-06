@@ -1,0 +1,82 @@
+---
+layout: post
+status: publish
+published: true
+title: Introducing Viasfora
+author:
+  display_name: Tomas Restrepo
+  login: tomasr
+  email: tomas@winterdom.com
+  url: http://winterdom.com/
+author_login: tomasr
+author_email: tomas@winterdom.com
+author_url: http://winterdom.com/
+wordpress_id: 1379
+wordpress_url: http://winterdom.com/?p=1379
+date: '2013-11-13 03:23:06 +0000'
+date_gmt: '2013-11-13 03:23:06 +0000'
+categories:
+- Uncategorized
+- Visual Studio
+tags: []
+comments:
+- id: 38428
+  author: Jorge
+  author_email: onthefly@zonmail.pt
+  author_url: ''
+  date: '2013-11-30 18:04:45 +0000'
+  date_gmt: '2013-11-30 18:04:45 +0000'
+  content: "Very good extension.\r\nHowever there is a problem when editing separate
+    js files.\r\nThe visual studio 2012 Pro editor turns very, very slow and typing
+    is painfull.\r\nDisabling the extension everything turns ok. So...\r\nWith all
+    other types of files nothing unusual happens.\r\nHope I helped."
+- id: 39083
+  author: Tomas Restrepo
+  author_email: tomas@winterdom.com
+  author_url: http://winterdom.com/
+  date: '2013-12-03 04:34:44 +0000'
+  date_gmt: '2013-12-03 04:34:44 +0000'
+  content: '@Jorge: Can you clarify what you mean by "editing separate js files"?
+    Note that I did push an update recently that fixed some performance issues, and
+    I''m working on improving this even more for v1.2 which hopefully I''ll release
+    later this week.'
+- id: 44127
+  author: Mateo
+  author_email: no@email.com
+  author_url: ''
+  date: '2013-12-17 13:24:45 +0000'
+  date_gmt: '2013-12-17 13:24:45 +0000'
+  content: I have same problem as Jorge but with .cs files.
+- id: 44674
+  author: Tomas Restrepo
+  author_email: tomas@winterdom.com
+  author_url: http://winterdom.com/
+  date: '2013-12-19 00:01:37 +0000'
+  date_gmt: '2013-12-19 00:01:37 +0000'
+  content: "@Mateo: Next version is coming out soon, and I've done lots of work on
+    improving performance. Hopefully this will clear any issues you're seeing."
+---
+<p>A couple of days ago, I unveiled <a href="http:&#47;&#47;viasfora.com&#47;">Viasfora</a>, my latest attempt at building a decently packaged extension for Visual Studio 2010, 2012, and 2013. I had already published a few VS Extensions before (Keyword Classifier, BetterXml, Line Adornments, and Xaml Classifier Fix), but it was not overly successful. The reasons for this were several:</p>
+<ul>
+<li>I originally published those extensions not really as something useful in their own right, but rather as samples on how to implement VS extensions. They were successful in that regard, but none were ever very widely used.</li>
+<li>While useful in their own right, the extensions weren't very polished. They were not very easy to customize and the code needed some cleanup to be easier to maintain.</li>
+<li>The names, frankly, sucked.</li>
+<li>I'm terrible at promoting stuff, so I never did much about them other than a few posts on this blog. I even was so absentminded that I uploaded BetterXml to the Visual Studio Gallery, only to forget to publish it. No wonder no one used it!</li><br />
+</ul></p>
+<h2>What is Viasfora?</h2></p>
+<p>Viasfora is a combination of my 3 most significant previous extensions. Keyword Classifier, BetterXml and Line Adornments. It puts them all in a single, nice package that includes full customizability through the Tools -> Options dialog in Visual Studio, including the ability to turn individual features on&#47;off.</p></p>
+<p><img src='http:&#47;&#47;viasfora.com&#47;images&#47;logo-small.png'&#47;></p>
+<p>So what does Viasfora offer? Check the website for the full details, but here are some highlights:</p></p>
+<ul>
+<li>Current Line Highlighting, a native feature in VS2013, but supported on VS2010 and VS2012.</li>
+<li>Custom highlighting of Control Flow keywords, LINQ-related Keywords and Visibility keywords for C#, C&#47;C++, JavaScript and Visual Basic (new!).</li>
+<li>Highlighting of character escape sequences in C# strings, which makes it real easy to spot them!</li>
+<li>Custom highlighting of XML namespace prefixes in XML&#47;XAML&#47;HTML documents.</li>
+<li>Highlighting closing element tags in XML&#47;XAML&#47;HTML documents in a different color as the opening element tag. This is one of my favorite features and one I often miss from Vim.</li>
+<li>Matching (through highlight) of opening&#47;closing element tags in XML documents (new!).</li>
+<li>Tooltips for easy lookup of XML namespace prefixes.</li>
+<p></ul></p>
+<p>Hopefully having a nice (if simple) website for the extension with all the information makes it easier for people to find and get interested in it. As with my previous extensions, complete source is available on the < a href='https:&#47;&#47;github.com&#47;tomasr&#47;viasfora&#47;'>github repository</a>.</p>
+<h2>Where does the name come from?</h2></p>
+<p>Sorry, I still suck at naming :). The name Viasfora comes from my attempt of mixing the greek word "Di&aacute;fora" and, well, obviously VS for Visual Studio. It sounds catchy, I think!</p>
+<p>Please let me know if anyone runs into any problems, bugs or feature requests.</p> </p>

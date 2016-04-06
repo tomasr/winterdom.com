@@ -1,0 +1,64 @@
+---
+layout: post
+status: publish
+published: true
+title: Problem Creating Data Sources in VS2005
+author:
+  display_name: Tomas Restrepo
+  login: tomasr
+  email: tomas@winterdom.com
+  url: http://winterdom.com/
+author_login: tomasr
+author_email: tomas@winterdom.com
+author_url: http://winterdom.com/
+wordpress_id: 245
+wordpress_url: http://winterdom.com/2005/10/problemcreatingdatasourcesinvs2005
+date: '2005-10-13 12:49:24 +0000'
+date_gmt: '2005-10-13 12:49:24 +0000'
+categories:
+- ".NET"
+tags: []
+comments:
+- id: 181
+  author: Tian van Heerden
+  author_email: tianvh@gmail.com
+  author_url: ''
+  date: '2006-10-16 04:22:01 +0000'
+  date_gmt: '2006-10-16 04:22:01 +0000'
+  content: |
+    Hi Tomas,
+    Thanks for posting this - it helped me solve a pernicious bug in the release version of VS2005 where the Website Data Sources window would come up empty, fail to reflect any of the typed datasets in my asp.net project and, most irritatingly, have the "Add New Data Source" button disabled. Grrrr. So I couldn't even fire up the Add New Data Source Wizard.
+    Adding a single, dummy class file to my project root immediately solved this problem, for which THANK YOU!
+    Cheers,
+    Tian
+- id: 182
+  author: Rob K
+  author_email: ''
+  author_url: ''
+  date: '2007-01-11 19:45:38 +0000'
+  date_gmt: '2007-01-11 19:45:38 +0000'
+  content: |
+    OK Here's what I've found - This is not a complete solution but may lead to the answer. I noticed that if I created a new web site, added a report, my new sites "add data source" function works fine and even shows my dal after it was referenced.
+    At that point, I started adding folders from my problem site. The problem occured when I added the App_WebReferences folder. Add the folder - data sources blank out, delete the folder - data sources work fine (note you may have to reload the project per folder test).
+    I was then able to isolate a couple of web references that, once again, caused the problem (delete the web ref from the App_WebReferences folder- problem goes away).
+    I tried updating the web ref folders but this had no effect.
+    So it looks like visual studio is having a problem if the App_WebReferences folder has a problem in it. Once I isolated the files in this folder, the problem went away. (The files&#47;web services in question for my app were from PayPal -https:&#47;&#47;www.paypal.com&#47;wsdl&#47;PayPalSvc.wsdl - which were not even being used in the app.)
+- id: 1028
+  author: MikeZ
+  author_email: privacy@mailinator.com
+  author_url: ''
+  date: '2009-07-09 13:08:45 +0000'
+  date_gmt: '2009-07-09 13:08:45 +0000'
+  content: Thanks Rob K  -  deleting my Web Reference resolved the problem for me.
+- id: 1668
+  author: Mujeeb
+  author_email: mujeebpeed@yahoo.com
+  author_url: ''
+  date: '2011-02-04 20:32:18 +0000'
+  date_gmt: '2011-02-04 20:32:18 +0000'
+  content: I have solved it by moving xsd files(old files) to app_code or just delete
+    it
+---
+<p><!--start_raw-->Some of my project teammates and myself have encountered what seems to be a farily annoying problem that still seems to exist in VS2005 even in the RC (September CTP). The problem is that the Add New Data Source Wizard in Visual Studio generates a NullReferenceException when trying to add a new Object data source: You either get a message box with the error, or the wizard just disappears when trying to present all the CLR types to select the one you want your data source to be based on.</p>
+<p>I logged the bug <a href="http:&#47;&#47;lab.msdn.microsoft.com&#47;productfeedback&#47;viewfeedback.aspx?feedbackid=7cb0e86d-7f2e-4b4b-8ee4-bdb4cb53b5c2">here</a>, and I'm hoping someone else actually has run into the issue. I have very little hope it will be corrected so late in the game (or even reproduced), but it never hurts to ask. There is one workaround, though, but not very good: manually creating the .datasource file :(</p></p>
+<p><b>Update: </b> Bug confirmed: It only happens when there are no code files directly on the project's directory (example, it will happen if all your code files are in subdirectories). At least there is a simple workaround, which is putting at least one code file directly on the project's dir.</p><!--end_raw--></p>

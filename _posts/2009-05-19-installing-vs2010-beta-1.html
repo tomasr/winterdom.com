@@ -1,0 +1,171 @@
+---
+layout: post
+status: publish
+published: true
+title: Installing VS2010 Beta 1
+author:
+  display_name: Tomas Restrepo
+  login: tomasr
+  email: tomas@winterdom.com
+  url: http://winterdom.com/
+author_login: tomasr
+author_email: tomas@winterdom.com
+author_url: http://winterdom.com/
+wordpress_id: 1229
+wordpress_url: http://winterdom.com/2009/05/installing-vs2010-beta-1
+date: '2009-05-19 02:46:45 +0000'
+date_gmt: '2009-05-19 02:46:45 +0000'
+categories:
+- ".NET"
+tags: []
+comments:
+- id: 789
+  author: Damien Guard
+  author_email: Damien@envytech.co.uk
+  author_url: ''
+  date: '2009-05-19 04:16:17 +0000'
+  date_gmt: '2009-05-19 04:16:17 +0000'
+  content: Yeah text rendering is iffy. Should be fixed before final. In the mean
+    time Liberation Mono at 14 looks best.
+- id: 802
+  author: Noah
+  author_email: noahric@microsoft.com
+  author_url: http://blogs.msdn.com/noahric
+  date: '2009-05-20 22:22:27 +0000'
+  date_gmt: '2009-05-20 22:22:27 +0000'
+  content: "Hey Tomas, thanks for the feedback :)  I have a few quick editor-related
+    comments&#47;questions.  If you want, you can send the reply to noahric @ microsoft
+    or reply here.\r\n\r\n* With the spacing issue, you're talking about the spacing
+    between the outside of the editor and the collapsed tool windows, right (i.e.
+    not space inside the editor)?\r\n* I can send an email about the Envy font rendering
+    to the WPF team - can you write something up about what you expect it to look
+    like and how it's being rendered incorrectly, so I can give it to them?\r\n* The
+    background color bug is known, sorry :(  You can work around it by opening Tools->Options
+    and clicking OK; it's annoying I know\r\n* (Configuring the outlining margin mouseover)
+    \r\n* You can still split the editor, by either the menu (Window->Split) or by
+    binding a keyboard shortcut to to Window.Split (in Tools->Options->Keyboard).
+    \ The little margin doohicky that you could be able to drag isn't there in beta1,
+    though."
+- id: 803
+  author: Noah
+  author_email: noahric@microsoft.com
+  author_url: http://blogs.msdn.com/noahric
+  date: '2009-05-20 22:23:09 +0000'
+  date_gmt: '2009-05-20 22:23:09 +0000'
+  content: "Sorry, meant to say:\r\n\r\n* (about configuring the outlining margin
+    mouseover) I can ask around about that"
+- id: 805
+  author: Tomas Restrepo
+  author_email: tomas@winterdom.com
+  author_url: http://winterdom.com/
+  date: '2009-05-21 00:47:02 +0000'
+  date_gmt: '2009-05-21 00:47:02 +0000'
+  content: "Hi Noah, thanks for the comments! Re:\r\n\r\n* Spacing: Yes, I mean between
+    the text editor window and the collapsed tool windows. I'm guessing there's at
+    least 4 usable pixels there :) Actually, more than the wasted spaced is that it
+    just looks a bit weird.\r\n\r\n* Envy Code R rendering: The biggest problem is
+    the italics. As you may be aware (or not), Damien's font basically tricks VS into
+    rendering items with bold selected in italics instead of real bold. That works
+    great on previous VS builds, but on the WPF editor it looks bad, like hinting
+    is not properly done on the fonts or something.\r\n\r\nI'm not sure if this is
+    a problem with rendering italics in general or just related to the trick that
+    Envy Code R VS does. Anyway, here's how it usually looks in previous versions:
+    http:&#47;&#47;www.flickr.com&#47;photos&#47;tomasr&#47;1816308249&#47;in&#47;set-72157602839725762&#47;\r\n\r\nWhat
+    we really, really need is proper italics support in the editor, but I'm not very
+    hopeful about that.\r\n\r\n * Glad to know about the window splitting! I use that
+    all the time! We do really need to have that be more discoverable though. (And
+    while at it, how about we get vertical splitting? That's another one I'm always
+    wishing for)"
+- id: 806
+  author: Tomas Restrepo
+  author_email: tomas@winterdom.com
+  author_url: http://winterdom.com/
+  date: '2009-05-21 00:55:50 +0000'
+  date_gmt: '2009-05-21 00:55:50 +0000'
+  content: Realized that we can get something close to vertical splitting using Window
+    -> New Window and then moving one of the windows to another vertical tab group.
+    Again, needs to be easier, more discoverable.
+- id: 807
+  author: Tim Wagner
+  author_email: tim_a_wagner@hotmail.com
+  author_url: http://www.visualstudiogallery.com
+  date: '2009-05-21 02:21:37 +0000'
+  date_gmt: '2009-05-21 02:21:37 +0000'
+  content: "VS Beta 1 can split a window horizontally (Window -> Split) inside the
+    editor. You can also open multiple copies of most editors (Window -> New Window)
+    and then dock them next to each other horizontally or vertically using the menu
+    or the docking UI. (VB and WebApps are notable exceptions to the latter and can
+    only be split using the former approach.) Both types of splitting can be repeated
+    to create \"trees\" of split windows. I'd be very interested to know if there
+    are other use cases that you're looking for that we aren't covering here.\r\n\r\nW.r.t.
+    the font rendering, you may want to check out Jason Zander's VS blog; it's been
+    a much discussed topic since the CTP, so I won't attempt to repeat it all here.
+    However, I don't understand the point about italics not working correctly, and
+    would like to hear more about what you see as the problem there and how we could
+    fix it; we're just using standard WPF text display primitives in our editor.\r\n\r\nThe
+    installation comments echo those of others, so that's likely to change for beta
+    2.\r\n\r\nThanks for the feedback -- it's much appreciated.\r\n\r\nTim Wagner\r\nVS
+    Platform Dev Manager"
+- id: 808
+  author: Winterdom &raquo; Blog Archive &raquo; Italics Rendering in VS2010 Beta
+    1
+  author_email: ''
+  author_url: http://winterdom.com/2009/05/italics-rendering-in-vs2010-beta-1
+  date: '2009-05-21 03:39:08 +0000'
+  date_gmt: '2009-05-21 03:39:08 +0000'
+  content: "[...] few people have asked questions about my comment on the rendering
+    quality of italics fonts in Visual Studio 2010 Beta 1. To make the point clearer,
+    [...]"
+- id: 809
+  author: Tomas Restrepo
+  author_email: tomas@winterdom.com
+  author_url: http://winterdom.com/
+  date: '2009-05-21 03:40:03 +0000'
+  date_gmt: '2009-05-21 03:40:03 +0000'
+  content: "Tim: Thanks for that. I figured out about the Window -> New Window thing
+    later on, and certainly there could be some improvements there (I've logged a
+    suggestion in Connect about that).\r\n\r\nFont rendering, well, the italics just
+    look worse compared to how VS2008 rendered them (even if you had to hack around
+    to get it displayed). I've just posted a new entry with side-by-side screenshots
+    of the same text so you can see the difference."
+- id: 828
+  author: 5 Articulos sobre VS2010 | Coded Style
+  author_email: ''
+  author_url: http://www.codedstyle.com/5-articulos-sobre-vs2010/
+  date: '2009-05-25 16:46:46 +0000'
+  date_gmt: '2009-05-25 16:46:46 +0000'
+  content: "[...] Nuestro buen amigo Tomas Restrepo ha escrito 5 excelentes art&iacute;culos
+    sobre VS2010. Aqu&iacute; la lista:  Installing VS2010 Beta 1 DynamicObject in
+    C# 4.0 InvokePowerShell Activity Problem Consuming WCF Service in BizTalk 2009
+    [...]"
+---
+<p>As Somasegar <a href="http:&#47;&#47;blogs.msdn.com&#47;somasegar&#47;archive&#47;2009&#47;05&#47;18&#47;visual-studio-2010-and-net-fx-4-beta-1-ships.aspx">announced</a> this morning, Visual Studio 2010 Beta 1 is now available for download for MSDN subscribers and will be available in a couple of days more broadly. I&rsquo;m currently installing VS2010 and thought I&rsquo;d mention a few things that occurred to me during the process.</p><br />
+<h2>Customizing the Installation</h2>
+<p>There seems to be a new screen for customizing the installation process:</p>
+<p><a href="http:&#47;&#47;winterdom.com&#47;wp-content&#47;uploads&#47;2009&#47;05&#47;vs10setup.png"><img style="border-right-width: 0px; display: inline; border-top-width: 0px; border-bottom-width: 0px; border-left-width: 0px" title="vs10-setup" border="0" alt="vs10-setup" src="http:&#47;&#47;winterdom.com&#47;wp-content&#47;uploads&#47;2009&#47;05&#47;vs10setup-thumb.png" width="350" height="266" &#47;></a> </p>
+<p>The idea is that you can select if you&rsquo;re a .NET developer or a C++ developer and continue right away or then click the Customize button and see the old-style customization dialog that was in previous versions.</p>
+<p>Maybe it&rsquo;s just me, but I don&rsquo;t see the point of this screen at all. Most people I know already customize the VS installation a lot, or will always install it complete, so it&rsquo;s not like this is actually saving anyone time, is it?</p>
+<p>Me? I&rsquo;ll always go the customization road. For example, I never install Visual Basic; I have little use for it at this time. Oh, and by the way, don&rsquo;t confuse Visual F# with Visual J# during the installation process :).</p>
+<p>While on the subject of customization, anyone know why SQL Server Compact is a required part of the Visual Studio installation? This has been that way for a few years now, and I still have no clue why I&rsquo;d even want it install; I have yet to use it. Does VS use it itself for anything?</p><br />
+<h2>The Installation Process</h2>
+<p>The actual installation went by without any errors, and was relatively quick (certainly faster than I expected it). You&rsquo;ll have to restart during the installation just after the .NET Framework 4.0 Beta 1 setup is done.</p>
+<p>Unfortunately, I had to go through it twice because I incorrectly installed VC++ instead of VC#!</p>
+<p>Something to watch out for: If you decide later to add&#47;remove components, and you didn&rsquo;t install the <a href="http:&#47;&#47;msdn.microsoft.com&#47;en-us&#47;sync&#47;default.aspx">Sync Framework</a> initially, it will come up checked by default as soon as you get to the component list screen. So if you didn&rsquo;t want it, make sure to uncheck it before continuing with the setup.</p><br />
+<h2>The Windows SDK</h2>
+<p>Visual Studio 2010 comes with the Windows SDK 7.0A release (probably a beta build). One interesting thing about the SDK is that the &#47;bin folder of the SDK contains the .NET 3.5 tools, while the new .NET Framework 4.0 SDK tools are contained inside the &#47;bin&#47;NETFX 4.0 Tools subdirectory. So make sure you&rsquo;re using the right set of tools.</p><br />
+<h2>Visual Studio 2010</h2>
+<p>Launching the IDE for the first time is actually pretty fast; feels very snappy for a lot of things, which is pretty impressive for a beta 1 release. </p>
+<p>It does a somewhat reasonable attempt at migrating your Visual Studio 2008 settings, though I noticed that some settings, like the color for line numbers and some of the tool window layouts are not migrated correctly.</p>
+<p>The new Text Editor has a nice feel to it, and I rather like the new IDE look. A few comments on it:</p>
+<p><a href="http:&#47;&#47;winterdom.com&#47;wp-content&#47;uploads&#47;2009&#47;05&#47;vs10-editor.png"><img style="border-bottom: 0px; border-left: 0px; margin: 0px 15px 0px 0px; display: inline; border-top: 0px; border-right: 0px" title="vs10_editor" border="0" alt="vs10_editor" align="left" src="http:&#47;&#47;winterdom.com&#47;wp-content&#47;uploads&#47;2009&#47;05&#47;vs10-editor-thumb.png" width="240" height="183" &#47;></a> </p>
+<ul>
+<li>Borders&#47;Margins between UI elements are a little on the big side, so there&rsquo;s actually quite a few pixels of lost space there. If you look at the screenshot on the side, notice particularly that the border between the text editor window and the tool window tabs is actually fairly large.</li>
+<li>The new WPF-based text editor renders the bold-as-italics in <a href="http:&#47;&#47;damieng.com&#47;blog&#47;2008&#47;05&#47;26&#47;envy-code-r-preview-7-coding-font-released">Envy Code R VS</a> pretty badly. And still, several years later and a completely new text editor, and we still don&rsquo;t have proper italics support. Seriously, people, how many more years do you want us to wait for it?</li>
+<li>The text editor background color does not appear to be handled correctly. The Fonts &amp; Colors dialog will say that the right background color is selected, but it does not get picked up when you start the IDE, defaulting to White every time.</li>
+<li>One little nice thing I noticed is that the sample text on the Fonts &amp; Colors dialog is now this:     <br &#47;><img style="border-bottom: 0px; border-left: 0px; margin: 5px 0px; display: inline; border-top: 0px; border-right: 0px" title="vs10_sample_text" border="0" alt="vs10_sample_text" src="http:&#47;&#47;winterdom.com&#47;wp-content&#47;uploads&#47;2009&#47;05&#47;vs10-sample-text.png" width="238" height="78" &#47;>&#160;</li>
+<li>There&rsquo;s a new feature in the editor: If you put the mouse pointer right on the vertical line with the +&#47;- signs for the collapsible text, it will highlight the region of code that would get collapsed by the [-] sign right on top of the pointer:     <br &#47;><img style="border-bottom: 0px; border-left: 0px; margin: 5px 0px 0px; display: inline; border-top: 0px; border-right: 0px" title="vs10_sel" border="0" alt="vs10_sel" src="http:&#47;&#47;winterdom.com&#47;wp-content&#47;uploads&#47;2009&#47;05&#47;vs10-sel.png" width="554" height="127" &#47;>       <br &#47;>Unfortunately, there doesn&rsquo;t appear to be a way to change the background color used for the selection. Or at least I couldn&rsquo;t find it. I believe this is a side effect of not allowing the user to change the background color for Collapsible Text.</li>
+<li>Font rendering on the IDE is, of course, very WPFy. Meaning, it&rsquo;s not great. I think I can live with it on the editor itself (using a dark background seems to help a bit), but the IDE menus look, well, pretty bad:     <br &#47;><img style="border-bottom: 0px; border-left: 0px; margin: 5px 0px; display: inline; border-top: 0px; border-right: 0px" title="vs10_menus" border="0" alt="vs10_menus" src="http:&#47;&#47;winterdom.com&#47;wp-content&#47;uploads&#47;2009&#47;05&#47;vs10-menus.png" width="364" height="146" &#47;> </li>
+<li>The New Project Dialog has some changes. Some are good (and it looks nice, too), but some not as much. The description pane on the right is new, and well, it seems pretty useless to me for 90% of the project templates most people will use. It doesn&rsquo;t help that the descriptions on the existing templates are pretty simple one-liners:     <br &#47;><a href="http:&#47;&#47;winterdom.com&#47;wp-content&#47;uploads&#47;2009&#47;05&#47;vs10-new-proj.png"><img style="border-bottom: 0px; border-left: 0px; margin: 5px 0px; display: inline; border-top: 0px; border-right: 0px" title="vs10_new_proj" border="0" alt="vs10_new_proj" src="http:&#47;&#47;winterdom.com&#47;wp-content&#47;uploads&#47;2009&#47;05&#47;vs10-new-proj-thumb.png" width="280" height="160" &#47;></a>&#160; <br &#47;>And by the way, the pane is not resizable at this time.</li>
+<li>The new Text Editor does not appear to support splitting a code window horizontally, like previous versions did. I sure hope this gets fixed, because it&rsquo;s a feature I use all the time :(</li> </ul><br />
+<h2>Conclusion</h2>
+<p>There is a lot of new stuff on the new IDE to look up, and tons more on the .NET framework. I hope to blog a bit about these in the next few weeks as I dig deeper into all the new stuff.</p></p>

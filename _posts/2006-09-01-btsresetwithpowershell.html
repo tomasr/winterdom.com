@@ -1,0 +1,115 @@
+---
+layout: post
+status: publish
+published: true
+title: BTSReset with PowerShell
+author:
+  display_name: Tomas Restrepo
+  login: tomasr
+  email: tomas@winterdom.com
+  url: http://winterdom.com/
+author_login: tomasr
+author_email: tomas@winterdom.com
+author_url: http://winterdom.com/
+wordpress_id: 177
+wordpress_url: http://winterdom.com/2006/09/btsresetwithpowershell
+date: '2006-09-01 22:10:34 +0000'
+date_gmt: '2006-09-01 22:10:34 +0000'
+categories:
+- BizTalk
+- PowerShell
+tags: []
+comments:
+- id: 123
+  author: Lee
+  author_email: blog-feedback@leeholmes.com
+  author_url: http://www.leeholmes.com/blog
+  date: '2006-09-02 00:34:54 +0000'
+  date_gmt: '2006-09-02 00:34:54 +0000'
+  content: |
+    Nice job -- looks like you managed to squeeze out quite a few lines of code while you were at it :)
+- id: 124
+  author: Jeffrey Snover
+  author_email: jsnover13@hotmail.com
+  author_url: ''
+  date: '2006-09-02 11:47:27 +0000'
+  date_gmt: '2006-09-02 11:47:27 +0000'
+  content: |
+    Very nice.
+    PSMDTAG:FAQ: How do I start&#47;stop BizTalk Server Applications?
+    PSMDTAG:TYPE:WMI: MSBTS_HostInstance
+    Jeffrey Snover [MSFT]
+    Windows PowerShell&#47;Aspen Architect
+    Visit the Windows PowerShell Team blog at:    http:&#47;&#47;blogs.msdn.com&#47;PowerShell
+    Visit the Windows PowerShell ScriptCenter at:  http:&#47;&#47;www.microsoft.com&#47;technet&#47;scriptcenter&#47;hubs&#47;msh.mspx
+---
+<p><!--start_raw-->
+<p>In a previous post I mentioned that you could work with the WMI interfaces in BizTalk Server easier in PowerShell than you could with C#, and in a more interactive fashion. Here's something else I cooked while playing with the PowerShell RC1: A PowerShell version of my <a href="http:&#47;&#47;www.winterdom.com&#47;weblog&#47;2005&#47;07&#47;02&#47;BTSReset.aspx">BTSReset</a> tool!</p>
+<p><b>Update:</b> Fixed code so that it works with PowerShell V1 RTM.<br></p></p>
+<div class="codebg"><code><span class="Comment">#</span><br><br />
+<span class="Comment"># declare two switch parameters: -start and -stop</span><br><br />
+<span class="Comment">#</span><br><br />
+<span class="Keyword">param</span>(<span class="Type">[switch]</span>&nbsp;<span class="Identifier">$start</span>, <span class="Type">[switch]</span>&nbsp;<span class="Identifier">$stop</span>)<br><br />
+<br><br />
+<span class="Comment">#</span><br><br />
+<span class="Comment"># get list of application hosts</span><br><br />
+<span class="Comment">#</span><br><br />
+<span class="Keyword">function</span>&nbsp;<span class="Function">get-apphosts</span><br><br />
+{<br><br />
+&nbsp;&nbsp; <span class="Statement">get-wmiobject</span>&nbsp;MSBTS_HostInstance `<br><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;-namespace <span class="String">'root\MicrosoftBizTalkServer'</span>&nbsp;`<br><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;-<span class="Keyword">filter</span>&nbsp;HostType=<span class="Number">1</span><br><br />
+}<br><br />
+<br><br />
+<span class="Comment">#</span><br><br />
+<span class="Comment"># stop the given host</span><br><br />
+<span class="Comment">#</span><br><br />
+<span class="Keyword">function</span>&nbsp;<span class="Function">stop-host</span>(<span class="Identifier">$apphost</span>)<br><br />
+{<br><br />
+&nbsp;&nbsp; <span class="Identifier">$hostname</span>&nbsp;= <span class="Identifier">$apphost</span>.HostName<br><br />
+&nbsp;&nbsp; <span class="Conditional">if</span>&nbsp;( <span class="Identifier">$apphost</span>.ServiceState -<span class="Operator">ne</span>&nbsp;<span class="Number">1</span>&nbsp;)<br><br />
+&nbsp;&nbsp; {<br><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="String">"Stopping Host $hostname ..."</span><br><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="Type">[void]</span><span class="Identifier">$apphost</span>.Stop()<br><br />
+&nbsp;&nbsp; }<br><br />
+}<br><br />
+<br><br />
+<span class="Comment">#</span><br><br />
+<span class="Comment"># start the given host</span><br><br />
+<span class="Comment">#</span><br><br />
+<span class="Keyword">function</span>&nbsp;<span class="Function">start-host</span>(<span class="Identifier">$apphost</span>)<br><br />
+{<br><br />
+&nbsp;&nbsp; <span class="Identifier">$hostname</span>&nbsp;= <span class="Identifier">$apphost</span>.HostName<br><br />
+&nbsp;&nbsp; <span class="Conditional">if</span>&nbsp;( <span class="Identifier">$apphost</span>.ServiceState -<span class="Operator">eq</span>&nbsp;<span class="Number">1</span>&nbsp;)<br><br />
+&nbsp;&nbsp; { <br><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="String">"Starting Host $hostname ..."</span><br><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="Type">[void]</span><span class="Identifier">$apphost</span>.Start()<br><br />
+&nbsp;&nbsp; }<br><br />
+}<br><br />
+<br><br />
+<span class="Comment">#</span><br><br />
+<span class="Comment"># main script</span><br><br />
+<span class="Comment">#</span><br><br />
+<br><br />
+<span class="Conditional">if</span>&nbsp;( !(<span class="Identifier">$stop</span>) -<span class="Operator">and</span>&nbsp;!(<span class="Identifier">$start</span>) )<br><br />
+{<br><br />
+&nbsp;&nbsp; <span class="Identifier">$stop</span>&nbsp;= <span class="Identifier">$true</span><br><br />
+&nbsp;&nbsp; <span class="Identifier">$start</span>&nbsp;= <span class="Identifier">$true</span><br><br />
+}<br><br />
+<br><br />
+<span class="Conditional">if</span>&nbsp;( <span class="Identifier">$stop</span>&nbsp;)<br><br />
+{<br><br />
+&nbsp;&nbsp; <span class="Statement">get-apphosts</span>&nbsp;| %{ <span class="Statement">stop-host</span>(<span class="Identifier">$_</span>) }<br><br />
+}<br><br />
+<br><br />
+<span class="Conditional">if</span>&nbsp;( <span class="Identifier">$start</span>&nbsp;)<br><br />
+{<br><br />
+&nbsp;&nbsp; <span class="Statement">get-apphosts</span>&nbsp;| %{ <span class="Statement">start-host</span>(<span class="Identifier">$_</span>) }<br><br />
+}<br />
+</code></div></p>
+<p>Here's a few examples of running the tool from the PowerShell prompt:</p></p>
+<p>PS E:\temp> .\bts-reset.ps1<br>Stopping Host BizTalkServerApplication ...<br>Starting Host BizTalkServerApplication ...</p></p>
+<p>PS E:\temp> .\bts-reset.ps1 -stop<br>Stopping Host BizTalkServerApplication ...</p></p>
+<p>PS E:\temp> .\bts-reset.ps1 -stop</p></p>
+<p>PS E:\temp> .\bts-reset.ps1 -start<br>Starting Host BizTalkServerApplication ...</p>
+<p></p><!--end_raw--></p>

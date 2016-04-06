@@ -1,0 +1,93 @@
+---
+layout: post
+status: publish
+published: true
+title: 'WCF: Be careful with allowCookies="true"'
+author:
+  display_name: Tomas Restrepo
+  login: tomasr
+  email: tomas@winterdom.com
+  url: http://winterdom.com/
+author_login: tomasr
+author_email: tomas@winterdom.com
+author_url: http://winterdom.com/
+wordpress_id: 1538
+wordpress_url: http://winterdom.com/?p=1538
+date: '2015-08-03 13:18:02 +0000'
+date_gmt: '2015-08-03 13:18:02 +0000'
+categories:
+- WCF
+tags: []
+comments:
+- id: 564190
+  author: Chris Marisic
+  author_email: chris@marisic.com
+  author_url: http://www.marisic.net
+  date: '2015-08-04 15:13:26 +0000'
+  date_gmt: '2015-08-04 15:13:26 +0000'
+  content: InstanceContextMode should definitely be PerCall for this application.
+    If they were tripping themselves up something like this, I highly doubt they have
+    a scenario where they should be running anything other than PerCall. Pretty much
+    the only reason I would ever use anything other than PerCall is Juval himself
+    directly stated to.
+- id: 564425
+  author: Tomas Restrepo
+  author_email: tomas@winterdom.com
+  author_url: http://winterdom.com/
+  date: '2015-08-05 03:42:47 +0000'
+  date_gmt: '2015-08-05 03:42:47 +0000'
+  content: 'Chris: I agree it should''ve been PerCall, but, in this case, it was totally
+    irrelevant to the problems they were having. In fact, just changing the InstanceContextMode
+    would not have fixed any issue.'
+- id: 617373
+  author: Ido
+  author_email: idol@sela.co.il
+  author_url: ''
+  date: '2015-11-26 15:35:19 +0000'
+  date_gmt: '2015-11-26 15:35:19 +0000'
+  content: "I wrote a blog post once on how to disable asp.net's locking on session
+    cookies when calling wcf services:\r\nhttp:&#47;&#47;blogs.microsoft.co.il&#47;idof&#47;2010&#47;09&#47;27&#47;aspnet-compatible-wcf-services-concurrency-problem&#47;"
+---
+<p>I always enjoy a good troubleshooting challenge, and recently my good friend and colleage Martin Jalaf came up with an interesting one.</p>
+<p>A customer was load testing a Web application. Like many others, it consisted of farm of load-balanced&nbsp;servers running an&nbsp;ASP.NET application front-end application, which then talked to a set of WCF services running on a second server farm.&nbsp;In both cases, an F5 device was used to load balanced HTTP traffic.</p>
+<p>When the customer started&nbsp;increasing the load as part of their load tests, they would notice that calls to the WCF services would&nbsp;get slower, and would sometimes take upwards of 10&nbsp;minutes to complete.&nbsp;However,&nbsp;the servers running the WCF services, as well as the&nbsp;SQL Server&nbsp;used showed little CPU usage.</p>
+<p>Reviewing a few&nbsp;memory dumps of the front-end servers, all that&nbsp;could be&nbsp;observed was threads stuck calling the WCF service. Given this,&nbsp;our first suspicion was&nbsp;that <a href="https:&#47;&#47;msdn.microsoft.com&#47;en-us&#47;library&#47;vstudio&#47;ms735114(v=vs.100).aspx">WCF throttling</a> was&nbsp;incorrectly configured. However,&nbsp;dumps of the WCF service revealed this was not the case. In fact, only a single call to the WCF service was running at any given time, and throttling settings were&nbsp;too high to be causing any issues. This could be easily observed using the excellent&nbsp;<a href="http:&#47;&#47;netext.codeplex.com&#47;"><em>netext</em></a> debugging extension:</p>
+<pre class="codebg"><code>0:000> !wservice<br />
+Address State EndPoints BaseAddresses Behaviors Throttled Calls&#47;Max Sessions&#47;Max ConfigName,.NET Type<br />
+000000e9229c78d8 Opened 0n1 0n1 0n10 True 0n1&#47;0n2000 0n0&#47;0n400 "WCFSecurity.SecurityService",WCFSecurity.SecurityService</code></pre><br />
+The WCF service was configured with InstanceContextMode=Single, and ConcurrencyMode=Multiple. However, this did not appear to be related at all. Another unexpected symptom was that despite the fact that the WCF servers were behind a load balancer device, all requests ended up being processed by the same server most of the time. I immediately suspected that the F5 device was configured with session affinity enabled,&nbsp;even though the customer had initially denied it.</p>
+<p>Since the WCF service was exposed using an HTTP-based binding, I asked Martin to check the ASP.NET HttpContext instances, just in case they were somehow relevant.&nbsp;We immediately found that&nbsp;there were hundreds of HttpContext instances in the dump that had yet to complete!</p>
+<pre class="codebg"><code>0:000> !whttp<br />
+HttpContext Thread Time Out Running Status Verb Url<br />
+000000e622a12850 -- 00:00:00 00:20:52 200 POST &#47;WCFSecurity&#47;SecurityService.svc<br />
+000000e622a18e58 -- 00:00:00 00:20:47 200 POST &#47;WCFSecurity&#47;SecurityService.svc<br />
+000000e622a23c58 -- 00:00:00 00:20:39 200 POST &#47;WCFSecurity&#47;SecurityService.svc<br />
+....</code></pre><br />
+Looking closely, we realized that all HTTP calls were stuck in the&nbsp;AcquireRequestState stage of the ASP.NET pipeline, which meant we were actually observing an instance of the infamous ASP.NET Session Lock issue (see the section titled <a href="https:&#47;&#47;msdn.microsoft.com&#47;en-us&#47;library&#47;ms178581.aspx">Concurrent Requests and Session State</a>)!</p>
+<pre class="codebg"><code>Session: cq2uoplja4aqu2aoobw3f1pf<br />
+HttpContext Thread Poll (ms) Time Path<br />
+================ ====== ========= ==== ===================================<br />
+000000e622a12850 500 1253 &#47;WCFSecurity&#47;SecurityService.svc<br />
+000000e622a18e58 500 1248 &#47;WCFSecurity&#47;SecurityService.svc<br />
+000000e622a23c58 500 1240 &#47;WCFSecurity&#47;SecurityService.svc<br />
+000000e622a25d50 500 1238 &#47;WCFSecurity&#47;SecurityService.svc<br />
+000000e622a27b60 500 1236 &#47;WCFSecurity&#47;SecurityService.svc<br />
+000000e622a283f8 500 1236 &#47;WCFSecurity&#47;SecurityService.svc<br />
+....</code></pre><br />
+Why was ASP.NET Session being used here? The service was configured with:</p>
+<pre class="codebg"><code>&lt;system.serviceModel&gt;
+  &lt;serviceHostingEnvironment&gt;
+    aspnetCompatibilityEnabled=&quot;true&quot;
+  /&gt;
+&lt;/system.serviceModel&gt;</code></pre><br />
+This meant that the service was enabling access to the ASP.NET services, but the service itself was not using session state.&nbsp;What was really unexpected in this case was that all the requests from a single front-end server were ending up with the exact same ASP.NET session cookie, particularly because, by default, the client-side of WCF will not&nbsp;accept and send cookies at all.</p>
+<p>Given the issues with load-balancing not&nbsp;working as expected,&nbsp;we also checked the cookies collection of the HttpContext, and found out that, indeed, the F5 server had session affinity enabled using cookies:</p>
+<pre>0x000000e922d5ced0 System.Collections.Specialized.NameObjectCollectionBase+NameObjectEntry<br />
+0000 Key : 000000e922d5cc48 "BIGipServerpl_ATV_qa_80" [23] (System.String)<br />
+0008 Value : 000000e922d5cc00 (System.Web.HttpCookie)</pre><br />
+With all this data, the light bulb went on, and we realized that the WCF binding on the ASP.NET front-end application had to have the <a href="https:&#47;&#47;msdn.microsoft.com&#47;en-us&#47;library&#47;system.servicemodel.basichttpbinding.allowcookies(v=vs.100).aspx">allowCookies</a> property enabled! We looked at it, and, sure enough it was enabled. However, this only explained why session cookies were present, but not why&nbsp;why the same session ID was used for all requests.</p>
+<p>Digging a bit into the WCF source code, we realized that&nbsp;cookie support is implemented at the <a href="http:&#47;&#47;referencesource.microsoft.com&#47;#System.ServiceModel&#47;System&#47;ServiceModel&#47;Channels&#47;HttpChannelFactory.cs,108">ChannelFactory level</a> in the HTTP transport.&nbsp;The&nbsp;ASP.NET Front-End application was using standard proxy classes derived from <a href="https:&#47;&#47;msdn.microsoft.com&#47;en-us&#47;library&#47;ms576141(v=vs.110).aspx">ClientBase<T></a>, which meant that by default, <a href="http:&#47;&#47;blogs.msdn.com&#47;b&#47;wenlong&#47;archive&#47;2007&#47;10&#47;27&#47;performance-improvement-of-wcf-client-proxy-creation-and-best-practices.aspx">channel factory caching</a> was enabled. This meant that, on&nbsp;a W3WP.EXE process on the front-end, every single call to the WCF service would end up using the same HTTP cookies.</p>
+<h4>Conclusion</h4><br />
+Once&nbsp;the customer configured the binding with allowCookies="false" and fixed the other issues found, application&nbsp;performance&nbsp;significantly improved!</p>
+<p>The moral of the story is: be careful when you enable the allowCookies option when calling WCF services over HTTP.&nbsp;In this case the combination of allowCookies, channel factory caching, aspnetCompabilitityEnabled, and an incorrectly configured load-balancer completely killed the application capability to scale.</p>
+<p>&nbsp;</p>

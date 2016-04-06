@@ -1,0 +1,31 @@
+---
+layout: post
+status: publish
+published: true
+title: Decoding Components and Streams, II
+author:
+  display_name: Tomas Restrepo
+  login: tomasr
+  email: tomas@winterdom.com
+  url: http://winterdom.com/
+author_login: tomasr
+author_email: tomas@winterdom.com
+author_url: http://winterdom.com/
+wordpress_id: 260
+wordpress_url: http://winterdom.com/2006/10/decodingcomponentsandstreamsii
+date: '2006-11-01 19:42:13 +0000'
+date_gmt: '2006-11-01 19:42:13 +0000'
+categories:
+- BizTalk
+tags: []
+comments: []
+---
+<p><!--start_raw-->
+<p>A few months ago <a href="http:&#47;&#47;www.winterdom.com&#47;weblog&#47;2006&#47;04&#47;11&#47;DecodingComponentsAndStreams.aspx">I wrote</a> about an issue with writing fully streaming custom decoding components&nbsp;for BizTalk pipelines, which originated in limitations imposed by the disassembler components (the XmlDisassembler component in particular) on the streams it received from the decoding stage.</p>
+<p>While doing some further work on custom decoding component I ran into what seems another reason&nbsp;why you'll need to do in memory buffering in some scenarios:</p>
+<p>I think that for most purposes, all the components care about is that the position of the stream can be queried; however, because of the mixed COM&#47;.NET nature of the BizTalk Messaging engine and some of the existing components, custom streams need to be "partially" seekable. This is not so much because they are going to actually try to move the position of the stream, but because they use the Seek() method of the stream to discover the current position of it (instead of using the Position property) as described <a href="http:&#47;&#47;msdn.microsoft.com&#47;library&#47;en-us&#47;sdk&#47;htm&#47;ebiz_prog_pipe_hwmc.asp?frame=true">here</a>.</p>
+<p>It does appear, unfortunately, that the disassembler will also require that your custom stream class is able to determine the stream length; that is, that the Length property is implemented and returns the correct value. If you don't implement it, then an error will be thrown during the disassembling. Furthermore, it appears that at some point during the disassembling process something like this is tried:</p>
+<p>int length = (int)stream.Length;<br>byte[] buffer = new byte[length];<br>stream.Read(buffer, 0, length);</p>
+<p>Something that hints at this is that if you just return 0 from your Length implementation, the disassembler tries to read 0 bytes from your stream (though I haven't verified this 100%, it might be something to watch out for).Anyway, just wanted to mention that it appears it is important that your custom streams returned from your decoding components are able to accurately return the stream length as it appears to the disassembler. This can be hard in some scenarios without fully buffering the message in cases where the length of the decoded data is different from the encoded data, because the component cannot predict the resulting length before actually processing the entire stream.</p>
+<div class="wlWriterSmartContent" id="d7bf807d-7bb0-458a-811f-90c51817d5c2:9b0c5217-8327-4d43-b084-fd4064cbf6b8" contenteditable="false" style="padding-right: 0px; display: inline; padding-left: 0px; padding-bottom: 0px; margin: 0px; padding-top: 0px">
+<p><span class="TagSite">Technorati:</span> <a href="http:&#47;&#47;technorati.com&#47;tag&#47;BizTalk" rel="tag" class="tag">BizTalk</a>, <a href="http:&#47;&#47;technorati.com&#47;tag&#47;Pipelines" rel="tag" class="tag">Pipelines</a>, <a href="http:&#47;&#47;technorati.com&#47;tag&#47;Components" rel="tag" class="tag">Components</a><br &#47;><!-- StartInsertedTags: BizTalk, Pipelines, Components :EndInsertedTags --></p></div><!--end_raw--></p>

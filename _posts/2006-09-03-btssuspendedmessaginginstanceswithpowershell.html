@@ -1,0 +1,236 @@
+---
+layout: post
+status: publish
+published: true
+title: BTS Suspended Messaging Instances with PowerShell
+author:
+  display_name: Tomas Restrepo
+  login: tomasr
+  email: tomas@winterdom.com
+  url: http://winterdom.com/
+author_login: tomasr
+author_email: tomas@winterdom.com
+author_url: http://winterdom.com/
+wordpress_id: 22
+wordpress_url: http://winterdom.com/2006/09/btssuspendedmessaginginstanceswithpowershell
+date: '2006-09-03 21:34:17 +0000'
+date_gmt: '2006-09-03 21:34:17 +0000'
+categories:
+- BizTalk
+- PowerShell
+tags: []
+comments:
+- id: 748
+  author: Richard
+  author_email: richard.hallgren@gmail.com
+  author_url: http://www.richardhallgren.com
+  date: '2009-05-05 12:38:09 +0000'
+  date_gmt: '2009-05-05 12:38:09 +0000'
+  content: "Super cool! Using it all the time now! Bye bye WMI (finally)! \r\n\r\nThanks!"
+- id: 1262
+  author: Brad
+  author_email: bhilton@eastman.com
+  author_url: ''
+  date: '2010-01-06 12:04:14 +0000'
+  date_gmt: '2010-01-06 12:04:14 +0000'
+  content: I need a script that will resubmit all resumable messages failed during
+    maintenance windows.  How can I do this adding to your script?
+- id: 1556
+  author: E
+  author_email: nonsens@emperium.se
+  author_url: ''
+  date: '2010-08-25 13:51:40 +0000'
+  date_gmt: '2010-08-25 13:51:40 +0000'
+  content: I need bts-terminate-message()! please.
+- id: 1557
+  author: E
+  author_email: nonsens@emperium.se
+  author_url: ''
+  date: '2010-08-25 14:51:19 +0000'
+  date_gmt: '2010-08-25 14:51:19 +0000'
+  content: "Its done:\r\n\r\n#\r\n# list suspended instances\r\n#\r\nfunction bts-list-suspended()\r\n{\r\n\tget-wmiobject
+    MSBTS_ServiceInstance `\r\n      -namespace 'root\\MicrosoftBizTalkServer' `\r\n
+    \     -filter 'ServiceClass=4 and (ServiceStatus = 4 or ServiceStatus = 16)'\r\n}\r\n\r\n#\r\n#
+    terminate instance\r\n#\r\nfunction bts-terminate-instance([string]$msgId)\r\n{\r\n\tif(!($msgId
+    -eq \"\"))\r\n\t{\r\n\t\t\"Terminate {0}\" -f $msgId\r\n\t\t$msg = get-wmiobject
+    MSBTS_ServiceInstance `\r\n\t\t\t-namespace \"root\\MicrosoftBizTalkServer\" `\r\n\t\t\t-filter
+    \"InstanceID = '$msgId'\"\t\r\n\t\t$msg.Terminate() | Out-Null\r\n\t\t\"- Done\"\r\n\t}\r\n\telse\r\n\t{\r\n\t\t\"MessageId
+    missing\"\r\n\t}\r\n}\r\n\r\nCall:\r\nbts-list-suspended | %{ bts-terminate-instance($_.InstanceID)
+    }"
+- id: 2859
+  author: James Car
+  author_email: james.car@hotmail.com
+  author_url: ''
+  date: '2012-08-01 21:36:55 +0000'
+  date_gmt: '2012-08-01 21:36:55 +0000'
+  content: "Hello Dear Sir,\r\n                       I am new to power shell. How
+    do I get count ( number) for suspended instaces?\r\n\r\nRegards,\r\nJames"
+- id: 3167
+  author: Bill
+  author_email: bill.fennell@gmail.com
+  author_url: ''
+  date: '2012-10-08 01:09:50 +0000'
+  date_gmt: '2012-10-08 01:09:50 +0000'
+  content: "Can you point me to a ps script to resume all suspended instances, please?\r\n\r\nCheers,\r\nBill
+    \ =B-)"
+- id: 3171
+  author: Bill
+  author_email: bill.fennell@gmail.com
+  author_url: ''
+  date: '2012-10-08 20:30:37 +0000'
+  date_gmt: '2012-10-08 20:30:37 +0000'
+  content: "Ok, I found out that replacing E's bts-terminate-instance() function with
+    a bts-resume-instance() function, basically replacing the word 'terminate' with
+    the word 'resume'... and it worked!\r\n\r\n#\r\n# resume instance\r\n#\r\nfunction
+    bts-resume-instance([string]$msgId)\r\n{\r\n\tif(!($msgId -eq \"\"))\r\n\t{\r\n\t\t\"Resume
+    {0}\" -f $msgId\r\n\t\t$msg = get-wmiobject MSBTS_ServiceInstance -namespace 'root\\MicrosoftBizTalkServer'
+    -filter \"InstanceID = '$msgId'\"\r\n\t\t$msg.Resume() | Out-Null\r\n\t\t\"- Done\"}\r\n\telse\r\n\t{\r\n\t\t\"MessageId
+    missing\"\r\n\t}\r\n}\r\n\r\nNote that I also simplified the bts-list-suspended()
+    function to filter just for ServiceStatus=4:\r\n\r\n#\r\n# list suspended instances\r\n#\r\nfunction
+    bts-list-suspended()\r\n{\r\n    get-wmiobject MSBTS_ServiceInstance -namespace
+    'root\\MicrosoftBizTalkServer' -filter 'ServiceStatus=4'\r\n}\r\n\r\nThis served
+    my purposes.\r\nThanks to all of you for sharing your scripts!\r\n\r\nCheers,\r\nBill
+    \ =B-)"
+- id: 6198
+  author: Biranchi
+  author_email: xbnm@saxobank.com
+  author_url: ''
+  date: '2013-01-09 08:43:02 +0000'
+  date_gmt: '2013-01-09 08:43:02 +0000'
+  content: "Hi,\r\nIs there a script that can be used to get the 'Routing Failure
+    Report' from BizTalk admin console?\r\nBasically I would like the context properties
+    associated with this message to be saved to a file.\r\n\r\nAny suggestions is
+    greately appriciated.\r\n\r\nRegards\r\nBiranchi"
+- id: 8056
+  author: Prabakaran
+  author_email: vasanthapraba@gmail.com
+  author_url: ''
+  date: '2013-02-01 05:54:22 +0000'
+  date_gmt: '2013-02-01 05:54:22 +0000'
+  content: "Nice Post\r\nThanks for the sharing"
+- id: 19799
+  author: Bensonius
+  author_email: bensonlott@gmail.com
+  author_url: ''
+  date: '2013-08-07 21:51:43 +0000'
+  date_gmt: '2013-08-07 21:51:43 +0000'
+  content: "Awesome post. I've been looking for something like this. I ran into one
+    issue however...when I save the messages to a file (or run the MSBTS_MessageInstance
+    command for an instance) only the context is saved, none of the other parts are
+    saved, most importantly the body is not saved.\r\n\r\nDoes anyone know why this
+    might be? I can view the message body in the Group just fine."
+- id: 29303
+  author: prince
+  author_email: madhu_1603@yahoo.com
+  author_url: ''
+  date: '2013-10-30 06:36:38 +0000'
+  date_gmt: '2013-10-30 06:36:38 +0000'
+  content: "Hi..\r\n\r\nFirst of all thanks for the nice script.\r\nI used it for
+    both save and terminating the instances.\r\n\r\nI observe one issue here is that
+    1st time when I execute this script it is not save&#47;terminating all the instances.\r\n\r\nWhen
+    I run it again 2nd or 3rd time..it is cleaning all the instance.\r\n\r\nCan you
+    please help why is this so?\r\n\r\nI used the filer as below \r\n-filter 'ServiceStatus=16
+    OR ServiceStatus=4 OR ServiceStatus=32 OR  ServiceClass=64 OR (ServiceClass=32
+    AND ServiceStatus=8)'"
+- id: 76265
+  author: Retrieve Suspended Messages from BizTalk Server | John Glisson - Geek of
+    the Cloth
+  author_email: ''
+  author_url: http://jglisson73.wordpress.com/2014/02/20/retrieve-suspended-messages-from-biztalk-server/
+  date: '2014-02-20 19:00:05 +0000'
+  date_gmt: '2014-02-20 19:00:05 +0000'
+  content: "[&#8230;] http:&#47;&#47;winterdom.com&#47;2006&#47;09&#47;btssuspendedmessaginginstanceswithpowershell
+    [&#8230;]"
+---
+<p><!--start_raw-->
+<p>Continuing with my series on managing BizTalk Server with PowerShell, here's&nbsp;a new&nbsp;script that deals with suspended messaging service instances:</p></p>
+<div class='codebg'><code><span class="Comment">#</span><br &#47;><br />
+<span class="Comment"># declare our parameters: the action to take, and an optional</span><br &#47;><br />
+<span class="Comment"># path to save messages to</span><br &#47;><br />
+<span class="Comment">#</span><br &#47;><br />
+<span class="Keyword">param</span>(<br &#47;><br />
+&nbsp;&nbsp; <span class="Type">[string]</span>&nbsp;<span class="Identifier">$action</span>=$(<span class="Keyword">throw</span>&nbsp;<span class="String">'need action'</span>), <br &#47;><br />
+&nbsp;&nbsp; <span class="Type">[string]</span>&nbsp;<span class="Identifier">$path</span>=$(<span class="Conditional">if</span>&nbsp;(<span class="Identifier">$action</span>&nbsp;-<span class="Operator">eq</span>&nbsp;<span class="String">'save'</span>) { <span class="Keyword">throw</span>&nbsp;<span class="String">'need path'</span>&nbsp;})<br &#47;><br />
+)<br &#47;><br />
+<br &#47;><br />
+<br &#47;><br />
+<span class="Comment">#</span><br &#47;><br />
+<span class="Comment"># get all suspended messaging service instances,</span><br &#47;><br />
+<span class="Comment"># both resumable and not-resumable</span><br &#47;><br />
+<span class="Comment">#</span><br &#47;><br />
+<span class="Keyword">function</span>&nbsp;<span class="Function">bts-get</span>-<span class="Statement">messaging-svc</span>-instances()<br &#47;><br />
+{<br &#47;><br />
+&nbsp;&nbsp; <span class="Statement">get-wmiobject</span>&nbsp;MSBTS_ServiceInstance `<br &#47;><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;-namespace <span class="String">'root\MicrosoftBizTalkServer'</span>&nbsp;`<br &#47;><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;-<span class="Keyword">filter</span>&nbsp;<span class="String">'ServiceClass=4 and (ServiceStatus = 4 or ServiceStatus = 16)'</span><br &#47;><br />
+}<br &#47;><br />
+<br &#47;><br />
+<span class="Comment">#</span><br &#47;><br />
+<span class="Comment"># save the message associated to the</span><br &#47;><br />
+<span class="Comment"># specified messaging Service Instance</span><br &#47;><br />
+<span class="Comment">#</span><br &#47;><br />
+<span class="Keyword">function</span>&nbsp;<span class="Function">bts-save</span>-message(<span class="Type">[string]</span><span class="Identifier">$msgid</span>)<br &#47;><br />
+{<br &#47;><br />
+&nbsp;&nbsp; <span class="Identifier">$msg</span>&nbsp;= <span class="Statement">get-wmiobject</span>&nbsp;MSBTS_MessageInstance `<br &#47;><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;-namespace <span class="String">'root\MicrosoftBizTalkServer'</span>&nbsp;`<br &#47;><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;-<span class="Keyword">filter</span>&nbsp;<span class="String">"ServiceInstanceID = '$msgid'"</span><br &#47;><br />
+&nbsp;&nbsp; <span class="Identifier">$msg</span>.psbase.invokemethod(<span class="String">'SaveToFile'</span>, (<span class="Identifier">$path</span>))<br &#47;><br />
+&nbsp;&nbsp; <span class="String">"Message from ServiceInstanceID=$msgid saved."</span><br &#47;><br />
+}<br &#47;><br />
+<br &#47;><br />
+<br &#47;><br />
+<span class="Comment">#</span><br &#47;><br />
+<span class="Comment"># main script</span><br &#47;><br />
+<span class="Comment">#</span><br &#47;><br />
+<span class="Conditional">switch</span>&nbsp;( <span class="Identifier">$action</span>&nbsp;)<br &#47;><br />
+{<br &#47;><br />
+&nbsp;&nbsp; <span class="String">'list'</span>&nbsp;{<br &#47;><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="Statement">bts-get</span>-<span class="Statement">messaging-svc</span>-instances | <br &#47;><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; fl InstanceId, ServiceName, SuspendTime, HostName, <br &#47;><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;ServiceStatus, ErrorId, ErrorDescription<br &#47;><br />
+&nbsp;&nbsp; }<br &#47;><br />
+&nbsp;&nbsp; <span class="String">'save'</span>&nbsp;{<br &#47;><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="Statement">bts-get</span>-<span class="Statement">messaging-svc</span>-instances | <br &#47;><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; %{ <span class="Statement">bts-save</span>-message(<span class="Identifier">$_</span>.InstanceID) }<br &#47;><br />
+&nbsp;&nbsp; }<br &#47;><br />
+}<br />
+</code></div></p>
+<p>If you run it with the 'list' action, you can get a nicely formatted list with the more significant properties of any suspended messaging service instance:</p>
+<p></p>
+<pre><code><br />
+PS E:\Projects\BizTalk\PSScripts> .\bts-get-suspended-msgs -action list<br />
+InstanceId       : {24FF0CAC-58F8-424C-BC49-6E1BD5045463}<br />
+ServiceName      : AttachmentRequestRP<br />
+SuspendTime      : 20060902091027.000000-300<br />
+HostName         : BizTalkServerApplication<br />
+ServiceStatus    : 4<br />
+ErrorId          : 0xc0c01680<br />
+ErrorDescription : The published message could not be routed because no subscri<br />
+bers were found. This error occurs if the subscribing orches<br />
+tration or send port has not been enlisted, or if some of th<br />
+e message properties necessary for subscription evaluation h<br />
+ave not been promoted. Please use the Biztalk Administration<br />
+console to troubleshoot this failure.<br />
+InstanceId       : {0661221D-3C2F-4AD6-B952-099E02BD0E21}<br />
+ServiceName      : AttachmentRequestRP<br />
+SuspendTime      : 20060902091045.000000-300<br />
+HostName         : BizTalkServerApplication<br />
+ServiceStatus    : 4<br />
+ErrorId          : 0xc0c01680<br />
+ErrorDescription : The published message could not be routed because no subscri<br />
+bers were found. This error occurs if the subscribing orches<br />
+tration or send port has not been enlisted, or if some of th<br />
+e message properties necessary for subscription evaluation h<br />
+ave not been promoted. Please use the Biztalk Administration<br />
+console to troubleshoot this failure.<br />
+</code></pre></p>
+<p>Do notice the script filters out so that we only consider messaging service instances and not others like a suspended orchestration, you can however very easily tweak the script to show those as well as present a different set of properties for each instance.</p></p>
+<p>You can also run the script with the 'save' action and provide a secondary 'path' argument to the script. In this case, the script will save any tracked messages associated with the suspended messaging service instances into the specified folder:</p>
+<pre><code>PS E:\Projects\BizTalk\PSScripts> .\bts-get-suspended-msgs -action save 'c:\temp<br />
+\ctt'<br />
+Message from ServiceInstanceID={24FF0CAC-58F8-424C-BC49-6E1BD5045463} saved.<br />
+Message from ServiceInstanceID={0661221D-3C2F-4AD6-B952-099E02BD0E21} saved.<br />
+Message from ServiceInstanceID={9E661EE6-4599-4458-B370-179220D66CF1} saved.<br />
+</code></pre></p>
+<p>Enjoy!</p></p>
+<p></p><!--end_raw--></p>

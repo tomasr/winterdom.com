@@ -1,0 +1,53 @@
+---
+layout: post
+status: publish
+published: true
+title: More EnterpriseServices Fun
+author:
+  display_name: Tomas Restrepo
+  login: tomasr
+  email: tomas@winterdom.com
+  url: http://winterdom.com/
+author_login: tomasr
+author_email: tomas@winterdom.com
+author_url: http://winterdom.com/
+wordpress_id: 1022
+wordpress_url: http://winterdom.com/2002/11/moreenterpriseservicesfun
+date: '2002-11-24 06:03:07 +0000'
+date_gmt: '2002-11-24 06:03:07 +0000'
+categories:
+- Enterprise Services
+tags: []
+comments:
+- id: 723
+  author: Ingo Rammer
+  author_email: rammer@sycom.at
+  author_url: http://www.dotnetremoting.cc/DotNetCentric
+  date: '2002-11-24 08:31:02 +0000'
+  date_gmt: '2002-11-24 08:31:02 +0000'
+  content: |
+    <p>In my opinion, using "yet another product" for load balancing shouldn't be a problem. Yes, true, when using Web Services or Remoting, you could use any TCP&#47;IP or HTTP based load balancer, including maybe some open source packages (but that's yet another product, too). On the other hand, I guess that if a corporation needs an application server backend scaling larger than a quad-processor intel box - or a zero downtime hot standby failover cluster - the price (in terms of TCO) of yet another server side product shouldn't really matter too much. </p>
+    <p>-Ingo</p>
+- id: 724
+  author: Tomas Restrepo
+  author_email: tomasr@mvps.org
+  author_url: http://www.winterdom.com/weblog
+  date: '2002-11-24 08:49:20 +0000'
+  date_gmt: '2002-11-24 08:49:20 +0000'
+  content: |
+    <p>Well, I guess that is debatable... at US$3000, appcenter is not exactly cheap, particularly when you live in a third-world country. There's also the operating costs that enter the TCO equation.<br &#47;>
+    I'm certainly trying to learn more about appcenter, since I know fairly little about it, but from all I've gather to learn, I'm not exactly thrilled by it, from a technical POV...</p>
+- id: 725
+  author: Sam Gentile
+  author_email: sam@spambites.com
+  author_url: http://radio.weblogs.com/0105852/
+  date: '2002-11-24 11:13:28 +0000'
+  date_gmt: '2002-11-24 11:13:28 +0000'
+  content: |
+    <p>I got a little story about AppCenter. Once upon a time I was leading a .NET technical team at NaviSite. Our team and others were and did build an Auto Provisioning system based on all sorts of monitored parameters and data of systems. The AppCenter team came for a "discussion." It was very clear they were more interested in "borrowing" our ideas. AppCenter did not impress me then nor does it now.</p>
+---
+<p><!--start_raw--><a href="http:&#47;&#47;radio.weblogs.com&#47;0108971&#47;2002&#47;11&#47;24.html#a34">Clemens Vasters</a> and <a href="http:&#47;&#47;www.dotnetremoting.cc&#47;DotNetCentric&#47;2002&#47;11&#47;16.asp#a347">Ingo</a> are carrying on an interesting conversations on .NET's EnterpriseServices and Remoting. I agree with a lot of what they say.</p>
+<p>However, I also have my pet peeves about COM+&#47;EnterpriseServices. Now, don't get me wrong, I really like what services ES provides, and .NET makes it super-easy to use it (compared to doing it all from raw C++), but there are some things that could improve to make it better.</p></p>
+<p>I much prefer to work with library applications whenever possible, as they give you tons of services without many of the disadvantages of server apps: more complex deployment (GAC and all that), no control over the process lifetime, etc. Of course, Library apps also have one big disadvantage: no remote invocation. However, some upcoming <a href="http:&#47;&#47;www.winterdom.com&#47;weblog&#47;archives&#47;000163.html">COM+ 1.5 features</a> will improve this somewhat.</p></p>
+<p>My other gripe with ES is tied to the particular underlying protocol it uses: DCOM. While DCOM does tons of things and works very well in some scenarios, it doesn't work as well in others. The first problem is its dynamic allocation of ports for applications (which is somewhat improved in Win2K SP3), and the other, of course, the fact that it isn't Load-Balancing friendly. At least, from my [limited] understanding, getting load balancing on these scenarios requires <a href="http:&#47;&#47;www.microsoft.com&#47;applicationcenter&#47;default.asp">Application Center Server</a>, and adding another third-party product to an already complex application doesn't excite me too much. Not to mention that the way AppCenter does Component Load Balancing (CLB) sounds pretty much like a hack to me. There's also the fact that, afaics, it doesn't exactly play very nicely with .NET (deploying complete applications to the GAC is not my idea of fun). If anyone happens to know more about this than I do (Clemens?), I'd love to be proved wrong and understand this in more detail :)</p></p>
+<p>So, while I think EnterpriseServices already provide a ton of value, I think there's room for improvement, so at least I, personally, would like to see some sort of support for taking advantage of the ES services while breaking out some of the limitations of DCOM... I think that <a href="http:&#47;&#47;msdn.microsoft.com&#47;library&#47;en-us&#47;cossdk&#47;htm&#47;pgservices_serviceswithoutcomponents_7u5v.asp?frame=true">SWC</a> is a step in the right direction, but it's certainly not enough.</p><!--end_raw--></p>

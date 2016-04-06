@@ -1,0 +1,108 @@
+---
+layout: post
+status: publish
+published: true
+title: Casting, Operators and ToString()
+author:
+  display_name: Tomas Restrepo
+  login: tomasr
+  email: tomas@winterdom.com
+  url: http://winterdom.com/
+author_login: tomasr
+author_email: tomas@winterdom.com
+author_url: http://winterdom.com/
+wordpress_id: 347
+wordpress_url: http://winterdom.com/2006/09/castingoperatorsandtostring
+date: '2006-09-27 10:52:49 +0000'
+date_gmt: '2006-09-27 10:52:49 +0000'
+categories:
+- ".NET"
+tags: []
+comments:
+- id: 254
+  author: Ignacio
+  author_email: ignacionr@gmail.com
+  author_url: http://purl.org/inz
+  date: '2006-09-28 12:08:58 +0000'
+  date_gmt: '2006-09-28 12:08:58 +0000'
+  content: |
+    100% de acuerdo nuevamente, Tom&#225;s. Pero no s&#243;lo pasa con los Datasets, sino que ese es un caso del m&#225;s general "malestar del modelo ajeno" cuando un programador no se encuentra c&#243;modo con el modelo de objetos que programa. Desconoce qu&#233; es el dato sobre el que va a trabajar y prefiere hacer un cast que conoce a buscar en alguna documentaci&#243;n o empezar la prueba y error.
+    Hay que decir que no s&#233; c&#243;mo se llama la caracter&#237;stica, pero el sistema de cast es a veces un poco "picky" (valga la malsonancia). Por ejemplo, si un rdr[0] es int, entonces (double)rdr[0] da error, a pesar de que una conversi&#243;n existe. Y lo peor es que lo sabes reci&#233;n en tiempo de ejecuci&#243;n
+- id: 255
+  author: Tomas Restrepo
+  author_email: tomasr@mvps.org
+  author_url: http://www.winterdom.com/weblog/
+  date: '2006-09-28 12:15:28 +0000'
+  date_gmt: '2006-09-28 12:15:28 +0000'
+  content: |
+    Ignacio,
+    El caso "picky" que comentas en particular es bastante l&#243;gico si consideras que la operaci&#243;n de casting entre un object y un value type no es realmente un cast como tal sino una operaci&#243;n de unboxing (el cast y el unbox mapean a instruciones IL diferentes). La instrucci&#243;n de unbox explicitamente tiene el requerimiento de que el tipo destino tiene que ser exactamente igual al tipo del valor almacenado en la referencia, y de ah&#237; el error que mencionas.
+- id: 256
+  author: Ignacio
+  author_email: ignacionr@gmail.com
+  author_url: http://purl.org/inz
+  date: '2006-09-28 12:22:49 +0000'
+  date_gmt: '2006-09-28 12:22:49 +0000'
+  content: |
+    Y s&#237;, ese es el nivelazo y la velocidad de tus respuestas, principal raz&#243;n por la que te leo desde hace muchos a&#241;os. Pero igual, la explicaci&#243;n sirve tambi&#233;n para entender lo pesada que puede llegar a resultar la equivocaci&#243;n. No justifico la pavada de andar llamando a ToString() pero &#233;ste que te se&#241;alo (y que vos tan bien extend&#233;s) es el gran motivo que tienen los atrapados en el miedo de utilizar un modelo de datos que no conocen: el costo de la depuraci&#243;n en tiempo de ejecuci&#243;n, o de la b&#250;squeda de la documentaci&#243;n del modelo.
+    Ser&#237;a de 10 que una evoluci&#243;n de Mr. Intellisense saliera a recorrer los esquemas de las consultas para ofrecer esa informaci&#243;n... Voy a escribir una carta a Pap&#225; Noel.
+- id: 257
+  author: Tomas Restrepo
+  author_email: tomasr@mvps.org
+  author_url: http://www.winterdom.com/weblog/
+  date: '2006-09-28 12:31:24 +0000'
+  date_gmt: '2006-09-28 12:31:24 +0000'
+  content: |
+    En esa &#250;ltima parte Ignacio si est&#225;s en lo cierto. Ciertamente algunos de esos elementos son molestos de diagnosticar o depurar porque solo se manifiestan en tiempo de ejecuci&#243;n como bien dices. Ah&#237; es donde el valor de pruebas unitarias se manifiesta bastante patente pues permite descubrir este tipo de errores casi en tiempo de compilaci&#243;n.
+---
+<p><!--start_raw-->
+<p>Over the years working with C#, I've seen a little bit of everything. One of my pet peeves&nbsp;are a set of issues I've seen way too many times involving incorrect use of casts, the is&#47;as operators and the ToString() methods. Most of the times these things are misused in C# is clearly a matter of either a) not understanding the language features (hardly forgivable) or b) not understanding the code you're writing (utterly unforgivable).</p></p>
+<p>Let's look then at some of the patterns and anti-patterns surrounding these topics.</p></p>
+<p><strong>The is operator</strong></p></p>
+<p>The&nbsp;is operator in C# is used to check if a given object is compatible with a given type using only reference conversions or boxing&#47;unboxing conversions (i.e. no user-defined conversions are considered). Not much wrong can be done with this operator, fortunately, but there is one important pattern to consider performance-wise: Avoid following the use of the is operator with a cast, like this:</p></p>
+<p class="MsoNormal" style="margin: 0in 0in 0pt; line-height: normal;"><span style="font-size: 10pt; font-family: 'Courier New';"><font color="#000000">if ( obj is Employee )<o:p></o:p></font></span></p></p>
+<p class="MsoNormal" style="margin: 0in 0in 0pt; line-height: normal;"><span style="font-size: 10pt; font-family: 'Courier New';"><font color="#000000">{<o:p></o:p></font></span></p></p>
+<p class="MsoNormal" style="margin: 0in 0in 0pt; line-height: normal;"><span style="font-size: 10pt; font-family: 'Courier New';"><font color="#000000"><span style="">&nbsp;&nbsp; </span>Employee employee = (Employee)obj;<o:p></o:p></font></span></p></p>
+<p class="MsoNormal" style="margin: 0in 0in 0pt; line-height: normal;"><span style="font-size: 10pt; font-family: 'Courier New';"><font color="#000000"><span style="">&nbsp;&nbsp; </span>&#47;&#47; do something<o:p></o:p></font></span></p></p>
+<p class="MsoNormal" style="margin: 0in 0in 0pt; line-height: normal;"><span style="font-size: 10pt; font-family: 'Courier New';"><font color="#000000">}</font></span><span style="font-size: 10pt; font-family: 'Courier New';"><o:p></o:p></span></p></p>
+<p>
+</p>
+<p>In the above sample, you're pretty much doing the work twice. it's less expensive to use the as operator instead followed by a proper check for null, like this:</p>
+<p></p>
+<pre><code><font color="#000000">Employee employee = obj as Employee;<br>if ( employee != null )<br>{<br><span style="">&nbsp;&nbsp; </span>&#47;&#47; do something<o:p></o:p><br>}</font></code></pre></p>
+<p>Normally you only want to use the is operator when you want to make a type check but you do not need to do a cast to manipulate the object using the (the exception would be when testing against a value type, as this is not possible). Everytime you're tempted to use the is operator, consider carefully the context and see if using the as operator makes more sense instead. </p></p>
+<p>After that, go one step further and consider whether the type check is at all required. In many cases, you can avoid it altogether by moving functionality into the object itself and <a href="http:&#47;&#47;www.refactoring.com&#47;catalog&#47;replaceConditionalWithPolymorphism.html">rely on the type system</a> to do the work for you. </p></p>
+<p><strong>The as operator</strong></p></p>
+<p>The as operator is a little bit more problematic in the field. It is basically a cast operation that just returns null if it fails instead of throwing an InvalidCastException (similar to dynamic_cast<> in C++ in this regard), and as such it is very useful. However, a lot of people use it incorrectly as well.</p></p>
+<p>An instance of the as operator should always be followed by a check against null. If not, then you're using the wrong tool for the job. Our last code example shows a correct use of the as operator. The following one shows an incorrect use of it:</p>
+<pre><code><font color="#000000">Employee employee = obj as Employee;<br>employee.Fire();</font></code></pre></p>
+<p>The problem with this code is that if the cast fail, you'll get a null reference which you'll try to use right away, causing a NullReferenceException to be thrown. NullReferenceExceptions are bad, they are usually hard to debug unless you got a full stack trace with full debugging information. In a case like this, the tool you'll want to be using is a direct cast instead:</p>
+<pre><code><font color="#000000">Employee employee = (Employee)obj;<br>employee.Fire();</font></code></pre></p>
+<p>Can it still fail? Yes, for sure. However, you'll get an InvalidCastException instead of a NullReferenceException, which is not only more clear, but it is also a lot easier to diagnose in restricted scenarios (it's far easier to spot accurately a place where an InvalidCastException can occur using visual inspection of the code than it is a NullReferenceException.</p></p>
+<p>Some people will argue that the use of the as operator vs. casts is a matter of style. My opinion is that's horse dodo; it's&nbsp;a matter of understanding the language and using the proper tool at the proper type. Saying you'll only use one to be consisten is like saying you'll only use 32-bit integers and avoiding bytes and shorts to be consistent.</p></p>
+<p><strong>Casts and ToString() </strong></p></p>
+<p>One last issue I've seen way too much is peopler confusing when a type conversion is necessary and when a simple type coercion (cast) should be enough. </p></p>
+<p>The most common case of this is in accessing values in an untyped dataset. Many people seem to be under the impression that because they are dealing with an untyped datasets, the values stored in the rows have no type at all, and insist on doing unnecessary calls to ToString() to extract the values instead of using a simple type cast [1]. So, you might see a lot of code like this:</p>
+<pre><code><font color="#000000">DataRow row = dataset.Tables[0].Rows[0];<br>string value = row["column"].ToString();</font></code></pre></p>
+<p>This is unnecessary if the value stored in the row already was a string! Furthermore, if the value is null you'll cause a&nbsp;likely unneeded NullReferenceException which would've been avoided by simply casting instead:</p>
+<pre><code><font color="#000000">DataRow row = dataset.Tables[0].Rows[0];<br>string value = (string)row["column"];</font></code></pre></p>
+<p>Sometimes it goes even worse. Many people will follow the ToString() call by a completely unnecessary Parse() call, in order to extract a value type, when a simple unbox operation would've been enough:</p>
+<pre><code><font color="#000000">DataRow row = dataset.Tables[0].Rows[0];<br>int value = Int32.Parse(row["column"].ToString());</font></code></pre></p>
+<p>Not only is this highly inneficient, it is also very error prone. Several things can go wrong besides the obvious:</p></p>
+<ul>
+<li>The conversion process will be affected by the default culture currently in place<br />
+</li>
+<li>There's no guarantee that the value returned by ToString() is in a format that can be directly parsed by Parse() safely in several scenarios (roundtrip), which can lead to intermittent errors (or unexpected values). </li></ul></p>
+<p>As if this wasn't bad enough, I've seen several variations of this WTF, including:</p></p>
+<ul>
+<li>Using ToString()&#47;Parse() to convert between types of different precision, like converting a decimal to a double.<br />
+</li>
+<li>Not being aware of numeric type suffixes for literal values (like M, L, U and so on),&nbsp;and doing things like decimal.Parse("1.65") to get around it.<br />
+</li>
+<li>Using Enum.Parse() to convert between an integral value and the corresponding enumerated value and the other way around.</li></ul></p>
+<p>And yes, every single one of those I've seen around, as unbelievable as it may seem :-). I've had good luck using a simple regular expression search in Visual Studio to spot these, using this pattern: \.Parse\(.+\.ToString.</p></p>
+<p><strong>Conclusion</strong></p></p>
+<p>Please make sure you and your teammates understand the code and the implications of casts and conversion operators and make good use of them. You'll save yourself a lot of grief in the long run, believe me!</p></p>
+<p><strong>[1]</strong> Even if you're using an untyped dataset, most of the type the dataset columns will reflect the correct type because of the&nbsp;schema inference done by the data adapter when the dataset is filled; if you did things right, that is.</p></p>
+<div class="wlWriterSmartContent" id="d7bf807d-7bb0-458a-811f-90c51817d5c2:c190159f-59f6-40e7-a4ee-84a673b4cd22" contenteditable="false" style="margin: 0px; padding: 0px; display: inline;">
+<p><span class="TagSite">Technorati:</span> <a class="tag" href="http:&#47;&#47;technorati.com&#47;tag&#47;C#" rel="tag">C#</a>, <a class="tag" href="http:&#47;&#47;technorati.com&#47;tag&#47;.NET" rel="tag">.NET</a><br><!-- StartInsertedTags: C#, .NET :EndInsertedTags --></p></div><!--end_raw--></p>

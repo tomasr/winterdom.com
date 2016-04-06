@@ -1,0 +1,41 @@
+---
+layout: post
+status: publish
+published: true
+title: How IMetadataExchange is Hosted
+author:
+  display_name: Tomas Restrepo
+  login: tomasr
+  email: tomas@winterdom.com
+  url: http://winterdom.com/
+author_login: tomasr
+author_email: tomas@winterdom.com
+author_url: http://winterdom.com/
+wordpress_id: 1008
+wordpress_url: http://winterdom.com/2006/10/howimetadataexchangeishosted
+date: '2006-10-28 09:17:38 +0000'
+date_gmt: '2006-10-28 09:17:38 +0000'
+categories:
+- WCF
+- WinFX
+- Web Services
+tags: []
+comments: []
+---
+<p><!--start_raw-->
+<p>Last week, <a href="http:&#47;&#47;blogs.msdn.com&#47;ralph.squillace&#47;">Ralph Squillace</a> posted a <a href="http:&#47;&#47;blogs.msdn.com&#47;ralph.squillace&#47;archive&#47;2006&#47;10&#47;19&#47;quick-wcf-metadata-publication-walkthrough.aspx">walkthough</a> of how to enable metadata publication (MEX, WSDL) for WCF services. I've been digging a little deeper into this and one of the questions I had was: How does the ServiceHost know where to find the IMetadataExchange implementation for a hosted service?</p>
+<p>If you have looked into the WCF configuration, you'll notice that one enables metadata publication basically through two&nbsp;primary things: </p>
+<ol>
+<li>Add a service endpoint for the IMetadataExchange contract</li>
+<li>Add a <serviceMetadata> service behavior</li></ol>
+<p>However, your service class doesn't really implement IMetadataExchange; it is implemented by WCF itself. The way this works, as far as I'm able to tell, goes&nbsp;somewhat like this:</p>
+<ol>
+<li>The ServiceHostBase and ServiceMetadataBehavior classes have deep, carnal knowledge of some of the implementation details of one another. Together, they collaborate to enable the MEX and WSDL endpoints on the hosted service.<br></li>
+<li>When the configuration for a service is loaded, the service host will try to resolve all endpoint contracts configured; this is done through the internal ServiceHostBase+ServiceAndBehaviorsContractResolver class which implementes the (also internal) IContractResolver interface. <br>These classes will reflect over the service implementation class and ensure that the service does indeed implement the contracts (i.e. implements the interfaces) specified in all the configured endpoints.Still, we know that our service doesn't really implement IMetadataExchange.<br></li>
+<li>The built-in contract resolvers (and let me repeat there doesn't appear to be any other way to&nbsp;add your own) know about IMetadataExchange. When they are asked to lookup the IMetadataExchange contract, they'll go out to the ServiceMetadataBehavior class and ask it to get them the contract description for IMetadataExchange. This basically means that to the ServiceHost hosting the service it will appear as if the service implemented IMetadataExchange. This is why the configuration validation will succeed at first. We still don't know who implements IMetadataExchange, but we have a valid (if incomplete) endpoint for it in our ServiceHost.<br></li>
+<li>Further down the pipeline, the ServiceMetadataBehavior will get executed through ApplyDispatchBehavior(). Here it will introduce a new extension object to the ServiceHost which has all the service descriptions and metadata (an instance of the ServiceMetadataExtension class).<br>It will also look at all configured endpoints and look for the one implementing the IMetadataExchange contract. When it does, it will complete the endpoint configuration by supplying an instance of the ServiceMetadataExtension+WSMexImpl class to the endpoint's DispatchRuntime. This is where, and how, the service host will know where to go when the MEX endpoint is hit!</li></ol>
+<p>One pretty impressive thing about how all of this is accomplished is that most of this is not really magical; it just uses the standard extensibility points in WCF to do a fairly significant portion of the work. In my humble opinion, though, it is a shame that the first two steps I outlined above throw this out the window and introduce hight coupling between service hosting and metadata publication and even introduces a completely internal extensibility point [1]. </p>
+<p>This is particularly sad because this was a greate overall example of how to introduce arbitrary endpoints into a hosted service, which was something I was looking forward to as a way to expose other custom metadata endpoints to a service without having the service implementation itself be aware of this.</p>
+<p><strong>[1]</strong> it is always possible I'm just misinterpreting this, though I've been going over this for several days now.</p>
+<div class="wlWriterSmartContent" id="d7bf807d-7bb0-458a-811f-90c51817d5c2:97429e4c-ef4f-4dcb-b7ac-6793248f70e3" contenteditable="false" style="padding-right: 0px; display: inline; padding-left: 0px; padding-bottom: 0px; margin: 0px; padding-top: 0px">
+<p><span class="TagSite">Technorati:</span> <a href="http:&#47;&#47;technorati.com&#47;tag&#47;Windows+Communication+Foundation" rel="tag" class="tag">Windows Communication Foundation</a>, <a href="http:&#47;&#47;technorati.com&#47;tag&#47;WCF" rel="tag" class="tag">WCF</a>, <a href="http:&#47;&#47;technorati.com&#47;tag&#47;WCF+Extensibility" rel="tag" class="tag">WCF Extensibility</a><br &#47;><!-- StartInsertedTags: Windows Communication Foundation, WCF, WCF Extensibility :EndInsertedTags --></p></div><!--end_raw--></p>

@@ -1,0 +1,34 @@
+---
+layout: post
+status: publish
+published: true
+title: The Case of the Unused Input Channel
+author:
+  display_name: Tomas Restrepo
+  login: tomasr
+  email: tomas@winterdom.com
+  url: http://winterdom.com/
+author_login: tomasr
+author_email: tomas@winterdom.com
+author_url: http://winterdom.com/
+wordpress_id: 290
+wordpress_url: http://winterdom.com/2009/02/thecaseoftheunusedinputchannel
+date: '2009-02-22 20:03:24 +0000'
+date_gmt: '2009-02-22 20:03:24 +0000'
+categories:
+- WCF
+tags: []
+comments: []
+---
+<p><!--start_raw-->
+<p>While working on a custom WCF transport channel implementation I ran into a problem that baffled me for a while. As usual, the problem ended being caused by my own fault, but it was hard to figure what was actually going wrong :-).</p>
+<p>The problem revolved around a the <a href="http:&#47;&#47;msdn.microsoft.com&#47;en-us&#47;library&#47;ms789027.aspx">ChannelListener</a> for the service side of the transport, which was getting executed through a normal WCF-provided <code><a href="http:&#47;&#47;msdn.microsoft.com&#47;en-us&#47;library&#47;system.servicemodel.servicehost.aspx">ServiceHost</a></code> (as opposed to using the channel model directly). The puzzling behavior I was seeing while testing and lots of stepping around in the debugger was like this:</p>
+<ol>
+<li>The <code>ServiceHost</code> would open my <code>ChannelListener</code> implementation, which in turn would mean my <code>OnOpen()</code> method would get executed.
+<li>The host would then do a <code>BeginAcceptChannel()</code> call on my listener with an infinite timeout. The listener gladly processed the request and returned the corresponding <code>IAsyncResult</code> object.
+<li>Meanwhile, the channel listener was busy doing it&rsquo;s thing, and, within a few hundred milliseconds, would produce a new <code><a href="http:&#47;&#47;msdn.microsoft.com&#47;en-us&#47;library&#47;system.servicemodel.channels.iinputchannel.aspx">IInputChannel</a></code> and signal the <code>WaitHandle</code> returned in the <code>BeginAcceptChannel()</code> call.
+<li>The host would wake up after the wait handle was signal and call the listener&rsquo;s <code>EndAcceptChannel()</code>, which promptly returned the new queued input channel instance.
+<li>&hellip; And that was it. Nothing else happened. The host would <em>not call</em> <em>any</em> method on the <code>IInputChannel</code> returned. Not Open(), much less posting a wait or a receive for a message. Obviously, the whole thing would grind up to a halt at this point, but no errors would get raised, the service host did not fault and there wasn&rsquo;t anything suspicious logged to the ServiceModel activity traces.</li></ol>
+<p>What was going on? Well, it seems that the <code>OnOpen()</code> implementation in my <code>ChannelListener</code> was actually blocking, instead of returning control right away. I&rsquo;m not sure if this was an effect of how the async variant of the call was working, but the end result was that as far as the service host was concerned, the listener had, not completed initializing, so it just didn&rsquo;t do anything else.</p>
+<p>What really confused me while troubleshooting this problem was that because <code>BeginAcceptChannel()</code> was getting called, it didn&rsquo;t even occur to me to look into the opening of the listener; I just assumed that if the host was trying to accept a channel, the listener had successfully opened. Looks like this isn&rsquo;t as clear cut as this.</p>
+<p>Once I fixed the blocking open of the channel listener, the host started calling my input channel methods again and everything went back to normal. Lesson learned.</p><!--end_raw--></p>

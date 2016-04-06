@@ -1,0 +1,32 @@
+---
+layout: post
+status: publish
+published: true
+title: Microsoft.BizTalk.Operations
+author:
+  display_name: Tomas Restrepo
+  login: tomasr
+  email: tomas@winterdom.com
+  url: http://winterdom.com/
+author_login: tomasr
+author_email: tomas@winterdom.com
+author_url: http://winterdom.com/
+wordpress_id: 674
+wordpress_url: http://winterdom.com/2007/07/microsoftbiztalkoperations
+date: '2007-07-19 09:12:00 +0000'
+date_gmt: '2007-07-19 09:12:00 +0000'
+categories:
+- ".NET"
+- BizTalk
+tags: []
+comments: []
+---
+<p><!--start_raw-->
+<p>BizTalk Server 2006 comes with a library called <a href="http:&#47;&#47;msdn2.microsoft.com&#47;en-us&#47;library&#47;microsoft.biztalk.operations.aspx">Microsoft.BizTalk.Operations</a> that allows you to do common operational queries on the BizTalk message boxes and tracking databases. The concept is very cool and it is something very needed for a product like BizTalk; particularly since the WMI-based API wasn't fully updated in 2006 to reflect&nbsp;model changes.</p>
+<p>Unfortunately, while the Operations assembly might seem very nifty at first, the reality is far less interesting: Like many other cases, Microsoft decided here to "play it safe" and only expose a tiny fraction of the library's functionality.</p>
+<p><a href="http:&#47;&#47;www.winterdom.com&#47;weblog&#47;content&#47;binary&#47;WindowsLiveWriter&#47;Microsoft.BizTalk.Operations_9D76&#47;BTSQuery.png" atomicselection="true"><img style="border-right: 0px; border-top: 0px; border-left: 0px; border-bottom: 0px" height="136" alt="BTSQuery" src="http:&#47;&#47;www.winterdom.com&#47;weblog&#47;content&#47;binary&#47;WindowsLiveWriter&#47;Microsoft.BizTalk.Operations_9D76&#47;BTSQuery_thumb.png" width="568" border="0"></a> </p>
+<p>One of my favorite features in BizTalk Server 2006 is the Group Query page in the Administration Console (it rocks!). Thought you could do the same queries with Microsoft.BizTalk.Operations? I did to. Well, no, you can't. The <a href="http:&#47;&#47;msdn2.microsoft.com&#47;en-us&#47;library&#47;microsoft.biztalk.operations.biztalkoperations_members.aspx">BizTalkOperations</a> class, unfortunately, only exposes basic enumeration capabilities.</p>
+<p>That means you can use M.B.O. to get a list of, say, all Service Instances, but after that, you're on your own filtering them (and good luck if you've got a few thousand instances hanging around). You wanted a list of subscriptions? Nope, you can't; you can&nbsp;only get subscriptions associated with a specific service instance.</p>
+<p>All the functionality necessary to create and execute your own custom queries like those in the Administration Console is indeed in M.B.O. and used by MicrosoftMicrosoft.BizTalk.Administration.SnapIn, but it is <em>internal</em> :-(. Why, oh, why? </p>
+<p>On a related note, whoever came up with <a href="http:&#47;&#47;msdn2.microsoft.com&#47;en-us&#47;library&#47;system.runtime.compilerservices.internalsvisibletoattribute.aspx">[InternalsVisibleTo]</a> is starting to seriously piss me off. The idea was good, but too many people running around using it for evil purposes</p>
+<div class="wlWriterSmartContent" id="0767317B-992E-4b12-91E0-4F059A8CECA8:e4c144a8-d4fd-47c2-8311-0e6d42e85cd0" contenteditable="false" style="padding-right: 0px; display: inline; padding-left: 0px; padding-bottom: 0px; margin: 0px; padding-top: 0px">Technorati tags: <a href="http:&#47;&#47;technorati.com&#47;tags&#47;BIzTalk%20Server" rel="tag">BIzTalk Server</a></div><!--end_raw--></p>

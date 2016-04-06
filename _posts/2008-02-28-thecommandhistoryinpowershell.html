@@ -1,0 +1,54 @@
+---
+layout: post
+status: publish
+published: true
+title: The Command History in PowerShell
+author:
+  display_name: Tomas Restrepo
+  login: tomasr
+  email: tomas@winterdom.com
+  url: http://winterdom.com/
+author_login: tomasr
+author_email: tomas@winterdom.com
+author_url: http://winterdom.com/
+wordpress_id: 204
+wordpress_url: http://winterdom.com/2008/02/thecommandhistoryinpowershell
+date: '2008-02-28 09:00:56 +0000'
+date_gmt: '2008-02-28 09:00:56 +0000'
+categories:
+- PowerShell
+tags: []
+comments: []
+---
+<p><!--start_raw-->
+<p>Sometimes you're executing a series of commands when using the PowerShell console and have to go back and forth repeating commands you've used before. Sometimes, just using the up&#47;down arrow keys is enough (or their close cousins: F7, F8 and F9).</p>
+<p>However, sometimes it isn't enough. One of the issues with up&#47;down and friends is that this really isn't implemented by PowerShell (or whatever PowerShell host you're using), but by the Windows Console Subsystem in CRSS.EXE. And sometimes it can also be a drag.</p>
+<p>Fortunately, PowerShell has some pretty useful things that I had not played with much before, but they turn out to be pretty useful.</p><br />
+<h2>Get-History</h2>
+<p>PowerShell keeps track of the last N commands you've executed in the "<a href="http:&#47;&#47;technet.microsoft.com&#47;en-us&#47;library&#47;bb978711.aspx">History</a>", where N == 64 by default. You can modify how many commands the history will contain by setting the $MaximumHistoryCount variable in your profile scripts.</p><br />
+<blockquote>
+<p>Technically speaking, exactly what gets stored here depends on the Host application, but the default ConsoleHost pretty much does what you'd normally expect.</p> </blockquote>
+<p>You can check your history using the <a href="http:&#47;&#47;technet.microsoft.com&#47;en-us&#47;library&#47;bb978681.aspx">Get-History</a> command, which by default is aliased as 'ghy', 'h' and 'history'. Go on and give it a try!</p>
+<p>One interesting thing is that each entry in the history is given an Id, which you can use later on to refer to that specific entry in the command history.</p><br />
+<h2>Repeating a Command</h2>
+<p>You can repeat (i.e. execute again) an arbitrary entry in the command history by using the <a href="http:&#47;&#47;technet.microsoft.com&#47;en-us&#47;library&#47;bb978728.aspx">Invoke-History</a> command and passing it the Id of the entry to execute again:</p>
+<div class="codebg"><code>Invoke-History 45</code></div>
+<p>If you don't provide an Id, then the last entry in the history will be executed again (or you can also pass in a string with the first few characters of the command and the history is searched backwards for the first match).</p>
+<p>This is pretty handy also, because Invoke-History is by default aliased as 'r' and 'ihy'. So you can simply repeat the last command using "r<enter>".</p>
+<p>One thing to watch out for is that Invoke-History will first write to the console the command it is going to execute, so keep that in mind when looking at the output.</p>
+<p>Notice that when you use Invoke-History, the Invoke-History command itself will not go into the command history. However, the command executed as a result of the use of Invoke-History will indeed get appended to the history!</p>
+<p><strong>The Last Command</strong></p>
+<p>Another interesting thing is that, PowerShell will store the last command executed into the $^ variable. So an easy way to check what the last command executed was is to simply type $^ at the prompt:</p>
+<div class="codebg"><code>tomasr@arcano {~\scripts} $^      <br &#47;>cls</code></div>
+<p>Let me reiterate something: The $^ variable stores the last command<em> directly executed,</em> not the last command in the history. That means that if you call Invoke-History, then $^ will contain your Invoke-History command, not the actual command executed as a result. </p>
+<p>It does provide for some funky stuff. For example, you can repeat the last executed command (yes, even redo an Invoke-History command) using:</p>
+<div class="codebg"><code>tomasr@arcano {~\scripts} &amp;$^      <br &#47;>      <br &#47;>&#160; Id CommandLine       <br &#47;>&#160; -- -----------       <br &#47;>&#160; 89 $ExecutionContext.SessionState       <br &#47;>&#160; 90 $ExecutionContext.SessionState.Host       <br &#47;>&#160; 91 $ExecutionContext.Host </code></div><br />
+<h2>A discrepancy</h2>
+<p>There's another interesting difference between $^ and the history. For example, let's say you execute a compound command like "ls; echo done".</p>
+<p>If you immediately check the history, you'll see that the last entry in the list is indeed the entire thing ("ls; echo done"). This means that history really keeps track of entire pipelines executed. </p>
+<p>However, if you immediately check the value of $^, you'll notice that it only contains the first part of the pipeline ("ls"); not the entire thing. In fact, $^ only stores the first command in the pipeline executed; so if you execute, say, "ls | sort", still only "ls" is stored; which is certainly a lot less useful (but still interesting).</p><br />
+<h2>Add-History</h2>
+<p>There's also an <a href="http:&#47;&#47;technet.microsoft.com&#47;en-us&#47;library&#47;bb978593.aspx">Add-History</a> command you can use to push stuff into the history without actually executing it first. In theory, this would seem to be aimed primarily at making it possible to persist the history across sessions. All you need to do is save the contents of your history to a file and then read it back and feed it to Add-History.</p>
+<p>This is unfortunately less than useful, because it is not done automatically for you. You can partially automate it, but since it requires you to <a href="http:&#47;&#47;blogs.msdn.com&#47;powershell&#47;archive&#47;2006&#47;07&#47;01&#47;653194.aspx">explicitly use a command</a> to close your session, well, little chance of our fingers and brains getting used to it (and even if you do, what happens if you accidentally close the window instead of typing the right command?). Looks like V2 might help here; would be nice.</p>
+<p>Have fun!</p>
+<div class="wlWriterSmartContent" id="scid:0767317B-992E-4b12-91E0-4F059A8CECA8:0ab2ece7-bd00-44dd-af4c-5f1ff49c8747" style="padding-right: 0px; display: inline; padding-left: 0px; padding-bottom: 0px; margin: 0px; padding-top: 0px">Technorati tags: <a href="http:&#47;&#47;technorati.com&#47;tags&#47;PowerShell" rel="tag">PowerShell</a></div><!--end_raw--></p>

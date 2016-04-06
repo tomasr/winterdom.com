@@ -1,0 +1,30 @@
+---
+layout: post
+status: publish
+published: true
+title: Registering Null Adapter on 64-Bit Machines
+author:
+  display_name: Tomas Restrepo
+  login: tomasr
+  email: tomas@winterdom.com
+  url: http://winterdom.com/
+author_login: tomasr
+author_email: tomas@winterdom.com
+author_url: http://winterdom.com/
+wordpress_id: 66
+wordpress_url: http://winterdom.com/2008/04/registeringnulladapteron64bitmachines
+date: '2008-04-23 17:51:16 +0000'
+date_gmt: '2008-04-23 17:51:16 +0000'
+categories:
+- BizTalk
+tags: []
+comments: []
+---
+<p><!--start_raw-->
+<p><a href="http:&#47;&#47;biztalkwithshashikant.blogspot.com&#47;">Shashikant Raina</a> was kind enough to share with me an issue he ran into while trying my <a href="http:&#47;&#47;www.winterdom.com&#47;weblog&#47;PermaLink,guid,475.aspx">&#47;dev&#47;null Adapter</a> for BizTalk Server on a 64-bit machine: </p>
+<p>After creating the adapter registry keys using the included .reg file, he noticed that the adapter would not appear listed in the BizTalk Administration Console when trying to add the adapter to BizTalk.</p>
+<p>Here's how Sashikant fixed it:</p><br />
+<blockquote>
+<p>On 64 bit machine, when you simply click on a registry key file (i.e NullAdapter.reg) it creates entries in default registry editor on that machine. When you then go to Biztalk admin and try to add Null adapter, you can't see it is an option from list of available adapters to add.     <br &#47;>Reason, bring that the entries were created in the wrong registry editor (64 bit). To get the correct registry entries, run this registry file      <br &#47;>using regedit.exe located in \Windows\SysWOW64 on the 64 bit machine.      <br &#47;>This will create Null adapter entries in 32 bit editor. You can then go to Biztalk admin and add the null adapter.</p> </blockquote>
+<p>So if this happens to you, just make sure the registry entries are imported into the right place!</p>
+<p>Thanks Shashikant!</p><!--end_raw--></p>

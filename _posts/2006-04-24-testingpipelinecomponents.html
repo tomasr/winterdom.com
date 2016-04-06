@@ -1,0 +1,197 @@
+---
+layout: post
+status: publish
+published: true
+title: Testing Pipeline Components
+author:
+  display_name: Tomas Restrepo
+  login: tomasr
+  email: tomas@winterdom.com
+  url: http://winterdom.com/
+author_login: tomasr
+author_email: tomas@winterdom.com
+author_url: http://winterdom.com/
+wordpress_id: 47
+wordpress_url: http://winterdom.com/2006/04/testingpipelinecomponents
+date: '2006-04-24 13:33:09 +0000'
+date_gmt: '2006-04-24 13:33:09 +0000'
+categories:
+- BizTalk
+tags: []
+comments:
+- id: 1735
+  author: jahangir
+  author_email: bhm0724@gmail.com
+  author_url: ''
+  date: '2011-06-12 19:12:36 +0000'
+  date_gmt: '2011-06-12 19:12:36 +0000'
+  content: "I am working on HL7 messages, and my work is do Automated testing for
+    the code developed by Developers. I wanna validate HL7 schemas, pipelines...\r\n\r\nIam
+    new to automated testing, and have seen all different examples on google...\r\n\r\nso
+    is there any way we can validate schemas, while testing with pipelines?\r\nas
+    HL7 messages are similar to FF message format."
+---
+<p><!--start_raw--></p>
+<p>As many of you know, there are basically <a href="http:&#47;&#47;blogs.msdn.com&#47;gzunino&#47;archive&#47;2004&#47;07&#47;01&#47;171281.aspx">two ways</a><br />
+to test custom Pipelines and custom Pipeline Components in BizTalk Server:</p></p>
+<ol>
+<li>To create them and test them by using them "for real" in biztalk messaging<br />
+scenarios: i.e. configure ports to use your custom pipelines and feed messages<br />
+through them.</p>
+<li>Use the pipeline.exe tool included in the BizTalk SDK to run them<br />
+standalone.</li></li></ol></p>
+<p>Option&nbsp;1 is required, definitely a needed option, but it is<br />
+inconvenient, at the least, for agile development: it is slow, cumbersome, and<br />
+hard to automate. Option 2 is easier and faster, but it's also inconvinient to<br />
+automate.</p></p>
+<p>So I had been looking at ways to automate&nbsp;the testing of pipelines and<br />
+pipeline components, and ran across <a href="http:&#47;&#47;blogs.msdn.com&#47;rido&#47;archive&#47;2005&#47;05&#47;27&#47;UnitTestPipelineComponents.aspx">this<br />
+article</a>, explaining how to use mocks to unit test pipeline components. Neat,<br />
+but inconvenient as well. Furthermore, it does not allow you to test pipeline<br />
+components inside a real pipeline, which is sometimes necessary to ensure your<br />
+component works well with the built-in components in BizTalk (disassembler in<br />
+particularly can be pretty picky).</p></p>
+<p>I realized then that MS already provided most of what you needed to test<br />
+pipeline components in a better way, and one which was possible to embed inside<br />
+NUnit tests (or whatever unit testing framework you use): Pipeline.exe relies on<br />
+a set of helper components in the PipelineObjects.dll assembly included with the<br />
+SDK, which does the heavy work of mocking the most important BizTalk objects<br />
+that execute pipelines, such as IPipelineContext, IBaseMessage and<br />
+IBaseMessageFactory and so on. I figured that, with a nicer API built on top of<br />
+this, I could come up with something that really made it easier to test your<br />
+pipeline components in a more agile manner, and that complemented the core unit<br />
+tests you are creating for internal functionality.</p></p>
+<p>So I've been working on this for the past couple of days and I've already<br />
+have a working implementation. Here's an example of what it might look like:</p></p>
+<p class="MsoNormal" style="MARGIN: 0in 0in 0pt; mso-pagination: none; mso-layout-grid-align: none"><span style="FONT-SIZE: 10pt; COLOR: gray; FONT-FAMILY: Consolas; mso-bidi-font-family: Consolas">&#47;&#47;&#47;</span><span style="FONT-SIZE: 10pt; COLOR: green; FONT-FAMILY: Consolas; mso-bidi-font-family: Consolas"><br />
+</span><span style="FONT-SIZE: 10pt; COLOR: gray; FONT-FAMILY: Consolas; mso-bidi-font-family: Consolas"><br />
+<summary><o:p></o:p></span></p></p>
+<p class="MsoNormal" style="MARGIN: 0in 0in 0pt; mso-pagination: none; mso-layout-grid-align: none"><span style="FONT-SIZE: 10pt; COLOR: gray; FONT-FAMILY: Consolas; mso-bidi-font-family: Consolas">&#47;&#47;&#47;</span><span style="FONT-SIZE: 10pt; COLOR: green; FONT-FAMILY: Consolas; mso-bidi-font-family: Consolas"><br />
+Tests that we can execute successfully a loaded pipeline<o:p></o:p></span></p></p>
+<p class="MsoNormal" style="MARGIN: 0in 0in 0pt; mso-pagination: none; mso-layout-grid-align: none"><span style="FONT-SIZE: 10pt; COLOR: gray; FONT-FAMILY: Consolas; mso-bidi-font-family: Consolas">&#47;&#47;&#47;</span><span style="FONT-SIZE: 10pt; COLOR: green; FONT-FAMILY: Consolas; mso-bidi-font-family: Consolas"><br />
+with a flat file as input<o:p></o:p></span></p></p>
+<p class="MsoNormal" style="MARGIN: 0in 0in 0pt; mso-pagination: none; mso-layout-grid-align: none"><span style="FONT-SIZE: 10pt; COLOR: gray; FONT-FAMILY: Consolas; mso-bidi-font-family: Consolas">&#47;&#47;&#47;</span><span style="FONT-SIZE: 10pt; COLOR: green; FONT-FAMILY: Consolas; mso-bidi-font-family: Consolas"><br />
+</span><span style="FONT-SIZE: 10pt; COLOR: gray; FONT-FAMILY: Consolas; mso-bidi-font-family: Consolas"></summary><o:p></o:p></span></p></p>
+<p class="MsoNormal" style="MARGIN: 0in 0in 0pt; mso-pagination: none; mso-layout-grid-align: none"><span style="FONT-SIZE: 10pt; FONT-FAMILY: Consolas; mso-bidi-font-family: Consolas">[<span style="COLOR: teal">Test</span>]<o:p></o:p></span></p></p>
+<p class="MsoNormal" style="MARGIN: 0in 0in 0pt; mso-pagination: none; mso-layout-grid-align: none"><span style="FONT-SIZE: 10pt; COLOR: blue; FONT-FAMILY: Consolas; mso-bidi-font-family: Consolas">public</span><span style="FONT-SIZE: 10pt; FONT-FAMILY: Consolas; mso-bidi-font-family: Consolas"><br />
+<span style="COLOR: blue">void</span> Test_ExecuteOK_FF()<o:p></o:p></span></p></p>
+<p class="MsoNormal" style="MARGIN: 0in 0in 0pt; mso-pagination: none; mso-layout-grid-align: none"><span style="FONT-SIZE: 10pt; FONT-FAMILY: Consolas; mso-bidi-font-family: Consolas">{<o:p></o:p></span></p></p>
+<p class="MsoNormal" style="MARGIN: 0in 0in 0pt; mso-pagination: none; mso-layout-grid-align: none"><span style="FONT-SIZE: 10pt; FONT-FAMILY: Consolas; mso-bidi-font-family: Consolas"><span style="mso-spacerun: yes">&nbsp;&nbsp; </span><span style="COLOR: teal">ReceivePipelineWrapper</span> pipeline <span style="COLOR: blue">=<o:p></o:p></span></span></p></p>
+<p class="MsoNormal" style="MARGIN: 0in 0in 0pt; mso-pagination: none; mso-layout-grid-align: none"><span style="FONT-SIZE: 10pt; FONT-FAMILY: Consolas; mso-bidi-font-family: Consolas"><span style="mso-spacerun: yes">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span style="COLOR: teal">PipelineFactory</span><span style="COLOR: blue">.</span>CreateReceivePipeline(<span style="COLOR: blue">typeof</span>(<span style="COLOR: teal">CSV_FF_RecvPipeline</span>));<o:p></o:p></span></p></p>
+<p class="MsoNormal" style="MARGIN: 0in 0in 0pt; mso-pagination: none; mso-layout-grid-align: none"><span style="FONT-SIZE: 10pt; FONT-FAMILY: Consolas; mso-bidi-font-family: Consolas"><o:p>&nbsp;</o:p></span></p></p>
+<p class="MsoNormal" style="MARGIN: 0in 0in 0pt; mso-pagination: none; mso-layout-grid-align: none"><span style="FONT-SIZE: 10pt; FONT-FAMILY: Consolas; mso-bidi-font-family: Consolas"><span style="mso-spacerun: yes">&nbsp;&nbsp; </span><span style="COLOR: green">&#47;&#47;<br />
+Create the input message to pass through the<br />
+pipeline<o:p></o:p></span></span></p></p>
+<p class="MsoNormal" style="MARGIN: 0in 0in 0pt; mso-pagination: none; mso-layout-grid-align: none"><span style="FONT-SIZE: 10pt; FONT-FAMILY: Consolas; mso-bidi-font-family: Consolas"><span style="mso-spacerun: yes">&nbsp;&nbsp; </span><span style="COLOR: teal">Stream</span> stream <span style="COLOR: blue">=</span><br />
+<span style="COLOR: teal">DocLoader</span><span style="COLOR: blue">.</span>LoadStream(<span style="COLOR: maroon">"CSV_FF_RecvInput.txt"</span>);<o:p></o:p></span></p></p>
+<p class="MsoNormal" style="MARGIN: 0in 0in 0pt; mso-pagination: none; mso-layout-grid-align: none"><span style="FONT-SIZE: 10pt; FONT-FAMILY: Consolas; mso-bidi-font-family: Consolas"><span style="mso-spacerun: yes">&nbsp;&nbsp; </span><span style="COLOR: teal">IBaseMessage</span> inputMessage <span style="COLOR: blue">=</span> <span style="COLOR: teal">MessageHelper</span><span style="COLOR: blue">.</span>CreateFromStream(stream);<o:p></o:p></span></p></p>
+<p class="MsoNormal" style="MARGIN: 0in 0in 0pt; mso-pagination: none; mso-layout-grid-align: none"><span style="FONT-SIZE: 10pt; FONT-FAMILY: Consolas; mso-bidi-font-family: Consolas"><span style="mso-spacerun: yes">&nbsp;&nbsp; </span>inputMessage<span style="COLOR: blue">.</span>BodyPart<span style="COLOR: blue">.</span>Charset<br />
+<span style="COLOR: blue">=</span> <span style="COLOR: maroon">"UTF-8"</span>;<o:p></o:p></span></p></p>
+<p class="MsoNormal" style="MARGIN: 0in 0in 0pt; mso-pagination: none; mso-layout-grid-align: none"><span style="FONT-SIZE: 10pt; FONT-FAMILY: Consolas; mso-bidi-font-family: Consolas"><o:p>&nbsp;</o:p></span></p></p>
+<p class="MsoNormal" style="MARGIN: 0in 0in 0pt; mso-pagination: none; mso-layout-grid-align: none"><span style="FONT-SIZE: 10pt; FONT-FAMILY: Consolas; mso-bidi-font-family: Consolas"><span style="mso-spacerun: yes">&nbsp;&nbsp; </span><span style="COLOR: green">&#47;&#47; Add<br />
+the necessary schemas to the pipeline, so that<o:p></o:p></span></span></p></p>
+<p class="MsoNormal" style="MARGIN: 0in 0in 0pt; mso-pagination: none; mso-layout-grid-align: none"><span style="FONT-SIZE: 10pt; FONT-FAMILY: Consolas; mso-bidi-font-family: Consolas"><span style="mso-spacerun: yes">&nbsp;&nbsp; </span><span style="COLOR: green">&#47;&#47;<br />
+disassembling works<o:p></o:p></span></span></p></p>
+<p class="MsoNormal" style="MARGIN: 0in 0in 0pt; mso-pagination: none; mso-layout-grid-align: none"><span style="FONT-SIZE: 10pt; FONT-FAMILY: Consolas; mso-bidi-font-family: Consolas"><span style="mso-spacerun: yes">&nbsp;&nbsp; </span>pipeline<span style="COLOR: blue">.</span>AddDocSpec(<span style="COLOR: blue">typeof</span>(<span style="COLOR: teal">Schema3_FF</span>));<o:p></o:p></span></p></p>
+<p class="MsoNormal" style="MARGIN: 0in 0in 0pt; mso-pagination: none; mso-layout-grid-align: none"><span style="FONT-SIZE: 10pt; FONT-FAMILY: Consolas; mso-bidi-font-family: Consolas"><o:p>&nbsp;</o:p></span></p></p>
+<p class="MsoNormal" style="MARGIN: 0in 0in 0pt; mso-pagination: none; mso-layout-grid-align: none"><span style="FONT-SIZE: 10pt; FONT-FAMILY: Consolas; mso-bidi-font-family: Consolas"><span style="mso-spacerun: yes">&nbsp;&nbsp; </span><span style="COLOR: green">&#47;&#47;<br />
+Execute the pipeline, and check the output<o:p></o:p></span></span></p></p>
+<p class="MsoNormal" style="MARGIN: 0in 0in 0pt; mso-pagination: none; mso-layout-grid-align: none"><span style="FONT-SIZE: 10pt; FONT-FAMILY: Consolas; mso-bidi-font-family: Consolas"><span style="mso-spacerun: yes">&nbsp;&nbsp; </span><span style="COLOR: teal">MessageCollection</span> outputMessages <span style="COLOR: blue">=</span> pipeline<span style="COLOR: blue">.</span>Execute(inputMessage);<o:p></o:p></span></p></p>
+<p class="MsoNormal" style="MARGIN: 0in 0in 0pt; mso-pagination: none; mso-layout-grid-align: none"><span style="FONT-SIZE: 10pt; FONT-FAMILY: Consolas; mso-bidi-font-family: Consolas"><o:p>&nbsp;</o:p></span></p></p>
+<p class="MsoNormal" style="MARGIN: 0in 0in 0pt; mso-pagination: none; mso-layout-grid-align: none"><span style="FONT-SIZE: 10pt; FONT-FAMILY: Consolas; mso-bidi-font-family: Consolas"><span style="mso-spacerun: yes">&nbsp;&nbsp; </span><span style="COLOR: teal">Assert</span><span style="COLOR: blue">.</span>IsNotNull(outputMessages);<o:p></o:p></span></p></p>
+<p class="MsoNormal" style="MARGIN: 0in 0in 0pt; mso-pagination: none; mso-layout-grid-align: none"><span style="FONT-SIZE: 10pt; FONT-FAMILY: Consolas; mso-bidi-font-family: Consolas"><span style="mso-spacerun: yes">&nbsp;&nbsp; </span><span style="COLOR: teal">Assert</span><span style="COLOR: blue">.</span>IsTrue(outputMessages<span style="COLOR: blue">.</span>Count <span style="COLOR: blue">></span> <span style="COLOR: blue">0</span>);<o:p></o:p></span></p></p>
+<p><span style="FONT-SIZE: 10pt; FONT-FAMILY: Consolas; mso-bidi-font-family: Consolas; mso-fareast-font-family: 'Times New Roman'; mso-ansi-language: EN-US; mso-fareast-language: EN-US; mso-bidi-language: AR-SA">}</span></p></p>
+<p>The code above does the following:</p></p>
+<ol>
+<li>Loads a receive pipeline, which in this case contains a Flat File<br />
+Disassembler</p>
+<li>Creates a new input message with a Flat File loaded from a resource stream
+<li>Loads the Flat File Schema the FFDasm will use to parse the message and<br />
+makes it available to the pipeline</p>
+<li>Execute the pipeline and checks the output.</li></li></li></li></ol>
+<p>It's cetainly not&nbsp; a lot of code, and personally I think the API is<br />
+looking pretty nice right now. So far, I got it working with the following<br />
+scenarios:</p></p>
+<ul>
+<li>Support for both receive and send pipelines
+<li>You can create pipelines programatically, by adding components to any<br />
+stage, or load an existing biztalk pipeline (the preffered method) using its<br />
+type.</p>
+<li>You can make schemas known to the pipeline before executing it by loading<br />
+the necessary biztalk schemas out of a biztalk assembly. I've tested it<br />
+already with both XML and Flat File schemas, schemas with one or multiple<br />
+roots, schemas with promoted properties, and envelope schemas.</p>
+<li>Both debatching receive pipelines and batching&nbsp;send pipelines are<br />
+supported through the API.</li></li></li></li></ul></p>
+<p>Here's another example, this time of doing multiple document batching into an<br />
+envelope using the XML Assembler:</p></p>
+<p class="MsoNormal" style="MARGIN: 0in 0in 0pt; mso-pagination: none; mso-layout-grid-align: none"><span style="FONT-SIZE: 10pt; COLOR: gray; FONT-FAMILY: Consolas; mso-bidi-font-family: Consolas">&#47;&#47;&#47;</span><span style="FONT-SIZE: 10pt; COLOR: green; FONT-FAMILY: Consolas; mso-bidi-font-family: Consolas"><br />
+</span><span style="FONT-SIZE: 10pt; COLOR: gray; FONT-FAMILY: Consolas; mso-bidi-font-family: Consolas"><br />
+<summary><o:p></o:p></span></p></p>
+<p class="MsoNormal" style="MARGIN: 0in 0in 0pt; mso-pagination: none; mso-layout-grid-align: none"><span style="FONT-SIZE: 10pt; COLOR: gray; FONT-FAMILY: Consolas; mso-bidi-font-family: Consolas">&#47;&#47;&#47;</span><span style="FONT-SIZE: 10pt; COLOR: green; FONT-FAMILY: Consolas; mso-bidi-font-family: Consolas"><br />
+Tests we can execute a send pipeline with<o:p></o:p></span></p></p>
+<p class="MsoNormal" style="MARGIN: 0in 0in 0pt; mso-pagination: none; mso-layout-grid-align: none"><span style="FONT-SIZE: 10pt; COLOR: gray; FONT-FAMILY: Consolas; mso-bidi-font-family: Consolas">&#47;&#47;&#47;</span><span style="FONT-SIZE: 10pt; COLOR: green; FONT-FAMILY: Consolas; mso-bidi-font-family: Consolas"><br />
+multiple input messages and an envelope<o:p></o:p></span></p></p>
+<p class="MsoNormal" style="MARGIN: 0in 0in 0pt; mso-pagination: none; mso-layout-grid-align: none"><span style="FONT-SIZE: 10pt; COLOR: gray; FONT-FAMILY: Consolas; mso-bidi-font-family: Consolas">&#47;&#47;&#47;</span><span style="FONT-SIZE: 10pt; COLOR: green; FONT-FAMILY: Consolas; mso-bidi-font-family: Consolas"><br />
+</span><span style="FONT-SIZE: 10pt; COLOR: gray; FONT-FAMILY: Consolas; mso-bidi-font-family: Consolas"></summary><o:p></o:p></span></p></p>
+<p class="MsoNormal" style="MARGIN: 0in 0in 0pt; mso-pagination: none; mso-layout-grid-align: none"><span style="FONT-SIZE: 10pt; FONT-FAMILY: Consolas; mso-bidi-font-family: Consolas">[<span style="COLOR: teal">Test</span>]<o:p></o:p></span></p></p>
+<p class="MsoNormal" style="MARGIN: 0in 0in 0pt; mso-pagination: none; mso-layout-grid-align: none"><span style="FONT-SIZE: 10pt; COLOR: blue; FONT-FAMILY: Consolas; mso-bidi-font-family: Consolas">public</span><span style="FONT-SIZE: 10pt; FONT-FAMILY: Consolas; mso-bidi-font-family: Consolas"><br />
+<span style="COLOR: blue">void</span><br />
+Test_ExecuteOK_MultiInput()<o:p></o:p></span></p></p>
+<p class="MsoNormal" style="MARGIN: 0in 0in 0pt; mso-pagination: none; mso-layout-grid-align: none"><span style="FONT-SIZE: 10pt; FONT-FAMILY: Consolas; mso-bidi-font-family: Consolas">{<o:p></o:p></span></p></p>
+<p class="MsoNormal" style="MARGIN: 0in 0in 0pt; mso-pagination: none; mso-layout-grid-align: none"><span style="FONT-SIZE: 10pt; FONT-FAMILY: Consolas; mso-bidi-font-family: Consolas"><span style="mso-spacerun: yes">&nbsp;&nbsp; </span><span style="COLOR: teal">SendPipelineWrapper</span> pipeline <span style="COLOR: blue">=<o:p></o:p></span></span></p></p>
+<p class="MsoNormal" style="MARGIN: 0in 0in 0pt; mso-pagination: none; mso-layout-grid-align: none"><span style="FONT-SIZE: 10pt; FONT-FAMILY: Consolas; mso-bidi-font-family: Consolas"><span style="mso-spacerun: yes">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span style="COLOR: teal">PipelineFactory</span><span style="COLOR: blue">.</span>CreateSendPipeline(<span style="COLOR: blue">typeof</span>(<span style="COLOR: teal">Env_SendPipeline</span>));<o:p></o:p></span></p></p>
+<p class="MsoNormal" style="MARGIN: 0in 0in 0pt; mso-pagination: none; mso-layout-grid-align: none"><span style="FONT-SIZE: 10pt; FONT-FAMILY: Consolas; mso-bidi-font-family: Consolas"><o:p>&nbsp;</o:p></span></p></p>
+<p class="MsoNormal" style="MARGIN: 0in 0in 0pt; mso-pagination: none; mso-layout-grid-align: none"><span style="FONT-SIZE: 10pt; FONT-FAMILY: Consolas; mso-bidi-font-family: Consolas"><span style="mso-spacerun: yes">&nbsp;&nbsp; </span><span style="COLOR: green">&#47;&#47;<br />
+Create the input message to pass through the<br />
+pipeline<o:p></o:p></span></span></p></p>
+<p class="MsoNormal" style="MARGIN: 0in 0in 0pt; mso-pagination: none; mso-layout-grid-align: none"><span style="FONT-SIZE: 10pt; FONT-FAMILY: Consolas; mso-bidi-font-family: Consolas"><span style="mso-spacerun: yes">&nbsp;&nbsp; </span><span style="COLOR: blue">string</span> body <span style="COLOR: blue">=</span><br />
+<o:p></o:p></span></p></p>
+<p class="MsoNormal" style="MARGIN: 0in 0in 0pt; mso-pagination: none; mso-layout-grid-align: none"><span style="FONT-SIZE: 10pt; FONT-FAMILY: Consolas; mso-bidi-font-family: Consolas"><span style="mso-spacerun: yes">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span style="COLOR: maroon">@"<o:Body<br />
+xmlns:o='http:&#47;&#47;SampleSchemas.SimpleBody'><o:p></o:p></span></span></p></p>
+<p class="MsoNormal" style="MARGIN: 0in 0in 0pt; mso-pagination: none; mso-layout-grid-align: none"><span style="FONT-SIZE: 10pt; COLOR: maroon; FONT-FAMILY: Consolas; mso-bidi-font-family: Consolas"><span style="mso-spacerun: yes">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<br />
+</span>this is a body</o:Body>"</span><span style="FONT-SIZE: 10pt; FONT-FAMILY: Consolas; mso-bidi-font-family: Consolas">;<o:p></o:p></span></p></p>
+<p class="MsoNormal" style="MARGIN: 0in 0in 0pt; mso-pagination: none; mso-layout-grid-align: none"><span style="FONT-SIZE: 10pt; FONT-FAMILY: Consolas; mso-bidi-font-family: Consolas"><span style="mso-spacerun: yes">&nbsp;&nbsp; </span><span style="COLOR: teal">MessageCollection</span> inputMessages <span style="COLOR: blue">=</span> <span style="COLOR: blue">new</span> <span style="COLOR: teal">MessageCollection</span>();<o:p></o:p></span></p></p>
+<p class="MsoNormal" style="MARGIN: 0in 0in 0pt; mso-pagination: none; mso-layout-grid-align: none"><span style="FONT-SIZE: 10pt; FONT-FAMILY: Consolas; mso-bidi-font-family: Consolas"><span style="mso-spacerun: yes">&nbsp;&nbsp; </span>inputMessages<span style="COLOR: blue">.</span>Add(<span style="COLOR: teal">MessageHelper</span><span style="COLOR: blue">.</span>CreateFromString(body));<o:p></o:p></span></p></p>
+<p class="MsoNormal" style="MARGIN: 0in 0in 0pt; mso-pagination: none; mso-layout-grid-align: none"><span style="FONT-SIZE: 10pt; FONT-FAMILY: Consolas; mso-bidi-font-family: Consolas"><span style="mso-spacerun: yes">&nbsp;&nbsp; </span>inputMessages<span style="COLOR: blue">.</span>Add(<span style="COLOR: teal">MessageHelper</span><span style="COLOR: blue">.</span>CreateFromString(body));<o:p></o:p></span></p></p>
+<p class="MsoNormal" style="MARGIN: 0in 0in 0pt; mso-pagination: none; mso-layout-grid-align: none"><span style="FONT-SIZE: 10pt; FONT-FAMILY: Consolas; mso-bidi-font-family: Consolas"><span style="mso-spacerun: yes">&nbsp;&nbsp; </span>inputMessages<span style="COLOR: blue">.</span>Add(<span style="COLOR: teal">MessageHelper</span><span style="COLOR: blue">.</span>CreateFromString(body));<o:p></o:p></span></p></p>
+<p class="MsoNormal" style="MARGIN: 0in 0in 0pt; mso-pagination: none; mso-layout-grid-align: none"><span style="FONT-SIZE: 10pt; FONT-FAMILY: Consolas; mso-bidi-font-family: Consolas"><span style="mso-spacerun: yes">&nbsp;&nbsp; </span><o:p></o:p></span></p></p>
+<p class="MsoNormal" style="MARGIN: 0in 0in 0pt; mso-pagination: none; mso-layout-grid-align: none"><span style="FONT-SIZE: 10pt; FONT-FAMILY: Consolas; mso-bidi-font-family: Consolas"><span style="mso-spacerun: yes">&nbsp;&nbsp; </span><span style="COLOR: green">&#47;&#47; Add<br />
+the necessary schemas to the pipeline, so that<o:p></o:p></span></span></p></p>
+<p class="MsoNormal" style="MARGIN: 0in 0in 0pt; mso-pagination: none; mso-layout-grid-align: none"><span style="FONT-SIZE: 10pt; FONT-FAMILY: Consolas; mso-bidi-font-family: Consolas"><span style="mso-spacerun: yes">&nbsp;&nbsp; </span><span style="COLOR: green">&#47;&#47;<br />
+assembling works<o:p></o:p></span></span></p></p>
+<p class="MsoNormal" style="MARGIN: 0in 0in 0pt; mso-pagination: none; mso-layout-grid-align: none"><span style="FONT-SIZE: 10pt; FONT-FAMILY: Consolas; mso-bidi-font-family: Consolas"><span style="mso-spacerun: yes">&nbsp;&nbsp; </span>pipeline<span style="COLOR: blue">.</span>AddDocSpec(<span style="COLOR: blue">typeof</span>(<span style="COLOR: teal">SimpleBody</span>));<o:p></o:p></span></p></p>
+<p class="MsoNormal" style="MARGIN: 0in 0in 0pt; mso-pagination: none; mso-layout-grid-align: none"><span style="FONT-SIZE: 10pt; FONT-FAMILY: Consolas; mso-bidi-font-family: Consolas"><span style="mso-spacerun: yes">&nbsp;&nbsp; </span>pipeline<span style="COLOR: blue">.</span>AddDocSpec(<span style="COLOR: blue">typeof</span>(<span style="COLOR: teal">SimpleEnv</span>));<o:p></o:p></span></p></p>
+<p class="MsoNormal" style="MARGIN: 0in 0in 0pt; mso-pagination: none; mso-layout-grid-align: none"><span style="FONT-SIZE: 10pt; FONT-FAMILY: Consolas; mso-bidi-font-family: Consolas"><o:p>&nbsp;</o:p></span></p></p>
+<p class="MsoNormal" style="MARGIN: 0in 0in 0pt; mso-pagination: none; mso-layout-grid-align: none"><span style="FONT-SIZE: 10pt; FONT-FAMILY: Consolas; mso-bidi-font-family: Consolas"><span style="mso-spacerun: yes">&nbsp;&nbsp; </span><span style="COLOR: green">&#47;&#47;<br />
+Execute the pipeline, and check the output<o:p></o:p></span></span></p></p>
+<p class="MsoNormal" style="MARGIN: 0in 0in 0pt; mso-pagination: none; mso-layout-grid-align: none"><span style="FONT-SIZE: 10pt; FONT-FAMILY: Consolas; mso-bidi-font-family: Consolas"><span style="mso-spacerun: yes">&nbsp;&nbsp; </span><span style="COLOR: green">&#47;&#47; we<br />
+get a single message batched with all the <o:p></o:p></span></span></p></p>
+<p class="MsoNormal" style="MARGIN: 0in 0in 0pt; mso-pagination: none; mso-layout-grid-align: none"><span style="FONT-SIZE: 10pt; FONT-FAMILY: Consolas; mso-bidi-font-family: Consolas"><span style="mso-spacerun: yes">&nbsp;&nbsp; </span><span style="COLOR: green">&#47;&#47;<br />
+messages grouped into the envelope's body<o:p></o:p></span></span></p></p>
+<p class="MsoNormal" style="MARGIN: 0in 0in 0pt; mso-pagination: none; mso-layout-grid-align: none"><span style="FONT-SIZE: 10pt; FONT-FAMILY: Consolas; mso-bidi-font-family: Consolas"><span style="mso-spacerun: yes">&nbsp;&nbsp; </span><span style="COLOR: teal">IBaseMessage</span> outputMessage <span style="COLOR: blue">=</span> pipeline<span style="COLOR: blue">.</span>Execute(inputMessages);<o:p></o:p></span></p></p>
+<p class="MsoNormal" style="MARGIN: 0in 0in 0pt; mso-pagination: none; mso-layout-grid-align: none"><span style="FONT-SIZE: 10pt; FONT-FAMILY: Consolas; mso-bidi-font-family: Consolas"><o:p>&nbsp;</o:p></span></p></p>
+<p class="MsoNormal" style="MARGIN: 0in 0in 0pt; mso-pagination: none; mso-layout-grid-align: none"><span style="FONT-SIZE: 10pt; FONT-FAMILY: Consolas; mso-bidi-font-family: Consolas"><span style="mso-spacerun: yes">&nbsp;&nbsp; </span><span style="COLOR: teal">Assert</span><span style="COLOR: blue">.</span>IsNotNull(outputMessage);<o:p></o:p></span></p></p>
+<p class="MsoNormal" style="MARGIN: 0in 0in 0pt; mso-pagination: none; mso-layout-grid-align: none"><span style="FONT-SIZE: 10pt; FONT-FAMILY: Consolas; mso-bidi-font-family: Consolas"><o:p>&nbsp;</o:p></span></p></p>
+<p class="MsoNormal" style="MARGIN: 0in 0in 0pt; mso-pagination: none; mso-layout-grid-align: none"><span style="FONT-SIZE: 10pt; FONT-FAMILY: Consolas; mso-bidi-font-family: Consolas"><span style="mso-spacerun: yes">&nbsp;&nbsp; </span><span style="COLOR: blue">using</span> ( <span style="COLOR: teal">StreamReader</span><br />
+reader <span style="COLOR: blue">=</span> <span style="COLOR: blue">new</span><br />
+<span style="COLOR: teal">StreamReader</span>(outputMessage<span style="COLOR: blue">.</span>BodyPart<span style="COLOR: blue">.</span>Data)<br />
+)<o:p></o:p></span></p></p>
+<p class="MsoNormal" style="MARGIN: 0in 0in 0pt; mso-pagination: none; mso-layout-grid-align: none"><span style="FONT-SIZE: 10pt; FONT-FAMILY: Consolas; mso-bidi-font-family: Consolas"><span style="mso-spacerun: yes">&nbsp;&nbsp; </span>{<o:p></o:p></span></p></p>
+<p class="MsoNormal" style="MARGIN: 0in 0in 0pt; mso-pagination: none; mso-layout-grid-align: none"><span style="FONT-SIZE: 10pt; FONT-FAMILY: Consolas; mso-bidi-font-family: Consolas"><span style="mso-spacerun: yes">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span style="COLOR: green">&#47;&#47; d contains the entire output<br />
+message<o:p></o:p></span></span></p></p>
+<p class="MsoNormal" style="MARGIN: 0in 0in 0pt; mso-pagination: none; mso-layout-grid-align: none"><span style="FONT-SIZE: 10pt; FONT-FAMILY: Consolas; mso-bidi-font-family: Consolas"><span style="mso-spacerun: yes">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span style="COLOR: blue">string</span> d <span style="COLOR: blue">=</span><br />
+reader<span style="COLOR: blue">.</span>ReadToEnd();<o:p></o:p></span></p></p>
+<p class="MsoNormal" style="MARGIN: 0in 0in 0pt; mso-pagination: none; mso-layout-grid-align: none"><span style="FONT-SIZE: 10pt; FONT-FAMILY: Consolas; mso-bidi-font-family: Consolas"><span style="mso-spacerun: yes">&nbsp;&nbsp; </span>}<o:p></o:p></span></p></p>
+<p class="MsoNormal" style="MARGIN: 0in 0in 0pt; mso-pagination: none; mso-layout-grid-align: none"><span style="FONT-SIZE: 10pt; FONT-FAMILY: Consolas; mso-bidi-font-family: Consolas">}<o:p></o:p></span></p></p>
+<p><p>One important difference with working with the API I'm creating and<br />
+pipeline.exe is that the API is meant to be used with existing biztalk<br />
+artifacts, which you can create with regular biztalk projects (though they don't<br />
+need to be deployed&nbsp;to use them). Pipeline.exe, on the other hand, works<br />
+with the raw *.btp and *.xsd files, which is simpler for some things, but far<br />
+more inconvinient for testing, at least in my opinion.</p></p>
+<p>I should be ready to post this in a few days, as I still need to test it more<br />
+throughly and fix a few things, but if anyone is interested, <a href="mailto:tomasr@mvps.org">let me know</a> and I'll pass on what code I have<br />
+right now. Do note I'm implementing this for BTS06 only, though I see no reason<br />
+why you couldn't port it to BTS04!</p></p>
+<p><!--end_raw--></p>

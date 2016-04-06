@@ -1,0 +1,29 @@
+---
+layout: post
+status: publish
+published: true
+title: Binary Attachments and WebServices
+author:
+  display_name: Tomas Restrepo
+  login: tomasr
+  email: tomas@winterdom.com
+  url: http://winterdom.com/
+author_login: tomasr
+author_email: tomas@winterdom.com
+author_url: http://winterdom.com/
+wordpress_id: 811
+wordpress_url: http://winterdom.com/2004/07/binaryattachmentsandwebservices
+date: '2004-07-05 06:17:37 +0000'
+date_gmt: '2004-07-05 06:17:37 +0000'
+categories:
+- Web Services
+tags: []
+comments: []
+---
+<p><!--start_raw-->Someone at work asked me recently if it was possible to carry arbitrary binary attachments alongside XML data in a webservice (in his case, he wanted to pass around some images alongside their metadata). Now, I know it is possible, that's not an issue... the issue is: which way is better?</p>
+<p>Now, I know that the "Flavor of the Month" regarding binary attachments in webservice calls is MTOM, but there's no implementation yet (at least not that I know of), and waiting for one would likely not be an option. So, I guess we'd be stuck for now with one of two choices:</p></p>
+<ul>
+<li>Base64-encoding the binary image inside an element in the XML payload, or...</li>
+<li>Using DIME, possibly as implemented by WSE</li><br />
+</ul></p>
+<p>So.... what would you guys recommend?</p><!--end_raw--></p>

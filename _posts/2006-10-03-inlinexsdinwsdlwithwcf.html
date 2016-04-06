@@ -1,0 +1,294 @@
+---
+layout: post
+status: publish
+published: true
+title: Inline XSD in WSDL with WCF
+author:
+  display_name: Tomas Restrepo
+  login: tomasr
+  email: tomas@winterdom.com
+  url: http://winterdom.com/
+author_login: tomasr
+author_email: tomas@winterdom.com
+author_url: http://winterdom.com/
+wordpress_id: 706
+wordpress_url: http://winterdom.com/2006/10/inlinexsdinwsdlwithwcf
+date: '2006-10-03 09:09:55 +0000'
+date_gmt: '2006-10-03 09:09:55 +0000'
+categories:
+- WCF
+- WinFX
+- Web Services
+tags: []
+comments:
+- id: 929
+  author: Jason
+  author_email: jason@z666.net
+  author_url: ''
+  date: '2009-06-19 14:56:32 +0000'
+  date_gmt: '2009-06-19 14:56:32 +0000'
+  content: "I know this is an old article but the WSDL generated isn't correct when
+    you check the flat WSDL the types are not declared the same.\r\n\r\nHere is the
+    flat version\r\n\r\n\r\n \r\n   \r\n   \r\n   \r\n   \r\n   \r\n   \r\n  \r\n
+    \ \r\n\r\nHere is the WCF normal version\r\n\r\n\r\n \r\n   \r\n   \r\n   \r\n
+    \  \r\n   \r\n   \r\n  \r\n\r\n\r\nI think this is what is causing problems in
+    my client with guids been treated as strings but though I would post.  Will give
+    more feedback if I find out the reason behind this."
+- id: 1013
+  author: Wenning Qiu
+  author_email: wenning_qiu@csgsystems.com
+  author_url: ''
+  date: '2009-07-02 21:07:45 +0000'
+  date_gmt: '2009-07-02 21:07:45 +0000'
+  content: "I don't think XSD imports should be removed. \r\n\r\nWith XSD imports
+    removed, if related data contracts(container DC and member DC) use different namespaces.
+    WsdlImporter won't be able to import data contracts back using DataContractSerializer."
+- id: 1263
+  author: 'WCF Interoperability: flat WSDL - Jos van Dixhoorn - blog community'
+  author_email: ''
+  author_url: http://blogs.infosupport.com/blogs/josd/archive/2010/01/11/wcf-interoperability-flat-wsdl.aspx
+  date: '2010-01-11 19:27:14 +0000'
+  date_gmt: '2010-01-11 19:27:14 +0000'
+  content: "[...] This&nbsp;popular&nbsp;blogpost&nbsp;provides a very simple&nbsp;endpoint
+    behavior to flatten your WSDL and it works like a charm! Note that the WsdlExporter
+    has a property GeneratedWsdlDocuments which returns a ServiceDescriptionCollection.
+    The catch here is that this is a collection&nbsp;System.Web.Services.ServiceDescription
+    instead of System.ServiceModel.Description.ServiceDescription. It took me a while
+    to figure that out. [...]"
+- id: 1267
+  author: terry
+  author_email: terry.carvin@eon-uk.com
+  author_url: ''
+  date: '2010-01-27 11:30:46 +0000'
+  date_gmt: '2010-01-27 11:30:46 +0000'
+  content: how do you use this in ??
+- id: 1268
+  author: terry
+  author_email: terry.carvin@eon-uk.com
+  author_url: ''
+  date: '2010-01-27 11:34:51 +0000'
+  date_gmt: '2010-01-27 11:34:51 +0000'
+  content: "how do you use this in a web service project ??\r\nI see all i need to
+    do is somehow modify the web.config.\r\nI tried using the WCF configuration editor
+    however when selecting \r\n- advanced&#47;extensions&#47;behaviour element extensions&#47;new\r\nIt
+    could not see the type in the assembly which I have placed the class InlineXsdInWsdlBehavior.cs"
+- id: 1269
+  author: terry
+  author_email: terry.carvin@eon-uk.com
+  author_url: ''
+  date: '2010-01-27 12:20:34 +0000'
+  date_gmt: '2010-01-27 12:20:34 +0000'
+  content: "ok, i worked it out, i needed to implement the BehaviorExtensionElement
+    abstract class thus;\r\n\r\n    public class InlineXsdInWsdlBehavior\r\n       :
+    BehaviorExtensionElement,  IWsdlExportExtension, IEndpointBehavior\r\n    \r\n\r\nthen
+    \ implementation is thus;\r\n\r\n     public override Type BehaviorType\r\n        {\r\n
+    \           get \r\n            { \r\n                return typeof(InlineXsdInWsdlBehavior);
+    \r\n            }\r\n\r\n        }\r\n\r\n        protected override object CreateBehavior()\r\n
+    \       {\r\n            return new InlineXsdInWsdlBehavior();\r\n        }\r\n\r\nJob
+    done. works like a charm... other than now im just trying to work out how to get
+    the WSDL to stop importing the xsd types...\r\n\r\nWhich still results in the
+    following line in the WSDL\r\n\r\n\r\n\r\nGerrr!"
+- id: 1568
+  author: Tal
+  author_email: talg@netvision.net.il
+  author_url: http://blog.talgiladi.net
+  date: '2010-09-16 15:13:59 +0000'
+  date_gmt: '2010-09-16 15:13:59 +0000'
+  content: "Hi, \r\nHow do I delcare the in web config ( I'm using web application
+    for the service) to use our\r\ncustom impoter?"
+- id: 1677
+  author: Sam
+  author_email: sam-english@hotmail.com
+  author_url: ''
+  date: '2011-03-10 08:39:59 +0000'
+  date_gmt: '2011-03-10 08:39:59 +0000'
+  content: 'Did it ever occur to you guys that you''re writing code just to make the
+    *IDE* do the job you expected it to do. Common IDE features: Open a file, Save
+    a file, Close, Edit, Import&#47;Export a file, Configure a file, Convert (or Compile)
+    a file... WTF! Project estimates don''t factor-in time for getting the IDE upto
+    scratch. Are we going back to editing autoexec.bat and config.sys too! :-) Crickie
+    mate, wake up.'
+- id: 1678
+  author: Sam
+  author_email: sam-english@hotmail.com
+  author_url: ''
+  date: '2011-03-10 08:43:01 +0000'
+  date_gmt: '2011-03-10 08:43:01 +0000'
+  content: They've even got a "Save As" button these days where you can choose the
+    type or format of the file you want to write. Hello... is anybody home McFly?
+---
+<p><!--start_raw-->
+<p>I've <a href="http:&#47;&#47;www.winterdom.com&#47;weblog&#47;2003&#47;06&#47;05&#47;SimplifyingWSDL.aspx">said in the past</a> that a large part of the apparent complexity&nbsp;of WSDL had nothing to do with WSDL at all; it was rather caused by the inline inclusion of XSDs in the <wsdl:types&#47;> section. I'm a big fan of creating your schemas separately and then importing them into your WSDL contracts to keep them clean and more maintainable. This is a technique I've used quite successfully in the past, by the way, particularly thanks to <a href="http:&#47;&#47;www.thinktecture.com&#47;">Thinktecture</a>'s excellent <a href="http:&#47;&#47;www.thinktecture.com&#47;Resources&#47;Software&#47;WSContractFirst&#47;default.html">WSCF</a> tool.</p></p>
+<p>However, there's one problem with this, and it's interoperability. Even though it's been 3 years since I made that comment, a lot of tools still can't cope with imported XSDs in WSDL, or with WSDL imports (<wsdl:import&#47;>) themselves. This is a real turn down and means that a lot of time you have to craft crufty (no pun intented!) alternative WSDLs for a client that include inline schemas to get around it.</p></p>
+<p>The default WSDL generator in Windows Communication Foundation does what I think is the right thing by default, and that's generating individual XSD files for schemas (which you can get at using the ?xsd=xsdX syntax) and then importing those in the main WSDL generated. However, because of the interoperability issues, you might need sometimes that pesky WSDL with the inline schemas, and if you are into using the auto-generated WSDL (as most people do), then having to manually grab&nbsp;those WSDL and XSD and modify them by hand is a pain in the neck.</p></p>
+<p>Fortunately, WCF gives us the wonderful IWsdlExportExtension extensiblity point, which I've discussed eariler on, and so makes it perfectly possible to tweak the generated WSDL so that schemas are embedded inline. Here's a sample extension to do just that:</p></p>
+<div class='codebg'><code><span class="Comment">&#47;&#47;</span><br &#47;><br />
+<span class="Comment">&#47;&#47; InlineXsdInWsdlBehavior.cs</span><br &#47;><br />
+<span class="Comment">&#47;&#47;</span><br &#47;><br />
+<span class="Comment">&#47;&#47; Author:</span><br &#47;><br />
+<span class="Comment">&#47;&#47;&nbsp;&nbsp;&nbsp;&nbsp;Tomas Restrepo (tomasr@mvps.org)</span><br &#47;><br />
+<span class="Comment">&#47;&#47;</span><br &#47;><br />
+&nbsp;<br &#47;><br />
+<span class="Statement">using</span>&nbsp;System;<br &#47;><br />
+<span class="Statement">using</span>&nbsp;System.Collections;<br &#47;><br />
+<span class="Statement">using</span>&nbsp;System.Collections.Generic;<br &#47;><br />
+<span class="Statement">using</span>&nbsp;System.Configuration;<br &#47;><br />
+<span class="Statement">using</span>&nbsp;System.Runtime.Serialization;<br &#47;><br />
+<span class="Statement">using</span>&nbsp;System.ServiceModel;<br &#47;><br />
+<span class="Statement">using</span>&nbsp;System.ServiceModel.Channels;<br &#47;><br />
+<span class="Statement">using</span>&nbsp;System.ServiceModel.Description;<br &#47;><br />
+<span class="Statement">using</span>&nbsp;System.ServiceModel.Dispatcher;<br &#47;><br />
+<span class="Statement">using</span>&nbsp;System.Text;<br &#47;><br />
+<span class="Statement">using</span>&nbsp;System.Xml;<br &#47;><br />
+<span class="Statement">using</span>&nbsp;System.Xml.Schema;<br &#47;><br />
+<span class="Statement">using</span>&nbsp;System.Web.Services;<br &#47;><br />
+<span class="Statement">using</span>&nbsp;System.Web.Services.Description;<br &#47;><br />
+<span class="Statement">using</span>&nbsp;WsdlDescription = System.Web.Services.Description.ServiceDescription;<br &#47;><br />
+&nbsp;<br &#47;><br />
+&nbsp;<br &#47;><br />
+<span class="StorageClass">namespace</span>&nbsp;Winterdom.ServiceModel.Extensions<br &#47;><br />
+{<br &#47;><br />
+&nbsp;&nbsp; <span class="Comment">&#47;&#47;&#47;</span><span class="Comment">&nbsp;</span><span class="Function"><</span><span class="Statement">summary</span><span class="Function">></span><br &#47;><br />
+&nbsp;&nbsp; <span class="Comment">&#47;&#47;&#47;</span><span class="Comment">&nbsp;IEndpointBehavior implementation that will</span><br &#47;><br />
+&nbsp;&nbsp; <span class="Comment">&#47;&#47;&#47;</span><span class="Comment">&nbsp;force WCF to generate all schemas inline into the</span><br &#47;><br />
+&nbsp;&nbsp; <span class="Comment">&#47;&#47;&#47;</span><span class="Comment">&nbsp;generated WSDL files, instead of as individual files.</span><br &#47;><br />
+&nbsp;&nbsp; <span class="Comment">&#47;&#47;&#47;</span><span class="Comment">&nbsp;</span><span class="Identifier"></</span><span class="Statement">summary</span><span class="Identifier">></span><br &#47;><br />
+&nbsp;&nbsp; <span class="StorageClass">public</span>&nbsp;<span class="StorageClass">class</span>&nbsp;InlineXsdInWsdlBehavior<br &#47;><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;: IWsdlExportExtension, IEndpointBehavior<br &#47;><br />
+&nbsp;&nbsp; {<br &#47;><br />
+&nbsp;<br &#47;><br />
+<span class="PreCondit">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;#region IWsdlExportExtension Implementation</span><br &#47;><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="Comment">&#47;&#47;</span><br &#47;><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="Comment">&#47;&#47; IWsdlExportExtension Implementation</span><br &#47;><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="Comment">&#47;&#47;</span><br &#47;><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="StorageClass">public</span>&nbsp;<span class="Type">void</span>&nbsp;ExportContract(<br &#47;><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;WsdlExporter exporter,<br &#47;><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;WsdlContractConversionContext context<br &#47;><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; )<br &#47;><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{<br &#47;><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span class="Comment">&#47;&#47; never called</span><br &#47;><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<br &#47;><br />
+&nbsp;<br &#47;><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="StorageClass">public</span>&nbsp;<span class="Type">void</span>&nbsp;ExportEndpoint(<br &#47;><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;WsdlExporter exporter,<br &#47;><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;WsdlEndpointConversionContext context<br &#47;><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; )<br &#47;><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{<br &#47;><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; XmlSchemaSet schemaSet = exporter.GeneratedXmlSchemas;<br &#47;><br />
+&nbsp;<br &#47;><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span class="Repeat">foreach</span>&nbsp;( WsdlDescription wsdl <span class="Statement">in</span>&nbsp;exporter.GeneratedWsdlDocuments )<br &#47;><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br &#47;><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="Comment">&#47;&#47;</span><br &#47;><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="Comment">&#47;&#47; Recursively find all schemas imported by this wsdl</span><br &#47;><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="Comment">&#47;&#47; and then add them. In the process, remove any</span><br &#47;><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="Comment">&#47;&#47; <xsd:imports&#47;></span><br &#47;><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="Comment">&#47;&#47;</span><br &#47;><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;List<XmlSchema> importsList = <span class="Statement">new</span>&nbsp;List<XmlSchema>();<br &#47;><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="Repeat">foreach</span>&nbsp;( XmlSchema schema <span class="Statement">in</span>&nbsp;wsdl.Types.Schemas )<br &#47;><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{<br &#47;><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; AddImportedSchemas(schema, schemaSet, importsList);<br &#47;><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<br &#47;><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;wsdl.Types.Schemas.Clear();<br &#47;><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="Repeat">foreach</span>&nbsp;( XmlSchema schema <span class="Statement">in</span>&nbsp;importsList )<br &#47;><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{<br &#47;><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; RemoveXsdImports(schema);<br &#47;><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; wsdl.Types.Schemas.Add(schema);<br &#47;><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<br &#47;><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<br &#47;><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<br &#47;><br />
+&nbsp;<br &#47;><br />
+<span class="PreCondit">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;#endregion</span>&nbsp;<span class="Comment">&#47;&#47; IWsdlExportExtension Implementation</span><br &#47;><br />
+&nbsp;<br &#47;><br />
+&nbsp;<br &#47;><br />
+<span class="PreCondit">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;#region Private Methods</span><br &#47;><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="Comment">&#47;&#47;</span><br &#47;><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="Comment">&#47;&#47; Private Methods</span><br &#47;><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="Comment">&#47;&#47;</span><br &#47;><br />
+&nbsp;<br &#47;><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="Comment">&#47;&#47;&#47;</span><span class="Comment">&nbsp;</span><span class="Function"><</span><span class="Statement">summary</span><span class="Function">></span><br &#47;><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="Comment">&#47;&#47;&#47;</span><span class="Comment">&nbsp;Recursively extract all the list of imported</span><br &#47;><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="Comment">&#47;&#47;&#47;</span><span class="Comment">&nbsp;schemas</span><br &#47;><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="Comment">&#47;&#47;&#47;</span><span class="Comment">&nbsp;</span><span class="Identifier"></</span><span class="Statement">summary</span><span class="Identifier">></span><br &#47;><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="Comment">&#47;&#47;&#47;</span><span class="Comment">&nbsp;</span><span class="Function"><</span><span class="Statement">param</span><span class="Function">&nbsp;</span><span class="Type">name</span>=<span class="String">"schema"</span><span class="Function">></span><span class="Comment">Schema to examine</span><span class="Identifier"></</span><span class="Statement">param</span><span class="Identifier">></span><br &#47;><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="Comment">&#47;&#47;&#47;</span><span class="Comment">&nbsp;</span><span class="Function"><</span><span class="Statement">param</span><span class="Function">&nbsp;</span><span class="Type">name</span>=<span class="String">"schemaSet"</span><span class="Function">></span><span class="Comment">SchemaSet with all referenced schemas</span><span class="Identifier"></</span><span class="Statement">param</span><span class="Identifier">></span><br &#47;><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="Comment">&#47;&#47;&#47;</span><span class="Comment">&nbsp;</span><span class="Function"><</span><span class="Statement">param</span><span class="Function">&nbsp;</span><span class="Type">name</span>=<span class="String">"importsList"</span><span class="Function">></span><span class="Comment">List to add imports to</span><span class="Identifier"></</span><span class="Statement">param</span><span class="Identifier">></span><br &#47;><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="StorageClass">private</span>&nbsp;<span class="Type">void</span>&nbsp;AddImportedSchemas(<br &#47;><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; XmlSchema schema,<br &#47;><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; XmlSchemaSet schemaSet,<br &#47;><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; List<XmlSchema> importsList<br &#47;><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; )<br &#47;><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{<br &#47;><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span class="Repeat">foreach</span>&nbsp;( XmlSchemaImport import <span class="Statement">in</span>&nbsp;schema.Includes )<br &#47;><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br &#47;><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;ICollection realSchemas =<br &#47;><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; schemaSet.Schemas(import.Namespace);<br &#47;><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="Repeat">foreach</span>&nbsp;( XmlSchema ixsd <span class="Statement">in</span>&nbsp;realSchemas )<br &#47;><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{<br &#47;><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span class="Conditional">if</span>&nbsp;( !importsList.Contains(ixsd) )<br &#47;><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br &#47;><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;importsList.Add(ixsd);<br &#47;><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;AddImportedSchemas(ixsd, schemaSet, importsList);<br &#47;><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<br &#47;><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<br &#47;><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<br &#47;><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<br &#47;><br />
+&nbsp;<br &#47;><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="Comment">&#47;&#47;&#47;</span><span class="Comment">&nbsp;</span><span class="Function"><</span><span class="Statement">summary</span><span class="Function">></span><br &#47;><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="Comment">&#47;&#47;&#47;</span><span class="Comment">&nbsp;Remove any </span><span class="Type">&amp;</span><span class="Statement">lt</span><span class="Type">;</span><span class="Comment">xsd:imports&#47;</span><span class="Type">&amp;</span><span class="Statement">gt</span><span class="Type">;</span><span class="Comment">&nbsp;in the schema</span><br &#47;><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="Comment">&#47;&#47;&#47;</span><span class="Comment">&nbsp;</span><span class="Identifier"></</span><span class="Statement">summary</span><span class="Identifier">></span><br &#47;><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="Comment">&#47;&#47;&#47;</span><span class="Comment">&nbsp;</span><span class="Function"><</span><span class="Statement">param</span><span class="Function">&nbsp;</span><span class="Type">name</span>=<span class="String">"schema"</span><span class="Function">></span><span class="Comment">Schema to process</span><span class="Identifier"></</span><span class="Statement">param</span><span class="Identifier">></span><br &#47;><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="StorageClass">private</span>&nbsp;<span class="Type">void</span>&nbsp;RemoveXsdImports(XmlSchema schema)<br &#47;><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{<br &#47;><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span class="Repeat">for</span>&nbsp;( <span class="Type">int</span>&nbsp;i = <span class="Number">0</span>; i < schema.Includes.Count; i++ )<br &#47;><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br &#47;><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="Conditional">if</span>&nbsp;( schema.Includes[i] <span class="Statement">is</span>&nbsp;XmlSchemaImport )<br &#47;><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; schema.Includes.RemoveAt(i--);<br &#47;><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<br &#47;><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<br &#47;><br />
+&nbsp;<br &#47;><br />
+<span class="PreCondit">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;#endregion</span>&nbsp;<span class="Comment">&#47;&#47; Private Methods</span><br &#47;><br />
+&nbsp;<br &#47;><br />
+&nbsp;<br &#47;><br />
+<span class="PreCondit">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;#region IEndpointBehavior Implementation</span><br &#47;><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="Comment">&#47;&#47;</span><br &#47;><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="Comment">&#47;&#47; IContractBehavior Implementation</span><br &#47;><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="Comment">&#47;&#47;</span><br &#47;><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="StorageClass">public</span>&nbsp;<span class="Type">void</span>&nbsp;AddBindingParameters(<br &#47;><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ServiceEndpoint endpoint,<br &#47;><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; BindingParameterCollection bindingParameters<br &#47;><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; )<br &#47;><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{<br &#47;><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span class="Comment">&#47;&#47; not needed</span><br &#47;><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<br &#47;><br />
+&nbsp;<br &#47;><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="StorageClass">public</span>&nbsp;<span class="Type">void</span>&nbsp;ApplyClientBehavior(<br &#47;><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ServiceEndpoint endpoint,<br &#47;><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ClientRuntime clientRuntime<br &#47;><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; )<br &#47;><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{<br &#47;><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span class="Comment">&#47;&#47; not needed</span><br &#47;><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<br &#47;><br />
+&nbsp;<br &#47;><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="StorageClass">public</span>&nbsp;<span class="Type">void</span>&nbsp;ApplyDispatchBehavior(<br &#47;><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ServiceEndpoint endpoint,<br &#47;><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; EndpointDispatcher dispatcher<br &#47;><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; )<br &#47;><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{<br &#47;><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span class="Comment">&#47;&#47; not needed</span><br &#47;><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<br &#47;><br />
+&nbsp;<br &#47;><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="StorageClass">public</span>&nbsp;<span class="Type">void</span>&nbsp;Validate(ServiceEndpoint endpoint)<br &#47;><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{<br &#47;><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span class="Comment">&#47;&#47; not needed</span><br &#47;><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<br &#47;><br />
+&nbsp;<br &#47;><br />
+<span class="PreCondit">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;#endregion</span>&nbsp;<span class="Comment">&#47;&#47; IContractBehavior Implementation</span><br &#47;><br />
+&nbsp;<br &#47;><br />
+&nbsp;&nbsp; } <span class="Comment">&#47;&#47; class InlineXsdInWsdlBehavior</span><br &#47;><br />
+&nbsp;<br &#47;><br />
+} <span class="Comment">&#47;&#47; namespace Winterdom.ServiceModel.Extensions</span><br />
+</code></div></p>
+<p>This will not get rid, however, of any <wsdl:imports&#47;> that WCF might be generating, such as the case when the service implementation and the service contract interface are in different namespaces.</p>
+<p></p></p>
+<div class="wlWriterSmartContent" id="d7bf807d-7bb0-458a-811f-90c51817d5c2:80a3ebc4-8e1d-4cd2-b20f-565bf98cf2a7" style="margin: 0px; padding: 0px; display: inline;" contenteditable="false">
+<p><span class="TagSite">Technorati:</span> <a class="tag" href="http:&#47;&#47;technorati.com&#47;tag&#47;WCF" rel="tag">WCF</a>, <a class="tag" href="http:&#47;&#47;technorati.com&#47;tag&#47;Windows+Communication+Foundation" rel="tag">Windows Communication Foundation</a>, <a class="tag" href="http:&#47;&#47;technorati.com&#47;tag&#47;WCF+Extensibility" rel="tag">WCF Extensibility</a>, <a class="tag" href="http:&#47;&#47;technorati.com&#47;tag&#47;Web+Services" rel="tag">Web Services</a>, <a class="tag" href="http:&#47;&#47;technorati.com&#47;tag&#47;Interoperability" rel="tag">Interoperability</a>, <a class="tag" href="http:&#47;&#47;technorati.com&#47;tag&#47;WSDL" rel="tag">WSDL</a><br><!-- StartInsertedTags: WCF, Windows Communication Foundation, WCF Extensibility, Web Services, Interoperability, WSDL :EndInsertedTags --></p></div><!--end_raw--></p>

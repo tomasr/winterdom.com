@@ -1,0 +1,58 @@
+---
+layout: post
+status: publish
+published: true
+title: String.IsNullOrEmpty()
+author:
+  display_name: Tomas Restrepo
+  login: tomasr
+  email: tomas@winterdom.com
+  url: http://winterdom.com/
+author_login: tomasr
+author_email: tomas@winterdom.com
+author_url: http://winterdom.com/
+wordpress_id: 291
+wordpress_url: http://winterdom.com/2005/12/stringisnullorempty
+date: '2005-12-18 18:48:31 +0000'
+date_gmt: '2005-12-18 18:48:31 +0000'
+categories:
+- ".NET"
+tags: []
+comments:
+- id: 223
+  author: JP
+  author_email: joe@pantuso.com
+  author_url: ''
+  date: '2005-12-21 22:26:43 +0000'
+  date_gmt: '2005-12-21 22:26:43 +0000'
+  content: |
+    <p>String.Trim.IsNullOrEmpty()</p>
+- id: 224
+  author: Jonathan Allen
+  author_email: ''
+  author_url: ''
+  date: '2006-04-04 12:43:03 +0000'
+  date_gmt: '2006-04-04 12:43:03 +0000'
+  content: |
+    > String.Trim.IsNullOrEmpty()
+    That's silly. It has be to something like  String.TrimIsNullOrEmpty(x) or String.IsNullOrEmpty(x, TrimBoth)
+    That said, it would be useful. If you don't want blanks, a single space is just as bad.
+- id: 225
+  author: Lupita Gonzalez
+  author_email: ''
+  author_url: ''
+  date: '2007-07-11 07:04:35 +0000'
+  date_gmt: '2007-07-11 07:04:35 +0000'
+  content: |
+    &#205;dolo, totalmente de acuerdo. Mine is called IsNullOrBlank.
+    Thank you amigo.
+- id: 1081
+  author: software developer
+  author_email: william@geeksltd.co.uk
+  author_url: http://www.geeks.ltd.uk/Services.html
+  date: '2009-08-11 18:03:05 +0000'
+  date_gmt: '2009-08-11 18:03:05 +0000'
+  content: I use the same thing I hope they add it to frame work soon
+---
+<p><!--start_raw-->Steve Eichert <a href="http:&#47;&#47;steve.emxsoftware.com&#47;NET&#47;StringIsNullOrEmpty">talks</a> about how he likes the new String.IsNullOrEmpty() in .NET 2.0. I agree it is a welcomed addition to the base libraries, and I for one I'm trying to make it a habit of using it whenever I need to do those kinds of comparisons, as it makes the code far simpler and more readable.</p>
+<p>Now, what I'd like to see is an extended version that also Trim()s the string and checks to see if that is empty :) (how common is this for validation, huh?)</p><!--end_raw--></p>

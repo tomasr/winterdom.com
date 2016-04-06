@@ -1,0 +1,24 @@
+---
+layout: post
+status: publish
+published: true
+title: 'Nullable<T>: No comparison for you!'
+author:
+  display_name: Tomas Restrepo
+  login: tomasr
+  email: tomas@winterdom.com
+  url: http://winterdom.com/
+author_login: tomasr
+author_email: tomas@winterdom.com
+author_url: http://winterdom.com/
+wordpress_id: 86
+wordpress_url: http://winterdom.com/2006/07/nullable-nocomparisonforyou
+date: '2006-07-21 10:04:19 +0000'
+date_gmt: '2006-07-21 10:04:19 +0000'
+categories:
+- ".NET"
+tags: []
+comments: []
+---
+<p><!--start_raw-->While doing some work with nullable types in .NET 2.0 (a very nice feature overall), I ran into a very annoying limitation of System.Nullable<T>: It doesn't implement IComparable or IComparable<T>. Don't know how I missed this one before! <br><br>I guess I can understand why it doesn't, but, in retrospect, I would've preffered Nullable<T> had constrained T so that it could implement the comparison interfaces properly particularly since 99% of the types you'd use Nullable<T> with anyway already support them (meaning all primitive value types in the framework and the rest of the pretty basic ones).<br><br>Oh well, live and learn...<br>
+<p></p><!--end_raw--></p>

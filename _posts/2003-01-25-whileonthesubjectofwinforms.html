@@ -1,0 +1,67 @@
+---
+layout: post
+status: publish
+published: true
+title: While on the subject of Winforms...
+author:
+  display_name: Tomas Restrepo
+  login: tomasr
+  email: tomas@winterdom.com
+  url: http://winterdom.com/
+author_login: tomasr
+author_email: tomas@winterdom.com
+author_url: http://winterdom.com/
+wordpress_id: 590
+wordpress_url: http://winterdom.com/2003/01/whileonthesubjectofwinforms
+date: '2003-01-25 09:35:53 +0000'
+date_gmt: '2003-01-25 09:35:53 +0000'
+categories:
+- ".NET"
+tags: []
+comments:
+- id: 400
+  author: Ziv Caspi
+  author_email: zivca@netvision.net.il
+  author_url: http://radio.weblogs.com/0106548/
+  date: '2003-01-26 13:12:43 +0000'
+  date_gmt: '2003-01-26 13:12:43 +0000'
+  content: |
+    <p>My experience is exactly opposite: Most of the work I do is low-level, and every once in a while I need to write some GUI code. In my experience, writing UI in C#&#47;WinForms is about 10% of the effort required by C++&#47;MFC. This is despite my knowing C++ far better than C#, or having worked in MFC a lot longer than WinForms. Perhaps when you try to create your own controls it's different -- but for me, WinForms is sufficient reason to write all my little utilities in C#.</p>
+- id: 401
+  author: Tomas Restrepo
+  author_email: tomasr@mvps.org
+  author_url: http://www.winterdom.com/weblog
+  date: '2003-01-26 13:23:45 +0000'
+  date_gmt: '2003-01-26 13:23:45 +0000'
+  content: |
+    <p>I don't argue otherwise. What I argue about is that the large scale design of windows forms could've been better. It has way too many leaky abstractions, if you know what I mean.</p>
+    <p>And you'll notice them once you try to do any real complex UI in windows forms, I think.</p>
+- id: 402
+  author: Ziv Caspi
+  author_email: zivca@netvision.net.il
+  author_url: http://radio.weblogs.com/0106548/
+  date: '2003-01-27 23:56:10 +0000'
+  date_gmt: '2003-01-27 23:56:10 +0000'
+  content: |
+    <p>This brings up an interesting question: Is there a good design that would support both?</p>
+    <p>Is other words, do you see (or know of) a good design that would please devs like me -- who rarely do UI work and need simple abstractions --yet also support people like you, who obviously need the power to do complex work?</p>
+    <p>IMHO, it is sometimes very difficult to achieve this in a single API. In some cases I know of, the results were the design of two separated interfaces. This, of course, also sucks.</p>
+- id: 403
+  author: Dejan Jelovic
+  author_email: dejan@jelovic.com
+  author_url: http://www.jelovic.com/
+  date: '2003-01-28 10:49:16 +0000'
+  date_gmt: '2003-01-28 10:49:16 +0000'
+  content: |
+    <p>Oh, sure there is Ziv.</p>
+    <p>Designs that hide low-level details in interfaces are not harder to use than class-heavy designs. And they are significantly easier to extend.</p>
+    <p>The problem is that most people don't know the principles of good OO design. For a good start, read the six articles linked from the Robert C. Martin section of the following page: <a href="http:&#47;&#47;www.jelovic.com&#47;misc&#47;people.htm" rel="nofollow">http:&#47;&#47;www.jelovic.com&#47;misc&#47;people.htm</a></p>
+    <p>Dejan</p>
+---
+<p><!--start_raw--><a href="http:&#47;&#47;www.sellsbrothers.com&#47;">Chris</a> <a href="http:&#47;&#47;www.sellsbrothers.com&#47;spout&#47;#sealedSucks">rant</a> reminded me about something I thought of in regards of the Windows Forms design.</p>
+<p>A lot of the Winforms technology is cool. Many controls are easy to use, and things like the way layout works with docking and anchoring is really cool and useful. However, if you look at the larger picture of the Winforms library design, you'll realize a large portion of it sucks.</p></p>
+<p>Why? Chris already mentioned part of it indirectly in his rant: Too much of it relies on base classes to work. Why didn't they rely more on well defined interfaces instead of base classes?</p></p>
+<p>Much of this leads to what I consider really weird looking class hierarchies. For example, the familiar concept of a "window" is pretty well hidden underneath the whole framework. As for the <a>Control</a> base class... can it suck more? It makes no sense to me to have the concept of a Form be an instance of the Control abstraction. I consider them to be fundamentally different things because their usage model is, overall, too different. Instead, I would've liked to see the Window abstraction as a base pattern, with Forms and Controls being two separate abstractions built on top of it.</p></p>
+<p>And while on the subject: Form? Blagh!</p></p>
+<p>Likewise, one could argue against several other Winforms abstractions and particularly agains conventions.... why does the Control class offer like 7 different ways to take a control's position and size, with only <i>some</i> of them being directly updatable? Hell, why couldn't we have only one or two? Is there no consistency and simplicity in our world anymore? </p></p>
+<p>I don't do much Winforms coding these days, but I did quite a bit before. I always found it weird that at times I was missing MFC so much, and that's even though I haven't written a single line of MFC code in like three years!</p><!--end_raw--></p>

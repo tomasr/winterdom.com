@@ -1,0 +1,133 @@
+---
+layout: post
+status: publish
+published: true
+title: DAAB and Dynamic Connection Strings
+author:
+  display_name: Tomas Restrepo
+  login: tomasr
+  email: tomas@winterdom.com
+  url: http://winterdom.com/
+author_login: tomasr
+author_email: tomas@winterdom.com
+author_url: http://winterdom.com/
+wordpress_id: 174
+wordpress_url: http://winterdom.com/2005/08/daabanddynamicconnectionstrings
+date: '2005-08-14 18:18:38 +0000'
+date_gmt: '2005-08-14 18:18:38 +0000'
+categories:
+- ".NET"
+tags: []
+comments:
+- id: 117
+  author: Fred Hirschfeld
+  author_email: not@given.com
+  author_url: ''
+  date: '2005-11-01 14:18:18 +0000'
+  date_gmt: '2005-11-01 14:18:18 +0000'
+  content: |
+    <p>We had to use an encrypted connection string and thus just simply inherited from SqlDatabase overriding the GetConnection method. In here we decyphered the ConnectionString and used the base class method for creating the connection.</p>
+    <p>You could simply add properties to the derived class that would inject those parts into the ConnectionString to override the defaults. This seems like it would be easier most appropriate.</p>
+    <p>I didn't provide the real e-mail but it is fred_hirschfeld a_t hotmail d_o_t com.</p>
+- id: 118
+  author: Jamison
+  author_email: rjwhite87@hotmail.com
+  author_url: http://www.jamisomwhite.com
+  date: '2006-05-01 14:25:38 +0000'
+  date_gmt: '2006-05-01 14:25:38 +0000'
+  content: |
+    Oh man that is ugly. Fortunately, they added dynamic connection strings in the DAAB for .NET 2.0. Tom Hollander talks about it in his blot. Unfortunately, we are stuck in .NET 1.1! Thanks for posting your solution.
+- id: 119
+  author: Jamison
+  author_email: rjwhite87@yahoo.com
+  author_url: http://www.jamisomwhite.com
+  date: '2006-05-01 15:55:29 +0000'
+  date_gmt: '2006-05-01 15:55:29 +0000'
+  content: |
+    Here's solution translated to VB.NET
+    Imports System.Data.SqlClient
+    Imports Microsoft.Practices.EnterpriseLibrary.Data
+    Imports Microsoft.Practices.EnterpriseLibrary.Data.Configuration
+    Imports Microsoft.Practices.EnterpriseLibrary.Configuration
+    Public Class DataHelper
+    Public Shared Function DynamicConnect(ByVal theServer As String, ByVal theDatabase As String, ByVal theUser As String, ByVal thePassword As String) As Microsoft.Practices.EnterpriseLibrary.Data.Database
+    Dim csd As New ConnectionStringData
+    csd.Name = "X"
+    csd.Parameters.Add(New ParameterData("Server", theServer))
+    csd.Parameters.Add(New ParameterData("Database", theDatabase))
+    csd.Parameters.Add(New ParameterData("Integrated Security", "false"))
+    csd.Parameters.Add(New ParameterData("User ID", theUser))
+    csd.Parameters.Add(New ParameterData("Password", thePassword))
+    Dim sqldb As DatabaseTypeData = New DatabaseTypeData("Sql Server", "Microsoft.Practices.EnterpriseLibrary.Data.Sql.SqlDatabase")
+    Dim instance As New InstanceData(csd.Name, sqldb.Name, csd.Name) 'not sure about 3rd arg
+    Dim dbSettings As New DatabaseSettings
+    dbSettings.ConnectionStrings.Add(csd)
+    dbSettings.DatabaseTypes.Add(sqldb)
+    dbSettings.Instances.Add(instance)
+    dbSettings.DefaultInstance = instance.Name
+    Dim configView As DatabaseConfigurationView = New DataHelper.DummyDatabaseConfigurationView(dbSettings) 'set to dummy Class
+    Dim db As New Microsoft.Practices.EnterpriseLibrary.Data.Sql.SqlDatabase
+    db.Initialize(configView)
+    db.ConfigurationName = dbSettings.DefaultInstance
+    Return db
+    End Function
+    Private Class DummyDatabaseConfigurationView
+    Inherits DatabaseConfigurationView
+    Private _dbSettings As DatabaseSettings
+    Sub New(ByVal dbSettings As DatabaseSettings)
+    MyBase.new(New ConfigurationContext)
+    Me._dbSettings = dbSettings
+    End Sub
+    Public Overrides Function GetDatabaseSettings() As DatabaseSettings
+    Return Me._dbSettings
+    End Function
+    End Class
+    End Class
+---
+<p><!--start_raw-->I've been working on a new project this past few days, as part of which we're using the Data Access Application Block from the Enterprise Library, which is OK (for a fairly low-level ADO.NET wrapper). One of the requirements we have is that we need to support dynamic connection strings, built at runtime, because we don't know the database server and database name we are connecting to until runtime. Now, I know this has security implications, but its required for reasons I don't plan on explaining here.</p>
+<p>But here comes the rub: I looked <i>everywhere</i>, and was unable to find a way within the DAAB to support dynamic connection strings. There's just no way to create a SqlDatabase object having just a connection string (or at least the components thereof); the only way is to have it stored in the configuration file. This does us no good as a) we can't have a configuration file with that information because of what I said above and a few other reasons, and b) there's really no "known" set of database we allow connections to that can be set at deployment time.</p></p>
+<p>I did end up finding a way, but I consider this a really ugly hack. The solution was to mimick the information in the configuration file by manually creating and filling an object of type DatabaseSettings, and then bypassing the normal initialization provided by the provider factory:</p></p>
+<pre><code><br />
+public DataBase Connect(string theServer, string theDatabase)<br />
+{<br />
+ConnectionStringData csd = new ConnectionStringData();<br />
+csd.Name = "X";<br />
+csd.Parameters.Add(new ParameterData("Server", theServer));<br />
+csd.Parameters.Add(new ParameterData("Database", theDatabase));<br />
+csd.Parameters.Add(new ParameterData("Integrated Security", "true"));<br />
+DatabaseTypeData sqldb =<br />
+new DatabaseTypeData("Sql Server", typeof(SqlDatabase).FullName);<br />
+InstanceData instance =<br />
+new InstanceData(csd.Name, sqldb.Name, csd.Name);<br />
+DatabaseSettings dbSettings = new DatabaseSettings();<br />
+dbSettings.ConnectionStrings.Add(csd);<br />
+dbSettings.DatabaseTypes.Add(sqldb);<br />
+dbSettings.Instances.Add(instance);<br />
+dbSettings.DefaultInstance = instance.Name;<br />
+DatabaseConfigurationView configView =<br />
+new DummyDatabaseConfigurationView(dbSettings);<br />
+SqlDatabase db = new SqlDatabase();<br />
+db.Initialize(_configView);<br />
+db.ConfigurationName = _dbSettings.DefaultInstance;<br />
+&#47;&#47; now db is initialized<br />
+return db;<br />
+}<br />
+internal class DummyDatabaseConfigurationView : DatabaseConfigurationView<br />
+{<br />
+private DatabaseSettings _dbSettings;<br />
+&#47;&#47;&#47;<br />
+<summary>
+&#47;&#47;&#47; Creates a new instance of the class<br />
+&#47;&#47;&#47; </summary><br />
+public DummyDatabaseConfigurationView(DatabaseSettings dbSettings)<br />
+: base(new ConfigurationContext())<br />
+{<br />
+_dbSettings = dbSettings;<br />
+}<br />
+public override DatabaseSettings GetDatabaseSettings()<br />
+{<br />
+return _dbSettings;<br />
+}<br />
+} &#47;&#47; class DummyDatabaseConfigurationView<br />
+</code></pre></p>
+<p>Is there really no other way? If the answer is no, please do take this into consideration for future versions!</p><!--end_raw--></p>

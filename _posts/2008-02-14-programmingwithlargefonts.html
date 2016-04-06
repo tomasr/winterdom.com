@@ -1,0 +1,75 @@
+---
+layout: post
+status: publish
+published: true
+title: Programming with Large Fonts
+author:
+  display_name: Tomas Restrepo
+  login: tomasr
+  email: tomas@winterdom.com
+  url: http://winterdom.com/
+author_login: tomasr
+author_email: tomas@winterdom.com
+author_url: http://winterdom.com/
+wordpress_id: 183
+wordpress_url: http://winterdom.com/2008/02/programmingwithlargefonts
+date: '2008-02-14 05:44:16 +0000'
+date_gmt: '2008-02-14 05:44:16 +0000'
+categories:
+- Development
+tags: []
+comments:
+- id: 130
+  author: Kevin Dente
+  author_email: kevind@denteworld.com
+  author_url: http://weblogs.asp.net/kdente
+  date: '2008-02-14 15:10:46 +0000'
+  date_gmt: '2008-02-14 15:10:46 +0000'
+  content: |
+    If you're not already using it, I highly recommend the NoSquint Firefox extension. It remembers text size settings per-site. The Stylish extension can also be handy for more advanced tweaking (I use it for Google Reader).
+- id: 131
+  author: Tomas Restrepo
+  author_email: tomas@winterdom.com
+  author_url: http://www.winterdom.com/weblog/
+  date: '2008-02-14 15:15:48 +0000'
+  date_gmt: '2008-02-14 15:15:48 +0000'
+  content: |
+    Thanks for the suggestion Kevin; I might give that a try as well...
+- id: 132
+  author: mattflo
+  author_email: matt@mattflo.com
+  author_url: http://turbulentdensity.com
+  date: '2008-02-14 18:51:48 +0000'
+  date_gmt: '2008-02-14 18:51:48 +0000'
+  content: |
+    For those long source code files made up of multiple small classes or methods, have you tried using context menu - outline - collapse to definition?  You can use the default keyboard shortcut CTRL+M, CTRL+O or you can bind it to something more convenient (read one-handed).  I use ALT+1.  First thing I do when I open most code files is ALT+1.  You can then use regions to hide away larger blocks of tedium where it makes sense.  I like using collapse to definition better than the method browser drop down because I can use my spacial memory of the class to quickly navigate through the noise to that one method i need to touch.
+    I must caveat, I am not a proponent of poor cohesion bloating classes.
+- id: 133
+  author: Tomas Restrepo
+  author_email: tomas@winterdom.com
+  author_url: http://www.winterdom.com/weblog/
+  date: '2008-02-14 18:58:03 +0000'
+  date_gmt: '2008-02-14 18:58:03 +0000'
+  content: |
+    mattflo: Yes, I use regions and folding, as well as searching (the wonder's of viemu's "&#47;"). I don't like large classes and methods, either; just run sometimes into code files with lots of stuff :)
+---
+<p><!--start_raw-->
+<p>Every once in a while someone voices their surprise when they try out one of my Visual Studio <a href="http:&#47;&#47;www.winterdom.com&#47;weblog&#47;CategoryView,category,VS%2BColor%2BScheme.aspx">Color Schemes</a> and find that all those very large fonts I leave by default on most of them [1].</p>
+<p>I've been using Damien Guard's excellent <a href="http:&#47;&#47;damieng.com&#47;blog&#47;2007&#47;11&#47;27&#47;envy-code-r-coding-font-v07-preview">Envy Code R</a> font, usually at 15pt size, which I'm sure looks huge on some screens. It took some time for me to get used to it, as well, but I wouldn't change it now.</p>
+<div align="center">&#160;<img style="border-right: 0px; border-top: 0px; border-left: 0px; border-bottom: 0px" height="151" alt="VSFonts" src="http:&#47;&#47;www.winterdom.com&#47;weblog&#47;content&#47;binary&#47;WindowsLiveWriter&#47;ProgrammingwithLargeFonts_13023&#47;VSFonts_5.png" width="797" border="0" &#47;> </div>
+<p>The reason I started using large fonts when writing was <em>readability</em>. I've been mostly a laptop user for a number of years now, but a couple years back I started using one with a high-resolution (1920x1200) screen. </p>
+<p>Having that much screen real state is fantastic, particularly on a large screen, but it can be a bit hard on a 15.4" laptop screen because most things will look pretty tiny. I have good eyesight, but looking at really small text for prolonged hours can really make your eyes (and your brain!) sore.</p>
+<p>Instead of just fiddling around with the Visual Studio fonts, the ideal solution would've probably been to adjust the screen's DPI settings accordingly (120 DPI), but the truth is that, right now, that's not really an option on windows if you don't want a lot of applications to (a) look like crap or (b) become unusable because not all the controls fit into the display. Unfortunately, most Windows applications aren't really ready to work with high DPI settings and&#47;or large system fonts, so this isn't as good an option.</p>
+<p>However, it turns out that you don't really spend most of your time looking carefully and closely at all applications were text might be small. Instead, you spend most of your time in a few key applications, and simply increasing the font size for those can really make a difference in how you feel at the end of the day.</p>
+<p>In my case, those applications are Visual Studio, Vim, Console and Firefox. The first three are easy to set up, and that's why most of my VS settings files include large font sizes for all the key elements (the editor and tool windows). </p><br />
+<blockquote>
+<p><strong>Tip:</strong> If you like&#47;need large fonts in VS, increasing the font size of your tooltips can also make a big difference. This is something I used to do but always forgot to change and make sure my theme files included this setting. The screenshot above uses 11pt Tahoma for the tooltips.</p> </blockquote>
+<p>Firefox is a bit harder to set up right, because changing the default fonts used can break a bunch of sites. Fortunately most of the web sites I visit regularly are very friendly to the use of Ctrl-+ to increase the font size.</p><br />
+<h2>The downside of using large fonts</h2>
+<p>There's obviously a downside of using large fonts when programming: You can fit less lines on a screen. Usually, the increased width of text doesn't matter much, particularly on a screen with wide format because there's so much horizontal space. Vertical space, however, is a different matter because it means you can display a lot less lines at at time.</p>
+<p>For example, on a full screen VS session using Envy Code R, I can view 55 lines at a time at size 10pt, but only 40 at 15pt. That's 27% less lines!</p>
+<p>It's not that I write methods with hundreds of lines, mind you. It's just that even if all your methods are short, sometimes you do have to deal with longer code files. It might be that you have classes with a lot of short methods, or maybe you're dealing with legacy code that's not so nicely factored. </p>
+<p>Having a large screen with smallish fonts can make it a lot easier to work on these kinds of scenarios, because navigating and making certain changes&#47;refactorings is a lot easier (even with automated tools for that). For example, one scenario were I really wish I had a larger screen is when dealing with source files that have several shorter classes defined in it (not all people are fans of the "one class per source file" convention).</p>
+<p>The solution, of course, is to get a larger screen. For this reason, one of my goals for this year is to get a new desktop machine (after several years desktop-less) with a decent, large LCD. I'm aiming for a 24" display so that I can keep using the 1920x1200 resolution. The downside, of course, is that they are pretty expensive around here, so I still need to save some money before I can afford one alongside with a decent desktop machine.</p>
+<p><strong>[1]</strong> If you were also surprised about the "15pt Courier New" font; look closely and make sure you install the right font, or replace by your favorite :-)</p>
+<div class="wlWriterSmartContent" id="scid:0767317B-992E-4b12-91E0-4F059A8CECA8:f39a5fd8-57dd-4eb6-9c35-f04ed9822034" style="padding-right: 0px; display: inline; padding-left: 0px; padding-bottom: 0px; margin: 0px; padding-top: 0px">Technorati tags: <a href="http:&#47;&#47;technorati.com&#47;tags&#47;Programming" rel="tag">Programming</a>, <a href="http:&#47;&#47;technorati.com&#47;tags&#47;Fonts" rel="tag">Fonts</a></div><!--end_raw--></p>

@@ -1,0 +1,90 @@
+---
+layout: post
+status: publish
+published: true
+title: GMail + Vim
+author:
+  display_name: Tomas Restrepo
+  login: tomasr
+  email: tomas@winterdom.com
+  url: http://winterdom.com/
+author_login: tomasr
+author_email: tomas@winterdom.com
+author_url: http://winterdom.com/
+wordpress_id: 1001
+wordpress_url: http://winterdom.com/2008/06/gmailvim
+date: '2008-06-30 08:44:16 +0000'
+date_gmt: '2008-06-30 08:44:16 +0000'
+categories:
+- Vim
+tags: []
+comments:
+- id: 702
+  author: Naveen
+  author_email: naveensrinivasan@yahoo.com
+  author_url: ''
+  date: '2008-06-30 10:24:15 +0000'
+  date_gmt: '2008-06-30 10:24:15 +0000'
+  content: |
+    Have you used Firefox and Vimperator addin. It is like having vim within
+    the browser.
+- id: 703
+  author: Tomas Restrepo
+  author_email: tomas@winterdom.com
+  author_url: http://www.winterdom.com/weblog/
+  date: '2008-06-30 11:23:56 +0000'
+  date_gmt: '2008-06-30 11:23:56 +0000'
+  content: |
+    @Naveen: Yes, I'm a big fan of Vimperator and use it all the time; but it doesn't really help make firefox a better mail editor; just a better browser! It's All Text! does give me that extra functionality.
+- id: 704
+  author: Leonid Ganeline
+  author_email: ''
+  author_url: http://geekswithblogs.net/leonidganeline
+  date: '2008-07-02 08:45:54 +0000'
+  date_gmt: '2008-07-02 08:45:54 +0000'
+  content: |
+    Hey, Tomas,
+    FYI This is your near-jubilee ;)
+    Total Posts: 999
+    Congrat!
+- id: 705
+  author: Jason
+  author_email: jrseney@gmail.com
+  author_url: http://jasonrseney.tumblr.com
+  date: '2008-07-07 19:52:46 +0000'
+  date_gmt: '2008-07-07 19:52:46 +0000'
+  content: |
+    Hey, thanks for the great article! Like you, I am a devote Gmail and Vim user. I always end up typing j, k, w ,e , v, O, and cw all over my emails... how tiresome!
+    Also, I'm one month into my first job out of college, and most of the server side code is .NET, so I'll definitively be keeping up with your blog.
+    Thanks again!
+- id: 706
+  author: DotMG
+  author_email: mahefa.randimbisoa@gmail.com
+  author_url: http://code.google.com/gvimail/
+  date: '2008-07-16 07:25:59 +0000'
+  date_gmt: '2008-07-16 07:25:59 +0000'
+  content: |
+    I thought you only need to configure Vimperator to use an external editor.
+    :se editor=vim -f
+    And then use Ctrl+I, if I remember correctly. Haven't never tested though, textarea was just fine with me.
+- id: 1082
+  author: stranger
+  author_email: jojo@fofo.coco
+  author_url: ''
+  date: '2009-08-11 23:58:27 +0000'
+  date_gmt: '2009-08-11 23:58:27 +0000'
+  content: just use mutt , simple.
+---
+<p><!--start_raw-->
+<p>I've been a big <a href="http:&#47;&#47;mail.google.com">GMail</a> user ever since I got my first account and I've gotten very used to it. About a year ago I switched the email for my <a href="http:&#47;&#47;www.winterdom.com&#47;">website</a> and our corporate email over to <a href="http:&#47;&#47;www.google.com&#47;a&#47;help&#47;intl&#47;en&#47;index.html">Google Apps</a> and eventually was able to drop Outlook completely [1].</p>
+<p>I've been extremely satisfied with this setup and don't regret it at all. However, as much as I like GMail and all, it's sometimes a drag when actually editing new emails or responses to existing ones. It's not really GMail's fault; it's just that a TEXTAREA isn't really a good editor for email (I try to stick to plain text email only as much as possible).</p>
+<p><img style="border: 0px none ;" alt="IAT" src="http:&#47;&#47;www.winterdom.com&#47;weblog&#47;content&#47;binary&#47;WindowsLiveWriter&#47;GMailVim_9017&#47;IAT_3.png" width="70" align="left" border="0" height="51"> Fortunately, I discovered a while ago the <a href="https:&#47;&#47;addons.mozilla.org&#47;en-US&#47;firefox&#47;addon&#47;4125">It's All Text!</a> extension for Firefox. This little extension gives you a small button next to textareas; when you click it, it will open your favorite text editor to edit the text, and then replace it with whatever you saved before closing it.</p>
+<p>Now, I can just use this to edit complex&#47;longer emails in gVim, and get all the text-editing goodness I'm used to! </p>
+<p>Firefox did have one nice feature I missed at first: Spell checking. This wasn't always useful, though, as it only really supports a single language at a time, and I regularly use both Spanish and English, but it was better than nothing.</p>
+<p>Vim, however, also supports spell checking! I just had never bothered setting it up correctly. I've now configured my .vimrc file so that I can enable&#47;disable spell checking for English or Spanish with a few key-presses. Here's how I configured mine:</p>
+<div class="codebg"><code><span class="Statement">map</span>&nbsp;<span class="Delimiter"><</span><span class="Special">Leader</span><span class="Delimiter">></span>se :setlocal spell spelllang=en_us<span class="Delimiter"><</span><span class="Special">CR</span><span class="Delimiter">></span>      <br><span class="Statement">map</span>&nbsp;<span class="Delimiter"><</span><span class="Special">Leader</span><span class="Delimiter">></span>ss :setlocal spell spelllang=es_es<span class="Delimiter"><</span><span class="Special">CR</span><span class="Delimiter">></span>      <br><span class="Statement">map</span>&nbsp;<span class="Delimiter"><</span><span class="Special">Leader</span><span class="Delimiter">></span>sn :setlocal nospell<span class="Delimiter"><</span><span class="Special">CR</span><span class="Delimiter">></span> </code></div>
+<p>Now I can just press \se in normal mode to start the spell checker in English or \ss for Spanish, and then \sn to disable it later on, if I want to. Otherwise I just keep spell checking disabled so that it doesn't get in the way of my coding sessions.</p>
+<p><img style="border: 0px none ;" alt="VimSpell" src="http:&#47;&#47;www.winterdom.com&#47;weblog&#47;content&#47;binary&#47;WindowsLiveWriter&#47;GMailVim_9017&#47;VimSpell_3.png" width="614" border="0" height="279"> </p>
+<p>The combination of It's all Text!, Vim and its spell checker makes for a much nicer GMail experience for me.</p>
+<p><strong>[1]</strong> I still need to migrate some old personal email over to my GMail account, which I haven't done because I'm lazy, but I should definitely get around to that some day.</p>
+<div class="wlWriterSmartContent" id="scid:0767317B-992E-4b12-91E0-4F059A8CECA8:c5562484-65d9-4747-986e-60a31738c3cb" style="margin: 0px; padding: 0px; display: inline;">Technorati tags: <a href="http:&#47;&#47;technorati.com&#47;tags&#47;GMail" rel="tag">GMail</a>, <a href="http:&#47;&#47;technorati.com&#47;tags&#47;Google%20Apps" rel="tag">Google Apps</a>, <a href="http:&#47;&#47;technorati.com&#47;tags&#47;Vim" rel="tag">Vim</a>, <a href="http:&#47;&#47;technorati.com&#47;tags&#47;Firefox" rel="tag">Firefox</a></div><!--end_raw--></p>

@@ -1,0 +1,25 @@
+---
+layout: post
+status: publish
+published: true
+title: IClassifier and IDisposable
+author:
+  display_name: Tomas Restrepo
+  login: tomasr
+  email: tomas@winterdom.com
+  url: http://winterdom.com/
+author_login: tomasr
+author_email: tomas@winterdom.com
+author_url: http://winterdom.com/
+wordpress_id: 1397
+wordpress_url: http://winterdom.com/?p=1397
+date: '2013-12-31 02:48:37 +0000'
+date_gmt: '2013-12-31 02:48:37 +0000'
+categories:
+- Visual Studio
+tags: []
+comments: []
+---
+<p>I've been troubleshooting some issues with <a href='http:&#47;&#47;viasfora.com&#47;'>Viasfora</a> and noticed something that I definitely was not expecting:</p>
+<p>It appears that if you implement an <code><a href='http:&#47;&#47;msdn.microsoft.com&#47;en-us&#47;library&#47;microsoft.visualstudio.text.classification.iclassifier.aspx'>IClassifier</a></code> extension, and also implement <code>IDisposable</code>, it will not be called by Visual Studio once the text buffer is released.</p></p>
+<p>I have noticed this on Visual Studio 2013, but so far, I haven't fully verified if this is indeed the expected behavior, or if it is caused by something else I am doing. I do know of many other Visual Studio extensions that combine <code>IClassifier</code> with <code>IDisposable</code>, so if this turns out to be the default behavior, it could signal other extensions may be leaking resources.</p></p>

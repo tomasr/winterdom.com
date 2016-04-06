@@ -1,0 +1,39 @@
+---
+layout: post
+status: publish
+published: true
+title: Error Configuring BAS (BizTalk) with Whidbey Installed
+author:
+  display_name: Tomas Restrepo
+  login: tomasr
+  email: tomas@winterdom.com
+  url: http://winterdom.com/
+author_login: tomasr
+author_email: tomas@winterdom.com
+author_url: http://winterdom.com/
+wordpress_id: 682
+wordpress_url: http://winterdom.com/2004/03/errorconfiguringbasbiztalkwithwhidbeyinstalled
+date: '2004-03-20 16:56:33 +0000'
+date_gmt: '2004-03-20 16:56:33 +0000'
+categories:
+- BizTalk
+tags: []
+comments: []
+---
+<p><!--start_raw-->Just thought someone might be interested on this bit:</p>
+<p>If you're configuring BAS on BizTalk Server 2004, and you have the Whidbey version of the .NET Framework installed, you might get an error during the configuration wizard similar to this one:</p></p>
+<pre><code><br />
+Error encountered while querying virtual server state for URL:<br />
+http:&#47;&#47;<server>&#47;sites&#47;BASSite<br />
+Error Detail: Could not load type 'System.Int32' from assembly 'mscorlib,<br />
+Version=1.2.3400.0, Culture=neutral, PublicKeyToken=b77a5c561934e089'.<br />
+</code></pre></p>
+<p>To fix it, go to your BizTalk installation folder, and create a new configuration file for ConfigFramework.exe and force it run with v1.1 of the framework:</p></p>
+<pre><code><br />
+<configuration><br />
+<startup><br />
+<requiredRuntime version="v1.1.4322" safemode="true" &#47;><br />
+</startup><br />
+</configuration><br />
+</code></pre></p>
+<p>Then, run ConfigFramework.exe again and you should be able to complete the installation of BAS.</p><!--end_raw--></p>

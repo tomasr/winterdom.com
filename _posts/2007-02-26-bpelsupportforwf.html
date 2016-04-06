@@ -1,0 +1,38 @@
+---
+layout: post
+status: publish
+published: true
+title: BPEL support for WF
+author:
+  display_name: Tomas Restrepo
+  login: tomasr
+  email: tomas@winterdom.com
+  url: http://winterdom.com/
+author_login: tomasr
+author_email: tomas@winterdom.com
+author_url: http://winterdom.com/
+wordpress_id: 411
+wordpress_url: http://winterdom.com/2007/02/bpelsupportforwf
+date: '2007-02-26 15:07:43 +0000'
+date_gmt: '2007-02-26 15:07:43 +0000'
+categories:
+- BizTalk
+- Workflow
+tags: []
+comments:
+- id: 299
+  author: Marc Mercuri
+  author_email: mmercuri@microsoft.com
+  author_url: http://www.marcmercuri.com
+  date: '2007-03-04 22:14:09 +0000'
+  date_gmt: '2007-03-04 22:14:09 +0000'
+  content: |
+    <i>if BPEL compatibility is an aspect you care about, you'll need to restrict yourself to a subset of the power of WF in order to remain compatible (and meaning being able to later export your WF workflows into BPEL). </i>
+    True, however if you expose your workflows (BPEL or otherwise) as services, you have the ability to mix and match BPEL and Sequential&#47;State Machine workflows, allowing you to both have the flexibility and power found in WF while maintaining 'pure BPEL' where required.
+---
+<p><!--start_raw-->
+<p><a href="http:&#47;&#47;blogs.msdn.com&#47;pandrew&#47;">Paul Andrew</a> announced recently a coming CTP [1] that will <a href="http:&#47;&#47;blogs.msdn.com&#47;pandrew&#47;archive&#47;2007&#47;02&#47;25&#47;Microsoft-provides-BPEL-2.0-in-WF-_2D00_-BPEL-for-Windows-Workflow-Foundation-March-CTP.aspx">provide BPEL 1.1</a> support to Windows Workflow Foundation. This will provide a set of custom WF activities that map to BPEL 1.1 constructs as well as tooling to import BPEL processes into WF XAML workflows and export the other way around. </p>
+<p>I think overall this is very good news and, as Paul says, highlights the power and flexibility offered by the domain-neutrality of the WF runtime. Paul also mentions that this will, in the end, be supported in a future release of BizTalk Server, once the orchestration engine is built on top of WF, and by that time the toolkit support should have already been expanded to provide BPEL 2.0 compatibility in both WF and BizTalk. Pretty exciting stuff which I'm sure will provide some good selling points for both products (even if many people don't use it eventually).</p>
+<p>One important aspect of this that is interesting to consider: the WF approach to writing workflows means that, if BPEL compatibility is an aspect you care about, <em>you'll need to restrict yourself to a subset of the power of WF in order to remain compatible</em> (and meaning being able to later export your WF workflows into BPEL). This is something I completely expected and understand (and even welcome, to a point), but it's something some people might not realize right away.</p>
+<p>[1] Am I the only one getting lost along the miriads of CTPs coming out of Redmond lately?&nbsp;Seems pretty imposible to keep up if you actually have a day job!</p>
+<div class="wlWriterSmartContent" id="0767317B-992E-4b12-91E0-4F059A8CECA8:bca5674e-e0ed-4b7c-831a-b683cfbf52a4" contenteditable="false" style="padding-right: 0px; display: inline; padding-left: 0px; padding-bottom: 0px; margin: 0px; padding-top: 0px">Technorati tags: <a href="http:&#47;&#47;technorati.com&#47;tags&#47;Windows%20Workflow%20Foundation" rel="tag">Windows Workflow Foundation</a>, <a href="http:&#47;&#47;technorati.com&#47;tags&#47;BizTalk%20Server" rel="tag">BizTalk Server</a>, <a href="http:&#47;&#47;technorati.com&#47;tags&#47;WF" rel="tag">WF</a>, <a href="http:&#47;&#47;technorati.com&#47;tags&#47;BPEL" rel="tag">BPEL</a></div><!--end_raw--></p>

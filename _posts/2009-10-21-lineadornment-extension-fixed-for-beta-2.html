@@ -1,0 +1,26 @@
+---
+layout: post
+status: publish
+published: true
+title: LineAdornment Extension Fixed For Beta 2
+author:
+  display_name: Tomas Restrepo
+  login: tomasr
+  email: tomas@winterdom.com
+  url: http://winterdom.com/
+author_login: tomasr
+author_email: tomas@winterdom.com
+author_url: http://winterdom.com/
+wordpress_id: 1298
+wordpress_url: http://winterdom.com/2009/10/lineadornment-extension-fixed-for-beta-2
+date: '2009-10-21 20:24:48 +0000'
+date_gmt: '2009-10-21 20:24:48 +0000'
+categories:
+- Visual Studio
+tags: []
+comments: []
+---
+<p>I&rsquo;ve now fixed all remaining issues with my Current Line Highlighting extension for Visual Studio 2010. Besides fixing all build issues, I started running into issues where <code>IWpfTextViewLineCollection.GetMarkerGeometry()</code> was returning null when the text snapshot was empty (like an empty line).</p>
+<p>I reworked the code to avoid this call and instead manually create a new geometry directly out of the line bounds (which I would always do anyway to adjust the margins). This seems to work pretty well for now. Here&rsquo;s a screenshot of how it looks like on the new build:</p>
+<p><a href="http:&#47;&#47;winterdom.com&#47;wp-content&#47;uploads&#47;2009&#47;10&#47;LineExt.png"><img style="border-right-width: 0px; display: inline; border-top-width: 0px; border-bottom-width: 0px; border-left-width: 0px" title="LineExt" border="0" alt="LineExt" src="http:&#47;&#47;winterdom.com&#47;wp-content&#47;uploads&#47;2009&#47;10&#47;LineExt_thumb.png" width="603" height="480" &#47;></a> </p>
+<p>As usual, the updated code can be found in the <a href="http:&#47;&#47;github.com&#47;tomasr&#47;LineAdornments&#47;">GitHub repository</a>.</p></p>

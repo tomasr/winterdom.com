@@ -1,0 +1,53 @@
+---
+layout: post
+status: publish
+published: true
+title: Visual Studio Code Formatting Properties and Solutions
+author:
+  display_name: Tomas Restrepo
+  login: tomasr
+  email: tomas@winterdom.com
+  url: http://winterdom.com/
+author_login: tomasr
+author_email: tomas@winterdom.com
+author_url: http://winterdom.com/
+wordpress_id: 1034
+wordpress_url: http://winterdom.com/2007/01/visualstudiocodeformattingpropertiesandsolutions
+date: '2007-01-23 17:37:53 +0000'
+date_gmt: '2007-01-23 17:37:53 +0000'
+categories:
+- ".NET"
+- Development
+tags: []
+comments:
+- id: 729
+  author: Kim Gr&#228;sman
+  author_email: kim@mvps.org
+  author_url: http://www.winwonk.com
+  date: '2007-01-23 22:43:28 +0000'
+  date_gmt: '2007-01-23 22:43:28 +0000'
+  content: |
+    Hey Tomas,
+    I agree, that would be really nice -- a base configuration and the ability to override for individual solutions&#47;projects.
+    Actually I think tabs&#47;spaces and tab size would be sufficient, that's the largest pain at the moment, at least for me. The rest is just typing :-)
+    Could you throw it up on Connect and post a link for me to vote on? Or do they not take enhancement requests there?
+    - Kim
+- id: 730
+  author: Scott Colestock
+  author_email: ''
+  author_url: http://www.traceventures.net
+  date: '2007-01-25 14:12:00 +0000'
+  date_gmt: '2007-01-25 14:12:00 +0000'
+  content: |
+    Excellent thought -
+    I've thought in the past that perhaps just a simple comment convention at the top of a file (similar to the macros that certain source control systems use) would be a great way to indicate space&#47;tab&#47;tab-size preference.  (Then standalone text editors could follow suit...)
+---
+<p><!--start_raw-->
+<p>In general terms, the options Visual Studio offers for code formatting are adequate (or at least they work for me), particularly in VS2005. Here's one suggestion that would make them even more useful for me: Make them selectable by solution.</p>
+<p>Here's the problem: I have Visual Studio configured with a set of settings that I am very comfortable with and that formats code just like I want it. For example: use spaces instead of tabs, 3 spaces == 1 tab, insert spaces between parenthesis in control flow expressions and stuff like that. </p>
+<p>However, I also participate and collaborate in other projects that use different conventions (like open source projects), and it is really a pain to either manually try to keep the code conforming or constantly exporting and importing saved setting sets to work on a project (particularly since I might have two different VS instances running projects with different settings at the same time).</p>
+<p>So here's what I'd love to see: A way to create and save multiple "Code Formatting" profiles and then simply associate a VS solution with a specific profile, regardless of what the default configuration is. That way, whenever you opened up a solution, Visual Studio would already be configured with the right settings.</p>
+<p>Part of the capabilities are already there in Visual Studio with the capability to export&#47;import vssettings files, this would just be a way to load a given set of settings in memory when the solution is loaded; instead of actually writing them to the registry or wherever they are stored and made permanent. It's worth noting that I'm not talking about making <em>all</em> Visual Studio settings configurable this way; merely what's under the Text Editor node (or possibly a subset of it) and I'm talking about associating them with the entire solution, not with individual projects.</p>
+<p>Of course,&nbsp;there's probably&nbsp;zero chance of ever being implemented (at least before 10 years :-)) but I thought I might as well throw it out there and see if anyone else thought it would be a good feature to have around.</p>
+<p><b>Update:</b> <a href="http:&#47;&#47;www.winwonk.com">Kim Gr&auml;sman</a> suggested posting this as a suggestion on <a href="https:&#47;&#47;connect.microsoft.com&#47;">Microsoft Connect</a>. It can be found <a href="https:&#47;&#47;connect.microsoft.com&#47;VisualStudio&#47;feedback&#47;ViewFeedback.aspx?FeedbackID=253597">here</a>, so please vote if you think this would be useful!<br></p>
+<div class="wlWriterSmartContent" id="0767317B-992E-4b12-91E0-4F059A8CECA8:b9104c1b-88e8-4eb1-9c9b-5fd883085b9a" contenteditable="false" style="margin: 0px; padding: 0px; display: inline;">Technorati tags: <a href="http:&#47;&#47;technorati.com&#47;tags&#47;Visual%20Studio" rel="tag">Visual Studio</a>, <a href="http:&#47;&#47;technorati.com&#47;tags&#47;Customization" rel="tag">Customization</a></div><!--end_raw--></p>

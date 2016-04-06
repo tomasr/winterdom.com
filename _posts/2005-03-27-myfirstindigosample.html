@@ -1,0 +1,170 @@
+---
+layout: post
+status: publish
+published: true
+title: My First Indigo Sample
+author:
+  display_name: Tomas Restrepo
+  login: tomasr
+  email: tomas@winterdom.com
+  url: http://winterdom.com/
+author_login: tomasr
+author_email: tomas@winterdom.com
+author_url: http://winterdom.com/
+wordpress_id: 629
+wordpress_url: http://winterdom.com/2005/03/myfirstindigosample
+date: '2005-03-27 08:07:05 +0000'
+date_gmt: '2005-03-27 08:07:05 +0000'
+categories:
+- WCF
+- WinFX
+tags: []
+comments: []
+---
+<p><!--start_raw-->My First Indigo Sample<br />
+I've been reading up and playing with the recently released Indigo bits in order to catch up, so here's my very first Indigo Sample, which a is very simple, self-hosting indigo service with the corresponding client, and uses the data contract facilities. It's worth noting that as written, the samples require no app.config file configuration, which is something I was looking into trying to understand how it all fit together. So, here's the code:</p>
+<p><b>Server.cs</b><br />
+</p>
+<pre><code><br />
+&#47;&#47;<br />
+&#47;&#47; Server.cs<br />
+&#47;&#47;<br />
+&#47;&#47; Author:<br />
+&#47;&#47;    Tomas Restrepo (tomasr@mvps.org)<br />
+&#47;&#47;<br />
+using System;<br />
+using System.Runtime.Serialization;<br />
+using System.ServiceModel;<br />
+namespace Winterdom.Samples.Indigo.FirstSample<br />
+{<br />
+[<br />
+DataContract(Name="CustomerInfo",<br />
+Namespace="urn:schemas-winterdom-com:indigo")<br />
+]<br />
+public class CustomerInfo<br />
+{<br />
+private string _name;<br />
+private DateTime _memberSince;<br />
+[ DataMember ]<br />
+public string Name {<br />
+get { return _name; }<br />
+set { _name = value; }<br />
+}<br />
+[ DataMember ]<br />
+public DateTime MemberSince {<br />
+get { return _memberSince; }<br />
+set { _memberSince = value; }<br />
+}<br />
+} &#47;&#47; class CustomerInfo<br />
+[ ServiceContract ]<br />
+public interface ICustomerService<br />
+{<br />
+[ OperationContract ]<br />
+CustomerInfo GetCustomerInfo(int customerId);<br />
+} &#47;&#47; interface ICustomerService<br />
+public class CustomerService : ICustomerService<br />
+{<br />
+public CustomerInfo GetCustomerInfo(int customerId)<br />
+{<br />
+CustomerInfo info = new CustomerInfo();<br />
+info.Name = "Tomas Restrepo";<br />
+info.MemberSince = DateTime.Now.AddYears(-1);<br />
+return info;<br />
+}<br />
+public static void Main()<br />
+{<br />
+try {<br />
+Uri uri = new Uri("http:&#47;&#47;localhost:8188&#47;CustomerService");<br />
+ServiceHost<CustomerService> host =<br />
+new ServiceHost<CustomerService>(uri);<br />
+using ( host )<br />
+{<br />
+WSProfileBinding binding = new WSProfileBinding();<br />
+host.AddEndpoint(typeof(ICustomerService), binding);<br />
+host.Open();<br />
+Console.WriteLine("Hosting...");<br />
+Console.ReadLine();<br />
+}<br />
+} catch ( Exception e ) {<br />
+Console.WriteLine(e);<br />
+}<br />
+}<br />
+} &#47;&#47; class CustomerService<br />
+} &#47;&#47; namespace Winterdom.Samples.Indigo.FirstSample<br />
+</code></pre>
+<p></p></p>
+<p><b>Client.cs</b><br />
+</p>
+<pre><code><br />
+&#47;&#47;<br />
+&#47;&#47; Client.cs<br />
+&#47;&#47;<br />
+&#47;&#47; Author:<br />
+&#47;&#47;    Tomas Restrepo (tomasr@mvps.org)<br />
+&#47;&#47;<br />
+using System;<br />
+using System.Runtime.Serialization;<br />
+using System.ServiceModel;<br />
+namespace Winterdom.Samples.Indigo.FirstSample<br />
+{<br />
+[<br />
+DataContract(Name="CustomerInfo",<br />
+Namespace="urn:schemas-winterdom-com:indigo")<br />
+]<br />
+public class MembershipInfo<br />
+{<br />
+private string _memberName;<br />
+private DateTime _memberSince;<br />
+[ DataMember(Name="Name") ]<br />
+public string MemberName {<br />
+get { return _memberName; }<br />
+set { _memberName = value; }<br />
+}<br />
+[ DataMember ]<br />
+public DateTime MemberSince {<br />
+get { return _memberSince; }<br />
+set { _memberSince = value; }<br />
+}<br />
+} &#47;&#47; class MembershipInfo<br />
+[ ServiceContract ]<br />
+public interface ICustomerService<br />
+{<br />
+[ OperationContract ]<br />
+MembershipInfo GetCustomerInfo(int customerId);<br />
+} &#47;&#47; interface ICustomerService<br />
+public class CustomerServiceProxy :<br />
+ProxyBase<ICustomerService>,<br />
+ICustomerService<br />
+{<br />
+public CustomerServiceProxy(EndpointAddress epa, Binding binding)<br />
+: base(epa, binding)<br />
+{<br />
+}<br />
+public MembershipInfo GetCustomerInfo(int customerId)<br />
+{<br />
+return base.InnerProxy.GetCustomerInfo(customerId);<br />
+}<br />
+} &#47;&#47; class CustomerServiceProxy<br />
+public class ClientApp<br />
+{<br />
+public static void Main()<br />
+{<br />
+try {<br />
+Uri uri = new Uri("http:&#47;&#47;localhost:8188&#47;CustomerService");<br />
+EndpointAddress epa = new EndpointAddress(uri);<br />
+WSProfileBinding binding = new WSProfileBinding();<br />
+CustomerServiceProxy proxy =<br />
+new CustomerServiceProxy(epa, binding);<br />
+MembershipInfo info = proxy.GetCustomerInfo(12);<br />
+Console.WriteLine (<br />
+"Customer '{0}' is a member since '{1}'",<br />
+info.MemberName, info.MemberSince<br />
+);<br />
+} catch ( Exception e ) {<br />
+Console.WriteLine(e);<br />
+}<br />
+}<br />
+} &#47;&#47; class ClientApp<br />
+} &#47;&#47; namespace Winterdom.Samples.Indigo.FirstSample<br />
+</code></pre>
+<p></p><!--end_raw--></p>

@@ -1,0 +1,53 @@
+---
+layout: post
+status: publish
+published: true
+title: 'Introducing Rotor: _CorExeMain2'
+author:
+  display_name: Tomas Restrepo
+  login: tomasr
+  email: tomas@winterdom.com
+  url: http://winterdom.com/
+author_login: tomasr
+author_email: tomas@winterdom.com
+author_url: http://winterdom.com/
+wordpress_id: 628
+wordpress_url: http://winterdom.com/2003/02/introducingrotor_corexemain2
+date: '2003-02-01 20:53:43 +0000'
+date_gmt: '2003-02-01 20:53:43 +0000'
+categories:
+- ".NET"
+tags: []
+comments: []
+---
+<p><!--start_raw-->Today, I started looking at the runtime startup code. This journey begins in _CorExeMain2(), implemented in <code>sscli\clr\src\vm\ceemain.cpp</code>, which is declared like this:</p>
+<pre><code>__int32 STDMETHODCALLTYPE _CorExeMain2( &#47;&#47; Executable exit code.<br />
+PBYTE   pUnmappedPE,                &#47;&#47; -> memory mapped code<br />
+DWORD   cUnmappedPE,                &#47;&#47; Size of memory mapped code<br />
+LPWSTR  pImageNameIn,               &#47;&#47; -> Executable Name<br />
+LPWSTR  pLoadersFileName,           &#47;&#47; -> Loaders Name<br />
+LPWSTR  pCmdLine)                   &#47;&#47; -> Command Line<br />
+</code></pre></p>
+<p>The names of the arguments the function takes should be self-explanatory, specially if you look at the code in clix.exe. The function itself is fairly short, consisting mostly of error handling code. In a nutshell, it does this:</p></p>
+<ol>
+<li>Verify the strong name signature of the assembly, if there is one present, via the StrongNameSignatureVerification() function (implemented in <code>sscli\clr\src\dlls\mscorsn\strongname.cpp</code></li>
+<li>Handle all command line arguments, and store them for later use</li>
+<li>Initialize the CLR Execution Engine</li>
+<li>Execute the actual Main() method of the module loaded</li>
+<li>Once this ends, cleanly shutdown the Execution Engine</li><br />
+</ol></p>
+<p>There isn't much more to say about this, but I can't help but nitpick and poke around the things that are probably far less relevant than anything you might read elsewhere :) For example, I had no idea the Runtime could take command line arguments itself.... just try writing a simple application like this:</p></p>
+<pre><code>using System;<br />
+class Test<br />
+{<br />
+public static void Main(String[] args)<br />
+{<br />
+Console.WriteLine(args.Length);<br />
+}<br />
+}<br />
+</code></pre></p>
+<p>Now, try running it with a command line like "<code>App.exe -COR somethinghere</code>"... and low-and-behold, it prints 0! The magic of this is inside the <code>ParseCor()</code> method of the <code>CorCommandLine</code> class, implemented in <code>sscli\clr\src\vm\clsload.cpp</code>. I must admit, though, that I was unable to actually find anywhere in the code they where used.</p></p>
+<p>OK, now going back to the serious stuff. The EE initialization is done through the <code>CoInitializeEE()</code>, which handles some locking stuff and then calls the <code>TryEEStartup()</code> function, which itself calls the real potato: <code>EEStartup()</code>.</p></p>
+<p>At a glance, EEStartup does, among other things, initialize the Stack Probes and the event store, load configuration data (not the application .config file, though, not yet.), initialize the thread manager, remoting services and context system, the JIT, the GC, SyncBlock cache, the P&#47;Invoke services, security subsystem, and, of course, setup the default domain. The configuration loading code is done by the <code>EEConfig</code> class, implemented in <code>sscli\clr\src\vm\eeconfig.cpp</code></p></p>
+<p>While this function is not really complicated per se, it sets up the entire VM execution environment. Thus, really understanding everything that's going on will take some more time. This is where the good stuff begins!</p><br />
+<!--end_raw--></p>

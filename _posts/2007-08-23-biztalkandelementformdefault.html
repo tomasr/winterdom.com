@@ -1,0 +1,41 @@
+---
+layout: post
+status: publish
+published: true
+title: BizTalk and elementFormDefault
+author:
+  display_name: Tomas Restrepo
+  login: tomasr
+  email: tomas@winterdom.com
+  url: http://winterdom.com/
+author_login: tomasr
+author_email: tomas@winterdom.com
+author_url: http://winterdom.com/
+wordpress_id: 33
+wordpress_url: http://winterdom.com/2007/08/biztalkandelementformdefault
+date: '2007-08-23 08:54:48 +0000'
+date_gmt: '2007-08-23 08:54:48 +0000'
+categories:
+- BizTalk
+- XML
+tags: []
+comments:
+- id: 9667
+  author: 'BizTalk Server: Three Tips for Initiates | Bennett Adelson Technical Blog'
+  author_email: ''
+  author_url: http://bennettadelson.wordpress.com/2013/02/26/biztalk-server-three-tips-for-initiates/
+  date: '2013-02-26 16:26:53 +0000'
+  date_gmt: '2013-02-26 16:26:53 +0000'
+  content: "[...] If you want a full explanation you can read here and here. But all
+    you really need to know is the answers to two [...]"
+---
+<p><!--start_raw-->
+<p>Yossi Dahan commented <a href="http:&#47;&#47;www.sabratech.co.uk&#47;blogs&#47;yossidahan&#47;2007&#47;08&#47;elementformdefault-in-schemas.html">here</a> on being surprised by the implications of the elementFormDefault option in XSD schemas, and particularly in relation to BizTalk. </p>
+<p>I don't find the behavior surprising myself anymore, as I already was familiar with the implications of elementFormDefault. In reality, this is something that I don't particularly like about XSD, as I find that leaving it to&nbsp;"unqualified"&nbsp;can lead, as Yossi found out, to some weird looking schemas (at least for me). Mind you, regardless of this option, qualified-ness of an element can also be enabled&#47;disabled for each element individually.</p>
+<p>There are, however, 2 things that make this option more obscure than it should be:</p>
+<ol>
+<li>The default value defined in XSD for elementFormDefault is "unqualified". </li>
+<li>When you install BizTalk, now Visual Studio will have <em>2 different templates</em> for XSD schemas. The original one in Visual Studio has elementFormDefault="qualified", while the one installed by BizTalk doesn't specify elementFormDefault (thus leaving it in the default value of "unqualified"). Which one you get depends on the context in which you use the Add New Item menu in VS.</li></ol>
+<p>In general, I recommend always watching out for this issue and always explicitly setting elementFormDefault to the appropriate value. In my mind, that appropriate value should always be "qualified" for new schemas :-).</p>
+<p>Also, just for the sake of completeness, it is worth saying that, under the XSD specification, all <em>root elements</em> defined in a schema are always qualified (i.e. should be associated to the XML targetNamespace of the schema). The elementFormDefault only controls whether <em>child elements</em> are qualified or unqualified. This is why the elementFormDefault option doesn't really "drop namespaces" from the XML document instances; it merely restricts it to the root elements.</p>
+<div class="wlWriterSmartContent" id="0767317B-992E-4b12-91E0-4F059A8CECA8:242f7972-2c6c-4ea2-8292-b54bbc3ae7fb" contenteditable="false" style="padding-right: 0px; display: inline; padding-left: 0px; padding-bottom: 0px; margin: 0px; padding-top: 0px">Technorati tags: <a href="http:&#47;&#47;technorati.com&#47;tags&#47;XSD" rel="tag">XSD</a>, <a href="http:&#47;&#47;technorati.com&#47;tags&#47;BIzTalk" rel="tag">BIzTalk</a></div><!--end_raw--></p>

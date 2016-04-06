@@ -1,0 +1,52 @@
+---
+layout: post
+status: publish
+published: true
+title: Team Continuity and Productivity
+author:
+  display_name: Tomas Restrepo
+  login: tomasr
+  email: tomas@winterdom.com
+  url: http://winterdom.com/
+author_login: tomasr
+author_email: tomas@winterdom.com
+author_url: http://winterdom.com/
+wordpress_id: 208
+wordpress_url: http://winterdom.com/2006/05/teamcontinuityandproductivity
+date: '2006-05-07 15:09:20 +0000'
+date_gmt: '2006-05-07 15:09:20 +0000'
+categories:
+- Development
+tags: []
+comments:
+- id: 153
+  author: Jeremy Miller
+  author_email: ''
+  author_url: ''
+  date: '2006-05-08 17:07:09 +0000'
+  date_gmt: '2006-05-08 17:07:09 +0000'
+  content: |
+    Nice post.  Subscribed.
+- id: 1329
+  author: Technical Leadership
+  author_email: nottheemailyouarelookingfor@gmail.com
+  author_url: http://scpd.stanford.edu/courses/technical-leadership-management-courses.jsp
+  date: '2010-03-15 18:11:36 +0000'
+  date_gmt: '2010-03-15 18:11:36 +0000'
+  content: Really helpful article. Thank you!
+---
+<p><!--start_raw--><P><A href="http:&#47;&#47;codebetter.com&#47;blogs&#47;jeremy.miller&#47;">Jeremy Miller</A> talks a little bit <A href="http:&#47;&#47;codebetter.com&#47;blogs&#47;jeremy.miller&#47;archive&#47;2006&#47;05&#47;06&#47;144188.aspx">here</A> about the effects on productivity that can be achieved when there's continuity on a project team. </P><br />
+<P>I find this interesting because it's a point I've been pondering for a couple of years now. I used to talk about this and argued for ways to ensure some level of team continuity throughout projects on a previous job, without much success. I think ensuring continuity of at least a small core team definitely helps a lot in creating a better work environment, more trust and understanding between team members. Some others (particularly those in technical presales) argued this just was impossible to achieve in a solution provider kind of company because the timings at which new projects could be secured and the kind of projects&#47;customer was just too unpredictable.</P><br />
+<P>Personally, I don't quite buy this argument, particularly after witnessing the effects on productivity and quality of juggling too many projects at the same time and continously shuffling people around to put out fires and put teams together hastily to staff projects late in the game. But, at the same time, I fully understand how it can be complicated for a medium&#47;large company to deal with the planning and administrative burden of keeping everyone working on projects somehow just to ensure payroll can be paid on time every month. </P><br />
+<P>I think some better planning and more control over what a company can chew at any given time can help, as well as more conciousness over what projects to go for can definitely improve this somewhat, but it's not always easy. I would love to know, though, what other people's experience on this is, so if you have something to share, please do leave a comment or post on your blog.</P><br />
+<P><STRONG>Continuity of the team, the project, or both?</STRONG></P><br />
+<P>Looking at Jeremy's article, however, I can see that there are two somewhat different factors at work to improve productivity for his team. They are related, for sure: The first thing is team continuity itself: Team members get to know and trust one another far more than with frequent rotations, and that can lead to a more cohesive team with more synergy. The second one is working on projects for a longer time, particularly when you actually get to do multiple releases (i.e. V1, V1.1, V2.0) can make a big difference in the team's attitude in regard to tooling and automation and in technical debt, at least in my experience. Many people will just avoid creating tools or automating stuff when they are under the impression that they'll only need to do it once (or a few times, each and every single one thinking <EM>"this is probably the last time I have to do this, so why bother automating it?"</EM>).</P><br />
+<P>I spent close to three years working on single project through multiple releases, and while we had a lot of team members come and go, the members of the core development team got pretty close and friendly, and we had some great times working together. While it was pretty though, and the project itself had tons of problem (including a very waterfallish methodology thanks to a lot of misinterpreted RUP kool-aid during the beginning of the project), we did manage to become fairly effective at developing the product itself in the end. However, some of the real improvements we made were really related more to the fact that we had to deal with multiple releases and versions of the product, than with the fact that it was the same team members working on it (though I think one implies the other, up to a point). Here are some of the up- and downsides we had:</P><br />
+<UL><br />
+<LI>Having a set of established core patterns for adding new functionality to the product. While the patterns might have not been the best, and we had some issues in some parts of it, they did the trick and made it far easier for us to add new pages and new functionality and exposing functionality to external applications via Web Services.<br />
+<LI>While we lacked a lot of automation we could've built (maintaining installers for example), we did built a lot of custom tools for helping day to day development, including tools for presenting and maintaining online user documentation, handling user and error messages, versioning and configuration comparison tools, and some build automation. The effort we put on getting and building tools to support our process was a real plus that set us apart at that time from other teams within the company, and definitely made us more effective at some tasks (we sucked at others, so I doubt we came ahead in the end, but it was still nice).<br />
+<LI>We had a set of components that made up our application framework so that we could built new tools&#47;products around our core application, which really simplified many aspects of development. One thing nice about this was that it made it much easier to start a new "application", since you really didn't need to start from scratch: the base framework and architecture were in place and you could really start adding new business functionality right after putting a new build environment in place. The downside of it was that much of this was built during the early stages of the project, back in early 2002. At that time, since .NET was just coming out there really wasn't all the libraries and helpers we have right now, so we custom built a lot of stuff you can now get pretty standard from libraries and components from MS and open source. It was also heavily tied to our architecture (which was itself completely COM+ based), which made it pretty awkward to use in applications that didn't quite fit the base patterns we used (thus actually hurting reusabilty in some contexts).<br />
+<LI>The three or four of us that had technical leadership and responsability for the project really felt empowered to do a lot of this (tools, automation, architecture). Many times we just did what we felt was needed and best for the project and then figured out how to paper-work it and justify it to management. As long as it worked, they just cleared it for us :-)</LI></UL><br />
+<P>I've also been on the other side,&nbsp;multitasking&nbsp;two or three projects at the same time, and it just sucks big time. This is&nbsp;hard to do when you can cleanly divide your time between projects (project A on mornings, project B in the afternoons), but it can be really frustrating when you can't (like when you're at the mercy of whatever meetings some project manager or sponsor requests you attend at whatever time they feel like it), because it makes it much harder to track time, and context switching just kills any productivity you might get otherwise. It also means that it gets very hard to integrate with other team members.&nbsp;Sometimes it got so bad that&nbsp;I almost didn't feel like I belonged&nbsp;to the project, and once you start feeling like an outsider instead of a team member things start to go downhill from there. </P><br />
+<P>That said, one thing that I definitely like sometimes is to be able to experience at least a couple of different projects&#47;environments a year; at least during the early years of my career. It helped a lot to open up to a lot of different opportunities and experience first hand different roles, responsibilities, work environments and open up to different view points.</P><br />
+<P><STRONG>Update:</STRONG> Some spelling errors corrected, thanks to my friend <A href="http:&#47;&#47;betomontejo.blogspot.com&#47;">Beto</A> for pointing them out!</P><!--end_raw--></p>

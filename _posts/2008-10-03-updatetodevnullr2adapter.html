@@ -1,0 +1,35 @@
+---
+layout: post
+status: publish
+published: true
+title: Update to &#47;dev&#47;null R2 Adapter
+author:
+  display_name: Tomas Restrepo
+  login: tomasr
+  email: tomas@winterdom.com
+  url: http://winterdom.com/
+author_login: tomasr
+author_email: tomas@winterdom.com
+author_url: http://winterdom.com/
+wordpress_id: 332
+wordpress_url: http://winterdom.com/2008/10/updatetodevnullr2adapter
+date: '2008-10-03 19:48:10 +0000'
+date_gmt: '2008-10-03 19:48:10 +0000'
+categories:
+- BizTalk
+tags: []
+comments:
+- id: 1531
+  author: Marge
+  author_email: mbflirt@yahoo.com
+  author_url: ''
+  date: '2010-07-14 18:56:41 +0000'
+  date_gmt: '2010-07-14 18:56:41 +0000'
+  content: "Is this supported in BTS 2009 yet as I experiencing same behavior, even
+    with the above fix, in BTS 2009?\r\nThank you"
+---
+<p><!--start_raw-->
+<p>Antti Somersalo brought to my attention that there was a bug in my <a href="http:&#47;&#47;winterdom.com&#47;weblog&#47;2007&#47;10&#47;23&#47;CustomPropPageInR2Sample.aspx">R2 version</a> of the &#47;dev&#47;null adapter. The bug manifested itself when you tried to export the bindings of any BizTalk Application that used the adapter in one of its send ports, failing with an <code>ArgumentNullException</code>.</p>
+<p>The problem was simple: The adapter management class was returning <code>null</code> from the <code>GetConfigSchema()</code> call. Fixing it was just as simple: Just change the implementation so that it returns an empty Xml schema:</p>
+<div class="codebg"><code><span class="StorageClass">public</span>&nbsp;<span class="Type">string</span> GetConfigSchema(ConfigType configType) {<br>&nbsp;&nbsp; <span class="Repeat">return</span>&nbsp;<span class="SpecialChar">@</span><span class="String">"<schema xmlns='<a href="http:&#47;&#47;www.w3.org&#47;2001&#47;XMLSchema">http:&#47;&#47;www.w3.org&#47;2001&#47;XMLSchema</a>'&#47;>"</span>;<br>} </code></div>
+<p>I&rsquo;ve updated the <a href="http:&#47;&#47;media.winterdom.com&#47;dev&#47;bts&#47;NullAdapterR2.zip">ZIP file</a> with the code snapshot.</p><!--end_raw--></p>

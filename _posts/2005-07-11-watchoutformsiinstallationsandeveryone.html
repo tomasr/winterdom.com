@@ -1,0 +1,28 @@
+---
+layout: post
+status: publish
+published: true
+title: Watch out for MSI installations and Everyone
+author:
+  display_name: Tomas Restrepo
+  login: tomasr
+  email: tomas@winterdom.com
+  url: http://winterdom.com/
+author_login: tomasr
+author_email: tomas@winterdom.com
+author_url: http://winterdom.com/
+wordpress_id: 129
+wordpress_url: http://winterdom.com/2005/07/watchoutformsiinstallationsandeveryone
+date: '2005-07-11 16:59:54 +0000'
+date_gmt: '2005-07-11 16:59:54 +0000'
+categories:
+- BizTalk
+tags: []
+comments: []
+---
+<p><!--start_raw-->Today I went with some of my colleages to diagnose a problem that was popping up at a customer site during deployment of a BizTalk Server 2004 solution. In this particular scenario, BizTalk was installed in a dual node configuration, with one server containing the BizTalk databases and the other acting as processing servers. We also had an MSI installer someone else had built with custom actions that asked for extra configuration data and used BizTalk's WMI objects to get information about the biztalk config and then used that to manipulate the binding files.</p>
+<p>The problem that we were looking into was that as soon as the installer tried to use the WMI API to talk to BizTalk, we would get a SQL Server connection error. This particular error said that the user DOMAIN\MACHINE$ (that is, the biztalk server machine's domain user) did not have access to the BizTalkMsgBoxDb database.</p></p>
+<p>We basically had no idea why WMI was having trouble passing the identity of the logged on user to SQL Server for connecting. However, as soon as I tried the installer, it worked fine. So we uninstalled and another person ran the install and it failed for him. I tried again and it worked. The admin tried again and it failed. Now, It was obvious we were doing something differently...</p></p>
+<p>Moments later we discovered what it was: When the MSI installer asked for the installation path, it would also ask if we wanted to install this for "Everyone" or "Just Me". Since this is usually used by client-side application installation we didn't bother looking much at it... which turned out to be a mistake. The admin was always specifying Everyone, while I always specified Just Me. Turns out it didn't work with Everyone.</p></p>
+<p>The reason? When we selected Everyone during installation, Windows Installer would run the custom action under the local SYSTEM account directly from the Windows Installer service, and since System does not have network credentials, it failed to connect to the database. However, if we selected Just Me, it would run the custom action directly from the logged on user's session that initiated the installer, and so would work fine.</p></p>
+<p>In other words, just something else to watch out for...</p><!--end_raw--></p>

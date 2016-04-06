@@ -1,0 +1,77 @@
+---
+layout: post
+status: publish
+published: true
+title: Serialization Formatters - Part 1
+author:
+  display_name: Tomas Restrepo
+  login: tomasr
+  email: tomas@winterdom.com
+  url: http://winterdom.com/
+author_login: tomasr
+author_email: tomas@winterdom.com
+author_url: http://winterdom.com/
+wordpress_id: 416
+wordpress_url: http://winterdom.com/2002/04/serializationformatterspart1
+date: '2002-04-27 09:47:08 +0000'
+date_gmt: '2002-04-27 09:47:08 +0000'
+categories:
+- ".NET"
+tags: []
+comments: []
+---
+<p><!--start_raw-->
+<p><font color="#669933">Why the Formatter class sucks</font></p></p>
+<p>If you've ever planned on writing a <a href="ms-help:&#47;&#47;MS.VSCC&#47;MS.MSDNVS&#47;cpguide&#47;html&#47;cpconserializationformatters.htm"><br />
+Serialization Formatter</a> for .NET, chances are you've taken a look at the <a href="ms-help:&#47;&#47;MS.VSCC&#47;MS.MSDNVS&#47;cpref&#47;html&#47;frlrfSystemRuntimeSerializationFormatterClassTopic.htm"><br />
+Formatter</a> class in the System.Runtime.Serialization namespace.</p></p>
+<p>The docs on Formatter say:<br&#47;><br />
+<quote><font face="Courier New"><br />
+"<i><b>Formatter</b> is the abstract (<b>MustInherit</b> in Visual Basic) base<br />
+class for all runtime serialization formatters, and provides some helper<br />
+methods for implementing the IFormatter interface. The <b>Formatter</b> also<br />
+manages queuing objects for serialization and generating IDs on a per-object<br />
+basis.</i>"</font><br />
+</quote></p></p>
+<p>That sounds pretty sweet, doesn't it? Only problem is, the Formatter class is<br />
+pretty much useless for writing even the least complex formatters. So, the<br />
+first tip into writing your own formatter is <b>don't use the Formatter class</b><br />
+as the base of your serializer.</p></p>
+<div align="left">
+<p align="left">You might be wondering why... Here's why:</p></p>
+<ul align="left">
+<li align="left">
+The Formatter class only provides actual help for writing the <i>serialization</i><br />
+code, but pretty much no help at all for writing the deserialization code.</li></p>
+<li>
+It leads you towards developing all serialization and deserialization code in a<br />
+single class, which, for any non-trivial formatter, is going to end up in<br />
+way-to-complex, hard-to-maintain code.</li></p>
+<li>
+Many formatters will need to deal explicitly with serializing special (and very<br />
+common) types, such as String. Well, guess what? Formatter doesn't consider the<br />
+String type to be special at all, so you're likely going to end up writing a<br />
+special case for it in <code>WriteObjectRef()</code>.</li></p>
+<li>
+This one is even uglier: Formatter gives you some support for dealing with<br />
+object ID's and how they are serialized&#47;deserialized, via the <code>Schedule()</code><br />
+and <code>GetNext()</code> members. This is sweet, but lacks one interesting<br />
+bit: There's no way to reset the ID Generator (an instance of the<br />
+ObjectIDGenerator class), so if a user of your Formatter-based Formatter<br />
+(pardon the pun!) calls Serialize() twice on the same formatter instance,<br />
+objects are handled incorrectly, since if you try to write two object graphs<br />
+that contain the same object instance to two different Stream objects, the<br />
+second time the common object <i>won't be serialized</i> since the Formatter<br />
+will assume it has already been written!<br />
+</li></p>
+<li>
+And finally, the biggest warning light against using the Formatter class is<br />
+that, despite what the documentation says, <i>no actual Serialization Formatters<br />
+included with the framework do it!</i>.</li><br />
+</ul><br />
+</div></p>
+<p>In other words, implement IFormatter <i>directly</i>. In a next post I'll show<br />
+you how to implement a simple helper class to deal with object scheduling<br />
+during serialization in such a way that will it very easy and will give you<br />
+most of the interesting support Formatter already gives you, without any of the<br />
+pain...</p><!--end_raw--></p>

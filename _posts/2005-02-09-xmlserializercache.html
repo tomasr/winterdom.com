@@ -1,0 +1,24 @@
+---
+layout: post
+status: publish
+published: true
+title: XmlSerializerCache
+author:
+  display_name: Tomas Restrepo
+  login: tomasr
+  email: tomas@winterdom.com
+  url: http://winterdom.com/
+author_login: tomasr
+author_email: tomas@winterdom.com
+author_url: http://winterdom.com/
+wordpress_id: 505
+wordpress_url: http://winterdom.com/2005/02/xmlserializercache
+date: '2005-02-09 19:36:12 +0000'
+date_gmt: '2005-02-09 19:36:12 +0000'
+categories:
+- Web Services
+tags: []
+comments: []
+---
+<p><!--start_raw-->Christopher Schittko has a <a href="http:&#47;&#47;weblogs.asp.net&#47;cschittko&#47;archive&#47;2005&#47;01&#47;14&#47;353435.aspx">post</a> regarding the  XmlSerializerCache he wrote for the <a href="http:&#47;&#47;www.mvpxml.org&#47;">MVP.Xml</a> project. Nice stuff. I haven't used it myself, but I must admit to taking advantage on more than one time of the Microsoft.Web.Services2.Xml.XmlSerializerCache class that is part of WSE to work around the performance problems introduced by repeatedly creating XmlSerializer instances.</p>
+<p>Use either one, but use it, for gods sakes. Just blindly creating XmlSerializer instances for a single type repeatedly is not only slow, but also leaks like a running nose in cold december... </p><!--end_raw--></p>

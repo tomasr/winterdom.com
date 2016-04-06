@@ -1,0 +1,64 @@
+---
+layout: post
+status: publish
+published: true
+title: Essential BizTalk Debugging Skills
+author:
+  display_name: Tomas Restrepo
+  login: tomasr
+  email: tomas@winterdom.com
+  url: http://winterdom.com/
+author_login: tomasr
+author_email: tomas@winterdom.com
+author_url: http://winterdom.com/
+wordpress_id: 1307
+wordpress_url: http://winterdom.com/2009/11/essential-biztalk-debugging-skills
+date: '2009-11-08 17:14:05 +0000'
+date_gmt: '2009-11-08 17:14:05 +0000'
+categories:
+- BizTalk
+tags: []
+comments:
+- id: 1208
+  author: Antonie Merks
+  author_email: antoniemerks@hotmail.com
+  author_url: ''
+  date: '2009-11-08 21:07:06 +0000'
+  date_gmt: '2009-11-08 21:07:06 +0000'
+  content: Use System.Diagnostics.Trace tracing and DebugView!
+- id: 1221
+  author: Scott Banwart&#39;s Blog &raquo; Blog Archive &raquo; Distributed Weekly
+    24
+  author_email: ''
+  author_url: http://rogue-technology.com/blog/?p=662
+  date: '2009-11-13 13:18:32 +0000'
+  date_gmt: '2009-11-13 13:18:32 +0000'
+  content: "[...] Essential BizTalk Debugging Skills [...]"
+- id: 1325
+  author: Leonid Ganeline
+  author_email: leo.gan.57@gmail.com
+  author_url: http://geekswithblogs.net/leonidganeline
+  date: '2010-03-10 01:45:45 +0000'
+  date_gmt: '2010-03-10 01:45:45 +0000'
+  content: "Cool!\r\nPerfect list of skills! Thanks, Tomas!\r\n\r\nMy 5 cents:\r\n*
+    Using the SoapUI is essential to debug Web-services. Plus using logging features
+    of the WCF.\r\n* Debugging SQL code. Uff, it's a huge bucket of skills.\r\n* Good
+    skills to resolve issues with different kind of Windows services. Each installation
+    and deployment is different and sometimes challenging.\r\n* Debugging Xslt code.\r\n*
+    I start to use MSBuild and here is a different paradigm of debugging. Small and
+    easy but different.\r\n* Debugging Rules. Is seems the worst part of BRE, the
+    debugging facilities = lack of them."
+---
+<p>On the topic of debugging skills, there are many things said and to be said, but I thought I&rsquo;d take a moment to reflect on a few skills I believe BizTalk developers should develop to solve problems on their solutions effectively (in no particular order):</p>
+<ol>
+<li>Trace the execution of BizTalk processes end-to-end, covering both messaging and orchestrations. While this seems obvious at first, it can be tough on complex solutions that rely heavily on pub&#47;sub and direct binding!</li>
+<li>Discovering the reasons why a service instance might be getting suspended. In particular, quickly finding any possible exception information coming from faulted instances.</li>
+<li>Using the orchestration debugger to figure out where a given Orchestration instance is getting suspended.</li>
+<li>Matching any receive shapes in an orchestration to the origin of messages coming for it. This might require matching logical ports with physical ports as well as possible direct-binding sources of messages.</li>
+<li>Tracking possible reasons for routing failures, particularly when correlations are involved. This includes being able to understand routing failure reports, checking the state of any required promoted property, comparing subscription information either directly on the message box as well as from reading orchestration code, and so on.</li>
+<li>Detecting and solving situations that stop flow&#47;processing of messages, related to thread pool issues or thread starvation.</li>
+<li>Detecting zombie message instances and their possible consequences.</li>
+<li>Knowing how to enable the BAM tracing infrastructure to debug and solve issues with BAM not writing data to the BAM primary import database.</li>
+<li>Using the Visual Studio Debugger or WinDBG to debug BizTalk processes. This includes figuring out the right processes to attach to!</li>
+<li>Debugging assembly-loading&#47;versioning issues. This includes how to use <a href="http:&#47;&#47;msdn.microsoft.com&#47;en-us&#47;library&#47;e74a18c4(VS.71).aspx">Fuslogvw.exe</a> and friends.</li> </ol>
+<p>Anyone else has any other ideas?</p></p>

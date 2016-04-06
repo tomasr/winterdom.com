@@ -1,0 +1,90 @@
+---
+layout: post
+status: publish
+published: true
+title: PowerShell Editors and Other Not-So-Fascinating Stuff
+author:
+  display_name: Tomas Restrepo
+  login: tomasr
+  email: tomas@winterdom.com
+  url: http://winterdom.com/
+author_login: tomasr
+author_email: tomas@winterdom.com
+author_url: http://winterdom.com/
+wordpress_id: 430
+wordpress_url: http://winterdom.com/2008/02/powershelleditorsandothernotsofascinatingstuff
+date: '2008-02-08 14:01:40 +0000'
+date_gmt: '2008-02-08 14:01:40 +0000'
+categories:
+- Tools
+- PowerShell
+tags: []
+comments:
+- id: 307
+  author: Hal Rottenberg
+  author_email: hal@halr9000.com
+  author_url: http://halr9000.com
+  date: '2008-02-08 17:16:01 +0000'
+  date_gmt: '2008-02-08 17:16:01 +0000'
+  content: |
+    Few comments on your points above:
+    1. I love PS+ and I hardly ever use the debugger.  It's got a ton of stuff to like.
+    2. Fairly busy, but you can turn it all off with a quick dbl-click in the console.  Very minimalist.
+    3. It's been in beta for a while.  It is...fairly mature.  I run into bugs occasionally, but they're quickly fixed.  It has come a long way from a 3 or 4 months ago when I could not call it mature by a long stretch of the imagination.
+    4. I think they plan on merging PS+ and PS Analyzer into one product that will be $129 (which is the price of PSA now).  During the beta, ps+ is "just free".  The commercial-use part only applies once it is out of beta.
+- id: 308
+  author: Tomas Restrepo
+  author_email: tomas@winterdom.com
+  author_url: http://www.winterdom.com/weblog/
+  date: '2008-02-08 17:27:21 +0000'
+  date_gmt: '2008-02-08 17:27:21 +0000'
+  content: |
+    Hi Hal, Thanks for the comments!
+    Let me clarify a few of my points just to avoid confusion:
+    When I mentioned it was in beta, I wasn't implying it was unstable or anything (can't really comment on that). It's just that I try to refrain from installing significant betas on my main machine's main OS to avoid having trouble (I install lots of beta stuff on my virtual machines, but I have less need of something like PS+ there).
+    Also, regarding licensing, as I said, I don't really mind that model; I was merely pointing out that I'm not sure exactly what they mean by "commercial use" within the specific context of what their application is used for. In other words, it's ok that it's a product you pay for; just that it's not very clear who the free-non-commercial license really is aimed at!
+- id: 309
+  author: Jeffrey Snover
+  author_email: jsnover13@hotmail.com
+  author_url: ''
+  date: '2008-02-08 19:48:00 +0000'
+  date_gmt: '2008-02-08 19:48:00 +0000'
+  content: |
+    > Is it just me that finds it ironic that PowerShell V2 brings several UI-related features when the big thing about V1 was creating a fantastic shell scripting language..
+    ... from a hard-core GUI company.
+    Sorta like a contradiction wrapped in an irony.  :-)
+    btw - when you said, "out-gridview gives the shivers" - where those "good" shivers or "bad" shivers?
+    Jeffrey Snover [MSFT]
+    Windows Management Partner Architect
+    Visit the Windows PowerShell Team blog at:    http:&#47;&#47;blogs.msdn.com&#47;PowerShell
+    Visit the Windows PowerShell ScriptCenter at:  http:&#47;&#47;www.microsoft.com&#47;technet&#47;scriptcenter&#47;hubs&#47;msh.mspx
+- id: 310
+  author: Tomas Restrepo
+  author_email: tomas@winterdom.com
+  author_url: http://www.winterdom.com/weblog/
+  date: '2008-02-09 06:07:39 +0000'
+  date_gmt: '2008-02-09 06:07:39 +0000'
+  content: |
+    Jeffrey: Yes, that thought occurred to me as well :-). But that's precisely why a lot of us were so excited about powershell in the first place (a real shell in windows? whoot!).
+    Regarding out-gridview, sorry but those are the bad shivers. But let me clarify this a bit:
+    It's great that ps is so flexible that you can actually implement things like that. But, I'm a little concerned that things like that are built into the core product. Mostly, the way I look at it is this: If I want to work on the console, I want to remain in the console; I certainly don't want windows opening and flying around (which is why I also hate the way get-credential works on the default host). Yes, I realize this is a fully optional feature and you can choose not to use it, but I can't control what other people do in their scripts which I may use.
+    Which brings me to my second reason for disliking it: There's no way (currently at least) to restrict a user scripts&#47;commands from using winforms or creating windows (like out-gridview) when I'm using the PowerShell hosting interfaces in my own applications, and that's a significant oversight. For example, what happens if I'm hosting powershell in a non-interactive scenario and someone inadvertently uses out-gridview? it can easily hang my application if there's no one at the console to close the window, and that's a real problem for running stuff on the server side. (yes, I realize there's no way this could be prevented 100%, but if at least it wasn't so "right at hand" it wouldn't be as bad).
+---
+<p><!--start_raw-->
+<p>Scott Hanselman just <a href="http:&#47;&#47;www.hanselman.com&#47;blog&#47;UsingAnIDEToWritePowerShellScripts.aspx">mentioned</a> using the <a href="http:&#47;&#47;www.powershell.com&#47;plus&#47;">PowerShellPlus</a> editor as an IDE for PowerShell. You can always trust good old Scott to point out cool new tools!</p>
+<p>Anyway, I was already aware of PowerShell+ (and its closely related product, PowerShell Analyzer), and I find the idea appealing in general and a it's probably a very useful tool to have around. That said, I don't have plans to install PowerShell+ anytime, for a few reasons:</p>
+<ol>
+<li>I've had little need of such a tool until now. Granted, if I need to create a lot more complex scripts than what I've been doing until now, then having a something like the PowerShell+ debugger would sure be useful.</li>
+<li>From the screenshots, at least, it looks like a fairly busy UI, a mix of a console, office and Visual Studio strung together. I understand the technical reason for having the dual UI mode (console + editor), but it seems like forcing such disconnected experience between the two modes to be disconcerting as a user.</li>
+<li>It's currently in beta (at least that's what the web site says). </li>
+<li>Right now the site mentions it is "free for non-commercial use"; didn't find any obvious references to what the cost of a full version will be. I don't object to such deals (indeed, it's a good way to promote your products to enthusiasts), but I'm not quite sure I see how it can apply all that easily to a tool like PowerShell. What exactly constitutes a non-commercial use of an editor for a scripting language [aimed at systems administration]?</li> </ol>
+<p>Related to (2), I've fallen back into working under more minimalist environments since a few months ago. I found that it helps a lot my concentration and productivity and leads to far better use of my screen real state.</p>
+<p>Does this mean I dislike IDEs and other complex environments? not at all; it just means I don't want my editor to flaunt all its features in my face all the time demanding my attention. Like <a href="http:&#47;&#47;www.iunknown.com&#47;2008&#47;01&#47;hate-the-mouse.html">John Lam</a>, I run my Visual Studio in an almost clean environment: All tools windows set in auto-hide, and almost no toolbars visible (unlike John I do keep one toolbar around, but not the standard one). I&nbsp; works great for me.</p>
+<p>For PowerShell, I'm pretty happy using Vim + Console; seems to do the trick, and actually has forced me to learn more about PowerShell than I had done previously. One of the things I love about PowerShell was that it includes commands for exploring itself right for the beginning (i.e. alias, get-command, get-help and so on).</p><br />
+<h2>PowerShell V2</h2>
+<p>While on the subject of PowerShell, I've been reading a bit about the features coming in PowerShell V2, and there are some pretty cool things there. </p>
+<p>The "Graphical PowerShell" tool looks cool and I'm sure it will be very useful to a lot of people, but personally, I wish this would become a separate download and not part of the core PowerShell installation (might as well wish I would win the lottery; that probably has better changes of happening).</p>
+<p>On a related note, <a href="http:&#47;&#47;tfl09.blogspot.com&#47;2007&#47;11&#47;powershell-v2-new-feature-out-gridview.html">out-gridview</a> gives the the shivers.</p>
+<p><em><strong>Side Note:</strong></em> Is it just me that finds it ironic that PowerShell V2 brings several UI-related features when the big thing about V1 was creating a fantastic <em>shell </em>scripting language? Just food for thought.</p>
+<p>(And yes, I'm aware of PowerShell's hosting API, and it's great. In fact, I've used it to embed PowerShell capabilities into three different projects, so I'm pretty well aware of how sweet it is.)</p>
+<div class="wlWriterSmartContent" id="scid:0767317B-992E-4b12-91E0-4F059A8CECA8:3519b71e-774d-496a-b031-62b5d063d385" style="margin: 0px; padding: 0px; display: inline;">Technorati tags: <a href="http:&#47;&#47;technorati.com&#47;tags&#47;PowerShell" rel="tag">PowerShell</a>, <a href="http:&#47;&#47;technorati.com&#47;tags&#47;IDE" rel="tag">IDE</a></div><hints id="hah_hints"></hints><!--end_raw--></p>

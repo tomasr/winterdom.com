@@ -1,0 +1,47 @@
+---
+layout: post
+status: publish
+published: true
+title: Invalid application pool name error in WebDeploy
+author:
+  display_name: Tomas Restrepo
+  login: tomasr
+  email: tomas@winterdom.com
+  url: http://winterdom.com/
+author_login: tomasr
+author_email: tomas@winterdom.com
+author_url: http://winterdom.com/
+wordpress_id: 1486
+wordpress_url: http://winterdom.com/?p=1486
+date: '2014-11-05 01:18:32 +0000'
+date_gmt: '2014-11-05 01:18:32 +0000'
+categories:
+- IIS
+tags: []
+comments: []
+---
+<p>I was helping out a customer a few weeks ago to use the Web Deployment Tool to migrate applications and sites from IIS 6.0 to IIS 7.x&#47;8.x, and ran into an error I had not seen before. I thought I'd document it here in case I, or anyone else, runs into it again.</p>
+<p>During our work, we exported an entire IIS 8.5 server to a ZIP package using the Web Deployment Tool tasks integrated into the IIS Management Console (inetmgr).</p></p>
+<p>When we tried to restore the server archive on the same server, we got the following error:</p></p>
+<pre class="codebg"><code>Error: Invalid application pool name</code></pre></p>
+<p>After investigating the issue for a while, I realized the problem was that the IIS configuration of the server was invalid <i>before</i> we exported the server package! IIS is very robust at dealing with some invalid configurations, and this was such a case: The server appeared to work perfectly fine even though there was one slight configuration error, that would have only caused trouble under very specific circumstances!</p></p>
+<p>To figure it out I had to attempt the restore operation using the command line msdeploy.exe tool rather than the UI. Capturing the full log, I noticed that the last relevant entry was:</p></p>
+<pre class="codebg"><code>Info: Updating applicationDefaults (MSDeploy.webServer&#47;webServer&#47;appHostConfig[@path='']&#47;location[@path='']&#47;section[@name='system.applicationHost&#47;sites']&#47;sites&#47;site[@name='Default Web Site']&#47;applicationDefaults).<br />
+</code></pre></p>
+<p>The problem turned out to be that for some reason, the <code>applicationPool</code> attribute of the <applicationDefaults> section for all sites was not set. When the full server archive was created, Web Deploy exported a blank value for this property. When I looked at the <code>archive.xml</code> included in the ZIP file, this could be seen clearly:</p></p>
+<pre class="codebg"><code><span class="Function"><</span><span class="Function">applicationDefaults</span><br />
+<span class="Function">    </span><span class="Type">path</span>=<span class="String">''</span><span class="Function"> </span><span class="Type">MSDeploy</span><span class="Comment">.</span><span class="Type">path</span>=<span class="String">'1'</span><br />
+<span class="Function">    </span><b><span class="Type">applicationPool</span>=<span class="String">''</span></b><br />
+<span class="Function">    </span><span class="Type">MSDeploy</span><span class="Comment">.</span><span class="Type">applicationPool</span>=<span class="String">'1'</span><br />
+<span class="Function">    </span><span class="Type">enabledProtocols</span>=<span class="String">'http'</span><br />
+<span class="Function">    </span><span class="Type">MSDeploy</span><span class="Comment">.</span><span class="Type">enabledProtocols</span>=<span class="String">'1'</span><br />
+<span class="Function">    </span><span class="Type">serviceAutoStartEnabled</span>=<span class="String">'false'</span><br />
+<span class="Function">    </span><span class="Type">MSDeploy</span><span class="Comment">.</span><span class="Type">serviceAutoStartEnabled</span>=<span class="String">'1'</span><br />
+<span class="Function">    </span><span class="Type">serviceAutoStartProvider</span>=<span class="String">''</span><br />
+<span class="Function">    </span><span class="Type">MSDeploy</span><span class="Comment">.</span><span class="Type">serviceAutoStartProvider</span>=<span class="String">'1'</span><br />
+<span class="Function">    </span><span class="Type">preloadEnabled</span>=<span class="String">'false'</span><br />
+<span class="Function">    </span><span class="Type">MSDeploy</span><span class="Comment">.</span><span class="Type">preloadEnabled</span>=<span class="String">'1'</span><br />
+<span class="Function">    </span><span class="Type">MSDeploy</span><span class="Comment">.</span><span class="Type">MSDeployLinkName</span>=<span class="String">'applicationDefaults'</span><span class="Function"> &#47;></span><br />
+</code></pre></p>
+<h3>How to fix it</h3></p>
+<p>Once I had this nailed down, working around it was easy: I simply extracted the entire ZIP archive to a folder, modified the <code>archive.xml</code> file to set a <code>applicationPool='DefaultAppPool'</code>, and then simply imported the server backup directly from the extracted folder by using the <code>archiveDir</code> provider as the source. Alternatively, I could've created the ZIP file again and import it as usual.</p></p>

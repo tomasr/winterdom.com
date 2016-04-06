@@ -1,0 +1,54 @@
+---
+layout: post
+status: publish
+published: true
+title: Handling errors in Orchestrations from invoked WebServices
+author:
+  display_name: Tomas Restrepo
+  login: tomasr
+  email: tomas@winterdom.com
+  url: http://winterdom.com/
+author_login: tomasr
+author_email: tomas@winterdom.com
+author_url: http://winterdom.com/
+wordpress_id: 634
+wordpress_url: http://winterdom.com/2005/03/handlingerrorsinorchestrationsfrominvokedwebservices
+date: '2005-03-29 18:56:54 +0000'
+date_gmt: '2005-03-29 18:56:54 +0000'
+categories:
+- BizTalk
+tags: []
+comments: []
+---
+<p><!--start_raw-->When you are invoking WebServices from your BizTalk Server 2004 orchestrations, you might need to ensure that two things happen correctly:</p>
+<ol>
+<li>Message delivery is retried if there's an error connecting to the WebService or if the service returns a SOAP fault</li>
+<li>Handle the case where the call fails after all retry attempts have been exhausted as part of your process</li><br />
+</ol></p>
+<p>One way to accomplish this is by using Delivery Notifications to deal with the ACKs and NACKs from the messaging engine and the adapter. You can find some good information on this topic <a href="http:&#47;&#47;blogs.msdn.com&#47;scottwoo&#47;archive&#47;2004&#47;02&#47;25&#47;80037.aspx">here</a>, <a href="http:&#47;&#47;www.geekswithblogs.net&#47;sthomas&#47;archive&#47;2004&#47;08&#47;02&#47;9234.aspx">here</a>, and <a href="http:&#47;&#47;blogs.msdn.com&#47;kevinsmi&#47;archive&#47;2004&#47;07&#47;03&#47;172574.aspx">here</a>.</p></p>
+<p>There's another option, however, that I discovered playing around and that is simpler to implement. This technique consists simply in wrapping the WebService call inside a scope with an Exception Handler. Here are the steps:</p></p>
+<ol>
+<li>Create a new Scope on the orchestration. There is no need to make it transactional, though it might be helpful in some cases to make it into a long-running transaction (atomic transactions won't work here because you can't put both the send and receive shapes for the service inside the same atomic scope).</li>
+<li>Add your Send and Receive shapes for the WebService call inside the new Scope you just created. Connect them to the corresponding operations of the port for the WebService.</li>
+<li>Right click on your BizTalk Project on Solution Explorer and select Add Reference. Add a reference to the System.Web.Services.dll assembly. We'll need this later to add the exception handler.</li>
+<li>Right-click on your scope and select Add New Exception Handler.</li>
+<li>Select the exception handler you just added and open the properties window. Configure the following properties:<br />
+<table bgcolor="#808080" width="500px" border="0">
+<tr bgcolor="#e0e0e0" style="font-weight:bold">
+<td>Property</td></p>
+<td>Value</td><br />
+</tr></p>
+<tr bgcolor="#FFFFFF">
+<td>Exception Object Type</td></p>
+<td>System.Web.Services.Protocols.SoapException</td><br />
+</tr></p>
+<tr bgcolor="#FFFFFF">
+<td>Exception Object Name</td></p>
+<td>ex (or whatever you prefer)</td><br />
+</tr><br />
+</table><br />
+</li></p>
+<li>Inside the exception handler, do whatever you need to do (including terminating the orchestration). From inside, you can access detailed information on the error in an Expression Shape by accesing ex.Details (an XmlNode).</li><br />
+</ol></p>
+<p>One of the cool things about this method is that it leaves the retry logic completely to the Send Port configuration, so it leaves your orchestration pretty clean overall. Another interesting tidbit is that while you capture a SoapException, what BizTalk actually throws underneath is an exception of the derived XlangSoapException class (but that is fairly irrelevant for our needs).</p><br />
+<!--end_raw--></p>

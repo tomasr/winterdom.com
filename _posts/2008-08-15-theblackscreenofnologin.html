@@ -1,0 +1,57 @@
+---
+layout: post
+status: publish
+published: true
+title: The Black Screen Of No Login
+author:
+  display_name: Tomas Restrepo
+  login: tomasr
+  email: tomas@winterdom.com
+  url: http://winterdom.com/
+author_login: tomasr
+author_email: tomas@winterdom.com
+author_url: http://winterdom.com/
+wordpress_id: 497
+wordpress_url: http://winterdom.com/2008/08/theblackscreenofnologin
+date: '2008-08-15 15:23:52 +0000'
+date_gmt: '2008-08-15 15:23:52 +0000'
+categories:
+- Vista
+tags: []
+comments:
+- id: 351
+  author: Jason
+  author_email: jrseney@gmail.com
+  author_url: http://jasonseney.tumblr.com
+  date: '2008-08-15 23:32:23 +0000'
+  date_gmt: '2008-08-15 23:32:23 +0000'
+  content: |
+    Ahh man, that really sucks. Windows can be unstable enough when it comes to updates, and it being a Dell only makes matters worse. I'm surprised you even called their support, I like though how you Google first, then call...
+    Its times like these when I really appreciate having a linux install to fall back on when I want things to work. Well, at least when they don't work, you can easily tell WHAT it is.
+    I really think sometimes the automatic updates are way too automatic.
+    Good luck!
+---
+<p><!--start_raw-->
+<p>Like most other people making a living out of working with computers, I'm first line technical support for my friends and family. This morning my sister came up asking why her computer wasn't booting anymore, so I go to take a look.</p>
+<p>It's not pretty.</p>
+<p>My sister got a Dell Inspiron 1525 laptop a few months ago, running Windows Vista Home, and it has been working mostly fine since then (except for a minor issue with the wireless network). Last night, however, Windows Update popped up asking her to install the latest batch of critical updates. So she installed them, of course.</p>
+<p>This morning, when she turned on her laptop, Vista greeted it with an empty black screen, with just the cursor in it. Shut it down (forcefully), and restarted only to get stuck at the same place.</p>
+<p>So I tried the obvious list of things to check: </p>
+<ol>
+<li>Was the machine hanging up? Not really. You could still move the cursor, and the keyboard seemed to be responding; you just couldn't do anything at all because the black screen came before the logon desktop appeared.</li>
+<li>Try starting in Safe Mode? All of the three safe mode variants (regular, with network, with command prompt) get stuck at the same black screen.</li>
+<li>Try booting with default VGA drivers? Nope; still gets stuck.</li>
+<li>Try booting with the "Last known good configuration"? Nope. Apparently black screen was considered a good configuration. Go figure.</li> </ol>
+<p>I then tried the recovery console, which did manage to start correctly. Unfortunately, it's useless. I checked for booting problems, and it found none. I then tried going to a previous restore point, only to find to my dismay that the system drive did <em>not contain a single restore point</em>. I'm pretty sure neither me nor my sister disabled system restore, so I can only guess that Dell disabled it when it shipped it from the factory. Why? Who knows.</p>
+<p>Off to Google I go. Apparently, we're not the only ones to get hit by this issue. I was able to find at least one other <a href="http:&#47;&#47;forums.techguy.org&#47;windows-vista&#47;739312-dell-inspiron-vista-black-screen.html">Inspiron 1525 owner</a> stuck with the same problem, but no solutions.</p>
+<p>I then turned to Dell support, which was, predictably, useless. Without even bothering to look up any details or see if anyone else had reported a similar issue I got the standard "reinstall windows" response. Oh, well, I also got told that "Dell recommends that you turn off automatic Windows Updates after installing Windows". Not sure what to even respond to that.</p>
+<p>Of course, at this point, there's really no other choice, but the fact that is that, for all I know, Windows Update might crap the machine again after repaving it; and for obvious reasons not getting the updates doesn't strike me as a good alternative.</p><br />
+<h2>A Suspect</h2>
+<p>At this point, I still don't know for sure what might have cause the issue. I do, however,&#160; have a suspect. I noticed this morning that Vista had also downloaded and applied the updates on my own laptop (a Dell Latitude D820), without any nasty side effects.</p>
+<p>So I checked the list of updates installed and ran into the hotfix mentioned by KB951618:</p><br />
+<blockquote>
+<p>A black screen issue occurs on a Windows Vista-based computer or a Windows XP Service Pack 2-based computer that has Onekey Recovery 5.0 installed when you upgrade the operating system.</p> </blockquote>
+<p>Well, the article never explains what a "Black Screen Issue" really is, but it sounds familiar. We don't have OneKey Recovery (at least in theory), but it's the only thing that sounds even somewhat related. </p>
+<p>To be honest, though, I'm not even sure if that update got installed on my sister's laptop or not, since the recovery console doesn't really let you do much spelunking around (and I'm not very familiar with it).</p>
+<p>Looks like I get to spend some quality time installing Vista again. Yippee!</p>
+<div class="wlWriterSmartContent" id="scid:0767317B-992E-4b12-91E0-4F059A8CECA8:f32e2cea-e231-4c7e-86e8-8dc3aeb72da0" style="padding-right: 0px; display: inline; padding-left: 0px; padding-bottom: 0px; margin: 0px; padding-top: 0px">Technorati tags: <a href="http:&#47;&#47;technorati.com&#47;tags&#47;Vista" rel="tag">Vista</a>, <a href="http:&#47;&#47;technorati.com&#47;tags&#47;Windows%20Update" rel="tag">Windows Update</a>, <a href="http:&#47;&#47;technorati.com&#47;tags&#47;Dell" rel="tag">Dell</a></div><!--end_raw--></p>

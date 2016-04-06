@@ -1,0 +1,29 @@
+---
+layout: post
+status: publish
+published: true
+title: PipelineTesting Library v1.0.1.0 Released
+author:
+  display_name: Tomas Restrepo
+  login: tomasr
+  email: tomas@winterdom.com
+  url: http://winterdom.com/
+author_login: tomasr
+author_email: tomas@winterdom.com
+author_url: http://winterdom.com/
+wordpress_id: 55
+wordpress_url: http://winterdom.com/2007/02/pipelinetestinglibraryv1010released
+date: '2007-02-11 07:42:50 +0000'
+date_gmt: '2007-02-11 07:42:50 +0000'
+categories:
+- BizTalk
+tags: []
+comments: []
+---
+<p><!--start_raw-->
+<p>I've just <a href="http:&#47;&#47;www.winterdom.com&#47;dev&#47;bts&#47;PipelineTesting.zip">uploaded</a> an updated version of my <a href="http:&#47;&#47;www.winterdom.com&#47;weblog&#47;2006&#47;04&#47;27&#47;PipelineTestingLibraryPart1.aspx">PipelineTesting</a> library for BizTalk Server 2006. This version fixes an issue that <a href="http:&#47;&#47;geekswithblogs.net&#47;gwiele">Gregory Van de Wiele</a> pointed to me a couple of weeks ago. Thanks Gregory!</p>
+<p>The issue was that when I added Transaction support to the pipeline library, I didn't provide a way to control the transaction lifetime, or worse, the transaction end result. What ended up happening was that if you called EnableTransactions() on the pipeline, the transaction was created on demand when one component in the pipeline called IPipelineContextEx.GetTransaction(). However, nowhere did I explicitly release the transaction&nbsp;nor called Commit() or Rollback() on it causing fairly ugly issues because the transaction&nbsp;release was left to the GC.</p>
+<p>Fixing this issue did imply I had to make a breaking change in the API, but hopefully not one too bad. I changed the EnableTransactions() method in the pipeline classes to return a TransactionControl object that you could use to control transaction lifetime and result. Basically, this one works pretty much like the TransactionScope class in System.Transactions: You wrap it in a using() declaration and if you want to commit, you cal SetComplete() on it just before disposing it. Here's an example of using the pipeline with the transaction support enabled:</p>
+<div>[Test] <BR &#47;><font color='Blue'>public</font>&nbsp;<font color='Blue'>void</font>&nbsp;CanCreateTransaction() <BR &#47;>{ <BR &#47;>&nbsp;&nbsp;&nbsp;SendPipelineWrapper&nbsp;pipeline&nbsp;= <BR &#47;>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;PipelineFactory.CreateSendPipeline(<font color='Blue'>typeof</font>(XMLTransmit)); <BR &#47;> <BR &#47;>&nbsp;&nbsp;&nbsp;<font color='Blue'>using</font>&nbsp;(&nbsp;TransactionControl&nbsp;control&nbsp;=&nbsp;pipeline.EnableTransactions()&nbsp;) <BR &#47;>&nbsp;&nbsp;&nbsp;{ <BR &#47;>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<font color='Green'>&#47;&#47;&nbsp;Create&nbsp;the&nbsp;input&nbsp;message&nbsp;to&nbsp;pass&nbsp;through&nbsp;the&nbsp;pipeline</font> <BR &#47;>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Stream&nbsp;stream&nbsp;=&nbsp;DocLoader.LoadStream(<font color='Maroon'>"SampleDocument.xml"</font>); <BR &#47;>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;IBaseMessage&nbsp;inputMessage&nbsp;=&nbsp;MessageHelper.CreateFromStream(stream); <BR &#47;> <BR &#47;>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<font color='Green'>&#47;&#47;&nbsp;Add&nbsp;the&nbsp;necessary&nbsp;schemas&nbsp;to&nbsp;the&nbsp;pipeline,&nbsp;so&nbsp;that</font> <BR &#47;>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<font color='Green'>&#47;&#47;&nbsp;disassembling&nbsp;works</font> <BR &#47;>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;pipeline.AddDocSpec(<font color='Blue'>typeof</font>(Schema1_NPP)); <BR &#47;>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;pipeline.AddDocSpec(<font color='Blue'>typeof</font>(Schema2_WPP)); <BR &#47;> <BR &#47;>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;MessageCollection&nbsp;inputMessages&nbsp;=&nbsp;<font color='Blue'>new</font>&nbsp;MessageCollection(); <BR &#47;>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;inputMessages.Add(inputMessage); <BR &#47;> <BR &#47;>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<font color='Green'>&#47;&#47;&nbsp;Execute&nbsp;the&nbsp;pipeline,&nbsp;and&nbsp;check&nbsp;the&nbsp;output</font> <BR &#47;>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;IBaseMessage&nbsp;outputMessage&nbsp;=&nbsp;pipeline.Execute(inputMessages); <BR &#47;> <BR &#47;>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Assert.IsNotNull(outputMessage); <BR &#47;>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;control.SetComplete(); <BR &#47;>&nbsp;&nbsp;&nbsp;} <BR &#47;>} <BR &#47;></div>
+<p>Enjoy.</p>
+<div class="wlWriterSmartContent" id="0767317B-992E-4b12-91E0-4F059A8CECA8:cc289060-523a-405f-8d36-90f88e1e20a4" contenteditable="false" style="padding-right: 0px; display: inline; padding-left: 0px; padding-bottom: 0px; margin: 0px; padding-top: 0px">Technorati tags: <a href="http:&#47;&#47;technorati.com&#47;tags&#47;BizTalk%20Server" rel="tag">BizTalk Server</a>, <a href="http:&#47;&#47;technorati.com&#47;tags&#47;BTS" rel="tag">BTS</a>, <a href="http:&#47;&#47;technorati.com&#47;tags&#47;Unit%20Testing" rel="tag">Unit Testing</a></div><!--end_raw--></p>

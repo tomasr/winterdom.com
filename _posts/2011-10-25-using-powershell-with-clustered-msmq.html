@@ -1,0 +1,44 @@
+---
+layout: post
+status: publish
+published: true
+title: Using PowerShell with Clustered MSMQ
+author:
+  display_name: Tomas Restrepo
+  login: tomasr
+  email: tomas@winterdom.com
+  url: http://winterdom.com/
+author_login: tomasr
+author_email: tomas@winterdom.com
+author_url: http://winterdom.com/
+wordpress_id: 1341
+wordpress_url: http://winterdom.com/2011/10/using-powershell-with-clustered-msmq
+date: '2011-10-25 13:43:43 +0000'
+date_gmt: '2011-10-25 13:43:43 +0000'
+categories:
+- MSMQ
+tags: []
+comments:
+- id: 1819
+  author: John Breakwell
+  author_email: JohnBreakwell@Plumbersmate.EU
+  author_url: http://blog.plumbersmate.eu/
+  date: '2011-10-25 17:21:49 +0000'
+  date_gmt: '2011-10-25 17:21:49 +0000'
+  content: "If you want some more reading:\r\n\r\n\"Clustering MSMQ applications -
+    rule #1\"\r\nhttp:&#47;&#47;blogs.msdn.com&#47;b&#47;johnbreakwell&#47;archive&#47;2008&#47;02&#47;18&#47;clustering-msmq-applications-rule-1.aspx\r\n\r\nCheers\r\nJohn"
+- id: 1824
+  author: Distributed Weekly 126 &mdash; Scott Banwart&#039;s Blog
+  author_email: ''
+  author_url: http://rogue-technology.com/blog/?p=1378
+  date: '2011-10-28 13:07:05 +0000'
+  date_gmt: '2011-10-28 13:07:05 +0000'
+  content: "[...] Using PowerShell with Clustered MSMQ [...]"
+---
+<p>My good friend <a href="http:&#47;&#47;www.larswilhelmsen.com&#47;">Lars Wilhelmsen</a> asked me a couple of days ago if I knew of a way to automate creating Queues on a clustered instance of MSMQ. Normally, a cluster of machines using Microsoft Cluster Service (MSCS) with MSMQ in Windows Server 2008 and up will have several MSMQ instances installed. For example, a 2-node cluster will typically have 3 MSMQ instances: 2 local ones (one for each node) and the clustered instance, which will be configured&#47;running on a single node at a time.</p>
+<p>So what usually happens is that if you try using <code>System.Messaging</code> on PowerShell on an MSMQ cluster, you&rsquo;ll end up creating the queues in the local instance, not the clustered instance. And <code>MessageQueue.Create()</code> doesn&rsquo;t allow you to specify a machine name either.</p>
+<p>The trick to getting this to work lies in <a href="http:&#47;&#47;support.microsoft.com&#47;kb&#47;198893">KB198893</a> (Effects of checking &rdquo;Use Network Name for Computer Name&rdquo; in MSCS). Basically all you have to do is set the <code>_CLUSTER_NETWORK_NAME_</code> environment variable to the name of the Virtual Server that hosts the clustered MSMQ resource:</p>
+<pre class="codebg"><code><span class="Identifier">$env:_CLUSTER_NETWORK_NAME_</span> = <span class="String">'myclusterMSMQ'</span><br />
+<span class="Type">[System.Messaging.MessageQueue]</span>::Create(<span class="String">'.\Private$\MyQueue'</span>)<br />
+</code></pre></p>
+<p>One thing to keep in mind, though: You have to set this environment variable <em>before</em> you attempt to use any <code>System.Messaging</code> feature; otherwise it will simply be ignored because the MSMQ runtime will already be bound to the local MSMQ instance.</p></p>

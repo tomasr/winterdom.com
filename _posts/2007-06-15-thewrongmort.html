@@ -1,0 +1,66 @@
+---
+layout: post
+status: publish
+published: true
+title: The Wrong Mort
+author:
+  display_name: Tomas Restrepo
+  login: tomasr
+  email: tomas@winterdom.com
+  url: http://winterdom.com/
+author_login: tomasr
+author_email: tomas@winterdom.com
+author_url: http://winterdom.com/
+wordpress_id: 613
+wordpress_url: http://winterdom.com/2007/06/thewrongmort
+date: '2007-06-15 16:10:54 +0000'
+date_gmt: '2007-06-15 16:10:54 +0000'
+categories:
+- Development
+- Architecture
+tags: []
+comments:
+- id: 410
+  author: Nick Malik
+  author_email: ''
+  author_url: http://blogs.msdn.com/nickmalik
+  date: '2007-06-16 05:41:25 +0000'
+  date_gmt: '2007-06-16 05:41:25 +0000'
+  content: |
+    Hi Tomas,
+    I am very aware of Sam's extensive speaking and writing record in favor of agile development.  That is why I was surprised when he posted his little bit of vitriol against Mort on my blog.  Sam brought up Mort.  I did not.
+    As for uber-geeks not using TDD... My statement was not as clear as it could have been.  I meant to say that, in my opinion, TDD does not differentiate the uber-geek.  Agile methodology is not the "minimum bar" for being a super-technical thought leader.  Sure many use agile practices, as do tens of thousands of other developers who are not uber-geeks.  But there are uber-geeks who do not, and that doesn't make them less geeky.
+    As you pointed out in your previous post on the Mort&#47;Elvis thing, the whole persona business is a mess.  There is a much greater blend between information workers, business coders and full time IT developers than the personas imply.  They artificially divide people.
+    That said, Mort is not a bad guy.  He writes one-off programs that the business needs quickly.  Developers are not asking for these "quick" features.  Developers who buy Visual Studio is only part of the market.  Another part, a rather large one, is the enterprise buyer.  He wants a single tool that will help employees across that range of development needs.  So there are features for everyone in there, including for the guys who write one-off programs.
+    If you find yourself having to maintain a program that was not written to be maintained, don't blame the maker of the tools!  The company that hires and pays the developer bears some culpability for not asking for maintainability, and the developer who delivered that tool has a good bit of culpability by not designing for maintainability.
+    Writing good code is less expensive than writing bad code.  I've said that for years, recently in a thread on comp.object where myself and Robert Martin were both trying to argue down folks who believed that you could write dirty code more quickly, and therefore, more cheaply.
+    As for folks using OO programming languages in a procedural way... yep.  happens.  We can't do much to prevent it.  We are working on Domain Specific Languages as a way to have an architect create a design that is advanced but can also be driven through a sofware factory, leaving the developer a better foundation to build upon.  When used well, more frequent use of OO should occur.
+    One more bit on Mort:
+    >>It was typically applied to people who didn't quite understand the tools&#47;environment they were working on, creating half-assed applications that while did the trick initially, were a living hell to maintain because they didn't respect the most basic principles of good software development (in many cases, were not even aware they existed). <<
+    And how is that view NOT prejudice?  (I understand you are repeating the definition, not necessarily subscribing to it).  I certainly don't use the term "Mort" to mean "incapable of good practices" and I know others who take the same view that I do.  Mort is practical, not stupid.  He is doing what most employees do... he is doing what he is paid to do.
+    I hope this makes my position more clear.
+    And, yes, Morts use Test Driven Development if and when it makes sense (not in Excel).
+---
+<p><!--start_raw-->
+<p>My good friend Sam Gentile pointed to me Nick Malik's post on "Tools for Mort", in which Nick responds to some comments made by Sam a few days ago. I don't&nbsp;particularly agree with Nick's point of view. Several things bothered me about this post.</p>
+<p><strong>Why are we talking about Mort again?</strong></p>
+<p>First of all, I've <a href="http:&#47;&#47;www.winterdom.com&#47;weblog&#47;2006&#47;04&#47;25&#47;MortOrElvis.aspx">said in the past</a> that I don't&nbsp;particularly care&nbsp;in the Mort&#47;Elvis&#47;Einstein personas. Besides the fact that they tend to split users&#47;developers around what I believe are the wrong areas, they are way too misinterpreted all around. Just bringing up the whole Mort topic is a sure way to turn a discussion in an unproductive direction. </p>
+<p>What's worse, Nick&nbsp;apparently thinks&nbsp;Morts&nbsp;are the great Agile developers fighting the corporate world. Frankly, I&nbsp;have no clue where&nbsp;he got that idea from, but what do I know.</p>
+<p>Look, it's great that there are people leveraging office and other&nbsp;platforms to solve business problems and&nbsp;get work&nbsp;done. There's a lot of really&nbsp;good use cases for that technology. However, it doesn't mean all software projects should be solved that way.&nbsp;In some scenarios,&nbsp;these kind of tools are great for solving immediate issues, but many times they are not suitable for building long-lasting, scalable solutions. Both sides of the software spectrum have different needs and deserve different solutions.</p>
+<p>However, let's be clear about why the term Mort got a bad reputation: It was typically applied to people who didn't quite understand the tools&#47;environment they were working on, creating half-assed applications that while did the trick initially, were a living hell to maintain because they didn't respect the most basic principles of good software development (in many cases, were not even aware they existed). Hey Nick, let's be honest here: your "Mort" friend was definitely no Mort if he was doing continuous integration and automated unit testing [1]. </p>
+<p><strong>Sam doesn't get Agile?</strong></p>
+<p>Nick goes on to say:</p><br />
+<blockquote>
+<p><em>"Do you really mean that Microsoft should make a priority of serving top-down project managers who believe in BDUF by including big modeling tools in Visual Studio, because the MDD people are more uber-geeky than most of us will ever be?&nbsp; I hate to point this out, Sam, but Alpha Geeks are not the ones using TDD.&nbsp; It's the Morts of the programming world.&nbsp; Alpha geeks are using Domain Specific Languages."</em></p></blockquote>
+<p>From this sentence alone it's clear to me that Nick is obviously not aware of Sam's extensive and continuous efforts talking about "agile architects" and railing against BDFU. Really, you might want to look a bit around before making those kind of comments. </p>
+<p>Now, Morts are the ones doing TDD? Wow. color me surprised. Alpha Geeks use DSLs? Really? AND THEY DO NOT&nbsp;DO TEST DRIVEN DEVELOPMENT? WOW.</p>
+<p>Hummm...not quite. Most of the so called&nbsp;Morts&nbsp;have no&nbsp;freaking clue what&nbsp;Test Driven Development. People like the Code Better&nbsp;guys, Ayende and a lot others are precisely doing that: Trying to raise the level of awareness&nbsp;in the community about TDD&#47;DDD and improving the way they write software. They are the ones trying to improve our field by making developers more aware of how they work and get them to write better software that not only works and solves the business problem it is intended to solve, but that is also <em>maintainable</em>. At least grant them that much.</p>
+<p>I think Nick is also a bit confused about the whole Alpha Geek business. A lot of them do use <em>dynamic languages</em> and yes, a lot of them use them to create <em>domain specific languages</em>. But what makes you think they don't need TDD? Quite the contrary, Nick, they are far more reliant on TDD and automated unit testing. </p>
+<p>Nick then says that <em>"We </em>[Microsoft]<em> are the singlehanded leaders in the space of bringing BASIC developers up to modern computing languages."</em>. Humm.... certainly true, you moved them over to VB.NET. It's certainly possible to write Object Oriented code in VB.NET. That, however, doesn't mean they are. Let's face it, there are millions of developers out there using VB.NET and (yes) C# that are still writing essentially procedural code (if they are lucky). Just because you declare classes doesn't mean you're doing OOD. </p>
+<p><strong>It's the tooling</strong></p>
+<p>But that's all mostly irrelevant to the discussion. I got the chance to speak about this with Sam and others during the past MVP summit, so I do think I have an idea what the fuzz is about (and because I happen to agree with the consensus). See, none of us are arguing that Microsoft has not done significant contributions to the community and even to the Software Developer profession, because they have.</p>
+<p>What we do argue about is the tooling coming out of Microsoft and the way it is meant to be used. A lot of the software coming out of DevDiv these days seems to be very focused on <em>building something quick</em>. That's not a bad thing by itself, we all want software could be developed faster and that we could deliver it to the business as soon as possible.</p>
+<p>What <em>is</em> a problem is that the tools enable that quick result at the expense of something else; something fundamentally important if you're not writing sample applications or "quick-n'-dirties". They are fundamentally non scalable (and I'm not talking about performance here), and unmaintainable if you just stick to the whole straight from the db databinding and drag and drop style of development Microsoft is so proud about. Better people than me have argued this more vehemently that I ever could so I'm not going to repeat it here.</p>
+<p>I think that, at a fundamental level, there's a significant disconnect here. What some part of the community spends its efforts in is to try to raise the awareness, knowledge and capabilities of developers everywhere as a means. For them this is a key point in getting better software, with better and faster results. Instead of <em>dumbing down</em> the tools to suit the unwary developer, they are trying to <em>smart up</em> the developer to use the available tools more effectively.</p>
+<p><strong>[1]</strong> Somehow, I can't imagine Nick's Mort doing TDD while writing Excel macros, but maybe I'm just being cynic...</p>
+<div class="wlWriterSmartContent" id="0767317B-992E-4b12-91E0-4F059A8CECA8:0e68917b-fd3c-45f9-abce-9914a39a8445" contenteditable="false" style="padding-right: 0px; display: inline; padding-left: 0px; padding-bottom: 0px; margin: 0px; padding-top: 0px">Technorati tags: <a href="http:&#47;&#47;technorati.com&#47;tags&#47;Microsoft" rel="tag">Microsoft</a>, <a href="http:&#47;&#47;technorati.com&#47;tags&#47;Agile" rel="tag">Agile</a>, <a href="http:&#47;&#47;technorati.com&#47;tags&#47;Morts" rel="tag">Morts</a></div><!--end_raw--></p>

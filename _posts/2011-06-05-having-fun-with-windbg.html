@@ -1,0 +1,238 @@
+---
+layout: post
+status: publish
+published: true
+title: Having Fun with WinDBG
+author:
+  display_name: Tomas Restrepo
+  login: tomasr
+  email: tomas@winterdom.com
+  url: http://winterdom.com/
+author_login: tomasr
+author_email: tomas@winterdom.com
+author_url: http://winterdom.com/
+wordpress_id: 1335
+wordpress_url: http://winterdom.com/2011/06/having-fun-with-windbg
+date: '2011-06-05 18:16:44 +0000'
+date_gmt: '2011-06-05 18:16:44 +0000'
+categories:
+- Development
+tags:
+- windbg
+comments:
+- id: 1743
+  author: Darvin
+  author_email: yarwoodj@cpit.ac.nz
+  author_url: http://www.bing.com/
+  date: '2011-06-24 04:22:47 +0000'
+  date_gmt: '2011-06-24 04:22:47 +0000'
+  content: And I was just wonerding about that too!
+---
+<p>I&rsquo;ve been spending lots of quality time with WinDBG and the rest of the Windows Debugging Tools, and ran into something I thought was fun to do.</p>
+<p>For the sake of keeping it simple, let&rsquo;s say I have a sample console application that looks like this:</p>
+<pre class="codebg"><code><span class="Statement">using</span> System;<br />
+<span class="Statement">using</span> System.Collections.Generic;<br />
+<span class="Statement">using</span> System.Linq;<br />
+<span class="Statement">using</span> System.Text;<br />
+<span class="Statement">using</span> System.Runtime.CompilerServices;</p>
+<p><span class="StorageClass">class</span> Program {<br />
+  <span class="StorageClass">static</span> <span class="Type">void</span> Main(<span class="Type">string</span>[] args) {<br />
+    Program p = <span class="Statement">new</span> Program();<br />
+    <span class="Repeat">for</span> ( <span class="Type">int</span> i = <span class="Number">0</span>; i < <span class="Number">10</span>; i++ ) {<br />
+      p.RunTest(<span class="String">"Test Run No. "</span> + i, i);<br />
+    }<br />
+  }<br />
+  [MethodImpl(MethodImplOptions.NoInlining)]<br />
+  <span class="StorageClass">public</span> <span class="Type">void</span> RunTest(String msg, <span class="Type">int</span> executionNumber) {<br />
+    Console.WriteLine(<span class="String">"Executing test"</span>);<br />
+  }<br />
+}</code></pre></p>
+<p>Now, imagine I'm debugging such an application and I'd like to figure out what is passed as parameters to the <code>RunTest()</code> method, seeing as how the application doesn't actually print those values directly. This seems contrived, but a classic case just like this one is a method that throws an <code>ArgumentException</code> because of a bad parameter input but the exception message doesn't specify what the parameter value itself was.</p></p>
+<p>For the purposes of this post, I&rsquo;ll be compiling using release x86 as the target and running on 32-bit Windows. Now, let&rsquo;s start a debug session on this sample application. Right after running it in the debugger, it will break right at the unmanaged entry point:</p>
+<pre class="codebg"><code>Microsoft (R) Windows Debugger Version 6.11.0001.404 X86<br />
+Copyright (c) Microsoft Corporation. All rights reserved.</p>
+<p>CommandLine: .\DbgTest.exe<br />
+Symbol search path is: *** Invalid ***<br />
+****************************************************************************<br />
+* Symbol loading may be unreliable without a symbol search path.           *<br />
+* Use .symfix to have the debugger choose a symbol path.                   *<br />
+* After setting your symbol path, use .reload to refresh symbol locations. *<br />
+****************************************************************************<br />
+Executable search path is:<br />
+ModLoad: 012f0000 012f8000   DbgTest.exe<br />
+ModLoad: 777f0000 77917000   ntdll.dll<br />
+ModLoad: 73cf0000 73d3a000   C:\Windows\system32\mscoree.dll<br />
+ModLoad: 77970000 77a4c000   C:\Windows\system32\KERNEL32.dll<br />
+(f9c.d94): Break instruction exception - code 80000003 (first chance)<br />
+eax=00000000 ebx=00000000 ecx=001cf478 edx=77855e74 esi=fffffffe edi=7783c19e<br />
+eip=77838b2e esp=001cf490 ebp=001cf4c0 iopl=0         nv up ei pl zr na pe nc<br />
+cs=001b  ss=0023  ds=0023  es=0023  fs=003b  gs=0000             efl=00000246<br />
+*** ERROR: Symbol file could not be found.  Defaulted to export symbols for ntdll.dll -<br />
+ntdll!DbgBreakPoint:<br />
+77838b2e cc              int     3<br />
+</code></pre></p>
+<p>Now let's fix the symbol path and also make sure SOS is loaded at the right time:</p>
+<pre class="codebg"><code>0:000> .sympath srv*C:\symbols*http:&#47;&#47;msdl.microsoft.com&#47;download&#47;symbols<br />
+Symbol search path is: srv*C:\symbols*http:&#47;&#47;msdl.microsoft.com&#47;download&#47;symbols<br />
+Expanded Symbol search path is: srv*c:\symbols*http:&#47;&#47;msdl.microsoft.com&#47;download&#47;symbols<br />
+0:000> .reload<br />
+Reloading current modules<br />
+......<br />
+0:000> sxe -c ".loadby sos clr" ld:mscorlib<br />
+0:000> g<br />
+(1020.12c8): Unknown exception - code 04242420 (first chance)<br />
+ModLoad: 70b80000 71943000   C:\Windows\assembly\NativeImages_v4.0.30319_32\mscorlib\246f1a5abb686b9dcdf22d3505b08cea\mscorlib.ni.dll<br />
+eax=00000001 ebx=00000000 ecx=0014e601 edx=00000000 esi=7ffdf000 edi=20000000<br />
+eip=77855e74 esp=0014e5dc ebp=0014e630 iopl=0         nv up ei pl zr na pe nc<br />
+cs=001b  ss=0023  ds=0023  es=0023  fs=003b  gs=0000             efl=00000246<br />
+ntdll!KiFastSystemCallRet:<br />
+77855e74 c3              ret<br />
+</code></pre></p>
+<p>At this point, managed code is not executing yet, but we've got SOS loaded. Now, what I'd like to do is set an initial breakpoint in the <code>RunTest()</code> method. Because it's a managed method, we'd need to wait until it is jitted to be able to grab the generated code entry point. Instead of doing all that work, I'll just use the !BPMD command included in SOS to set a pending breakpoint [1] on it, the resume execution:</p>
+<pre class="codebg"><code>0:000> !BPMD DbgTest.exe Program.RunTest<br />
+Adding pending breakpoints...<br />
+0:000> g<br />
+(110c.121c): CLR notification exception - code e0444143 (first chance)<br />
+(110c.121c): CLR notification exception - code e0444143 (first chance)<br />
+(110c.121c): CLR notification exception - code e0444143 (first chance)<br />
+JITTED DbgTest!Program.RunTest(System.String, Int32)<br />
+Setting breakpoint: bp 001600D0 [Program.RunTest(System.String, Int32)]<br />
+Breakpoint 0 hit<br />
+eax=000d37fc ebx=0216b180 ecx=0216b180 edx=0216b814 esi=0216b18c edi=00000000<br />
+eip=001600d0 esp=002fece0 ebp=002fecf4 iopl=0         nv up ei pl nz na po nc<br />
+cs=001b  ss=0023  ds=0023  es=0023  fs=003b  gs=0000             efl=00000202<br />
+001600d0 55              push    ebp<br />
+</code></pre></p>
+<p>Now he debugger has stopped execution on the first call to <code>RunTest</code>, so we can actually examine the values of the method arguments:</p>
+<pre class="codebg"><code>0:000> !CLRStack -p<br />
+OS Thread Id: 0x121c (0)<br />
+Child SP IP       Call Site<br />
+002fece0 001600d0 Program.RunTest(System.String, Int32)<br />
+    PARAMETERS:<br />
+        this (<clr reg>) = 0x0216b180<br />
+        msg (<clr reg>) = 0x0216b814<br />
+        executionNumber (0x002fece4) = 0x00000000<br />
+</code></pre></p>
+<p>So the first parameter is the <code>this</code> pointer, as this is a method call. The <code>msg</code> parameter is a string, so let's examine that as well:</p>
+<pre class="codebg"><code>0:000> !dumpobj -nofields 0x0216b814<br />
+Name:        System.String<br />
+MethodTable: 70e9f9ac<br />
+EEClass:     70bd8bb0<br />
+Size:        42(0x2a) bytes<br />
+File:        C:\Windows\Microsoft.Net\assembly\GAC_32\mscorlib\v4.0_4.0.0.0__b77a5c561934e089\mscorlib.dll<br />
+String:      Test Run No. 0<br />
+</code></pre></p>
+<p>Now let's look at this at a slightly lower level:</p>
+<pre class="codebg"><code>0:000> kbn3<br />
+ # ChildEBP RetAddr  Args to Child<br />
+WARNING: Frame IP not in any known module. Following frames may be wrong.<br />
+00 002fecdc 001600ab 00000000 00000000 004aa100 0x1600d0<br />
+01 002fecf4 727221db 002fed14 7272e021 002fed80 0x1600ab<br />
+02 002fed04 72744a2a 002fedd0 00000000 002feda0 clr!CallDescrWorker+0x33<br />
+0:000> !IP2MD 0x1600d0<br />
+MethodDesc:   000d37fc<br />
+Method Name:  Program.RunTest(System.String, Int32)<br />
+Class:        000d1410<br />
+MethodTable:  000d3810<br />
+mdToken:      06000002<br />
+Module:       000d2e9c<br />
+IsJitted:     yes<br />
+CodeAddr:     001600d0<br />
+Transparency: Critical<br />
+0:000> !IP2MD 0x1600ab<br />
+MethodDesc:   000d37f0<br />
+Method Name:  Program.Main(System.String[])<br />
+Class:        000d1410<br />
+MethodTable:  000d3810<br />
+mdToken:      06000001<br />
+Module:       000d2e9c<br />
+IsJitted:     yes<br />
+CodeAddr:     00160070<br />
+Transparency: Critical<br />
+</code></pre></p>
+<p>Here we see the top 3 stack frames including the first 3 parameters to the call, and from the !IP2MD calls you can see the first 2 are the calls to <code>RunTest()</code> and <code>Main()</code>, just as we would expect.</p></p>
+<p>The parameters displayed by the <code>kb</code> command, however, seem a bit weird for the <code>RunTest</code> call: <code>00000000 00000000 004aa100</code>. These are, literally, the values on the stack:</p>
+<pre class="codebg"><code>0:000> dd esp L8<br />
+002fece0  001600ab 00000000 00000000 004aa100<br />
+002fecf0  002fed20 002fed04 727221db 002fed14<br />
+</code></pre></p>
+<p>Notice that at the top of the stack we have the return address to the place in <code>Main()</code> where the method call happened, followed by the "3 parameters" displayed by <code>kb</code>. However, this isn't actually correct.</p></p>
+<p>The CLR uses a calling convention that resembles the FASTCALL convention a bit. That means that in this case, the left-most parameter would be passed in the ECX register, the next one in EDX and the rest on the stack. In our case, this means that the value of the <code>this</code> pointer will go in ECX:</p>
+<pre class="codebg"><code>0:000> r ecx<br />
+ecx=0216b180<br />
+0:000> !dumpobj ecx<br />
+Name:        Program<br />
+MethodTable: 000d3810<br />
+EEClass:     000d1410<br />
+Size:        12(0xc) bytes<br />
+File:        C:\temp\DbgTest\bin\release\DbgTest.exe<br />
+Fields:<br />
+None<br />
+</code></pre></p>
+<p>It also means that the <code>msg</msg> argument will go in EDX:</code> </p>
+<pre class="codebg"><code>0:000> r edx<br />
+edx=0216b814<br />
+0:000> !dumpobj -nofields edx<br />
+Name:        System.String<br />
+MethodTable: 70e9f9ac<br />
+EEClass:     70bd8bb0<br />
+Size:        42(0x2a) bytes<br />
+File:        C:\Windows\Microsoft.Net\assembly\GAC_32\mscorlib\v4.0_4.0.0.0__b77a5c561934e089\mscorlib.dll<br />
+String:      Test Run No. 0<br />
+</code></pre></p>
+<p>So the value <code>executionNumber</code> argument will go in the stack, and we'll find it at [esp+4]:</p>
+<pre class="codebg"><code>0:000> dd [esp+4] L1<br />
+002fece4  00000000<br />
+</code></pre></p>
+<p>We could even disassemble the small piece of code in <code>Main</code> that calls <code>RunTest</code>, by backing up a bit before the current return address, and you'll see how the value of <code>i</code> is pushed into the stack from the <code>edi</code> register and how the <code>ecx</code> and <code>edx</code> are likewise prepared for the call:</p>
+<pre class="codebg"><code>0:000> u 001600ab-12 L8<br />
+0016009b e87076b870      call    mscorlib_ni+0x2b7710 (70e37710)<br />
+001600a0 57              push    edi<br />
+001600a1 8bd0            mov     edx,eax<br />
+001600a3 8bcb            mov     ecx,ebx<br />
+001600a5 ff1504380d00    call    dword ptr ds:[0D3804h]<br />
+001600ab 47              inc     edi<br />
+001600ac 83ff0a          cmp     edi,0Ah<br />
+</code></pre></p>
+<p>Knowing all this, if we wanted to print out the values of the <code>msg</code> and <code>executionNumber</code> parameters on all remaining calls to <code>RunTest</code>, we could replace the breakpoint setup by the <code>!BPMD</code> command with a regular breakpoint that executes a command and then continues execution. This would look something like this:</p>
+<pre class="codebg"><code>0:000> * remove existing breakpoint<br />
+0:000> bc 0<br />
+0:000> * check start address of RunTest<br />
+0:000> !name2ee DbgTest.exe Program.RunTest<br />
+Module:      000d2e9c<br />
+Assembly:    DbgTest.exe<br />
+Token:       06000002<br />
+MethodDesc:  000d37fc<br />
+Name:        Program.RunTest(System.String, Int32)<br />
+JITTED Code Address: 001600d0<br />
+0:000> * set breakpoint<br />
+0:000> bp 001600d0 "!dumpobj -nofields edx; dd [esp+4] L1; g"<br />
+0:000> g<br />
+Name:        System.String<br />
+MethodTable: 70e9f9ac<br />
+EEClass:     70bd8bb0<br />
+Size:        42(0x2a) bytes<br />
+File:        C:\Windows\Microsoft.Net\assembly\GAC_32\mscorlib\v4.0_4.0.0.0__b77a5c561934e089\mscorlib.dll<br />
+String:      Test Run No. 1<br />
+002fece4  00000001<br />
+Executing test<br />
+Name:        System.String<br />
+MethodTable: 70e9f9ac<br />
+EEClass:     70bd8bb0<br />
+Size:        42(0x2a) bytes<br />
+File:        C:\Windows\Microsoft.Net\assembly\GAC_32\mscorlib\v4.0_4.0.0.0__b77a5c561934e089\mscorlib.dll<br />
+String:      Test Run No. 2<br />
+002fece4  00000002<br />
+Executing test<br />
+Name:        System.String<br />
+MethodTable: 70e9f9ac<br />
+EEClass:     70bd8bb0<br />
+Size:        42(0x2a) bytes<br />
+File:        C:\Windows\Microsoft.Net\assembly\GAC_32\mscorlib\v4.0_4.0.0.0__b77a5c561934e089\mscorlib.dll<br />
+String:      Test Run No. 3<br />
+002fece4  00000003<br />
+...<br />
+</code></pre></p>
+<p>As you can see, we're indeed getting the values of both our arguments without problems in the debugger log (which we could easily write to a file using the <code>.logopen</code> command). This is a simple scenario, but can still prove useful sometimes. Of course, you could argue that going through all these contortions might be over the top, given that the <code>!ClrStack -p</code> command can give you parameters to each function in the call stack. The answer is that <code>!ClrStack</code> doesn't make it easy to dump just the first frame, not does it combine with other commands so that you can easily use <code>!DumpObj</code> on the parameter values.</p></p>
+<p><b>[1]</b> If !BPMD doesn't seem to work, it's likely because the CLR debugger notifications are disabled. See <a href="http:&#47;&#47;naveensrinivasan.com&#47;2010&#47;12&#47;05&#47;bpmdnotworking&#47;">this post</a> on how to fix it (for .NET 4.0, just remember to replace <code>mscorwks</code> for <code>clr</code>).</p>
+<pre></pre></p>

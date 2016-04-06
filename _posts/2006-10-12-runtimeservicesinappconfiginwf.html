@@ -1,0 +1,37 @@
+---
+layout: post
+status: publish
+published: true
+title: Runtime Services in App.Config in WF
+author:
+  display_name: Tomas Restrepo
+  login: tomasr
+  email: tomas@winterdom.com
+  url: http://winterdom.com/
+author_login: tomasr
+author_email: tomas@winterdom.com
+author_url: http://winterdom.com/
+wordpress_id: 244
+wordpress_url: http://winterdom.com/2006/10/runtimeservicesinappconfiginwf
+date: '2006-10-12 07:34:18 +0000'
+date_gmt: '2006-10-12 07:34:18 +0000'
+categories:
+- WinFX
+- Workflow
+tags: []
+comments: []
+---
+<p><!--start_raw-->
+<p>In Windows Workflow Foundation, you have two different ways of adding runtime services to the Workflow Engine:</p>
+<ul>
+<li>Through code, by using the <a href="http:&#47;&#47;windowssdk.msdn.microsoft.com&#47;en-us&#47;library&#47;system.workflow.runtime.workflowruntime.addservice.aspx">AddService()</a> method of the <a href="http:&#47;&#47;windowssdk.msdn.microsoft.com&#47;en-us&#47;library&#47;system.workflow.runtime.workflowruntime.aspx">WorkflowRuntime</a> class</li>
+<li>Through the application configuration file, by adding an entry to the <services&#47;> tag.</li></ul>
+<p>The latter is possible not only for the default services built into WF, like the <a href="http:&#47;&#47;windowssdk.msdn.microsoft.com&#47;en-us&#47;library&#47;system.workflow.runtime.hosting.sqlworkflowpersistenceservice.aspx">SqlWorkflowPersistenceService</a>, but also for your own ones; you just have to make sure you specify the correct type.</p>
+<p>You might have noticed that some of the service take extra parameters on the configuration file. For example, for the SqlWorkflowPersistenceService entry you can configure parameters like the ConnectionString, IsTransactional and so on. </p>
+<p>What may not be so obvious is that you can do the same thing for your own services and it's very easy! All you have to do is provide a constructor to your service class that takes a <a href="http:&#47;&#47;msdn2.microsoft.com&#47;en-us&#47;library&#47;system.collections.specialized.namevaluecollection.aspx">NameValueCollection</a> as an argument; this collection will then have any named parameters that were included in the configuration entry. So, to keep in mind:</p>
+<ol>
+<li>Add your service to the configuration entry; each parameter is added as an attribute in the corresponding <add&#47;> tag. For example: <add type="..." ConnectionString="...."&#47;></li>
+<li>Add alternate constructor to your service class with a NameValueCollection argument</li>
+<li>Extract named parameters from the NameValueCollection as needed to initialize your runtime service.</li></ol>
+<div class="wlWriterSmartContent" id="d7bf807d-7bb0-458a-811f-90c51817d5c2:eaeb7dd4-9f01-47f3-a91e-353886157df3" contenteditable="false" style="padding-right: 0px; display: inline; padding-left: 0px; padding-bottom: 0px; margin: 0px; padding-top: 0px">
+<p><span class="TagSite">Technorati:</span> <a href="http:&#47;&#47;technorati.com&#47;tag&#47;Windows+Workflow+Foundation" rel="tag" class="tag">Windows Workflow Foundation</a>, <a href="http:&#47;&#47;technorati.com&#47;tag&#47;WF" rel="tag" class="tag">WF</a><br &#47;><!-- StartInsertedTags: Windows Workflow Foundation, WF :EndInsertedTags --></p></div><!--end_raw--></p>

@@ -1,0 +1,31 @@
+---
+layout: post
+status: publish
+published: true
+title: Framework API inconsistency with encodings
+author:
+  display_name: Tomas Restrepo
+  login: tomasr
+  email: tomas@winterdom.com
+  url: http://winterdom.com/
+author_login: tomasr
+author_email: tomas@winterdom.com
+author_url: http://winterdom.com/
+wordpress_id: 379
+wordpress_url: http://winterdom.com/2006/01/frameworkapiinconsistencywithencodings
+date: '2006-01-31 08:41:36 +0000'
+date_gmt: '2006-01-31 08:41:36 +0000'
+categories:
+- ".NET"
+tags: []
+comments: []
+---
+<p><!--start_raw-->
+<p>While doing some encoding manipulation lately, I just realized an odd and somewhat annoying inconsistency in the .NET framework API, specifically with the design of the <a href="http:&#47;&#47;msdn.microsoft.com&#47;library&#47;en-us&#47;cpref&#47;html&#47;frlrfsystemtextencodingclasstopic.asp">System.Text.Encoding</a> class. As it turns out, an Encoding actually has several names it can be known as, including an internal framework name (such as UTF-8, or IBM500) and a human-understandable display name (such as "Unicode (UTF-8)" or "IBM EBCDIC (International)". This is most evident when you call <a href="http:&#47;&#47;msdn2.microsoft.com&#47;system.text.encoding.getencodings.aspx">Encoding.GetEncodings()</a>, which returns an array of <a href="http:&#47;&#47;msdn2.microsoft.com&#47;system.text.encodinginfo.aspx">EncodingInfo</a> objects, each with all the names an encoding is known for. Great.</p></p>
+<p>
+<p>Here's where you'll notice the first discrepancy: The human readable name for an encoding is called EncodingName in an Encoding object, but it is called DisplayName in the corresponding EncodingInfo name. It would be nice if they had been called the same, it would really have made it obvious that they were related.</p></p></p>
+<p>
+<p>The second oddity is even more annoying: When you call <a href="http:&#47;&#47;msdn2.microsoft.com&#47;httb1hft(en-US,VS.80).aspx">Encoding.GetEncoding()</a> using a string parameter, you need to pass the internal framework encoding name, that is, the one you get from EncodingInfo.Name. However, what happens if you already got an Encoding instance from somewhere? Well, it turns out <i>there is no</i> Name property on the Encoding class, which means that there is no way to get that name once you've been handed an instance of an Encoding class. So, why is the name public on one direction and not another? One reason might be that the designers preferred you referred to the encoding using the CodePage, but that seems like putting a very unintuitive limitation.</p></p></p>
+<p>
+<p>This would be a moot point, however, if the Encoding class simply allowed you to get the corresponding EncodingInfo object :)</p><br &#47;><br />
+</p><!--end_raw--></p>

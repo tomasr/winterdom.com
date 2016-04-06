@@ -1,0 +1,77 @@
+---
+layout: post
+status: publish
+published: true
+title: What's new in IIS 10.0
+author:
+  display_name: Tomas Restrepo
+  login: tomasr
+  email: tomas@winterdom.com
+  url: http://winterdom.com/
+author_login: tomasr
+author_email: tomas@winterdom.com
+author_url: http://winterdom.com/
+wordpress_id: 1544
+wordpress_url: http://winterdom.com/?p=1544
+date: '2015-08-13 01:45:48 +0000'
+date_gmt: '2015-08-13 01:45:48 +0000'
+categories:
+- IIS
+tags: []
+comments:
+- id: 569795
+  author: Phillip Haydon
+  author_email: phillip.haydon@gmail.com
+  author_url: http://www.philliphaydon.com
+  date: '2015-08-17 09:37:09 +0000'
+  date_gmt: '2015-08-17 09:37:09 +0000'
+  content: Will we get support for http2 as well? *fingers crossed*
+- id: 571380
+  author: Tristan
+  author_email: tristan@tristank.com
+  author_url: ''
+  date: '2015-08-20 23:25:08 +0000'
+  date_gmt: '2015-08-20 23:25:08 +0000'
+  content: Thanks for the summary - lots of improvements which look worthwhile!
+- id: 602909
+  author: Michael Morrison
+  author_email: mike@attunable.com
+  author_url: http://www.attunable.com
+  date: '2015-10-15 22:40:50 +0000'
+  date_gmt: '2015-10-15 22:40:50 +0000'
+  content: yes, http2 is the main feature
+- id: 602911
+  author: Michael Morrison
+  author_email: mike@attunable.com
+  author_url: http://www.attunable.com
+  date: '2015-10-15 22:41:48 +0000'
+  date_gmt: '2015-10-15 22:41:48 +0000'
+  content: https:&#47;&#47;blogs.iis.net&#47;davidso&#47;http2
+---
+<p>A new version of IIS is included in Windows 10, which was recently released.&nbsp;I was expecting it to be called "IIS 9.0" to follow the&nbsp;model used until now, but we've jumped all the way to "IIS 10.0". However, not much information seems to be available about what has changed, and the documentation at <a href="http:&#47;&#47;www.iis.net&#47;">IIS.NET</a>&nbsp;has yet to be updated.</p>
+<p>I'll outline some changes I've noticed on this post. Most&nbsp;of them where found simply by&nbsp;going over the configuration schemas in %WINDIR%\System32\inetsrv\config\schema on my own.</p>
+<h3>Wildcard Host Header Support</h3><br />
+This is a very useful feature that allows you to&nbsp;create a Web Site with a host header value of "*.&lt;domain&gt;", meaning that you don't have to create separate bindings for each subdomain you need to bind to the same Web Site! You can read more about this feature <a href="https:&#47;&#47;www.iis.net&#47;learn&#47;get-started&#47;whats-new-in-iis-10&#47;wildcard-host-header-support">here</a>.</p>
+<h3>IISAdministration PowerShell Module</h3><br />
+The WebAdministration module for managing IIS from PowerShell was introduced in IIS 7.5. However, it suffers from several issues, including the fact that it often doesn't feel very "PowerShelly". With IIS 10.0, a new alternative PowerShell module has been added, called IISAdministration. You can read more about this&nbsp;<a href="http:&#47;&#47;blogs.iis.net&#47;bariscaglar&#47;iisadministration-powershell-cmdlets-new-feature-in-windows-10-server-2016">here</a>.</p>
+<h3>Environment Variables</h3><br />
+In IIS 10.0, you can now easily specify a custom set of environment variables for an Application Pool, which will be defined for any worker process created from it. This is not supported in the UI, but you can easily add them using the Configuration Editor, or using AppCmd. For example, the following command will add a new environment variable to the ".NET v4.5" application pool named "MYVARIABLE":</p>
+<pre class="codebg"><code>appcmd set apppool ".NET v4.5" &#47;+environmentVariables.add[@start,name='MYVARIABLE',value='C:\temp']</code></pre><br />
+I think this is a very nice, useful feature, particularly for complex hosting environments with many application pools and where you might not want to define the variables at the machine level.</p>
+<h3>Log Event On Recycle Defaults</h3><br />
+Up to IIS 8.5, the logEventOnRecycle property of application pools had a default value of "Time, Memory, PrivateMemory". This means that&nbsp;when an application pool was recycled for any other reason, WAS (Windows Process Activation Services)&nbsp;would not leave an audit event on the System Event Log telling you about it.</p>
+<p>With IIS 10.0, the default value of logEventOnRecycle property has been changed to "Time, Requests, Schedule, Memory, IsapiUnhealthy, OnDemand, ConfigChange, PrivateMemory", which is much more useful and aligned with our recommended practices.</p>
+<h3>Support for Permanent Redirects</h3><br />
+When using the "HTTP Redirection" feature, you can now tell IIS to respond with an status code of 308 Permanent Redirect.</p>
+<p><a href="http:&#47;&#47;winterdom.com&#47;wp-content&#47;uploads&#47;2015&#47;08&#47;redirects.png"><img class="alignnone size-full wp-image-1546" src="http:&#47;&#47;winterdom.com&#47;wp-content&#47;uploads&#47;2015&#47;08&#47;redirects.png" alt="Http Redirects" width="362" height="121" &#47;></a></p>
+<h3>Remove the Server Header</h3><br />
+One feature that the old UrlScan tool had that was missing from the Request Filtering module introduced in IIS 7.0 was the option to remove the IIS Server version header ("Server: Microsoft-IIS&#47;10.0").&nbsp;The option to do so has now been added back in IIS 10.0 with the <code>removeServerHeader</code> option. I don't think this has been exposed in the Management Console&nbsp;yet, but you can use the&nbsp;AppCmd.exe to enable it, like this:</p>
+<pre class="codebg"><code>appcmd.exe set config "Default Web Site" &#47;section:system.webServer&#47;security&#47;requestFiltering &#47;removeServerHeader:True</code></pre></p>
+<h3>Tracing after Timeout in FREB</h3><br />
+IIS 7.0 introduced a fantastic feature known as Failed Request Tracing (aka FREB). However, one issue with FREB&nbsp;was that if you had rules configured for collecting traces based on request execution time, the trace file would get written as soon as the time limit expired. That meant you usually ended up with a "partial trace" that didn't include all&nbsp;events&nbsp;until the request completed.</p>
+<p>There is a new attribute you can configure on your rules called traceAllAfterTimeout in IIS 10.0. When it is enabled, IIS will wait until the request is actually completed before writing the trace file. This option, however, is not exposed in the User Interface, but you can still use command line tools to enable it. The following command&nbsp;will add a rule and then enable the option, for example:</p>
+<pre class="codebg"><code>appcmd configure trace "Default Web Site&#47;" &#47;enable &#47;path:*.aspx &#47;timeTaken:00:10:00<br />
+appcmd.exe set config "Default Web Site" -section:system.webServer&#47;tracing&#47;traceFailedRequests &#47;[path='*.aspx'].failureDefinitions.traceAllAfterTimeout:"True"</code></pre></p>
+<h3>Conclusion</h3><br />
+Overall, I think these are all excellent, and welcome additions to IIS. Once the next version of Windows Server ships, we'll see if there are any other improvements implemented.</p>
+<p>&nbsp;</p>

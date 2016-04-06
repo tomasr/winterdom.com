@@ -1,0 +1,91 @@
+---
+layout: post
+status: publish
+published: true
+title: Configuring Putty with Tango
+author:
+  display_name: Tomas Restrepo
+  login: tomasr
+  email: tomas@winterdom.com
+  url: http://winterdom.com/
+author_login: tomasr
+author_email: tomas@winterdom.com
+author_url: http://winterdom.com/
+wordpress_id: 1183
+wordpress_url: http://winterdom.com/?p=1183
+date: '2009-05-03 16:43:49 +0000'
+date_gmt: '2009-05-03 16:43:49 +0000'
+categories:
+- Tools
+- PowerShell
+tags: []
+comments:
+- id: 785
+  author: Jens
+  author_email: mail@jensge.org
+  author_url: http://jensge.org
+  date: '2009-05-18 14:56:50 +0000'
+  date_gmt: '2009-05-18 14:56:50 +0000'
+  content: Cool! And my first PowerShell script too. Thank you very much :-)
+- id: 1259
+  author: Making putty look nice on Windows &laquo; The adventures of Foo
+  author_email: ''
+  author_url: http://jensge.org/2009/12/making-putty-look-nice-on-windows/
+  date: '2009-12-21 17:24:59 +0000'
+  date_gmt: '2009-12-21 17:24:59 +0000'
+  content: "[...] Get this PowerShell skript to tangoify the putty palette Note: On
+    Windows 7 you might need to enable yourself to be able to execute powershell skripts.
+    \  December 21st, 2009 | Tags: Computer, English, Shell, Windows | Category: Uncategorized
+    [...]"
+- id: 106795
+  author: Putty Color Scheme Tango &amp; Export Putty Settings &laquo; Morning Lab
+  author_email: ''
+  author_url: http://xlery.com/blog/2014/04/06/putty-color-scheme-tango-export-putty-settings/
+  date: '2014-04-07 07:19:15 +0000'
+  date_gmt: '2014-04-07 07:19:15 +0000'
+  content: "[&#8230;] http:&#47;&#47;winterdom.com&#47;2009&#47;05&#47;configuring-putty-with-tango
+    [&#8230;]"
+---
+
+<p>I use <a href='http:&#47;&#47;www.chiark.greenend.org.uk&#47;~sgtatham&#47;putty&#47;'>Putty</a> relatively often, and it's a great tool to have on your Windows utilities if you do any kind of SSH-connectivity every now and then. However, the way customizations are made leaves somewhat to be desired at times.</p></p>
+<p>In particular, one of the things that annoys me about Putty is that pretty much all customizations seem to be done only at the profile level, even those that relate to the appearance of the terminal. And lets face it, the default Putty configuration is ugly and hard to use on a screen with a large resolution.</p></p>
+<p>Meanwhile, I've gotten pretty used on my Linux boxes to using gnome-terminal with the <a href='http:&#47;&#47;tango.freedesktop.org&#47;Tango_Icon_Theme_Guidelines'>Tango</a> color scheme, which is relatively nice as far as these things go. It's perfectly possible to configure Putty to use this colorscheme, but let's face it: it's cumbersome. Plus, moving your profiles around by exporting&#47;importing registry keys ain't great, either.</p></p>
+<p><img src='http:&#47;&#47;winterdom.com&#47;binary&#47;putty_tango.png' alt='Putty with Tango scheme'&#47;></p></p>
+<p>So I built this very simple PowerShell script (<code>puttyconf.vim</code>) to fill in all the necessary registry values for the Tango scheme on an existing Putty profile in the registry. Enjoy!</p></p>
+<div class="codebg"><code><span class="Keyword">param</span>(<span class="Type">[string]</span><span class="Identifier">$puttyConf</span>)<br &#47;><br />
+<br &#47;><br />
+<span class="Identifier">$sessionKey</span>&nbsp;= <span class="String">"HKCU:\Software\SimonTatham\PuTTY\Sessions\</span><span class="Identifier">$puttyConf</span><span class="String">"</span><br &#47;><br />
+<span class="Conditional">if</span>&nbsp;( <span class="Statement">test-path</span>&nbsp;<span class="Identifier">$sessionKey</span>&nbsp;) {<br &#47;><br />
+&nbsp;&nbsp; <span class="Identifier">$values</span>&nbsp;= @{<br &#47;><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="String">"Xterm256Colour"</span>&nbsp;= <span class="Number">0x00000001</span><br &#47;><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="String">"BoldAsColour"</span>&nbsp;= <span class="Number">0x00000001</span><br &#47;><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="String">"Colour0"</span>&nbsp;= <span class="String">"187,187,187"</span><br &#47;><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="String">"Colour1"</span>&nbsp;= <span class="String">"255,255,255"</span><br &#47;><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="String">"Colour2"</span>&nbsp;= <span class="String">"8,8,8"</span><br &#47;><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="String">"Colour3"</span>&nbsp;= <span class="String">"85,85,85"</span><br &#47;><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="String">"Colour4"</span>&nbsp;= <span class="String">"0,0,0"</span><br &#47;><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="String">"Colour5"</span>&nbsp;= <span class="String">"0,255,0"</span><br &#47;><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="String">"Colour6"</span>&nbsp;= <span class="String">"46,52,54"</span><br &#47;><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="String">"Colour7"</span>&nbsp;= <span class="String">"85,87,83"</span><br &#47;><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="String">"Colour8"</span>&nbsp;= <span class="String">"204,0,0"</span><br &#47;><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="String">"Colour9"</span>&nbsp;= <span class="String">"239,41,41"</span><br &#47;><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="String">"Colour10"</span>&nbsp;= <span class="String">"78,154,6"</span><br &#47;><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="String">"Colour11"</span>&nbsp;= <span class="String">"138,226,52"</span><br &#47;><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="String">"Colour12"</span>&nbsp;= <span class="String">"196,160,0"</span><br &#47;><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="String">"Colour13"</span>&nbsp;= <span class="String">"252,233,79"</span><br &#47;><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="String">"Colour14"</span>&nbsp;= <span class="String">"52,101,164"</span><br &#47;><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="String">"Colour15"</span>&nbsp;= <span class="String">"114,159,207"</span><br &#47;><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="String">"Colour16"</span>&nbsp;= <span class="String">"117,80,123"</span><br &#47;><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="String">"Colour17"</span>&nbsp;= <span class="String">"173,127,168"</span><br &#47;><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="String">"Colour18"</span>&nbsp;= <span class="String">"6,152,154"</span><br &#47;><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="String">"Colour19"</span>&nbsp;= <span class="String">"52,226,226"</span><br &#47;><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="String">"Colour20"</span>&nbsp;= <span class="String">"211,215,207"</span><br &#47;><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="String">"Colour21"</span>&nbsp;= <span class="String">"238,238,236"</span><br &#47;><br />
+&nbsp;&nbsp; }<br &#47;><br />
+&nbsp;&nbsp; <span class="Identifier">$values</span>.Keys | %{<br &#47;><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="Statement">set-itemproperty</span>&nbsp;<span class="Identifier">$sessionKey</span>&nbsp;<span class="StorageClass">$_</span>&nbsp;<span class="Identifier">$values</span>[<span class="StorageClass">$_</span>]<br &#47;><br />
+&nbsp;&nbsp; }<br &#47;><br />
+} <span class="Conditional">else</span>&nbsp;{<br &#47;><br />
+&nbsp;&nbsp; <span class="Statement">write-error</span>&nbsp;<span class="String">"Profile '</span><span class="Identifier">$puttyConf</span><span class="String">' does not exist in the Putty configuration"</span><br &#47;><br />
+}<br />
+</code></div></p>

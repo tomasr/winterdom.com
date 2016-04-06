@@ -1,0 +1,54 @@
+---
+layout: post
+status: publish
+published: true
+title: PSHostUserInterface.PromptForChoice
+author:
+  display_name: Tomas Restrepo
+  login: tomasr
+  email: tomas@winterdom.com
+  url: http://winterdom.com/
+author_login: tomasr
+author_email: tomas@winterdom.com
+author_url: http://winterdom.com/
+wordpress_id: 110
+wordpress_url: http://winterdom.com/2007/03/pshostuserinterfacepromptforchoice
+date: '2007-03-28 08:32:12 +0000'
+date_gmt: '2007-03-28 08:32:12 +0000'
+categories:
+- PowerShell
+tags: []
+comments:
+- id: 67
+  author: Dmitry Sotnikov
+  author_email: DSotnikov@gmail.com
+  author_url: http://dmitrysotnikov.wordpress.com
+  date: '2007-03-28 11:13:15 +0000'
+  date_gmt: '2007-03-28 11:13:15 +0000'
+  content: |
+    Why not use something like http:&#47;&#47;PowerGUI.org to be the UI for your cmdlets instead? Could save you the time and effort doing the hosting, etc.
+- id: 68
+  author: Tomas Restrepo
+  author_email: tomas@winterdom.com
+  author_url: http://www.winterdom.com/weblog/
+  date: '2007-03-28 11:43:24 +0000'
+  date_gmt: '2007-03-28 11:43:24 +0000'
+  content: |
+    Dmitry: That's not an option in this case (particularly given that I'm not implementing an actual GUI). It's an interesting project, though.
+- id: 69
+  author: "&#47;\\&#47;\\o\\&#47;\\&#47;"
+  author_email: mow@thePowerShellGuy.com
+  author_url: http://thePowerShellGuy.com
+  date: '2007-03-30 06:32:07 +0000'
+  date_gmt: '2007-03-30 06:32:07 +0000'
+  content: |
+    All the CmdLets use this function for there confirm parameter, and it can be used for cmdlets for prompting user for input.
+    In the installer for my PowerTab tabcompletion you can find an example to use it directly for your own choices :
+    http:&#47;&#47;thepowershellguy.com&#47;blogs&#47;posh&#47;archive&#47;2007&#47;01&#47;17&#47;powertab-0-72-powershell-tabextension-part-1-installation.aspx
+    PS in future version direct soppert for this in functions likely will be added .
+    Greetings &#47;\&#47;\o\&#47;\&#47;
+---
+<p><!--start_raw-->
+<p>I've been working a bit lately with the Windows PowerShell hosting interfaces (PSHost and friends). I've got a basic host up and running (UI and all), but I'm still strugling a bit&nbsp;with some of the methods. So, here's one question for you PowerShell guys: What command will trigger a call to PSHostUserInterface.PromptForChoice()? (I can't write it if I don't know what the behavior is!)</p><br>
+<p><b>Update:</b> To answer my own question, two commands that use PromptForChoice are "export-console" and "remove-item -confirm".<br></p>
+<div class="wlWriterSmartContent" id="0767317B-992E-4b12-91E0-4F059A8CECA8:f4dec9f3-feda-4d77-b7f6-55976646c66f" contenteditable="false" style="margin: 0px; padding: 0px; display: inline;">Technorati tags: <a href="http:&#47;&#47;technorati.com&#47;tags&#47;PowerShell" rel="tag">PowerShell</a></div><!--end_raw--></p>

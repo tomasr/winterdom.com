@@ -1,0 +1,31 @@
+---
+layout: post
+status: publish
+published: true
+title: Service Orientation and Connection-Challenged Clients
+author:
+  display_name: Tomas Restrepo
+  login: tomasr
+  email: tomas@winterdom.com
+  url: http://winterdom.com/
+author_login: tomasr
+author_email: tomas@winterdom.com
+author_url: http://winterdom.com/
+wordpress_id: 228
+wordpress_url: http://winterdom.com/2005/10/serviceorientationandconnectionchallengedclients
+date: '2005-10-01 16:37:54 +0000'
+date_gmt: '2005-10-01 16:37:54 +0000'
+categories:
+- Development
+tags: []
+comments: []
+---
+<p><!--start_raw--><br />
+My good friend <a href="http:&#47;&#47;www.samgentile.com&#47;blog&#47;">Sam Gentile</a> wrote a <a href="http:&#47;&#47;samgentile.com&#47;blog&#47;archive&#47;2005&#47;10&#47;01&#47;32001.aspx">good piece</a> on Occassionally Connected [Smart] Clients and how they fit into a Service Oriented style of Architecture. I agree with him that, for many real business scenarios, this is substantially significant; not just benefit but a business necessity. Web- and always- connected applications work very well on a large number of scenarios, but there are a large number of business scenarios where there is a significant need to support at least some degree of offline-work facilities that allow the business scenarios to be performed while a connection is unavailable.</p>
+<p>The key thing here is to remember that:</p></p>
+<ol>
+<li>This is something that really needs to be architected into an application early on. It has to be a need that is recognized and prioritized from the start and that the project's architecture explicitly addresses at the highest level. It is not something that can just be hacked into the application later on in any decent way.</li>
+<li>Getting this done is still a fairly complex task, so it definitely warrants some thought at the data model and at the service model.</li><br />
+</ol></p>
+<p>The key point for me from Sam's comment though is the fact that this is a substantial scenario for Service Orientation. For the past few years, people have been accomplishing this using tools like direct database replication, and, let's face it, it has a lot of problems, like the fact that it can perform poorly, completely bypasses your business logic, it couples your client and serve data models, and it can lead to a lot of replication conflicts. Going with a service oriented approach from the start might require a somewhat larger investment up front, but it will certainly pay off in the long run.</p></p>
+<p>We are currently developing an application for one of our customers using this approach, combining a service oriented architecture with event driven messaging scenarios. One of the really cool things is that we can use the infrastructure built to handle the events and messages to communicate not only between multiple remote sites (regardless of their connection facilities, even in cases where <i>online connections are non-existant</i>), but also allows us to bring those events and messages, that represent real business information, directly into a backend integration bus (on top of BizTalk Server) that allows us to actually bring that information as well into backend business support systems (ERP, orders, and so on) as well as fire off automated business processes off them.</p><!--end_raw--></p>

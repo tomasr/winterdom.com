@@ -1,0 +1,24 @@
+---
+layout: post
+status: publish
+published: true
+title: PipelineTesting Per-Instance Config Bug
+author:
+  display_name: Tomas Restrepo
+  login: tomasr
+  email: tomas@winterdom.com
+  url: http://winterdom.com/
+author_login: tomasr
+author_email: tomas@winterdom.com
+author_url: http://winterdom.com/
+wordpress_id: 1292
+wordpress_url: http://winterdom.com/2009/10/pipelinetesting-per-instance-config-bug
+date: '2009-10-03 14:48:56 +0000'
+date_gmt: '2009-10-03 14:48:56 +0000'
+categories:
+- BizTalk
+tags: []
+comments: []
+---
+<p>Mark Coleman found a bug in the implementation of Per-Instance Config support in my <a href="http:&#47;&#47;wiki.github.com&#47;tomasr&#47;pipelinetesting">PipelineTesting</a> library for BizTalk Server. The problem was related to how the config XML was parsed, and would only manifest itself on certain conditions, depending on how said XML was formatted.</p>
+<p>Mark was also gracious enough to propose the fix, which I&rsquo;ve now committed to the <a href="http:&#47;&#47;github.com&#47;tomasr&#47;pipelinetesting">PipelineTesting GIT repository</a>, along with a unit test to make sure the problem doesn&rsquo;t come up again. Thanks a lot, Mark!</p></p>

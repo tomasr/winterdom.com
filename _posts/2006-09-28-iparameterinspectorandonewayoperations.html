@@ -1,0 +1,30 @@
+---
+layout: post
+status: publish
+published: true
+title: IParameterInspector and OneWay Operations
+author:
+  display_name: Tomas Restrepo
+  login: tomasr
+  email: tomas@winterdom.com
+  url: http://winterdom.com/
+author_login: tomasr
+author_email: tomas@winterdom.com
+author_url: http://winterdom.com/
+wordpress_id: 360
+wordpress_url: http://winterdom.com/2006/09/iparameterinspectorandonewayoperations
+date: '2006-09-28 06:06:03 +0000'
+date_gmt: '2006-09-28 06:06:03 +0000'
+categories:
+- WCF
+- WinFX
+tags: []
+comments: []
+---
+<p><!--start_raw-->
+<p>I talked <a href="http:&#47;&#47;www.winterdom.com&#47;weblog&#47;2006&#47;09&#47;27&#47;IParameterInspectorInWCF.aspx">before</a> about the IParameterInspector extension interface in Windows Communication Foundation. One topic I didn't cover was the behavior of IParameterInspector in relation to one way operations in WCF services. I'm refering here to operations explicitly marked with [OperationContract(IsOneWay=true)].</p>
+<p>With OneWay operations, the behavior of IParameterInspector is different in the server and client side:</p>
+<p>On the server (dispatcher) side, both BeforeCall() and AfterCall() will be called normally. On AfterCall(), the outputs parameter array will be of zero-length and the returnValue argument will be null, as expected.</p>
+<p>On the client (proxy) side, however, the AfterCall() method in your IParameterInspector implementation will <em>never</em> be called by the runtime. While this makes sense, it might not have been what you expected, so be&nbsp;mindful of this little fact.</p>
+<div class="wlWriterSmartContent" id="d7bf807d-7bb0-458a-811f-90c51817d5c2:99d21ab2-cc0f-4fbf-a1e7-b1ad40cb0372" contenteditable="false" style="padding-right: 0px; display: inline; padding-left: 0px; padding-bottom: 0px; margin: 0px; padding-top: 0px">
+<p><span class="TagSite">Technorati:</span> <a href="http:&#47;&#47;technorati.com&#47;tag&#47;WCF" rel="tag" class="tag">WCF</a>, <a href="http:&#47;&#47;technorati.com&#47;tag&#47;Windows+Communication+Foundation" rel="tag" class="tag">Windows Communication Foundation</a>, <a href="http:&#47;&#47;technorati.com&#47;tag&#47;WCF+Extensibility" rel="tag" class="tag">WCF Extensibility</a><br &#47;><!-- StartInsertedTags: WCF, Windows Communication Foundation, WCF Extensibility :EndInsertedTags --></p></div><!--end_raw--></p>

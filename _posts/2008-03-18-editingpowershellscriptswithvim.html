@@ -1,0 +1,48 @@
+---
+layout: post
+status: publish
+published: true
+title: Editing PowerShell Scripts with Vim
+author:
+  display_name: Tomas Restrepo
+  login: tomasr
+  email: tomas@winterdom.com
+  url: http://winterdom.com/
+author_login: tomasr
+author_email: tomas@winterdom.com
+author_url: http://winterdom.com/
+wordpress_id: 103
+wordpress_url: http://winterdom.com/2008/03/editingpowershellscriptswithvim
+date: '2008-03-18 11:17:10 +0000'
+date_gmt: '2008-03-18 11:17:10 +0000'
+categories:
+- PowerShell
+- Vim
+tags: []
+comments:
+- id: 2056
+  author: Peter Provost
+  author_email: peter.provost@microsoft.com
+  author_url: http://www.peterprovost.org/blog
+  date: '2012-03-07 03:37:22 +0000'
+  date_gmt: '2012-03-07 03:37:22 +0000'
+  content: "The vim-ps1 plugin now lives up on GitHub, so grab it there. It is pathogen-ready,
+    so very easy to drop into your vim configutation. Tomas has forked it to get me
+    his changes, so if anyone has any more, let me know.\r\n\r\nhttps:&#47;&#47;github.com&#47;PProvost&#47;vim-ps1"
+---
+<p><!--start_raw-->
+<p>I've been using Vim to edit my PowerShell scripts for a while. I get full syntax highlighting and indentation thanks to <a href="http:&#47;&#47;www.peterprovost.org&#47;">Peter Provost</a>'s excellent scripts:</p>
+<ul>
+<li><a href="http:&#47;&#47;www.vim.org&#47;scripts&#47;script.php?script_id=1327">Syntax</a> file </li>
+<li><a href="http:&#47;&#47;www.vim.org&#47;scripts&#47;script.php?script_id=1815">Indent</a> file </li>
+<li><a href="http:&#47;&#47;www.vim.org&#47;scripts&#47;script.php?script_id=1816">File Type Plugin</a> file </li> </ul>
+<p>These work great most of the time, but a couple of things had been nagging me for a while:</p>
+<ol>
+<li>I occasionally enable syntax-based folding (<code>:set foldmethod=syntax</code>), but the PS1 syntax file doesn't enable this for blocks "{...}" in PowerShell scripts. </li>
+<li>The indent file always forces comments (#...) to start at the first column. </li> </ol>
+<p>Fortunately, both of these issues are pretty easy to fix. To enable syntax-based folding, I just modified the syntax file to add this:</p>
+<div class="codebg"><code><span class="Comment">" support folding for blocks</span>       <br><span class="Statement">syntax</span>&nbsp;<span class="Type">region</span>&nbsp; psBlock&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span class="Type">start</span>=<span class="String">"{"</span>&nbsp;<span class="Type">end</span>=<span class="String">"}"</span>&nbsp;<span class="Special">transparent</span>&nbsp;<span class="Special">fold</span> </code></div>
+<p>To disable the comment indentation, I edited the Indent file and remove the # character as an indent key:</p>
+<div class="codebg"><code><span class="Statement">setlocal</span>&nbsp;<span class="PreProc">cindent</span>&nbsp;<span class="PreProc">cinoptions</span><span class="PreProc">&amp;</span>&nbsp;<span class="PreProc">cinoptions</span>+=+0 <span class="PreProc">cinkeys</span>-=0#</code></div>
+<p>Seems to be working fine for me, and it will now stop driving me crazy :-).</p>
+<div class="wlWriterSmartContent" id="scid:0767317B-992E-4b12-91E0-4F059A8CECA8:08564d36-7864-49aa-9543-27ef9b088159" style="margin: 0px; padding: 0px; display: inline;">Technorati tags: <a href="http:&#47;&#47;technorati.com&#47;tags&#47;Vim" rel="tag">Vim</a>, <a href="http:&#47;&#47;technorati.com&#47;tags&#47;PowerShell" rel="tag">PowerShell</a></div><!--end_raw--></p>

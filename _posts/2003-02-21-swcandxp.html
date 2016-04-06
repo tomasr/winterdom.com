@@ -1,0 +1,78 @@
+---
+layout: post
+status: publish
+published: true
+title: SWC and XP
+author:
+  display_name: Tomas Restrepo
+  login: tomasr
+  email: tomas@winterdom.com
+  url: http://winterdom.com/
+author_login: tomasr
+author_email: tomas@winterdom.com
+author_url: http://winterdom.com/
+wordpress_id: 659
+wordpress_url: http://winterdom.com/2003/02/swcandxp
+date: '2003-02-21 18:47:28 +0000'
+date_gmt: '2003-02-21 18:47:28 +0000'
+categories:
+- Enterprise Services
+tags: []
+comments: []
+---
+<p><!--start_raw--><a href="http:&#47;&#47;dotnetweblogs.com&#47;Cweyer&#47;">Christian Weyer</a> asks why <a href="http:&#47;&#47;msdn.microsoft.com&#47;library&#47;en-us&#47;cossdk&#47;htm&#47;pgservices_serviceswithoutcomponents_990z.asp?frame=true">Services Without Components</a> is broken on Windows XP. I don't know the exact details of it, but I do know a few things I found out after lurking a while.</p>
+<p>Keep in mind that last time I took a look at this was a few months ago, so it might have changed, but I highly doubt it.</p></p>
+<p>Transaction support for SWC is configured through the IServiceTransactionConfig interface. Now, the original interface, with an IID of {772b3fbe-6ffd-42fb-b5f8-8f9b260f3810} is indeed supported on WinXP, and it sort of works. Or at least, it looks like it. [1]</p></p>
+<p>However, it turns out, if I may say so myself, that someone made a bad versioning decision for .NET server, and went against all the COM versioning practices used before. In .NET Server, IServiceTransactionConfig supports 1 other method: ConfigureBYOT().</p></p>
+<p>The problem is, it's not that they redefined the interface. Worse, they renamed it. So, in previous PSDK headers we had the following definition for IServiceTransactionConfig:</p></p>
+<pre><code><br />
+MIDL_INTERFACE("772b3fbe-6ffd-42fb-b5f8-8f9b260f3810")<br />
+IServiceTransactionConfig : public IUnknown<br />
+{<br />
+public:<br />
+virtual HRESULT STDMETHODCALLTYPE ConfigureTransaction(<br />
+&#47;* [in] *&#47; CSC_TransactionConfig transactionConfig) = 0;<br />
+virtual HRESULT STDMETHODCALLTYPE IsolationLevel(<br />
+&#47;* [in] *&#47; COMAdminTxIsolationLevelOptions option) = 0;<br />
+virtual HRESULT STDMETHODCALLTYPE TransactionTimeout(<br />
+&#47;* [in] *&#47; ULONG ulTimeoutSec) = 0;<br />
+virtual HRESULT STDMETHODCALLTYPE BringYourOwnTransaction(<br />
+&#47;* [string][in] *&#47; LPCWSTR szTipURL) = 0;<br />
+virtual HRESULT STDMETHODCALLTYPE NewTransactionDescription(<br />
+&#47;* [string][in] *&#47; LPCWSTR szTxDesc) = 0;<br />
+};<br />
+</code></pre></p>
+<p>Notice, however, there's no ConfigureBYOT() method, even though the PSDK docs mentioned it was there.<br />
+What we have now are <i>two</i> interfaces: IServiceTransactionConfigBase, and IServiceTransactionConfig, which inherits from the first one.</p></p>
+<p>There's the rub. What is now named IServiceTransactionConfigBase is <i>exactly</i> what used to be called IServiceTransactionConfig, and has the same GUID; they just renamed it, and created a new interface with the <i>same</i> name as the old one with a new GUID which is only supported in .NET Server. The definitions for these new interfaces are:</p></p>
+<pre><code><br />
+MIDL_INTERFACE("772b3fbe-6ffd-42fb-b5f8-8f9b260f3810")<br />
+IServiceTransactionConfigBase : public IUnknown<br />
+{<br />
+public:<br />
+virtual HRESULT STDMETHODCALLTYPE ConfigureTransaction(<br />
+&#47;* [in] *&#47; CSC_TransactionConfig transactionConfig) = 0;<br />
+virtual HRESULT STDMETHODCALLTYPE IsolationLevel(<br />
+&#47;* [in] *&#47; COMAdminTxIsolationLevelOptions option) = 0;<br />
+virtual HRESULT STDMETHODCALLTYPE TransactionTimeout(<br />
+&#47;* [in] *&#47; ULONG ulTimeoutSec) = 0;<br />
+virtual HRESULT STDMETHODCALLTYPE BringYourOwnTransaction(<br />
+&#47;* [string][in] *&#47; LPCWSTR szTipURL) = 0;<br />
+virtual HRESULT STDMETHODCALLTYPE NewTransactionDescription(<br />
+&#47;* [string][in] *&#47; LPCWSTR szTxDesc) = 0;<br />
+};<br />
+MIDL_INTERFACE("59f4c2a3-d3d7-4a31-b6e4-6ab3177c50b9")<br />
+IServiceTransactionConfig : public IServiceTransactionConfigBase<br />
+{<br />
+public:<br />
+virtual HRESULT STDMETHODCALLTYPE ConfigureBYOT(<br />
+&#47;* [in] *&#47; ITransaction *pITxByot) = 0;<br />
+};<br />
+</code></pre></p>
+<p>The reason this is terrible is because it breaks <i>source</i> code, even if it doesn't break binary code. If you compile your application agains the <i>old</i> headers, everything will [sort of] work fine on XP, even if you can't use ConfigureBYOT(), since it doesn't exist. (which is fine by me, btw). However, if you recompile it against the new headers, suddently it <i>doesn't</i> work on XP, because it picks up the GUID for the new definition of IServiceTransactionConfig, only existing on .NET Server (so QueryInterface() now fails). [2]</p></p>
+<p>What they <i>should</i> have done, was leave IServiceTransactionConfig alone, and define a <i>new</i> interface with a <i>new</i> name, called IServiceTransactionConfigEx or IServiceTransactionConfig2 or whatever, which is what the common COM versioning rules of thumb are. </p></p>
+<p>Up to a couple of months ago, this wasn't documented <i>anywhere</i>, and the PSDK docs still said that IServiceTransactionConfig, even with the new ConfigureBYOT() method, was supported on XP (which was now a lie, thanks to the GUID change). Not only that, but IServiceTransactionConfigBase is not documented anyway, either.</p></p>
+<p>I just looked at the docs for the February 2003 Platform SDK documentations, and it seems this has been corrected. <a href="http:&#47;&#47;msdn.microsoft.com&#47;library&#47;default.asp?url=&#47;library&#47;en-us&#47;cossdk&#47;htm&#47;coenterservicedomain_04a6.asp">CoEnterServiceDomain()</a> and friends are now documented as being supported on Windows Server 2003 only. And, in fact, the SWC support in the .NET Framework 1.1 will only work in WS 2003.... the ServiceDomain class won't even instantiate in XP. I was told in very certain terms that the public message from now on would be that SWC was <i>NOT</i> supported on XP.</p></p>
+<p>[1] I have a feeling far more is broken below... I had a few issues with aborting transactions explicitly within a service domain last I fooled around with this...<br&#47;><br />
+[2] I haven't installed yet the latest PSDK, so I don't know if this blunder has been fixed...</p><br />
+<!--end_raw--></p>

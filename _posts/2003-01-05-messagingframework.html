@@ -1,0 +1,44 @@
+---
+layout: post
+status: publish
+published: true
+title: Messaging Framework
+author:
+  display_name: Tomas Restrepo
+  login: tomasr
+  email: tomas@winterdom.com
+  url: http://winterdom.com/
+author_login: tomasr
+author_email: tomas@winterdom.com
+author_url: http://winterdom.com/
+wordpress_id: 536
+wordpress_url: http://winterdom.com/2003/01/messagingframework
+date: '2003-01-05 15:55:31 +0000'
+date_gmt: '2003-01-05 15:55:31 +0000'
+categories:
+- Web Services
+tags: []
+comments:
+- id: 359
+  author: Justin Rudd
+  author_email: the.pinestraw.man@pobox.com
+  author_url: http://pinetree-tech.com/weblog/
+  date: '2003-01-05 22:18:28 +0000'
+  date_gmt: '2003-01-05 22:18:28 +0000'
+  content: |
+    <p>What about KnowNow?  <a href="http:&#47;&#47;www.knownow.com&#47;products&#47;architecture.html" rel="nofollow">http:&#47;&#47;www.knownow.com&#47;products&#47;architecture.html</a>   I've built software around it.  I was working on a P2P solution based on it.  It was working very well before the project got cancelled :-)</p>
+- id: 360
+  author: Joshua Prismon
+  author_email: josh_nospam@prismon.com
+  author_url: http://www.prismon.com
+  date: '2003-01-15 12:17:08 +0000'
+  date_gmt: '2003-01-15 12:17:08 +0000'
+  content: |
+    <p>This is also something that has interested me. In my view, a RESTFul interface on top of  system that speaks XML, XSLT and XSD would be a very very effective tool. The only other thing that needs to be added is some sort of transactional layer. All of this could be layered on top of .NET with some simple attributes.<br &#47;>
+    </p>
+---
+<p><!--start_raw-->I've been giving a lot of thought lately to the idea of a messaging framework for server applications. What I'd like to have is a framework on top of which one could build applications that rely heavily on messaging, whether this means messaging queues, REST-style interactions over HTTP, or WebServices calls.</p>
+<p>It's very rough, I know, but I find it an intriguing idea. One could conceivably create pretty complex applications and processing pipelines without too much work on it. Although working with any of the above technologies is fairly simple, in an abstract sense, doing so reliably is a different matter altogether. At least, it is if one wants to consider things like retry logic, poisoned messages, timeouts, both synchronous and asynchronous processing, etc.</p></p>
+<p>Now, before anyone says anything, yes, I know products such as <a href="http:&#47;&#47;www.microsoft.com&#47;biztalk&#47;">Microsoft Biztalk</a> [1] exist that deal with some of this, but they are too heavyweight (or just overkill) sometimes, and cost is a real issue here, too. And while Biztalk does offer some of these services, it does so at a considerable expense in administration and it does mean giving up some control over the application (Something embeddable would be nice <g>)</p></p>
+<p>Has anyone seen other products (preferably ones for the MS platform and that play well with .NET) that do something similar? I'd certainly appreciate any links anyone can share... Even if they are, this sounds like a cool project one could work on... perhaps I'll try some approach sometime if I get some free time.</p></p>
+<p>[1] It doesn't help the fact that Biztalk might just <a href="http:&#47;&#47;zdnet.com.com&#47;2100-1104-966885.html">dissapear</a> entirely as a standalone product.</p><!--end_raw--></p>

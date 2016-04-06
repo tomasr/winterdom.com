@@ -1,0 +1,59 @@
+---
+layout: post
+status: publish
+published: true
+title: Fix for XAML Highlighting in VS2010
+author:
+  display_name: Tomas Restrepo
+  login: tomasr
+  email: tomas@winterdom.com
+  url: http://winterdom.com/
+author_login: tomasr
+author_email: tomas@winterdom.com
+author_url: http://winterdom.com/
+wordpress_id: 1315
+wordpress_url: http://winterdom.com/2010/02/fix-for-xaml-highlighting-in-vs2010
+date: '2010-02-20 01:18:55 +0000'
+date_gmt: '2010-02-20 01:18:55 +0000'
+categories:
+- Visual Studio
+tags: []
+comments:
+- id: 2716
+  author: Updating Visual Studio Extensions &#47;&#47; Winterdom
+  author_email: ''
+  author_url: http://winterdom.com/2012/07/updating-visual-studio-extensions
+  date: '2012-07-01 16:54:12 +0000'
+  date_gmt: '2012-07-01 16:54:12 +0000'
+  content: "[...] the plus side, I discovered that my XAML Classifier Fix extension
+    is no longer needed in Visual Studio 2012, now that the team introduced an explicit
+    XAML [...]"
+---
+<p>Both Visual Studio 2008 and 2010 have a rather annoying issue relating to how XAML is highlighted in the Text Editor. I&rsquo;ve complained in the past that the XAML designer team introduced a separate set of classifications (i.e. options in the Fonts and Colors dialog) to configure how XAML code would be highlighted by the editor, when in fact, it is just, for the most part XML and it would&rsquo;ve been used if the XAML editor just used the same color definitions used by the XML editor.</p>
+<p>However, this isn&rsquo;t 100% true. It turns out that the XAML code editor uses the colors and font settings configured for String (e.g. like a C# string) to render raw text inside an XML element in the XAML code. Normally, this isn&rsquo;t too much of a problem, until you create a color scheme that uses a custom background color to highlight strings. Then, this is what you end up with in XAML:</p>
+<p><img style="border-right-width: 0px; display: inline; border-top-width: 0px; border-bottom-width: 0px; border-left-width: 0px" title="Xaml_Before" border="0" alt="Xaml_Before" src="http:&#47;&#47;winterdom.com&#47;wp-content&#47;uploads&#47;2010&#47;02&#47;Xaml_Before.png" width="697" height="234" &#47;> </p>
+<p>Notice how the different background is used to render even spaces used for indentation, which looks very, very ugly.</p>
+<p>Now, there&rsquo;s nothing I can do about VS2008, but at least with VS2010, I was able to write an extension that fixes this problem. Here&rsquo;s how it looks with the extension enabled:</p>
+<p><img style="border-right-width: 0px; display: inline; border-top-width: 0px; border-bottom-width: 0px; border-left-width: 0px" title="Xaml_After" border="0" alt="Xaml_After" src="http:&#47;&#47;winterdom.com&#47;wp-content&#47;uploads&#47;2010&#47;02&#47;Xaml_After.png" width="699" height="235" &#47;> </p>
+<p>Much better, right?</p>
+<p>Here&rsquo;s basically all the code needed to fix this:</p>
+<pre class="codebg"><code><br />
+[Export(<span class="Statement">typeof</span>(IWpfTextViewCreationListener))]<br />
+[ContentType(<span class="String">"XAML"</span>)]<br />
+[Name(<span class="String">"XAML Fix"</span>)]<br />
+[TextViewRole(PredefinedTextViewRoles.Document)]<br />
+<span class="StorageClass">public</span> <span class="StorageClass">class</span> XamlFixCreationListener : IWpfTextViewCreationListener {<br />
+   [Import]<br />
+      IClassificationTypeRegistryService registry = <span class="Constant">null</span>;<br />
+   [Import]<br />
+      IClassificationFormatMapService mapService = <span class="Constant">null</span>;</p>
+<p>   <span class="StorageClass">public</span> <span class="Type">void</span> TextViewCreated(IWpfTextView textView) {<br />
+      var formatMap = mapService.GetClassificationFormatMap(textView);<br />
+      var textClassification = registry.GetClassificationType(<span class="String">"text"</span>);<br />
+      var stringClassification = registry.GetClassificationType(<span class="String">"string"</span>);<br />
+      var props = formatMap.GetExplicitTextProperties(textClassification);<br />
+      formatMap.SetExplicitTextProperties(stringClassification, props);<br />
+   }<br />
+}<br />
+</code></pre></p>
+<p>As usual, you can get the code for the extension from <a href="http:&#47;&#47;github.com&#47;tomasr&#47;XamlClassifierFix">github</a>. Enjoy!</p></p>

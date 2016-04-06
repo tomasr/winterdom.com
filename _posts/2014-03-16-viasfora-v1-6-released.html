@@ -1,0 +1,33 @@
+---
+layout: post
+status: publish
+published: true
+title: Viasfora v1.6 Released
+author:
+  display_name: Tomas Restrepo
+  login: tomasr
+  email: tomas@winterdom.com
+  url: http://winterdom.com/
+author_login: tomasr
+author_email: tomas@winterdom.com
+author_url: http://winterdom.com/
+wordpress_id: 1411
+wordpress_url: http://winterdom.com/?p=1411
+date: '2014-03-16 23:03:31 +0000'
+date_gmt: '2014-03-16 23:03:31 +0000'
+categories:
+- Visual Studio
+tags: []
+comments: []
+---
+<p>Today I published a new update to my <a href='http:&#47;&#47;viasfora.com&#47;'>Viasfora</a> extension for Visual Studio 2010-2013. One of the new features in this build is a text editor margin that could be useful to other fellow developers working on extending the Visual Studio Text Editor.</p>
+<p>[caption id="attachment_1412" align="alignnone" width="507"]<a href="http:&#47;&#47;winterdom.com&#47;wp-content&#47;uploads&#47;2014&#47;03&#47;DevMargin.png"><img src="http:&#47;&#47;winterdom.com&#47;wp-content&#47;uploads&#47;2014&#47;03&#47;DevMargin.png" alt="Developer Margin" width="507" height="144" class="size-full wp-image-1412" &#47;></a> Developer Margin[&#47;caption]</p>
+<p>One of the reasons why I implemented this was that I when I needed to extend Viasfora to support new file formats and other document types, I always had to resort to setting breakpoints in the debugger to figure out things such as the content type and how the editor worked, and this gets tiresome real quick!</p></p>
+<p>In this first iteration, the margin exposes the following information:</p></p>
+<ul>
+<li>What buffers compose the buffer graph: Complex editors in VS often require layering multiple buffers with different content types on top of each other, and this will let you easily see what those buffers are. For example, an ASP.NET MVC Razor editor might contain several buffers, such as the main Razor document, one containing the underlying CSharp code generated for the document, another containing the JavaScript code, plus a few other projection&#47;elision buffers.<br&#47;>Because the content type is the key to extending the text editor, it is very useful to be able to examine how the buffer graph is made up and making sure you don't have multiple instances of your extension on multiple buffers interacting poorly with one another.</li>
+<li>Exploring individual buffers: Besides visualizing the buffer graph, you can also explore the contents of the each of the buffers in a separate editor window. One side benefit of this is that it makes it easy to check out what the generated code for many text editors is like :).</li>
+<li>Exploring Content Types: In Visual Studio, content types can inherit from one another. For example, the "RazorCSharp" content type inherits from "Razor", which in turn inherits from "htmlx", and so on. With Viasfora, you can now easily inspect the content type tree.</li>
+<li>Keeping track of the caret position: Visual Studio does a nice job of telling you where you're located in the document at any given time with the line&#47;column slots in the status bar. However, if you're implementing text editor extensions such as classifiers, you often will be tracking things based on the actual position in the text buffer, rather than as line&#47;column pairs. The margin adds such a counter on the bottom right.</li><br />
+</ul></p>
+<p>Eventually, I hope to add other useful features to the margin, but suggestions are always welcome. Enjoy!</p></p>

@@ -1,0 +1,61 @@
+---
+layout: post
+status: publish
+published: true
+title: Minor dasBlog problems
+author:
+  display_name: Tomas Restrepo
+  login: tomasr
+  email: tomas@winterdom.com
+  url: http://winterdom.com/
+author_login: tomasr
+author_email: tomas@winterdom.com
+author_url: http://winterdom.com/
+wordpress_id: 912
+wordpress_url: http://winterdom.com/2006/02/minordasblogproblems
+date: '2006-02-06 15:55:48 +0000'
+date_gmt: '2006-02-06 15:55:48 +0000'
+categories:
+- Blogging
+tags: []
+comments:
+- id: 636
+  author: Roshan
+  author_email: ''
+  author_url: ''
+  date: '2007-02-07 23:09:47 +0000'
+  date_gmt: '2007-02-07 23:09:47 +0000'
+  content: |
+    Ping!
+---
+<p><!--start_raw-->After the dasBlog migration this weekend, I discover a one issue that is causing some of the posts I imported to dasBlog not to be displayed. Sort of.<br><br><span class="postbody">Most individual posts will show up correctly, and all will be displayed correctly on the per-date pages. Except, for a few entries that will show up on the per-date page but<br />
+not will fail to render if you follow the entry's permalink (either the name-based one, or the guid based on). What's more annoying: you don't<br />
+get a 404 error back, just an empty page, as&nbsp; dasBlog seems to just choke on the request.<br />
+<br><br />
+<br><br />
+So, here's an example: go to <a href="default,date,2006-01-09.aspx." target="_blank">http:&#47;&#47;www.winterdom.com&#47;weblog&#47;default,date,2006-01-09.aspx.</a> Try to follow the link for the first post in the page, and you'll get a blank page (no html generated at all).<br />
+<br><br>When that happens, dasBlog will leave in it's log an entry similar to the following:<br><br></span><span><font color="#ff0000" face="Courier New">Error:<br>Entry was not found: 572<br />
+at newtelligence.DasBlog.Web.Services.AggregatorBugHandler.ProcessRequest(HttpContext)<br />
+at System.Web.CallHandlerExecutionStep.System.Web.HttpApplication+IExecutionStep.Execute()<br />
+at System.Web.HttpApplication.ExecuteStep(IExecutionStep, Boolean&amp;)<br />
+at System.Web.HttpApplication.ResumeSteps(Exception)<br />
+at System.Web.HttpApplication.System.Web.IHttpAsyncHandler.BeginProcessRequest(HttpContext, AsyncCallback, Object)<br />
+at System.Web.HttpRuntime.ProcessRequestInternal(HttpWorkerRequest)<br />
+at System.Web.HttpRuntime.ProcessRequest(HttpWorkerRequest)<br />
+at System.Web.Hosting.ISAPIRuntime.ProcessRequest(IntPtr, Int32)<br />
+<br> while processing .</font><br><br></span><span class="postbody"><br />
+<br>AFAICT, the problem seems to be with the post-date handling. I have<br />
+my dasBlog installation configured to use my timezone (UTC-05:00), and<br />
+all the imported entries have all dates and times specified in the same<br />
+timezone in the .dayentry.xml files. It seems, that when the time the<br />
+entry has reported is too close (how close I haven't verified yet) to<br />
+the end of the specified day, dasBlog will just fail to display the<br />
+entry completely. At least that's my appreciation of the problem.<br />
+<br><br />
+<br>Also, a really newbie question. What timezone should dasBlog be<br />
+saving the dates for entries created in dasBlog directly? At least for<br />
+my site, it seems to be saving the time in UTC-08:00, which seemed<br />
+rather weird to me.<br />
+<br><br />
+</span><br>Any ideas?<br><br><b>Update:</b> I <i>think</i> I've managed to fix this. The problem, in essence, is that while the date &amp; times stored in dasBlog's content XML files are in "Local Time" (whatever the local time is for the server itself, hence the -8:00 I was seeing), the actual date in the XML filename should be in UTC. This is not very intuitive, as it means that if you open a file named, say, 2006-01-10.dayentry.xml, you might find that the dates on the entries contained therein actually reference an earlier or later day.<br><br>If anyone spots any entry giving trouble, please let me know and I'll see if I hosed anything else up :)<br>
+<p></p><!--end_raw--></p>

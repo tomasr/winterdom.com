@@ -1,0 +1,54 @@
+---
+layout: post
+status: publish
+published: true
+title: BizTalk Filters not Getting Imported
+author:
+  display_name: Tomas Restrepo
+  login: tomasr
+  email: tomas@winterdom.com
+  url: http://winterdom.com/
+author_login: tomasr
+author_email: tomas@winterdom.com
+author_url: http://winterdom.com/
+wordpress_id: 638
+wordpress_url: http://winterdom.com/2008/06/biztalkfiltersnotgettingimported
+date: '2008-06-21 07:10:40 +0000'
+date_gmt: '2008-06-21 07:10:40 +0000'
+categories:
+- BizTalk
+tags: []
+comments:
+- id: 424
+  author: Bram
+  author_email: b.veldhoen@gmail.com
+  author_url: http://geekswithblogs.net/bveldhoen
+  date: '2008-06-24 12:17:10 +0000'
+  date_gmt: '2008-06-24 12:17:10 +0000'
+  content: |
+    Tomas,
+    I have experienced the same issue, and it drove me mad as well. We solved it by using a tool called ElementTunnel, which can be downloaded as part of Scott Colestock's BizTalk Deployment Framework (on CodePlex). It allows you to manually maintain BizTalk binding files without having to fear that BizTalk won't eat it, by performing xml encoding&#47;decoding.
+    Another thing with the BizTalk binding file is that I once tried to get a decent xsd for it by pointing xsd.exe at one of the types in one of the BizTalk assemblies (can't remember which one). Validating binding files just didn't work afterwards. When manually maintaining BizTalk binding files, a way to validate them would make things (a little) better.
+- id: 4056
+  author: KeithBryan
+  author_email: perry_poole@hotmail.com
+  author_url: http://perrypoole.weebly.com/
+  date: '2012-11-22 09:36:27 +0000'
+  date_gmt: '2012-11-22 09:36:27 +0000'
+  content: BizTalk 2010 environments, we reproduce the same configuration that our
+    Customer had and installed the CU2 to see if the update cause the job to unconfigure.
+---
+<p><!--start_raw-->
+<p>... or how automatic formatting of XML files can make you miserable.</p>
+<p>During the last few days I've been helping out a client get ready for deploying a BizTalk solution. One of those things this involved was taking the existing BizTalk Binding XML files and making minor edits to them so they would match the new environment.</p>
+<p>I did the changes, and the BizTalk Administrator used the updated Binding Files to import them into the new BizTalk Servers. They imported without any errors at all. A couple hours later he noticed some test messages were getting incorrectly routed to the wrong send ports (there's a lot of messaging only stuff in this solution)., so he checked the send port configuration.</p>
+<p>There <em>were no filters defined at all</em>! We checked the Binding files again, and yes they were clearly defined there. Why were they not getting imported?</p>
+<p>The culprit turned out to be Visual Studio. I had edited the binding files in VS and, for several reasons, this involved doing copy-and-pasting the entire XML content of the binding files between machines. Normally this isn't a problem, but this time it was.</p>
+<p>VS will reformat XML content when you paste it into VS. This is usually a welcomed feature, but not now. Turns out that VS reformatted the <code><Filter></code> elements of the Send port configurations like this:</p>
+<div class="codebg"><code><span class="Function"><</span><span class="Function">Filter</span><span class="Function">></span>      <br &#47;>&#160;&#160; <span class="Type">&amp;</span><span class="Statement">lt</span><span class="Type">;</span>?xml version="1.0" encoding="utf-16"?<span class="Type">&amp;</span><span class="Statement">gt</span><span class="Type">;</span>      <br &#47;>&#160;&#160; <span class="Type">&amp;</span><span class="Statement">lt</span><span class="Type">;</span>Filter xmlns:xsi="<a href="http:&#47;&#47;www.w3.org&#47;2001&#47;XMLSchema-instance">http:&#47;&#47;www.w3.org&#47;2001&#47;XMLSchema-instance</a>" xmlns:xsd="<a href="http:&#47;&#47;www.w3.org&#47;2001&#47;XMLSchema">http:&#47;&#47;www.w3.org&#47;2001&#47;XMLSchema</a>"<span class="Type">&amp;</span><span class="Statement">gt</span><span class="Type">;</span>      <br &#47;>... </code></div>
+<p>See anything weird? I didn't see it either at first. The problem is the line break and extra white space caused by the indentation between the opening <Filter> element and the actual string-encoded XML of the filter expression. </p>
+<p>Apparently, BizTalk can't deal with this at all and simply treats it as if the <code><Filter></code> element had been empty when it imports the binding file. No warnings, no errors, it simply ignores it silently.</p>
+<p>I removed the space leaving it like this:</p>
+<div class="codebg"><code><span class="Function"><</span><span class="Function">Filter</span><span class="Function">></span><span class="Type">&amp;</span><span class="Statement">lt</span><span class="Type">;</span>?xml version="1.0" encoding="utf-16"?<span class="Type">&amp;</span><span class="Statement">gt</span><span class="Type">;</span>      <br &#47;>&#160;&#160; <span class="Type">&amp;</span><span class="Statement">lt</span><span class="Type">;</span>Filter xmlns:xsi="<a href="http:&#47;&#47;www.w3.org&#47;2001&#47;XMLSchema-instance">http:&#47;&#47;www.w3.org&#47;2001&#47;XMLSchema-instance</a>" xmlns:xsd="<a href="http:&#47;&#47;www.w3.org&#47;2001&#47;XMLSchema">http:&#47;&#47;www.w3.org&#47;2001&#47;XMLSchema</a>"<span class="Type">&amp;</span><span class="Statement">gt</span><span class="Type">;</span>      <br &#47;>... </code></div>
+<p>And now it was imported correctly and all the Filters were recreated successfully. This was maddening to say the least, and it's one of those pesky bugs that can make deploying BizTalk solutions an even more miserable experience than it already is. Definitely a very annoying bug in the Binding importer code.</p>
+<div class="wlWriterSmartContent" id="scid:0767317B-992E-4b12-91E0-4F059A8CECA8:56adb7a8-12be-4774-aeac-969033f06301" style="padding-right: 0px; display: inline; padding-left: 0px; padding-bottom: 0px; margin: 0px; padding-top: 0px">Technorati tags: <a href="http:&#47;&#47;technorati.com&#47;tags&#47;BizTalk%20Server%202006" rel="tag">BizTalk Server 2006</a>, <a href="http:&#47;&#47;technorati.com&#47;tags&#47;XML" rel="tag">XML</a></div><!--end_raw--></p>

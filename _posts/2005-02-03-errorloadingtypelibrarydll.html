@@ -1,0 +1,25 @@
+---
+layout: post
+status: publish
+published: true
+title: Error Loading Type Library&#47;DLL
+author:
+  display_name: Tomas Restrepo
+  login: tomasr
+  email: tomas@winterdom.com
+  url: http://winterdom.com/
+author_login: tomasr
+author_email: tomas@winterdom.com
+author_url: http://winterdom.com/
+wordpress_id: 471
+wordpress_url: http://winterdom.com/2005/02/errorloadingtypelibrarydll
+date: '2005-02-03 17:38:20 +0000'
+date_gmt: '2005-02-03 17:38:20 +0000'
+categories:
+- ".NET"
+tags: []
+comments: []
+---
+<p><!--start_raw-->A couple of days ago I started seeing this error when trying to invoke ServicedComponents built with the .NET framework v1.1 on my machine, with no clue why this was happening. I eventually was able to trace the issue and found it got fixed by running regasm.exe on System.EnterpriseServices.dll again :(</p>
+<p>I can only presume this got screwed up when I uninstalled one of the Vhidbey CTPs and installed the november one, which kinda sucks, but it is to be expected from running unreleased software.</p></p>
+<p>P.S: I still seem to be having problems calling IDisposable::Dipose() on ServicedComponents, though, but running regasm on mscorlib.dll didn't seem to fix it :(</p><!--end_raw--></p>

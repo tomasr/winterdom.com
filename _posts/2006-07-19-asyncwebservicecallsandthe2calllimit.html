@@ -1,0 +1,44 @@
+---
+layout: post
+status: publish
+published: true
+title: Async WebService Calls and the 2 Call Limit
+author:
+  display_name: Tomas Restrepo
+  login: tomasr
+  email: tomas@winterdom.com
+  url: http://winterdom.com/
+author_login: tomasr
+author_email: tomas@winterdom.com
+author_url: http://winterdom.com/
+wordpress_id: 617
+wordpress_url: http://winterdom.com/2006/07/asyncwebservicecallsandthe2calllimit
+date: '2006-07-19 07:59:00 +0000'
+date_gmt: '2006-07-19 07:59:00 +0000'
+categories:
+- ".NET"
+- Web Services
+tags: []
+comments:
+- id: 412
+  author: Steve Hebert
+  author_email: ''
+  author_url: http://codebetter.com/blogs/steve.hebert
+  date: '2006-07-20 08:47:55 +0000'
+  date_gmt: '2006-07-20 08:47:55 +0000'
+  content: |
+    Great point - I was wondering if this was a "playing nice" feature.  I'm on vacation this week, but I'll check out the results and post them later today.
+    Thank you,
+    -Steve
+---
+<p><!--start_raw--><A href="http:&#47;&#47;codebetter.com&#47;blogs&#47;steve.hebert&#47;">Steve Hebert</A> comments <A href="http:&#47;&#47;codebetter.com&#47;blogs&#47;steve.hebert&#47;archive&#47;2006&#47;07&#47;14&#47;147371.aspx">here</A> on his experience doing async calls to Web Services and seeing what seems like a limitation in the way the BeginXXX() methods work:<BR><BR>"Furthermore, when you watch this run in NUnit you&rsquo;ll see that it&rsquo;s actually making two requests at a time (two results appear simultaneously, two second wait, two more results appear simultaneously, two second wait&hellip;, and so on)."<BR><br />
+<P class=MsoNormal>Steve attributes this behavior to a limitation (design flaw?) in the way .NET is doing the async calls and the way it uses the threadpool for that. However, seeing the "2 concurrent requests" magical number, I wonder if this might be impacted by something else entirely: The 2-connections-to-a-single-server limit imposed by the HttpWebRequest class to comply with the recommendations in the HTTP spec.&nbsp;</P><br />
+<P class=MsoNormal>I've had several encounters with this limitation where it can severely limit your concurrency if you're doing a lot of webservice calls to the same service (or to services hosted on the same server, more precisely). Fortunately, it's easy to work around by modifying your configuration file:</P><br />
+<P class=MsoNormal style="MARGIN: 0in 0in 0pt; mso-pagination: none; mso-layout-grid-align: none"><SPAN style="FONT-SIZE: 11pt; COLOR: blue; FONT-FAMILY: Consolas; mso-bidi-font-family: Consolas"><SPAN style="mso-spacerun: yes">&nbsp;&nbsp; </SPAN><</SPAN><SPAN style="FONT-SIZE: 11pt; COLOR: maroon; FONT-FAMILY: Consolas; mso-bidi-font-family: Consolas">system.net</SPAN><SPAN style="FONT-SIZE: 11pt; COLOR: blue; FONT-FAMILY: Consolas; mso-bidi-font-family: Consolas">><?xml:namespace prefix = o ns = "urn:schemas-microsoft-com:office:office" &#47;><o:p></o:p></SPAN></P><br />
+<P class=MsoNormal style="MARGIN: 0in 0in 0pt; mso-pagination: none; mso-layout-grid-align: none"><SPAN style="FONT-SIZE: 11pt; COLOR: blue; FONT-FAMILY: Consolas; mso-bidi-font-family: Consolas"><SPAN style="mso-spacerun: yes">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN><</SPAN><SPAN style="FONT-SIZE: 11pt; COLOR: maroon; FONT-FAMILY: Consolas; mso-bidi-font-family: Consolas">connectionManagement</SPAN><SPAN style="FONT-SIZE: 11pt; COLOR: blue; FONT-FAMILY: Consolas; mso-bidi-font-family: Consolas">><o:p></o:p></SPAN></P><br />
+<P class=MsoNormal style="MARGIN: 0in 0in 0pt; mso-pagination: none; mso-layout-grid-align: none"><SPAN style="FONT-SIZE: 11pt; COLOR: blue; FONT-FAMILY: Consolas; mso-bidi-font-family: Consolas"><SPAN style="mso-spacerun: yes">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN><</SPAN><SPAN style="FONT-SIZE: 11pt; COLOR: maroon; FONT-FAMILY: Consolas; mso-bidi-font-family: Consolas">add</SPAN><SPAN style="FONT-SIZE: 11pt; COLOR: blue; FONT-FAMILY: Consolas; mso-bidi-font-family: Consolas"> </SPAN><SPAN style="FONT-SIZE: 11pt; COLOR: red; FONT-FAMILY: Consolas; mso-bidi-font-family: Consolas">address</SPAN><SPAN style="FONT-SIZE: 11pt; COLOR: blue; FONT-FAMILY: Consolas; mso-bidi-font-family: Consolas">=</SPAN><SPAN style="FONT-SIZE: 11pt; FONT-FAMILY: Consolas; mso-bidi-font-family: Consolas"><FONT color=#000000>"</FONT><SPAN style="COLOR: blue">*</SPAN><FONT color=#000000>"</FONT><SPAN style="COLOR: blue"> </SPAN><SPAN style="COLOR: red">maxconnection</SPAN><SPAN style="COLOR: blue">=</SPAN><FONT color=#000000>"</FONT><SPAN style="COLOR: blue">15</SPAN><FONT color=#000000>"</FONT><SPAN style="COLOR: blue">&#47;><o:p></o:p></SPAN></SPAN></P><br />
+<P class=MsoNormal style="MARGIN: 0in 0in 0pt; mso-pagination: none; mso-layout-grid-align: none"><SPAN style="FONT-SIZE: 11pt; COLOR: blue; FONT-FAMILY: Consolas; mso-bidi-font-family: Consolas"><SPAN style="mso-spacerun: yes">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN></</SPAN><SPAN style="FONT-SIZE: 11pt; COLOR: maroon; FONT-FAMILY: Consolas; mso-bidi-font-family: Consolas">connectionManagement</SPAN><SPAN style="FONT-SIZE: 11pt; COLOR: blue; FONT-FAMILY: Consolas; mso-bidi-font-family: Consolas">></SPAN></P><br />
+<P class=MsoNormal style="MARGIN: 0in 0in 0pt; mso-pagination: none; mso-layout-grid-align: none"><SPAN style="FONT-SIZE: 11pt; COLOR: blue; FONT-FAMILY: Consolas; mso-bidi-font-family: Consolas"></SPAN><SPAN style="FONT-SIZE: 11pt; COLOR: blue; FONT-FAMILY: Consolas; mso-bidi-font-family: Consolas; mso-fareast-font-family: 'Times New Roman'; mso-ansi-language: EN-US; mso-fareast-language: EN-US; mso-bidi-language: AR-SA"><SPAN style="mso-spacerun: yes">&nbsp;&nbsp; </SPAN></</SPAN><SPAN style="FONT-SIZE: 11pt; COLOR: maroon; FONT-FAMILY: Consolas; mso-bidi-font-family: Consolas; mso-fareast-font-family: 'Times New Roman'; mso-ansi-language: EN-US; mso-fareast-language: EN-US; mso-bidi-language: AR-SA">system.net</SPAN><SPAN style="FONT-SIZE: 11pt; COLOR: blue; FONT-FAMILY: Consolas; mso-bidi-font-family: Consolas; mso-fareast-font-family: 'Times New Roman'; mso-ansi-language: EN-US; mso-fareast-language: EN-US; mso-bidi-language: AR-SA">></SPAN></P><br />
+<P class=MsoNormal><A href="http:&#47;&#47;blogs.msdn.com&#47;tess&#47;">Tess</A> has a <A href="http:&#47;&#47;blogs.msdn.com&#47;tess&#47;archive&#47;2006&#47;02&#47;23&#47;537681.aspx">pretty extensive description</A> of debugging and fixing the kind of problems this limitation can cause on live systems. I wonder if changing this would change the results of Steve's test...<BR></P><br />
+<P></P><br />
+<P></P><!--end_raw--></p>

@@ -1,0 +1,55 @@
+---
+layout: post
+status: publish
+published: true
+title: Oslo SDK May 2009 CTP
+author:
+  display_name: Tomas Restrepo
+  login: tomasr
+  email: tomas@winterdom.com
+  url: http://winterdom.com/
+author_login: tomasr
+author_email: tomas@winterdom.com
+author_url: http://winterdom.com/
+wordpress_id: 1257
+wordpress_url: http://winterdom.com/2009/05/oslo-sdk-may-2009-ctp
+date: '2009-05-27 01:48:58 +0000'
+date_gmt: '2009-05-27 01:48:58 +0000'
+categories:
+- Oslo
+tags: []
+comments:
+- id: 836
+  author: Davi Borges
+  author_email: davi.borges@gmail.com
+  author_url: ''
+  date: '2009-05-27 11:40:42 +0000'
+  date_gmt: '2009-05-27 11:40:42 +0000'
+  content: "When I try to run quadrant It gives an error: \r\nUnable to connect to
+    Quadrant repository: .... failed with the operating system error 5 (failed to
+    retreive tect for this error. Reason:1815\r\nDatabase ... does not exist. Make
+    sure that the name is entered correctly.\r\n\r\nbut the mdf is in the correct
+    place and name. Can you help me?"
+- id: 837
+  author: Tomas Restrepo
+  author_email: tomas@winterdom.com
+  author_url: http://winterdom.com/
+  date: '2009-05-27 12:16:20 +0000'
+  date_gmt: '2009-05-27 12:16:20 +0000'
+  content: "Davi: Sorry, I didn't actually install the repository as I didn't have
+    SQL2K8 on that machine, so not sure what might be happening.\r\n\r\nWhat SQL server
+    version do you have installed? Express?\r\n\r\nIn any case, error 5 is usually
+    Access Denied. It might simply be that the account running the SQL Server service
+    doesn't have read&#47;write access to the folder the MDF is located in."
+- id: 841
+  author: Davi Borges
+  author_email: davi.borges@gmail.com
+  author_url: ''
+  date: '2009-05-27 22:05:11 +0000'
+  date_gmt: '2009-05-27 22:05:11 +0000'
+  content: Thanks Tomas... That was exactly the problem.  We need to provide access
+    to Application Data folder (inside Documents and Settings\) of user used to run
+    Quadrant for the sql server user.
+---
+<p>The <a href="http:&#47;&#47;www.microsoft.com&#47;downloads&#47;details.aspx?FamilyID=827122a5-3ca0-4389-a79e-87af37cbf60d&amp;displaylang=en">May 2009 CTP</a> drop of the Microsoft <a href="http:&#47;&#47;msdn.microsoft.com&#47;en-us&#47;oslo&#47;default.aspx">Oslo</a> SDK was released today. I was just installing it to check out what&rsquo;s new, and thought it was a bit funny how Oslo&rsquo;s minimalistic UI design extends all the way to the CTP installation program:</p>
+<p><img style="border-bottom: 0px; border-left: 0px; display: inline; border-top: 0px; border-right: 0px" title="oslo_sdk_install" border="0" alt="oslo_sdk_install" src="http:&#47;&#47;winterdom.com&#47;wp-content&#47;uploads&#47;2009&#47;05&#47;oslo-sdk-install.png" width="590" height="435" &#47;></p></p>

@@ -1,0 +1,52 @@
+---
+layout: post
+status: publish
+published: true
+title: Dark Intellipad
+author:
+  display_name: Tomas Restrepo
+  login: tomasr
+  email: tomas@winterdom.com
+  url: http://winterdom.com/
+author_login: tomasr
+author_email: tomas@winterdom.com
+author_url: http://winterdom.com/
+wordpress_id: 926
+wordpress_url: http://winterdom.com/2009/03/darkintellipad
+date: '2009-03-24 10:08:52 +0000'
+date_gmt: '2009-03-24 10:08:52 +0000'
+categories:
+- Oslo
+tags: []
+comments:
+- id: 646
+  author: Damien Guard
+  author_email: damien@envytech.co.uk
+  author_url: http://damieng.com
+  date: '2009-03-24 13:55:19 +0000'
+  date_gmt: '2009-03-24 13:55:19 +0000'
+  content: |
+    Do you not have Envy Code R's italic variant installed or is the editor specifically obliquing the regular font?
+    [)amien
+- id: 647
+  author: tomasr
+  author_email: tomas@winterdom.com
+  author_url: http://winterdom.com/weblog/
+  date: '2009-03-24 19:43:23 +0000'
+  date_gmt: '2009-03-24 19:43:23 +0000'
+  content: |
+    @Damien: I think it's the editor obliquing the font. My error is probably that I'm asking for italics (it does support it) but probably still left the font name with the "VS" variant of Envy Code R, hence the problem.
+    Need to fix my VS2008 vssettings -> IPad conversion script to account for that.
+---
+<p><!--start_raw-->
+<p>As you can see, the Intellipad editor that comes with the <a href="http:&#47;&#47;msdn.microsoft.com&#47;en-us&#47;oslo&#47;default.aspx">Oslo SDK</a> can also be customized, including the color scheme used by the editor:</p>
+<p><a href="http:&#47;&#47;winterdom.com&#47;weblog&#47;content&#47;binary&#47;WindowsLiveWriter&#47;DarkIntellipad_809E&#47;ipad-dark_2.png"><img title="ipad-dark" style="border-right: 0px; border-top: 0px; display: inline; border-left: 0px; border-bottom: 0px" height="396" alt="ipad-dark" src="http:&#47;&#47;winterdom.com&#47;weblog&#47;content&#47;binary&#47;WindowsLiveWriter&#47;DarkIntellipad_809E&#47;ipad-dark_thumb.png" width="640" border="0"></a> </p>
+<p>The experience right now, however, is&hellip; not the best. You have to jump through 2 different hoops:</p>
+<ul>
+<li>Edit the ClassificationFormats.xcml file that is found in the Intellipad\Settings directory of your Oslo SDK installation.</li>
+<li>Write code (in IronPython, fortunately) to change stuff like the background color for the entire editor window, like the sample <a href="http:&#47;&#47;blogs.msdn.com&#47;intellipad&#47;archive&#47;2008&#47;11&#47;18&#47;changing-the-background-color.aspx">in this post</a> on the Intellipad Team&rsquo;s blog.</li></ul>
+<p>I really like having the settings be just a file you can edit&#47;link&#47;version easily, compared to the mess that the Visual Studio settings system is right now. However, even these two together are not enough yet to provide a decent experience for Intellipad customization. In particular, it doesn&rsquo;t solve a couple of things:</p>
+<ol>
+<li>The entire editor background color should be changeable from ClassificationFormats.xcml as well. Having to do it through code is a bit annoying. </li>
+<li>The sample in the blog post mentioned above only changes the background color for the current editor window, not for all open windows; which is a bit annoying.</li>
+<li>There&rsquo;s no way to adjust the selection color used by the editor, as far as I can see which is completely unacceptable when using a dark background color. At least the problem with the caret being always black seems to have been fixed in the latest SDK update.</li></ol><!--end_raw--></p>

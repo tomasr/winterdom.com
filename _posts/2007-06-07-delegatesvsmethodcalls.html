@@ -1,0 +1,32 @@
+---
+layout: post
+status: publish
+published: true
+title: Delegates Vs. Method Calls
+author:
+  display_name: Tomas Restrepo
+  login: tomasr
+  email: tomas@winterdom.com
+  url: http://winterdom.com/
+author_login: tomasr
+author_email: tomas@winterdom.com
+author_url: http://winterdom.com/
+wordpress_id: 512
+wordpress_url: http://winterdom.com/2007/06/delegatesvsmethodcalls
+date: '2007-06-07 18:53:51 +0000'
+date_gmt: '2007-06-07 18:53:51 +0000'
+categories:
+- ".NET"
+- BizTalk
+- Architecture
+tags: []
+comments: []
+---
+<p><!--start_raw-->
+<p>In one of his <a href="http:&#47;&#47;codebetter.com&#47;blogs&#47;jeremy.miller&#47;archive&#47;2007&#47;06&#47;04&#47;build-your-own-cab-part-6-view-to-presenter-communication.aspx">articles</a> on building a CAB-like infrastructure, <a href="http:&#47;&#47;codebetter.com&#47;blogs&#47;jeremy.miller&#47;">Jeremy Miller</a> brought out a pretty interesting point: The choice between using Events&#47;Delegates and Direct Method Calls. This can be a controversial topic at hand, but it's an interesting aspect, and can significantly affect the readability of the code.</p>
+<p>Events and delegates are very powerful features I use all the time. However, here's a tip: Be careful about building an entire framework or complex structure based purely around delegate calls. I've been spending a lot of time the past few days tracing, debugging and running through the code in the Base Adapter sample code in the BizTalk Server 2004 SDK [1], which is exactly a little framework for building BizTalk Adapters.</p>
+<p>Now, the base adapter is OK, in that it does make it a bit faster to develop adapters by taking care of a lot of the boilerplate code necessary. However, a significant part of it is built out of classes that use a lot of delegates (not even proper events, unfortunately) to notify of significant events around each other; like for example that a batch was submitted to BizTalk or that a message needs to be suspended.</p>
+<p>The unfortunate side effect of this is that tracing the base adapter code in source code form requires a lot of patience and a lot of Find References&#47;Find Definition jumps all around to figure out exactly what's going on. In fact, I've spent quite a few hours on it and the code can be significantly convoluted; and parts of it are just a lot easier to trace using Step Though&#47;Step Into in the debugger; which is rather frustrating.</p>
+<p>So next time you want to build a framework or library and think gluing all together with delegates and events is cool; make sure you've got a real use case for them and that they are not going to end up hindering readability and maintainability. </p>
+<p><strong>[1]</strong> The version included in the BizTalk 2006 SDK is different and a lot simpler. I still don't quite like it and generally prefer to write directly against the Adapter Framework APIs, but that's just me.</p>
+<div class="wlWriterSmartContent" id="0767317B-992E-4b12-91E0-4F059A8CECA8:7615a8e4-8f0a-4410-b05a-8b04a12e1521" contenteditable="false" style="padding-right: 0px; display: inline; padding-left: 0px; padding-bottom: 0px; margin: 0px; padding-top: 0px">Technorati tags: <a href="http:&#47;&#47;technorati.com&#47;tags&#47;BizTalk" rel="tag">BizTalk</a>, <a href="http:&#47;&#47;technorati.com&#47;tags&#47;Base%20Adapter" rel="tag">Base Adapter</a>, <a href="http:&#47;&#47;technorati.com&#47;tags&#47;Delegates" rel="tag">Delegates</a></div><!--end_raw--></p>

@@ -1,0 +1,40 @@
+---
+layout: post
+status: publish
+published: true
+title: Silverlight Xunit.net Test Runner
+author:
+  display_name: Tomas Restrepo
+  login: tomasr
+  email: tomas@winterdom.com
+  url: http://winterdom.com/
+author_login: tomasr
+author_email: tomas@winterdom.com
+author_url: http://winterdom.com/
+wordpress_id: 749
+wordpress_url: http://winterdom.com/2007/11/silverlightxunitnettestrunner
+date: '2007-11-13 06:18:29 +0000'
+date_gmt: '2007-11-13 06:18:29 +0000'
+categories:
+- ".NET"
+tags: []
+comments: []
+---
+<p><!--start_raw-->
+<p>A couple of people have asked if I could share the code for my <a href="http:&#47;&#47;www.winterdom.com&#47;weblog&#47;2007&#47;11&#47;05&#47;RunningTestsOnSilverlight.aspx">experimental</a> Xunit.net silverlight v1.1 test runner. Actually, the stuff I did was fairly simple and not very polished, but I'll should get someone else started on building a real runner out of it :-)</p>
+<p>You can download the code <a href="http:&#47;&#47;www.winterdom.com&#47;weblog&#47;content&#47;binary&#47;Silverlight-xunit.zip">here</a>.</p>
+<p>Some things to keep in mind:</p>
+<ol>
+<li>The zip doesn't contain all the code. Only the silverlight specific parts:
+<ul>
+<li>The sample test HTML page and its JS scripts
+<li>The silverlight control XAML
+<li>The TestRunnerView, a Canvas derived class that implements the actual silverlight control</li></ul>
+<li>This means you still need to go and grab the XUnit distribution and get it to compile with Silverlight on your own. Here are some tips, though:
+<ul>
+<li>If you're using VS2005 to build it, you need to build against the silverlight assemblies. Here's a good <a href="http:&#47;&#47;weblogs.asp.net&#47;mschwarz&#47;archive&#47;2007&#47;06&#47;04&#47;silverlight-with-visual-studio-net-2005.aspx">starting point</a>.
+<li>On the Xunit.net solution, I got rid of everything except the core xunit.dll assembly code. It's easier to get started that way.
+<li>Get rid of the xunit\Sdk\XmlVisitor.cs file, as it uses XmlDocument and friends and won't compile on silverlight. You don't need it right away, but I'm sure someone will rewrite it to use an XmlReader&#47;Writer instead.
+<li>There are other changes here and there you need to make to get the code to compile, just follow the compiler errors :-).</li></ul></li></ol>
+<p>Enjoy!</p>
+<div class="wlWriterSmartContent" id="scid:0767317B-992E-4b12-91E0-4F059A8CECA8:df04228b-98d9-4d16-be07-f703ed5c870c" style="padding-right: 0px; display: inline; padding-left: 0px; padding-bottom: 0px; margin: 0px; padding-top: 0px">Technorati tags: <a href="http:&#47;&#47;technorati.com&#47;tags&#47;Silverlight" rel="tag">Silverlight</a>, <a href="http:&#47;&#47;technorati.com&#47;tags&#47;Xunit.net" rel="tag">Xunit.net</a></div><!--end_raw--></p>

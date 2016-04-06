@@ -1,0 +1,58 @@
+---
+layout: post
+status: publish
+published: true
+title: Components and Composability
+author:
+  display_name: Tomas Restrepo
+  login: tomasr
+  email: tomas@winterdom.com
+  url: http://winterdom.com/
+author_login: tomasr
+author_email: tomas@winterdom.com
+author_url: http://winterdom.com/
+wordpress_id: 221
+wordpress_url: http://winterdom.com/2006/08/componentsandcomposability
+date: '2006-08-29 06:38:32 +0000'
+date_gmt: '2006-08-29 06:38:32 +0000'
+categories:
+- Architecture
+tags: []
+comments:
+- id: 162
+  author: Scott Colestock
+  author_email: ''
+  author_url: http://www.traceofthought.net
+  date: '2006-08-30 09:16:23 +0000'
+  date_gmt: '2006-08-30 09:16:23 +0000'
+  content: |
+    Interesting thoughts, Tomas!  In addition to considering IoC&#47;Dependency Injection patterns at a component level...it seems worthwhile to consider the "parallel" set of concepts that arise when composing services.  Gregor Hohpe does a good job of describing this in his "Programming without a Call Stack" paper - http:&#47;&#47;www.enterpriseintegrationpatterns.com&#47;docs&#47;EDA.pdf
+- id: 163
+  author: Tomas Restrepo
+  author_email: tomasr@mvps.org
+  author_url: http://www.winterdom.com/weblog/
+  date: '2006-08-30 11:00:15 +0000'
+  date_gmt: '2006-08-30 11:00:15 +0000'
+  content: |
+    I'm a big fan of Gergor Hohpe's writings and he has some really good stuff on his site. I'll check it out!
+- id: 164
+  author: Sally Kraus
+  author_email: gm.skraus8687@real-cheap-email.com
+  author_url: http://www.none.com
+  date: '2007-03-13 21:14:55 +0000'
+  date_gmt: '2007-03-13 21:14:55 +0000'
+  content: |
+    I liked your site.
+---
+<p><!--start_raw-->
+<p></p>
+<p>A while ago I was reading June's edition of ACM Queue (late again!), which is devoted to Software Components and Component Technologies. It's been a fairly interesting reading, though much of it is not new for those familiar with the evolution and concepts behind COM, Java, EJB, .NET and other component technologies.
+<p>One interesting aspect I did&nbsp;find is that, by and large, the focus on what a component actually is (the definition) still revolves mainly about Component Reuse and Integration&#47;Coupling. While this is fine, my personal opinion is that these are not the most important properties or benefits of software components and (as much as I dislike the term) Component-Oriented software architectures.
+<p>To me the key property that makes the concept of "Component" work is that of Composability [1]: being able to create software applications (which might very well be components in and of themselves) from components. For me it is this composability property (or objective, if you will) from which the benefits of software components are derived.
+<p>Take Component reuse for example: A component is only reusable if a) it solves a well defined need (or domain) that is valuable and b) it is easily composable with other components. Only if you design a component for composability do you end up with loose coupling and good interfaces to the component.
+<p>Composability is by far a more interesting property of components than reuse. Composability by itself brings a lot of good properties to your software applications and components, that you will want to strive for even if reusability doesn't happen. In other words, achieving composability is a worthwhile goal that will improve your sofware design even if reusability is not your main concern or if it is simply of no value at that moment.
+<p>One key benefit of embracing Inversion of Control (IoC) and Dependency Injection patterns as key patterns in application architecture is that they very much favor and make it much easier to design your software out of composable components. IoC does not guarantee loose coupling but it does make it more likely to happen, but, more importantly, it helps you ensure that your individual components making your application are more cleanly connected together through well-defined interfaces and a robust interaction model.
+<p>Notice that this does not mean that those individual components will be more reusable (they might be, but not necessarily). In fact, those individual components might very well be pretty specific to your application or application domain. However, by approaching their design from a composability point of view, you provide a clean path to replace them if the need arises. The application of design patterns such as this will slowly, but surely, lead you to a better application architecture and a more sound component design that might increase your chances of reducing coupling and even creating reusable components, even if that was not your original intent.</p>
+<p>Part of the problem of approaching the component problem from the reuse perspective is that it can [mis-]lead you easily into the realm of "what-if" component development. That is, creating components for hypothetical and "likely" scenarios that might not be used right away (or ever at all), and that will certainly increase the complexity of your software, probably needlessly (and if there's an <a href="http:&#47;&#47;www.joelonsoftware.com&#47;articles&#47;fog0000000018.html">astronaut architect</a> around, watch out!). Now, for some kinds of software (notably companies that build reusable components such as UI controls and the like), this is a kind of necessary evil, but for everyone else, it can increase your chances of failing.</p>
+<p>Approaching this problem from the composability perspective, however, has no such risk associated, since this is a property that will only affect your software structure. Instead of forcing you to focus on reuse, it will focus you on the real properties that matter regarding abstraction levels, decoupling external systems and the like. Done right, basing your software on this principles can yield a substantial reward in how maintainable it is and how tightly bound chances are when indeed problem arises.</p>
+<p>[1] one of the few articles I've seen where composability is directly approach is <a href="http:&#47;&#47;csdl2.computer.org&#47;persagen&#47;DLAbsToc.jsp?resourcePath=&#47;dl&#47;proceedings&#47;&amp;toc=comp&#47;proceedings&#47;iceccs&#47;2002&#47;1757&#47;00&#47;1757toc.xml&amp;DOI=10.1109&#47;ICECCS.2002.1181502">"Composability for Software Components: An Approach Based on the Whole Part Theory"</a>, by Franck Barbier.</p><!--end_raw--></p>

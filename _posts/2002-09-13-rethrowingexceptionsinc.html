@@ -1,0 +1,188 @@
+---
+layout: post
+status: publish
+published: true
+title: Rethrowing Exceptions in C#
+author:
+  display_name: Tomas Restrepo
+  login: tomasr
+  email: tomas@winterdom.com
+  url: http://winterdom.com/
+author_login: tomasr
+author_email: tomas@winterdom.com
+author_url: http://winterdom.com/
+wordpress_id: 929
+wordpress_url: http://winterdom.com/2002/09/rethrowingexceptionsinc
+date: '2002-09-13 19:59:00 +0000'
+date_gmt: '2002-09-13 19:59:00 +0000'
+categories:
+- ".NET"
+tags: []
+comments:
+- id: 648
+  author: Ryan
+  author_email: ryan@compest.com
+  author_url: ''
+  date: '2002-10-31 12:42:37 +0000'
+  date_gmt: '2002-10-31 12:42:37 +0000'
+  content: |
+    <p>But the problem is that if you actually tried this you'd find it didn't work.  Try it out sometime and you will see that the code you use above will lose the stack trace information.  At least this is true with Visual Studio .NET and the .NET framework SP2.  If it's working for you maybe you could explain.  </p>
+- id: 649
+  author: Lanik
+  author_email: wrong@wrong.com
+  author_url: ''
+  date: '2003-02-11 13:48:32 +0000'
+  date_gmt: '2003-02-11 13:48:32 +0000'
+  content: |
+    <p>Actually, this *does* work.</p>
+- id: 650
+  author: rsponaugle
+  author_email: ecgangster@yahoo.com
+  author_url: ''
+  date: '2003-03-09 16:40:20 +0000'
+  date_gmt: '2003-03-09 16:40:20 +0000'
+  content: |
+    <p>Lanik, tomasr:  Works *very* well... :)</p>
+- id: 651
+  author: cs
+  author_email: cschumaier@hotmail.com
+  author_url: ''
+  date: '2003-10-31 16:45:00 +0000'
+  date_gmt: '2003-10-31 16:45:00 +0000'
+  content: "<p>I agree with Ryan.  It does not work.  The stack trace will point to
+    the first throw, not where the error was generated.</p>\n<p>Try the following:</p>\n<p>\t\t&#47;&#47;&#47;
+    <br &#47;>\n&#47;&#47;&#47; The main entry point for the application.<br &#47;>\n&#47;&#47;&#47;
+    <br &#47;>\n[STAThread]<br &#47;>\nstatic void Main(string[] args)<br &#47;>\n{<br
+    &#47;>\ntry<br &#47;>\n{<br &#47;>\nFunction1();<br &#47;>\n}<br &#47;>\ncatch
+    (Exception ex)<br &#47;>\n{<br &#47;>\nConsole.WriteLine (ex.ToString ());<br
+    &#47;>\n}</p>\n<p>\t\t\tConsole.ReadLine ();<br &#47;>\n}</p>\n<p>\t\tstatic
+    void Function1 ()<br &#47;>\n{<br &#47;>\ntry<br &#47;>\n{<br &#47;>\nFunction2
+    ();<br &#47;>\n}<br &#47;>\ncatch (Exception)<br &#47;>\n{<br &#47;>\nthrow;<br
+    &#47;>\n}<br &#47;>\n}</p>\n<p>\t\tstatic void Function2 ()<br &#47;>\n{<br
+    &#47;>\ntry<br &#47;>\n{<br &#47;>\nFunction3 ();<br &#47;>\n}<br &#47;>\ncatch
+    (Exception)<br &#47;>\n{<br &#47;>\nthrow;<br &#47;>\n}<br &#47;>\n}</p>\n<p>\t\tstatic
+    void Function3 ()<br &#47;>\n{<br &#47;>\nint i = 0;<br &#47;>\nint j = 0;</p>\n<p>\t\t\ttry<br
+    &#47;>\n{<br &#47;>\nConsole.WriteLine ((i&#47;j).ToString ());<br &#47;>\n}<br
+    &#47;>\ncatch (Exception)<br &#47;>\n{<br &#47;>\nthrow;<br &#47;>\n}<br &#47;>\n}</p>\n"
+- id: 652
+  author: Rj
+  author_email: r_jay_thompson@hotmail.com
+  author_url: ''
+  date: '2007-03-30 13:41:46 +0000'
+  date_gmt: '2007-03-30 13:41:46 +0000'
+  content: |
+    Didn't work for me.
+- id: 1080
+  author: software developer
+  author_email: william@geeksltd.co.uk
+  author_url: http://www.geeks.ltd.uk/Services.html
+  date: '2009-08-11 09:59:31 +0000'
+  date_gmt: '2009-08-11 09:59:31 +0000'
+  content: "Cool,\r\n\r\nBut I thisnk it is better to write error message and detail
+    te be able to under stand the error better\r\n\r\nThanks for writing"
+- id: 1100
+  author: Joe
+  author_email: nemjamirwrz@mailinator.com
+  author_url: ''
+  date: '2009-08-22 01:13:24 +0000'
+  date_gmt: '2009-08-22 01:13:24 +0000'
+  content: "Thanks.\r\n\r\nYou say a lot of people get this wrong... for me, it is
+    because I am coming from Java.\r\n\r\nIn Java, rethrowing an exception with \"throw
+    e;\" will keep the original stack trace. The stack information is added to the
+    exception object only the first time it is thrown."
+- id: 1247
+  author: Saboteur
+  author_email: mmerta@centrum.cz
+  author_url: ''
+  date: '2009-12-03 12:31:32 +0000'
+  date_gmt: '2009-12-03 12:31:32 +0000'
+  content: "Microsoft sucks.\r\nMore complicated solution to Exception handling and
+    you can still sometimes loose stack :("
+- id: 1265
+  author: Xander
+  author_email: Xander@something.com
+  author_url: http://something.com
+  date: '2010-01-12 15:57:43 +0000'
+  date_gmt: '2010-01-12 15:57:43 +0000'
+  content: "To \"CS\" : Actually it did work for me in VS2005, that very code sample
+    you posted reported the exception was thrown in Function3()... below is the stack
+    trace from your example\r\n\r\nStackTrace\t\"   at RethrowExceptionTester.Program.Function3()
+    in Program.cs:line 62\\r\\n   at RethrowExceptionTester.Program.Function2() in
+    Program.cs:line 47\\r\\n   at RethrowExceptionTester.Program.Function1() in Program.cs:line
+    35\\r\\n   at RethrowExceptionTester.Program.Main(String[] args) in Program.cs:line
+    17\""
+- id: 1470
+  author: ZoolWay.de | Re-Throw Exceptions in C#
+  author_email: ''
+  author_url: http://www.zoolway.de/?p=127
+  date: '2010-05-04 14:04:55 +0000'
+  date_gmt: '2010-05-04 14:04:55 +0000'
+  content: "[...] to http:&#47;&#47;winterdom.com&#47;2002&#47;09&#47;rethrowingexceptionsinc&nbsp;-
+    pretty old post but still [...]"
+- id: 1548
+  author: Jaroslaw Dobrzanski
+  author_email: jaroslaw@dobrzanski.net
+  author_url: http://dobrzanski.net
+  date: '2010-08-05 09:57:53 +0000'
+  date_gmt: '2010-08-05 09:57:53 +0000'
+  content: That's totally true. I hope that knowledge spreads across :)
+- id: 1627
+  author: Keeping Exception Stack Traces | seekwaytech
+  author_email: ''
+  author_url: http://seekwaytech.wordpress.com/2010/12/01/keeping-exception-stack-traces/
+  date: '2010-12-01 18:29:55 +0000'
+  date_gmt: '2010-12-01 18:29:55 +0000'
+  content: "[...] Rethrowing C# Excpetions While Maintaining Stack Trace [...]"
+- id: 1809
+  author: Software Development
+  author_email: law.jhoni@rocketmail.com
+  author_url: http://www.transitioncomputing.com/
+  date: '2011-10-13 09:14:45 +0000'
+  date_gmt: '2011-10-13 09:14:45 +0000'
+  content: Highly engrossing article. I think your post is very riveting.  I hope
+    to uncover more very soon.
+- id: 2699
+  author: 'Confluence: Engineering'
+  author_email: ''
+  author_url: http://wiki.hansoninc.local/display/engineering/ASP.NET+Style+Guide
+  date: '2012-06-27 12:38:35 +0000'
+  date_gmt: '2012-06-27 12:38:35 +0000'
+  content: |-
+    <strong>ASP.NET Style Guide...</strong>
+
+    Overview ASP.NET Code Standards ASP.NET Code Stand...
+- id: 74814
+  author: 'Confluence: Engineering'
+  author_email: ''
+  author_url: http://intranet.hansoninc.local/display/engineering/ASP.NET+Style+Guide
+  date: '2014-02-13 18:47:58 +0000'
+  date_gmt: '2014-02-13 18:47:58 +0000'
+  content: |-
+    <strong>ASP.NET Style Guide</strong>
+
+    Hanson style guide for writing C#. The following g
+---
+<p><!--start_raw-->I've been somewhat surprised by this topic in the past few weeks, since it is one that has comed up in a number of circles. Basically, the comments I've heard have related to the lose of stack trace information when "rethrowing" an exception from withing a catch clause in C#.</p>
+<p>But then, when I go look at the code, I see people have been doing something like this:</p></p>
+<div class="codebg"><code>} <span class="Exception">catch</span>&nbsp;( Exception e ) {<br><br />
+&nbsp;&nbsp; <span class="Comment">&#47;&#47; do something here with e, then rethrow</span><br><br />
+&nbsp;&nbsp; <span class="Exception">throw</span>&nbsp;e;<br><br />
+}<br />
+</code></div></p>
+<p>So, no wonder people have been missing stack trace information! In the code above, you're not rethrowing e, just merely beginning a new exception flow using the same exception object instance. It's worthwhile to remember that the C# throw syntax is <code>throw <i>expr</i></code>, where <i>expr</i> is an expression that evaluates to an exception object. It doesn't need to be a new object, any Exception-derived object will do, even if it was created half an hour ago and has been thrown 7 times before.</p></p>
+<p>But what really left me consternated was seeing other people offer the following suggestion to "fix" this issue:</p></p>
+<div class="codebg"><code>} <span class="Exception">catch</span>&nbsp;( Exception e ) {<br><br />
+&nbsp;&nbsp; <span class="Comment">&#47;&#47; do something here with e, then rethrow</span><br><br />
+&nbsp;&nbsp; <span class="Exception">throw</span>&nbsp;<span class="Statement">new</span>&nbsp;Exception(<span class="String">""</span>,e);<br><br />
+}<br />
+</code></div></p>
+<p>So now, you have complete stack trace information, <i>but only by combining the information in both the outer and inner exception objects</i>. How is that a fix for this? It's a hack, and a poor one, at that.</p></p>
+<p>It turns out, though, that C# has provided a very simple syntax to provide the needed rethrowing semantics all along [1], but it seems not very people know about it. This left me puzzled, since it's essentially the same syntax used by C++ [2]: an empty throw statement. So, our example, correctly done, would be: </p></p>
+<div class="codebg"><code>} <span class="Exception">catch</span>&nbsp;( Exception e ) {<br &#47;><br />
+&nbsp;&nbsp; <span class="Comment">&#47;&#47; do something here with e, then rethrow</span><br &#47;><br />
+&nbsp;&nbsp; <span class="Exception">throw</span>;<br &#47;><br />
+}<br />
+</code></div></p>
+<p>Simple, isn't it?</p></p>
+<p>[1] See Section 8.9.5 of the C# language specification.<br><br />
+[2] This is defined in section 15.1 para 6 of the ISO 14882 C++ spec.</p><!--end_raw--></p>

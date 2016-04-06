@@ -1,0 +1,48 @@
+---
+layout: post
+status: publish
+published: true
+title: Writing a WCF Transport Channel, Part 1
+author:
+  display_name: Tomas Restrepo
+  login: tomasr
+  email: tomas@winterdom.com
+  url: http://winterdom.com/
+author_login: tomasr
+author_email: tomas@winterdom.com
+author_url: http://winterdom.com/
+wordpress_id: 689
+wordpress_url: http://winterdom.com/2007/02/writingawcftransportchannelpart1
+date: '2007-02-14 06:06:23 +0000'
+date_gmt: '2007-02-14 06:06:23 +0000'
+categories:
+- WCF
+tags: []
+comments: []
+---
+<p><!--start_raw-->
+<p></p>
+<p>I'm currently spending some time getting acquainted with the WCF Channel model as I'm starting to write an experimental transport channel for something I'm playing with. It's been quite an interesting experience, and I thought I might share what I learn as I go along in a series of small articles here.  </p>
+<p>I'm not going to post a step by step explanation of how to build a transport channel (others have already done so, see below), but rather focus more on specific things I find interesting and clear up things I find confusing as I go along. </p>
+<p><strong>Resources</strong> </p>
+<p>One of the first things I did was look around the net for resources on the WCF Channel model and samples. A lot of the documentation around blogs on this topic is fairly old and talks about early implementations of the channel model which are not correct anymore, though I still found some good stuff even there.  </p>
+<p>Here are some of the articles and documentation which I've found more useful so far: </p>
+<ul>
+<li>Yasser Shohoud also has a few articles on Channel Related topics: Meet the WCF Channel Model -&nbsp; <a href="http:&#47;&#47;blogs.msdn.com&#47;yassers&#47;archive&#47;2005&#47;10&#47;12&#47;480175.aspx">Part 1</a> and <a href="http:&#47;&#47;blogs.msdn.com&#47;yassers&#47;archive&#47;2005&#47;10&#47;22&#47;483810.aspx">Part 2</a></li>
+<li>Nicholas Allen has a host of good Channel-related stuff. Here are some of the best ones:</li>
+<ul>
+<li><a href="http:&#47;&#47;blogs.msdn.com&#47;drnick&#47;archive&#47;2006&#47;11&#47;01&#47;design-pattern-for-building-channel-factories-and-listeners.aspx">Design Pattern for Building Channel Factories and Listeners</a></li>
+<li><a href="http:&#47;&#47;blogs.msdn.com&#47;drnick&#47;archive&#47;2006&#47;10&#47;25&#47;asymmetry-between-listeners-and-factories.aspx">Asymmetry Between Listeners and Factories</a></li>
+<li><a href="http:&#47;&#47;blogs.msdn.com&#47;drnick&#47;archive&#47;2006&#47;06&#47;21&#47;636435.aspx">Mapping Channels to Shapes</a></li>
+<li><a href="http:&#47;&#47;blogs.msdn.com&#47;drnick&#47;archive&#47;2006&#47;03&#47;07&#47;544724.aspx">Windows Communication Foundation Channel Shapes</a>&nbsp;and then read the followups on <a href="http:&#47;&#47;blogs.msdn.com&#47;drnick&#47;archive&#47;2006&#47;03&#47;13&#47;550219.aspx">IInputChannel</a>, <a href="http:&#47;&#47;blogs.msdn.com&#47;drnick&#47;archive&#47;2006&#47;03&#47;14&#47;550989.aspx">IOutputChannel</a>, <a href="http:&#47;&#47;blogs.msdn.com&#47;drnick&#47;archive&#47;2006&#47;03&#47;15&#47;551764.aspx">IRequestChannel</a>, <a href="http:&#47;&#47;blogs.msdn.com&#47;drnick&#47;archive&#47;2006&#47;03&#47;17&#47;553506.aspx">IReplyChannel</a>&nbsp;and <a href="http:&#47;&#47;blogs.msdn.com&#47;drnick&#47;archive&#47;2006&#47;03&#47;20&#47;555293.aspx">IRequestContext</a>.</li></ul>
+<li>Kenny Wolf has a <a href="http:&#47;&#47;kennyw.com&#47;indigo&#47;13">series</a> <a href="http:&#47;&#47;kennyw.com&#47;indigo&#47;18">of</a> <a href="http:&#47;&#47;kennyw.com&#47;indigo&#47;21">articles</a> <a href="http:&#47;&#47;kennyw.com&#47;indigo&#47;29">on</a> <a href="http:&#47;&#47;kennyw.com&#47;indigo&#47;36">Channel</a>-<a href="http:&#47;&#47;kennyw.com&#47;indigo&#47;38">related</a> topics. However, be aware that a lot of it is fairly old stuff and its a bit outdated (some of it shows an old version of the UDP Transport sample). Some interesting tidbits, though.</li>
+<li>The <a href="http:&#47;&#47;wcf.netfx3.com&#47;files&#47;folders&#47;product_team&#47;entry3550.aspx">WCF Channels Mini Book</a> from the WCF Team, which I ran into through <a href="http:&#47;&#47;jeffbarnes.net&#47;portal&#47;blogs&#47;jeff_barnes&#47;archive&#47;2006&#47;10&#47;17&#47;WCF-Channels-Documentation.aspx">Jeff Barnes</a> blog. A lot of this stuff is covered elsewhere, but I did find chapter 4 to be far more interesting as it covers sessionful channels (which are not talked about a lot on other places). </li>
+<li><a href="http:&#47;&#47;blogs.msdn.com&#47;clemensv&#47;">Clemens Vasters</a> on MSDN TV talking about <a href="http:&#47;&#47;msdn.microsoft.com&#47;msdntv&#47;episode.aspx?xml=episodes&#47;en&#47;20060615wcfcv&#47;manifest.xml">bindings and channels</a>.</li></ul>
+<p>Here are some of the samples that I've found: </p>
+<ul>
+<li><a href="http:&#47;&#47;wcf.netfx3.com&#47;files&#47;folders&#47;transport_channels&#47;entry5235.aspx">The UdpTransport sample</a>: This one is good in that it's a fairly simple protocol and channel, and thus is a bit easier to follow. Also, it's an example of dealing with one-way protocols, while a few other samples are more focused on two-way protocols.</li>
+<li><a href="http:&#47;&#47;wcf.netfx3.com&#47;files&#47;folders&#47;transport_channels&#47;entry6535.aspx">The Amazon SQS Transport Sample</a>: Another simple one-way transport channel. If you've seen the UDP sample, you've seen this one, as they are pretty similar (in fact, most of the XML doc comments on the SQS sample still refer to the original UDP sample code!).</li>
+<li><a href="http:&#47;&#47;wcf.netfx3.com&#47;files&#47;folders&#47;transport_channels&#47;entry3542.aspx">WSE 3.0 TCP Interop Channel Sample</a>: This one is a pretty interesting example of building a two-way, session aware transport channel for WCF, which in this case interoperates with the WSE 3.0 TCP channel.</li>
+<li>Nicholas Allen's Custom File Transport Channel Sample, broken in 11 parts: <a href="http:&#47;&#47;blogs.msdn.com&#47;drnick&#47;archive&#47;2006&#47;04&#47;17&#47;577354.aspx">1 - Planning</a>, <a href="http:&#47;&#47;blogs.msdn.com&#47;drnick&#47;archive&#47;2006&#47;04&#47;18&#47;577936.aspx">2 - Server</a>, <a href="http:&#47;&#47;blogs.msdn.com&#47;drnick&#47;archive&#47;2006&#47;04&#47;19&#47;578527.aspx">3 - Client</a>, <a href="http:&#47;&#47;blogs.msdn.com&#47;drnick&#47;archive&#47;2006&#47;04&#47;21&#47;578642.aspx">4 - Binding and Binding Element</a>, <a href="http:&#47;&#47;blogs.msdn.com&#47;drnick&#47;archive&#47;2006&#47;04&#47;24&#47;581943.aspx">5 - Channel Basics</a>, <a href="http:&#47;&#47;blogs.msdn.com&#47;drnick&#47;archive&#47;2006&#47;04&#47;26&#47;583864.aspx">6 - Channel Factory</a>, <a href="http:&#47;&#47;blogs.msdn.com&#47;drnick&#47;archive&#47;2006&#47;04&#47;27&#47;584868.aspx">7 - Request Channel</a>, <a href="http:&#47;&#47;blogs.msdn.com&#47;drnick&#47;archive&#47;2006&#47;05&#47;02&#47;585612.aspx">8 - Channel Listener</a>, <a href="http:&#47;&#47;blogs.msdn.com&#47;drnick&#47;archive&#47;2006&#47;05&#47;03&#47;585635.aspx">9 - Reply Channel</a>, <a href="http:&#47;&#47;blogs.msdn.com&#47;drnick&#47;archive&#47;2006&#47;05&#47;04&#47;587941.aspx">10 - Request Context</a>, <a href="http:&#47;&#47;blogs.msdn.com&#47;drnick&#47;archive&#47;2006&#47;05&#47;08&#47;592110.aspx">11 - Putting it Together</a>. By far, Nicholas' sample has been my favorite one, as it is better explained and has much simpler code (thus it is easier to follow).</li>
+<li>Steve Maine had a <a href="http:&#47;&#47;hyperthink.net&#47;blog&#47;PermaLink,guid,a9f032a3-744c-4cc0-8414-6df6ae514081.aspx">Soap.SMTP</a> sample transport for WCF Beta 2. Haven't had the time to look in detail on this one and check if it's too outdated, though it does look interesting.</li>
+<div class="wlWriterSmartContent" id="0767317B-992E-4b12-91E0-4F059A8CECA8:8ff6d992-cc69-4ce6-9727-cb884917a5c2" contenteditable="false" style="margin: 0px; padding: 0px; display: inline;">Technorati tags: <a href="http:&#47;&#47;technorati.com&#47;tags&#47;Windows%20Communication%20Foundation" rel="tag">Windows Communication Foundation</a>, <a href="http:&#47;&#47;technorati.com&#47;tags&#47;WCF%20Extensibility" rel="tag">WCF Extensibility</a>, <a href="http:&#47;&#47;technorati.com&#47;tags&#47;Channels" rel="tag">Channels</a></div></ul><!--end_raw--></p>

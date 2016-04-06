@@ -1,0 +1,29 @@
+---
+layout: post
+status: publish
+published: true
+title: D820, Ibex and Hibernate
+author:
+  display_name: Tomas Restrepo
+  login: tomasr
+  email: tomas@winterdom.com
+  url: http://winterdom.com/
+author_login: tomasr
+author_email: tomas@winterdom.com
+author_url: http://winterdom.com/
+wordpress_id: 1039
+wordpress_url: http://winterdom.com/2008/12/d820ibexandhibernate
+date: '2008-12-29 18:35:50 +0000'
+date_gmt: '2008-12-29 18:35:50 +0000'
+categories:
+- Linux
+tags: []
+comments: []
+---
+<p><!--start_raw-->
+<p>I recently <a href="http:&#47;&#47;winterdom.com&#47;weblog&#47;2008&#47;12&#47;14&#47;Win7AndUbuntu810OnDellD820.aspx">mentioned</a> that I had installed Ubuntu 8.10 Intrepid Ibex on my Dell D820 and that it was working mostly fine, except for the hibernate functionality.</p>
+<p>Last Monday (Dec. 22nd), the mainboard on my D820 died. Fortunately, it was still under warranty, so I called Dell Service the next morning and on the afternoon of the 24th someone came by and replaced the board. Definitely a lot speedier than I expected and it was a very nice touch.</p>
+<p>Anyway, couple of days later I figured out why hibernate didn&rsquo;t work: I had no swap partition at all! I had simply ignored it when installing Ubuntu because I wasn&rsquo;t sure if I was going to keep it that way or format it later to install something else.</p>
+<p>So I fired up GParted, added a new swap partition and enabled it, roughly following <a href="http:&#47;&#47;www.redhat.com&#47;docs&#47;manuals&#47;linux&#47;RHL-8.0-Manual&#47;custom-guide&#47;s1-swap-adding.html">this guide</a>, properly adjusted to my system.</p>
+<p>After that, I just needed to edit my GRUB configuration (<code>&#47;boot&#47;grub&#47;menu.lst</code>) so that the kernel boot options included the &ldquo;resume&rdquo; option pointing to the new swap partition (in my case, &ldquo;<code>resume=&#47;dev&#47;sda4</code>&rdquo;).</p>
+<p>For the most part, seems to be working nicely now. I still wish the system had just issued a warning or error when I tried to hibernate it without an active swap partition. I mean, if it&rsquo;s not supposed to work, it shouldn&rsquo;t fail so miserably.</p><!--end_raw--></p>

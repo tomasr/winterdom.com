@@ -1,0 +1,33 @@
+---
+layout: post
+status: publish
+published: true
+title: WCF, Complexity and XML
+author:
+  display_name: Tomas Restrepo
+  login: tomasr
+  email: tomas@winterdom.com
+  url: http://winterdom.com/
+author_login: tomasr
+author_email: tomas@winterdom.com
+author_url: http://winterdom.com/
+wordpress_id: 56
+wordpress_url: http://winterdom.com/2006/06/wcfcomplexityandxml
+date: '2006-06-18 07:25:32 +0000'
+date_gmt: '2006-06-18 07:25:32 +0000'
+categories:
+- ".NET"
+- Architecture
+- WCF
+- WinFX
+- Web Services
+tags: []
+comments: []
+---
+<p><!--start_raw--><a href="http:&#47;&#47;friends.newtelligence.net&#47;clemensv&#47;">Clemens</a> has a pretty interesting post (as usual) on his recent <a href="http:&#47;&#47;friends.newtelligence.net&#47;clemensv&#47;PermaLink,guid,1e863a78-33d6-4a85-b5e2-f7d241b423d9.aspx"><i>XML is the assembly language of Web 2.0</i></a> entry. He makes a good point that the WS-* stack has grown so complicated that it's pretty hard for humans to directly grok at the XML level (i.e. at the message level), and I totally agree and been saying the same for a couple of years now.<br><br>However, I think Clemens misses the mark here. He argues that XML is hard and complex. Well, I say it isn't, not really. See, WSDL, Policyt, WS-AT, and even WCF config are <b>not</b> XML. They are languages written in (or generators of) XML, but they are not XML. They are hard, XML isn't. XSD is hard, no comment there, but even so, XSD isn't XML either. The thing is: We created this complicated beasts and monsters and had them to be written on XML, but the truth of the matter is that some of these are so complicated, they would've looked complicated regardless of the language used to express them.<br><br>All this means that it's the WS-* stack that's screwed up (i.e. it's too complicated for mere mortals to grok). It really doesn't say anything about XML per-se. At least that's my opinion.<br><br>Clemens also argues that now everything in the WS-* stack is way too important to miss, and also that it's beyond any solution builder's ability to write correct and interoperable contracts: <i>"Just as there were days that all you needed was assembly and INT21h&nbsp;to<br />
+write a DOS program (yikes) or&nbsp;knowledge of "C"&nbsp;alongside stdio.h and<br />
+fellows to write anything for everthing, things are changing now in the<br />
+same way in Web Services land. Command of XSD and WSDL&nbsp;is no longer<br />
+sufficient, all the other stuff is just as important to make things<br />
+work."</i>. I'm strongly opposed to this state of things.<br><br>For one thing, there is a whole lot of power and things you can do using what I'll now call <i>"Plan Old Web Services (POWS)"</i>. And I'm sorry to say, but many people (me included), have built perfectly usable, interoperable and simple solutions using these technologies and hand-crafting our service contracts. Let me be clear on this: Hand-crafting your contracts is not about writing your own XSD&#47;XML (though you can) or whatever. It's about carefully thinking about the messages you are going to exchange, their meaning and structure. Many of us like to write sample XML or XSD alongside to make it easier to visualize, but that's just a tool. <br><br>I happen to agree with Clemens that interoperability is hard, but on the current WS stacks I've used, I'd say this was somewhat better as long as you didn't let yourself become too fancy with XSD. The main problems with interoperability I've had using POWS actually comes from datatype representation, and not XSD itself (since as a good boy I restricted myself to a very narrow set of features), and I don't see WCF helping with that at all. I think it is a very good thing that the WCF team decided to severely restrict by default how creative you could get with contract descriptions and what kind of XSD constructs you could use. That said, I think they were a bit overzealous on their work and restricted it a little too much. <i>No Attributes?</i> That alone makes me want to avoid using DataContracts and revert to good old trusty XmlSerializer.<br><br>As it turns out, however, now that we finally have fairly interoperable POWS, we come up with something else to spice the mix: The rest of the WS-* stack. If you're using WS-* features, you are in for another, wonderfully new set of interoperability problems, that have nothing at all to do with XML or XSD being complex. You'll meet new and extraordinary animals like incompatible WS-Addressing implementations, multiple and incompatible WS-Security revisions, complex XML canonization rules. Those are real interoperability problems, I've fought them out in the field. And guess what: They are not going to go away magically because you're using WCF. WCF will make things easier with improve implementations (and hopefully standard-compliant ones), but let's face it: The real interoperability problem are the specifications themselves.<br><br>Given the state of things, and how the WS platform is slowly, but surely, becoming a place where the human eye is no longer welcome, I can't help but ask myself <i>"are we really any better on it that on a purely binary platform like DCOM?" </i>That would surely be a shame...<br>
+<p></p><!--end_raw--></p>

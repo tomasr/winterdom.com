@@ -1,0 +1,54 @@
+---
+layout: post
+status: publish
+published: true
+title: VS2005 Hanging on XML Comments
+author:
+  display_name: Tomas Restrepo
+  login: tomasr
+  email: tomas@winterdom.com
+  url: http://winterdom.com/
+author_login: tomasr
+author_email: tomas@winterdom.com
+author_url: http://winterdom.com/
+wordpress_id: 450
+wordpress_url: http://winterdom.com/2007/07/vs2005hangingonxmlcomments
+date: '2007-08-01 19:12:22 +0000'
+date_gmt: '2007-08-01 19:12:22 +0000'
+categories:
+- ".NET"
+tags: []
+comments:
+- id: 316
+  author: lb
+  author_email: leonbambrick@gmail.com
+  author_url: http://secretGeek.net
+  date: '2007-08-01 00:43:23 +0000'
+  date_gmt: '2007-08-01 00:43:23 +0000'
+  content: |
+    i just like that you're developing straight on the server ;-)
+    vs2005 sure is flaky.
+- id: 317
+  author: BS
+  author_email: ibjosun@hotmail.com
+  author_url: ''
+  date: '2007-08-09 01:20:59 +0000'
+  date_gmt: '2007-08-09 01:20:59 +0000'
+  content: |
+    Have you been able to sort out the trouble with VS2005 hanging when typing the '<' inside a CDATA tag? I'm experiencing the same problem, but have not so far figured out why this is happening, or how to solve it.
+    Best regards
+    BS
+- id: 318
+  author: Paul Huff
+  author_email: pc.huff@gmail.com
+  author_url: ''
+  date: '2007-09-28 14:29:27 +0000'
+  date_gmt: '2007-09-28 14:29:27 +0000'
+  content: |
+    Yes!!  I just had that problem!  Wouldn't that be the point of having CDATA available...to put xml that is supposed to come out as a string literal?  I had to kill the process and lost some code.  I've had WAY TOO MANY issues with VS 2005.  2003 wasn't near this bad.  Hopefully 2008 fixes this stuff.
+    An interesting point: should this worry us about using Microsoft's XML parser?
+---
+<p><!--start_raw-->
+<p>&nbsp;While working on my PipelineTesting library code, I'm running into a pretty annoying problem: Visual Studio will hang (with 100% processor usage) every time I try to type a '<' inside a <![CDATA[]]> section in an XML comment (specifically inside the <example&#47;> tag).</p>
+<p>Has anyone else seen this before? This is VS2005 with SP1, btw, running on Windows Server 2003.</p>
+<div class="wlWriterSmartContent" id="0767317B-992E-4b12-91E0-4F059A8CECA8:e4152dea-ac34-4f91-8201-c9b25d05223d" contenteditable="false" style="padding-right: 0px; display: inline; padding-left: 0px; padding-bottom: 0px; margin: 0px; padding-top: 0px">Technorati tags: <a href="http:&#47;&#47;technorati.com&#47;tags&#47;Visual%20Studio" rel="tag">Visual Studio</a></div><!--end_raw--></p>

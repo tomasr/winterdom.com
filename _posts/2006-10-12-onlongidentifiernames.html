@@ -1,0 +1,38 @@
+---
+layout: post
+status: publish
+published: true
+title: On Long Identifier Names
+author:
+  display_name: Tomas Restrepo
+  login: tomasr
+  email: tomas@winterdom.com
+  url: http://winterdom.com/
+author_login: tomasr
+author_email: tomas@winterdom.com
+author_url: http://winterdom.com/
+wordpress_id: 872
+wordpress_url: http://winterdom.com/2006/10/onlongidentifiernames
+date: '2006-10-12 18:19:53 +0000'
+date_gmt: '2006-10-12 18:19:53 +0000'
+categories:
+- ".NET"
+- Development
+tags: []
+comments:
+- id: 589
+  author: Ayende Rahien
+  author_email: Ayende@ayende.com
+  author_url: http://www.ayende.com/Blog/
+  date: '2006-10-12 18:58:56 +0000'
+  date_gmt: '2006-10-12 18:58:56 +0000'
+  content: |
+    Just try doing the same with generics.
+    IDictionary<Employee, IList<Salary>> salariesByEmployees;
+    That is 57 characters, and we haven't even started doing something yes=t
+---
+<p><!--start_raw-->
+<p>I'm all for using&nbsp;descriptive names&nbsp;to&nbsp;identifiers&nbsp;(classes, methods, properties, and so on), however, I also try to keep them to a reasonable length. Too long names are harder to remember, easier to misspell (even with intellisense) and annoying all around.</p>
+<p>Sometimes, however, you can't avoid ending up with the long ones. I defined today an interface called IMsmqSubscriptionPersistenceService. 35 characters. That's almost half of the standard 80 column line. And, of course, I needed an implementation: the SqlMsmqSubscriptionPersistenceService class. That's 2 extra characters. Oh well!</p>
+<div class="wlWriterSmartContent" id="d7bf807d-7bb0-458a-811f-90c51817d5c2:f42b2e30-e92c-48da-82d7-1c3b9175a5a2" contenteditable="false" style="padding-right: 0px; display: inline; padding-left: 0px; padding-bottom: 0px; margin: 0px; padding-top: 0px">
+<p><span class="TagSite">Technorati:</span> <a href="http:&#47;&#47;technorati.com&#47;tag&#47;Identifiers" rel="tag" class="tag">Identifiers</a>, <a href="http:&#47;&#47;technorati.com&#47;tag&#47;Names" rel="tag" class="tag">Names</a>, <a href="http:&#47;&#47;technorati.com&#47;tag&#47;Programming" rel="tag" class="tag">Programming</a><br &#47;><!-- StartInsertedTags: Identifiers, Names, Programming :EndInsertedTags --></p></div><!--end_raw--></p>

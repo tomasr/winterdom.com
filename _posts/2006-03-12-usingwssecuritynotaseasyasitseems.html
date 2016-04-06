@@ -1,0 +1,25 @@
+---
+layout: post
+status: publish
+published: true
+title: 'Using WS-Security: Not as easy as it seems'
+author:
+  display_name: Tomas Restrepo
+  login: tomasr
+  email: tomas@winterdom.com
+  url: http://winterdom.com/
+author_login: tomasr
+author_email: tomas@winterdom.com
+author_url: http://winterdom.com/
+wordpress_id: 417
+wordpress_url: http://winterdom.com/2006/03/usingwssecuritynotaseasyasitseems
+date: '2006-03-12 08:47:29 +0000'
+date_gmt: '2006-03-12 08:47:29 +0000'
+categories:
+- Architecture
+- Web Services
+tags: []
+comments: []
+---
+<p><!--start_raw--><A href="http:&#47;&#47;www.oasis-open.org&#47;committees&#47;tc_home.php?wg_abbrev=wss">WS-Security</A> 1.0 has been around since the start of 2004 as a formal <A href="http:&#47;&#47;www.oasis-open.org&#47;">Oasis</A> spec, so one could hope that now, two years later, using this stuff was much easier. Unfortunately, it doesn't appear to be so.<BR><BR>There are many fine toolkits now that implement support for WS-Security in several different SOAP stacks, like <A href="http:&#47;&#47;msdn.microsoft.com&#47;webservices&#47;webservices&#47;building&#47;wse&#47;default.aspx">WSE</A> for .NET and <A href="http:&#47;&#47;ws.apache.org&#47;wss4j&#47;">WSS4J</A> with <A href="http:&#47;&#47;ws.apache.org&#47;axis2&#47;">Axis</A> for Java, and they work really nicely, overall, and make WS-Security more approachable by the average developer. <BR><BR>As an architect, I like WS-Security in the sense that it provides a standards-based solution to the difficulties of securing Web Services; I always recommend to my clients that they look first into using standards-based solutions whenever possible, particularly when there is something to be gained from it (in this case that would be thing like composability and interoperability). However, I will admit that sometimes I have second thoughts about using the WS-Security stuff.<BR><BR>My reasons, however, are not entirely technical. The thing is, we've had significant problems with some of the clients I've worked with on using WS-Security to secure their services, but not because of WS-Security itself. The problem is the lack of information and penetration. Unfortunately, while here in Colombia some things are actually very advanced, the whole Software Development world is, in general, somewhat behind the technology adoption lifecycle. This means that very few people have experience working with things like WS-Security. <BR><BR>In turn, that means that while we work very successfully with our clients on creating WS-Security-based services, they usually have a very though time getting other providers and customers of them to consume the services. Sometimes this is just because the developers themselves have no clue as to how to approach it: they barely know what SOAP is,&nbsp; though they can use basic tools to consume them. They usually don't know WS-Security at all, or what it implies (a UsernameToken? what is that?). Thus, they don't even know what tools to use.<BR><BR>A second problem is that sometimes, these people are using tools that are just not to the task. For example, a client of a client of ours from another country was still using .NET v1.0, which, in typical Microsoft fashion, WSE 2.0 does not support. Hence, no WS-Security support at all. They had to jump through hoops to support this. Other times, they are using older Java SOAP Toolkits that don't support this, either, so you have to get them to move to more mature implementations, which the usual delay this might imply.<BR><BR>And sometimes, people just do right out weird things. For example, I once saw a certain association secure a Java-based Web Service in a way that really surprised me! They had an RPC&#47;Encoded service that required HTTP Basic Authentication over SSL and that required mutual authentication underneath using X.509-Security tokens. Clunky at best.<BR><BR>These kind of things, coupled together with the fact that diagnostic and debugging authentication problems in WS-Security toolkits isn't as easy as it should, usually conspire to make the use of a standards-oriented solution more costly during development, but I still believe it is an investment worth making in the mid-term.<BR><BR>I'd love to hear what others have experienced regarding WS-Security adoption.<BR><br />
+<P></P><!--end_raw--></p>

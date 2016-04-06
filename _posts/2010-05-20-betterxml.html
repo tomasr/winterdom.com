@@ -1,0 +1,61 @@
+---
+layout: post
+status: publish
+published: true
+title: BetterXml
+author:
+  display_name: Tomas Restrepo
+  login: tomasr
+  email: tomas@winterdom.com
+  url: http://winterdom.com/
+author_login: tomasr
+author_email: tomas@winterdom.com
+author_url: http://winterdom.com/
+wordpress_id: 1323
+wordpress_url: http://winterdom.com/2010/05/betterxml
+date: '2010-05-20 03:20:41 +0000'
+date_gmt: '2010-05-20 03:20:41 +0000'
+categories:
+- Visual Studio
+tags: []
+comments:
+- id: 1495
+  author: 'The Morning Brew - Chris Alcock &raquo; The Morning Brew #604'
+  author_email: ''
+  author_url: http://blog.cwa.me.uk/2010/05/20/the-morning-brew-604/
+  date: '2010-05-20 07:38:55 +0000'
+  date_gmt: '2010-05-20 07:38:55 +0000'
+  content: "[...] BetterXml - Tomas Restrepo talks about and shares the code for his
+    new project &#8216;BetterXml&#8217;, a Visual Studio 2010 extension which is aiming
+    to improve the developer experience of working with XML in VS. [...]"
+- id: 2715
+  author: Updating Visual Studio Extensions &#47;&#47; Winterdom
+  author_email: ''
+  author_url: http://winterdom.com/2012/07/updating-visual-studio-extensions
+  date: '2012-07-01 16:53:06 +0000'
+  date_gmt: '2012-07-01 16:53:06 +0000'
+  content: "[...] this particular case, I focused on two of my extensions: KeywordClassifier
+    and BetterXml. Both of them rely on the same mechanism, which was layering an
+    ITagger<ClassificationTag> on [...]"
+---
+<p>BetterXml is a Visual Studio 2010 extension I&rsquo;ve been working on recently in an attempt to improve the experience of the built-in XML editor in VS. Right now it&rsquo;s only on its early stages, so it doesn&rsquo;t add much, but I hope to improve it as I find new things I&rsquo;d like to add.</p>
+<p>What does it do? BetterXml has two main features right now: Syntax highlighting extension and namespace tooltips.</p><br />
+<h3></h3><br />
+<h2>Syntax Highlighting</h2>
+<p>BetterXml provides two new classification format definitions: XML Prefix and XML Closing Tag.</p>
+<ul>
+<li>XML Prefix will change the color&#47;format used to highlight prefixes in XML names (the &lsquo;x&rsquo; in x:name). </li>
+<li>XML Closing Tag will change the color&#47;format used to highlight closing element tags. This is one feature that some color schemes use in Vim that I always missed in VS, and it&rsquo;s pretty cool that the extensibility model in VS2010 allows me to provide this; it makes reading long documents a lot easier. </li> </ul>
+<p>Here&rsquo;s a screenshot showing both of these:</p>
+<p><img alt="syntax highlighting" src="http:&#47;&#47;github.com&#47;tomasr&#47;BetterXml&#47;raw&#47;master&#47;preview.png" &#47;></p>
+<p>This is supported on regular XML documents (including XSD) as well as XAML and HTML documents.</p><br />
+<h2>Namespace Tooltips</h2>
+<p>If you hover the mouse pointer over a prefix in an XML document, BetterXml will try to figure out the URI of the namespace that prefix maps to, and present a tooltip with that information:</p>
+<p><img alt="tooltips" src="http:&#47;&#47;github.com&#47;tomasr&#47;BetterXml&#47;raw&#47;master&#47;img&#47;tooltips.png" &#47;></p>
+<p>I haven&rsquo;t done much tweaking of this feature yet so it will probably be a bit slow on large documents, since it requires partially parsing the document. This feature is only supported on XML and XAML documents.</p><br />
+<h2>Other Plans</h2>
+<p>I&rsquo;ve been looking into other improvements I&rsquo;d like to add to BetterXml. One I really wanted to provide was extending Intellisense completion based on previously used element&#47;attribute names, which would be pretty useful for XML documents without schema.</p>
+<p>VS2010 does provide ways to <a href="http:&#47;&#47;msdn.microsoft.com&#47;en-us&#47;library&#47;ee372314.aspx">extend completion</a>, and while it requires a lot of boilerplate code, it works. Unfortunately, after much trial and error I&rsquo;ve been unable to make it work correctly, and certainly could never get it to behave the same way the built-in completion works.</p>
+<p>While VS does seem to support multiple concurrent completion providers on the same buffer and will display the completion sets for all of them, I could not figure out the magic incantations to make it work reliably and in ways that behavior was predictable. Probably my own fault, but without clear documentation on how they are supposed to work together (if it&rsquo;s even supported at all), it&rsquo;s not trivial to do.</p><br />
+<h2>Source</h2>
+<p>Source code for <a href="http:&#47;&#47;github.com&#47;tomasr&#47;BetterXml">BetterXml</a> is available as usual on github.</p></p>

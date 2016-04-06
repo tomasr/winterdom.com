@@ -1,0 +1,42 @@
+---
+layout: post
+status: publish
+published: true
+title: Upgrading to Karmic Koala and Bugs
+author:
+  display_name: Tomas Restrepo
+  login: tomasr
+  email: tomas@winterdom.com
+  url: http://winterdom.com/
+author_login: tomasr
+author_email: tomas@winterdom.com
+author_url: http://winterdom.com/
+wordpress_id: 1306
+wordpress_url: http://winterdom.com/2009/10/upgrading-to-karmic-koala-and-bugs
+date: '2009-10-30 17:48:02 +0000'
+date_gmt: '2009-10-30 17:48:02 +0000'
+categories:
+- Linux
+tags: []
+comments:
+- id: 1198
+  author: asdf
+  author_email: asdf@asdf.com
+  author_url: ''
+  date: '2009-11-03 00:36:07 +0000'
+  date_gmt: '2009-11-03 00:36:07 +0000'
+  content: "See  \"gcc chokes under Karmic's smbfs\"\r\nhttps:&#47;&#47;bugs.launchpad.net&#47;ubuntu&#47;+source&#47;gcc-defaults&#47;+bug&#47;455122"
+- id: 1199
+  author: asdf
+  author_email: asdf@asdf.com
+  author_url: ''
+  date: '2009-11-03 00:37:31 +0000'
+  date_gmt: '2009-11-03 00:37:31 +0000'
+  content: oops, sorry, I didn't read your entire post.
+---
+<p>Yesterday afternoon I kicked off the update to Karmic Koala (9.10) on my trusty Dell Latitude D820 laptop that was running Ubuntu 9.04. The update took a long time (mostly due to the servers getting hammered) and, overall, worked just fine.</p>
+<p>I did have to struggle with a couple of things. For example, I originally installed that machine with Xubuntu a long time ago and then converted to GNome. The Karmic upgrade enabled Xubuntu as the default again and configured XFCE as the default session, but that&rsquo;s easy enough to fix. I can&rsquo;t seem to find where to change my logon screen to the one I was using, though.</p>
+<p>The big issue issues I&rsquo;m running on, however, are related to what I use my machine the most for :(:</p>
+<ul>
+<li>I had to change some of my scripts for mounting Windows shares in other machines as specifying the rw option to mount was no longer working. No errors, just mounting read-only instead. To fix this, I had to add the file_mode=0777 and dir_mode=0777 options to the mount command. No big deal, but took me a few Google searches to figure it out.</li>
+<li>Building C&#47;C++ apps&#47;libraries on a samba share doesn&rsquo;t work anymore, as GCC will always fail with a &ldquo;Value too large for the defined data type&rdquo; error. I&rsquo;m basically hitting the bug described in this <a href="https:&#47;&#47;bugs.launchpad.net&#47;ubuntu&#47;+source&#47;gcc-defaults&#47;+bug&#47;455122">bug report</a>. I do hope it gets fixed soon, as otherwise I will have to get back to 9.04, which does work fine. Meanwhile, I&rsquo;ll try setting up another VM with 9.04 to see if I can get some work done. Ouch!</li> </ul></p>

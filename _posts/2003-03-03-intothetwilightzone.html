@@ -1,0 +1,61 @@
+---
+layout: post
+status: publish
+published: true
+title: Into the Twilight Zone
+author:
+  display_name: Tomas Restrepo
+  login: tomasr
+  email: tomas@winterdom.com
+  url: http://winterdom.com/
+author_login: tomasr
+author_email: tomas@winterdom.com
+author_url: http://winterdom.com/
+wordpress_id: 670
+wordpress_url: http://winterdom.com/2003/03/intothetwilightzone
+date: '2003-03-03 18:15:21 +0000'
+date_gmt: '2003-03-03 18:15:21 +0000'
+categories:
+- Blogging
+tags: []
+comments:
+- id: 443
+  author: enrico
+  author_email: esabbadin@vb2themax.com
+  author_url: ''
+  date: '2003-03-14 08:00:24 +0000'
+  date_gmt: '2003-03-14 08:00:24 +0000'
+  content: |
+    <p>I posted about this problem to the MS NG about 3 or 4 month ago ;)</p>
+- id: 444
+  author: enrico sabbadin
+  author_email: esabbadin@vb2themax.com
+  author_url: ''
+  date: '2003-03-14 08:04:35 +0000'
+  date_gmt: '2003-03-14 08:04:35 +0000'
+  content: |
+    <p>forget this .. I hit the wrong section</p>
+---
+<p><!--start_raw-->Courtesy of Doug Harrison (fellow VC++ MVP):</p>
+<pre class="codes"><code>#using <mscorlib.dll><br />
+using namespace System;<br />
+public __delegate void Del();<br />
+__gc struct A<br />
+{<br />
+void f() {<br />
+Console::WriteLine(S"A::f()\nTypeIs: {0}", this->GetType());<br />
+}<br />
+};<br />
+__gc struct B<br />
+{<br />
+void f() {<br />
+Console::WriteLine(S"B::f()\nTypeIs: {0}", this->GetType());<br />
+}<br />
+};<br />
+int main()<br />
+{<br />
+Del* s = new Del(new B(), &amp;A::f);<br />
+s();<br />
+}<br />
+</code></pre></p>
+<p>Enjoy!</p><!--end_raw--></p>

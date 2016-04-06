@@ -1,0 +1,59 @@
+---
+layout: post
+status: publish
+published: true
+title: Shot Down Fast...
+author:
+  display_name: Tomas Restrepo
+  login: tomasr
+  email: tomas@winterdom.com
+  url: http://winterdom.com/
+author_login: tomasr
+author_email: tomas@winterdom.com
+author_url: http://winterdom.com/
+wordpress_id: 147
+wordpress_url: http://winterdom.com/2007/01/shotdownfast
+date: '2007-01-26 19:12:39 +0000'
+date_gmt: '2007-01-26 19:12:39 +0000'
+categories:
+- Development
+tags: []
+comments: []
+---
+<p><!--start_raw-->
+<p>My suggestion on <a href="http:&#47;&#47;www.winterdom.com&#47;weblog&#47;2007&#47;01&#47;24&#47;VisualStudioCodeFormattingPropertiesAndSolutions.aspx">per-solution code formatting settings</a> for a (non-specified) future version of VS posted on connect was shot down fast: Only took two days for it to be closed as "Resolved (won't fix)". I knew that would happen but two things still bug me: </p>
+<ol>
+<li>Resolved (won't fix)? That's totally the wrong way to close a <em>suggestion</em>. I didn't report it as a bug (which you'd fix).</li>
+<li>Not even a comment or explanation of why it's not something even worth considering. Guess it was too stupid to even be worth looking into, then.</li></ol>
+<p>Oh well, live and learn. So much for taking the time to suggest improvements!</p>
+<p>Update: Ahh, I did get a comment. Someone, however, has to learn that you'd be better off putting the comment <i>first</i>, closing the issue <i>second</i>. Thanks for saving us a lot of frustration :-).</p>Now, here's the MS response in all it's glory:<br><br><br />
+<blockquote><i>Thanks for the suggestion. This is already possible today, albeit with a little bit of macro magic.<br>There are two pieces to this.<br>1. For each solution add a .vssettings file with a well-known name. e.g. "VSEditorFormatting.vssettings"<br>2. Add a macro, tied to the solution opened event that imports that vssettings file.</i>
+<p><i>Here are some details:</i></p>
+<p><i>Start<br />
+by opening your solution. Make a note of the path where your .sln file<br />
+is (you can click on the Solution node in the Solution Explorer tool<br />
+window and view its Path in the Properties toolwindow)</i></p>
+<p><i>To create the .vssettings file:<br>1. Set up the editor options the way you want them.<br>2. Export these settings using the "Tools&#47;Import and Export Settings..." wizard like so:<br>   2a. Select "Export selected environment settings" and click Next<br>   2b. In the tree view, uncheck "All Settings" and expand the Options&#47;Text Editor node<br><br />
+2c. Check only the nodes for which you want to save settings. The<br />
+description pane on the right can help you decide which categories you<br />
+need.<br>   2d. Click Next<br>   2e. Name the file "VSEditorFormatting.vssettings"<br><br />
+2f. For the directory, click the "Browse..." button and use the file<br />
+dialog to navigate to the folder containing your solution (.sln) file.<br />
+Click OK<br>   2g. Click "Finish"</i></p>
+<p><i>Now you have created the .vssettings file, add it to the associated solution like this:<br>1. Show the Solution Explorer if it isn't already (Ctrl+Alt+L)<br>2. Right click on the Solution node (at the top)<br>3. Select "Add Existing Item..."<br>4. Browse to the .vssettings file you saved earlier and click "Add"</i></p>
+<p><i>At<br />
+this point, if your project is under source code control you might want<br />
+to add this new .vssettings file to your source code control.</i></p>
+<p><i>Now, here comes the macro magic!<br>1. Launch the Macros IDE (Alt+F11)<br>2. In the "Project Explorer" toolwindow, double-click on "MyMacros" to expand it<br>3. Double-click on "EnvironmentEvents" to show the source code<br>4. Add this code just above the "End Module" statement at the end of the file:</i></p>
+<p><i>'''''''''''''<br>&nbsp;&nbsp;&nbsp;&nbsp;Private Sub SolutionEvents_Opened() Handles SolutionEvents.Opened<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Dim item As ProjectItem = DTE.Solution.FindProjectItem("VsEditorFormatting.vssettings")<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;If Not item Is Nothing Then<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Dim name = item.FileNames(1)<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;DTE.ExecuteCommand("Tools.ImportandExportSettings", "&#47;import:""" &amp; name &amp; """")<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;End If<br>&nbsp;&nbsp;&nbsp;&nbsp;End Sub<br>'''''''''''''</i></p>
+<p><i>What<br />
+this does is hook up a handler for the "Solution.Opened" event. When it<br />
+fires, the code looks for your "VsEditorFormatting.vssettings" file in<br />
+the solution and, if it's found, it imports that file.</i></p>
+<p><i>5. Close the Macros IDE<br>6. Close Visual Studio (you will get prompted to save "MyMacros")</i></p>
+<p><i>Now,<br />
+every time you open a solution containing a<br />
+"VsEditorFormatting.vssettings" file, it will be automatically imported<br />
+for you. You will can need to share this macro with your co-workers so<br />
+that they can take advantage of it.</i></p></blockquote>Humm... OK, thanks, but no, that's not really what I wanted. Visual Studio already takes ages to start up without me trying to rewrite all the persistent settings each time!<br><br>
+<div class="wlWriterSmartContent" id="0767317B-992E-4b12-91E0-4F059A8CECA8:c1aea45e-208d-4bb2-a094-7138782c2cb3" contenteditable="false" style="margin: 0px; padding: 0px; display: inline;">Technorati tags: <a href="http:&#47;&#47;technorati.com&#47;tags&#47;Visual%20Studio" rel="tag">Visual Studio</a></div><!--end_raw--></p>

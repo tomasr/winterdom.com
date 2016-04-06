@@ -1,0 +1,138 @@
+---
+layout: post
+status: publish
+published: true
+title: MSMQ ActiveXFormatter, Strings and BizTalk 2006
+author:
+  display_name: Tomas Restrepo
+  login: tomasr
+  email: tomas@winterdom.com
+  url: http://winterdom.com/
+author_login: tomasr
+author_email: tomas@winterdom.com
+author_url: http://winterdom.com/
+wordpress_id: 388
+wordpress_url: http://winterdom.com/2006/01/msmqactivexformatterstringsandbiztalk2006
+date: '2006-01-31 15:57:36 +0000'
+date_gmt: '2006-01-31 15:57:36 +0000'
+categories:
+- BizTalk
+tags: []
+comments:
+- id: 279
+  author: Rich
+  author_email: rwallacejr@gmail.com
+  author_url: ''
+  date: '2006-03-23 16:08:18 +0000'
+  date_gmt: '2006-03-23 16:08:18 +0000'
+  content: |
+    Greetings,
+    Any insight on how to do something similar for BTS 2004?  I have several publishing apps that use the ActiveXMessageFormatter when they drop to MSMQ, and the MSMQ Adapter for BTS 2004 is choking on the messages.
+    Any thoughts would be greatlyh appreciated.
+    -Rich
+- id: 280
+  author: Tomas Restrepo
+  author_email: tomasr@mvps.org
+  author_url: http://www.winterdom.com/weblog/
+  date: '2006-03-23 16:19:50 +0000'
+  date_gmt: '2006-03-23 16:19:50 +0000'
+  content: |
+    Rich,
+    If your existing application sends the messages to MSMQ as strings, then you might be able to get it done by simply telling BizTalk that the messages are encoded as UTF-16 (unicode). The FixEncoding pipeline component I published should allow you to do this fairly easily.
+    http:&#47;&#47;www.winterdom.com&#47;weblog&#47;2006&#47;01&#47;31&#47;FixMessageEncodingCustomPipelineComponentSample.aspx
+    (retro-porting it to BTS2004 should just be a matter of recreating the VS.NET 2003 projects).
+- id: 281
+  author: Rich
+  author_email: rwallacejr@gmail.com
+  author_url: ''
+  date: '2006-03-23 16:32:18 +0000'
+  date_gmt: '2006-03-23 16:32:18 +0000'
+  content: |
+    THanks for teh reply,
+    Lookslike the project files were created in VS.NET 2005...we're still on VS.NET 2003 and I'm afraid I will lose some functionality.  I opened the cs files in notepad and added them to a VS.NET 2003 project and it didn't like the Dictionary &amp;lt;int, string&amp;gt; entry.
+    Sorry to be a pest about this.
+    -Rich
+- id: 282
+  author: Tomas Restrepo
+  author_email: tomasr@mvps.org
+  author_url: http://www.winterdom.com/weblog/
+  date: '2006-03-23 16:37:13 +0000'
+  date_gmt: '2006-03-23 16:37:13 +0000'
+  content: |
+    Hi Rich,
+    You're right. Just replace the Dictionary<> with a Hashtable, and add a couple of casts. If you get into trouble, let me know and I'll port it back.
+- id: 283
+  author: Rich
+  author_email: rwallacejr@mail.com
+  author_url: ''
+  date: '2006-03-24 08:03:00 +0000'
+  date_gmt: '2006-03-24 08:03:00 +0000'
+  content: |
+    OK, I'm an idiot...
+    I'm a VB guy and I've never looped back to learn enough about C#.  If you have the time, I'd definitely appreciate any assistance.
+    Thanks again,
+    -Rich
+- id: 284
+  author: Berre
+  author_email: ''
+  author_url: ''
+  date: '2006-04-12 14:08:02 +0000'
+  date_gmt: '2006-04-12 14:08:02 +0000'
+  content: |
+    HELP: We need this setting on the MSMQT send adapter as well.
+    Don't tell me they forgot that one?!
+    Could you tell me where they did hide this?
+    I can't find the property here ms-help:&#47;&#47;MS.BTS.2006&#47;BTS06Operations&#47;html&#47;d51575f6-5e01-436c-bf69-f6f1f12f125c.htm neither.
+- id: 285
+  author: Tomas Restrepo
+  author_email: tomasr@mvps.org
+  author_url: http://www.winterdom.com/weblog/
+  date: '2006-04-12 21:38:07 +0000'
+  date_gmt: '2006-04-12 21:38:07 +0000'
+  content: |
+    Berre,
+    AFAIK, they were not added. That said, it is not surprising, as as I understand it, MSMQT is not the recommended MSMQ interaction tool anymore, but rather they recommend you use the regular MSMQ adapter.
+    Is there any reason you prefer to use the MSMQT adapter over MSMQ?
+- id: 286
+  author: Rich
+  author_email: rwallacejr@gmail.com
+  author_url: http://richwallace.net
+  date: '2007-04-17 09:13:20 +0000'
+  date_gmt: '2007-04-17 09:13:20 +0000'
+  content: |
+    Hey Tomas,
+    Been awhile...but I'm back ;)
+    I'm upgraading my environment to BTS2006 and I'm trying to use the FixEncoding component and I have set the Encoding proprty to 'Unicode', as the applications that send teh XML are still using the AxtiveXMessageFormatter.  I had this working fine in BTS2004 with the ported version, but after downloading and installing the 2006 version of your component, I'm back to getting errors saying "No Disassemble stage components can recognize teh data".
+    Obviously I'm missing something, but I'm unsure what to check as I compare my BTS2004 and BTS2006 setup, and they are identical.
+    Can you help me again?
+    -Rich
+- id: 287
+  author: Rich
+  author_email: rwallacejr@gmail.com
+  author_url: http://richwallace.net
+  date: '2007-04-17 09:34:32 +0000'
+  date_gmt: '2007-04-17 09:34:32 +0000'
+  content: |
+    Grr..never mind, I figured it out...thanks again, sir!
+- id: 288
+  author: sharmila
+  author_email: dawoodajshaik@yahoo.com
+  author_url: ''
+  date: '2007-05-09 15:19:19 +0000'
+  date_gmt: '2007-05-09 15:19:19 +0000'
+  content: |
+    Hi Rich,
+    I am having the same problem. I am getting the error "No Disassemble stage components can recognize the data". Mine is BTS 2006 as well. Please help!!
+---
+<p><!--start_raw-->
+<p>I had forgotten completely to blog about this, but was just reminded by an email from Doug Girard regarding something I had written some time ago on the BizTalk 2006 beta newsgroups.</p></p>
+<p>
+<p>The MSMQ Adapter in BizTalk 2006 now supports a new property, BodyType (MSMQ.BodyType), which maps to the PROPID_M_BODY_TYPE message property in MSMQ. The cool thing about this is that it makes it much easier for BizTalk to send messages to old Win32&#47;COM applications that used the MSMQ COM formatting, and .NET Applications that used the ActiveXMessageFormatter to read the messages.</p></p></p>
+<p>
+<p>In BizTalk 2004, this usually requiered changing the destination application, so that instead of using a formatter, it read the BodyStream of the message directly using a known encoding. For obvious reasons this is undesirable. The reason why this was necessary is that the ActiveXMessageFormatter (as the old COM rules) relies on the presence of the <a href="http:&#47;&#47;msdn.microsoft.com&#47;library&#47;en-us&#47;msmq&#47;html&#47;5a4198b0-dd71-4894-a491-27eb762436e9.asp?frame=true">PROPID_M_BODY_TYPE</a> property in the message in order to figure out how to interpret the message contents. Since the BizTalk Server 2004 MSMQ&#47;MSMQT adapters never filled in that property, the formatter would always throw an exception when you tried to read the message body.</p></p></p>
+<p>
+<p>With BizTalk 2006, it is now very easy to achieve this without modifying the code, since using the new MSMQ.BodyType property you can now get this field to match what your code expects. The value of the MSMQ.BodyType property is an integer corresponding to one of the <a href="http:&#47;&#47;windowssdk.msdn.microsoft.com&#47;library&#47;default.asp?url=&#47;library&#47;en-us&#47;stg&#47;stg&#47;propvariant.asp">VT_XXX</a> variant types, such as VT_I4 for Int32, or VT_BSTR for a string. </p></p></p>
+<p>
+<p>For example, if your existing .NET application expects the message contents to be a string, then you can now just configure the MSMQ adapter properties on your BizTalk Send Port to set MSMQ.BodyType to the value 8 (VT_BSTR), and then configure a send pipeline to write your message in Unicode (with no BOM) encoding and it will be processed correctly!</p></p></p>
+<p>
+<p><img src="http:&#47;&#47;www.winterdom.com&#47;weblog&#47;images&#47;Msmq2006BodyType.jpg"&#47;></p></p><!--end_raw--></p>

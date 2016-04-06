@@ -1,0 +1,65 @@
+---
+layout: post
+status: publish
+published: true
+title: Hacking my way into an Arbitrary Endpoint in a WCF Service
+author:
+  display_name: Tomas Restrepo
+  login: tomasr
+  email: tomas@winterdom.com
+  url: http://winterdom.com/
+author_login: tomasr
+author_email: tomas@winterdom.com
+author_url: http://winterdom.com/
+wordpress_id: 484
+wordpress_url: http://winterdom.com/2006/11/hackingmywayintoanarbitraryendpointinawcfservice
+date: '2006-11-01 09:58:19 +0000'
+date_gmt: '2006-11-01 09:58:19 +0000'
+categories:
+- WCF
+- WinFX
+- Web Services
+tags: []
+comments:
+- id: 343
+  author: Dennis van der Stelt
+  author_email: ''
+  author_url: http://bloggingabout.net/blogs/dennis/
+  date: '2006-11-03 07:20:08 +0000'
+  date_gmt: '2006-11-03 07:20:08 +0000'
+  content: |
+    Way to go dude! Now share, share, share, share! ;D
+- id: 344
+  author: Tomas Restrepo
+  author_email: tomas@winterdom.com
+  author_url: http://www.winterdom.com/weblog/
+  date: '2006-11-03 10:10:42 +0000'
+  date_gmt: '2006-11-03 10:10:42 +0000'
+  content: |
+    Thanks Dennis!
+    We'll see how much of it I can release. The current code is not pretty, but worse, it hacks just a bit too much for my taste depending on quite a few things I saw in WCF using reflector; and I certainly don't want to get in trouble because of it!
+- id: 1327
+  author: Standard Endpoints in WCF 4.0
+  author_email: malcolm.young@gmail.com
+  author_url: http://codestink.blogspot.com/2010/03/standard-endpoints-in-wcf-40.html
+  date: '2010-03-13 12:02:54 +0000'
+  date_gmt: '2010-03-13 12:02:54 +0000'
+  content: Sometimes you might want to add an endpoint to a service that doesn't exactly
+    fit the normal WCF model. You might want to create something like what the IMetadataExchange
+    interface does maybe or some sort of diagnostic endpoint. For the sake of discussion,
+    let's call them infrastructure endpoints...
+---
+<p><!--start_raw-->
+<p>I mentioned in a <a href="http:&#47;&#47;www.winterdom.com&#47;weblog&#47;2006&#47;10&#47;28&#47;HowIMetadataExchangeIsHosted.aspx">few</a> <a href="http:&#47;&#47;www.winterdom.com&#47;weblog&#47;2006&#47;10&#47;29&#47;OnPublicVsPrivate.aspx">posts</a> that I've been attempting to hook WCF to attach custom metadata endpoints to a WCF service, and that I hadn't had much success yet because of how WCF works and because a lot of the necessary functionality that would've made it easier to do so was internal.</p>
+<p>Today I finally got a breakthrough and was able to fully host&nbsp;my own metadata&nbsp;endpoint that was responsive from the browser (i.e. similar to the native WSDL publishing feature in WCF)! Here's what it took:</p>
+<ul>
+<li>Over&nbsp;300 lines of code just to host the endpoint; without taking into account the actual underlying service code.</li>
+<li>1 custom service behavior</li>
+<li>Custom implementations of IDispatchMessageFormatter, IOperationInvoker and IInstanceContext provider that replicated completely existing functionality in WCF because the implementations needed to do what I did were all internal (say no! to everything internal).</li>
+<li>Manually building an entire ChannelListener&#47;ChannelDispatcher&#47;EndpointDispatcher&#47;DispatchOperation stack because, again, the built-in functionality for this in WCF is private. More over, the implementation isn't even really reusable because it was built just to support my endpoint (single method interface, get all requests). Building a full implementation of a dispatch builder would certainly not be a trivial task.</li>
+<li>Hacking my way to the Method and InheritBaseAddressSettings properties in the HttpTransportBindingElement class&nbsp;using reflection because, again, they are internal. At least the first seems to be required to do be able to HTTP GET to the endpoint.</li>
+<li>Plus a few bits more.</li></ul>
+<p>Take into account the code yet is a complete mess because I was pretty much just writing the minimum required until I could get a successful call to the endpoint. It's still missing tons of error checking and more and would require a through clean and refactoring and even so I'm not sure I'd be willing to use this stuff for real.</p>
+<p>I wonder if there's an easier way to do this... </p>
+<div class="wlWriterSmartContent" id="d7bf807d-7bb0-458a-811f-90c51817d5c2:39cda4a9-a763-40d8-91d1-e507a7288547" contenteditable="false" style="padding-right: 0px; display: inline; padding-left: 0px; padding-bottom: 0px; margin: 0px; padding-top: 0px">
+<p><span class="TagSite">Technorati:</span> <a href="http:&#47;&#47;technorati.com&#47;tag&#47;Windows+Communication+Foundation" rel="tag" class="tag">Windows Communication Foundation</a>, <a href="http:&#47;&#47;technorati.com&#47;tag&#47;WCF" rel="tag" class="tag">WCF</a>, <a href="http:&#47;&#47;technorati.com&#47;tag&#47;WCF+Extensibility" rel="tag" class="tag">WCF Extensibility</a><br &#47;><!-- StartInsertedTags: Windows Communication Foundation, WCF, WCF Extensibility :EndInsertedTags --></p></div><!--end_raw--></p>

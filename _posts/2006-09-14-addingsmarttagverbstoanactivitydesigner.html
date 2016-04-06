@@ -1,0 +1,95 @@
+---
+layout: post
+status: publish
+published: true
+title: Adding SmartTag Verbs to an Activity Designer
+author:
+  display_name: Tomas Restrepo
+  login: tomasr
+  email: tomas@winterdom.com
+  url: http://winterdom.com/
+author_login: tomasr
+author_email: tomas@winterdom.com
+author_url: http://winterdom.com/
+wordpress_id: 1007
+wordpress_url: http://winterdom.com/2006/09/addingsmarttagverbstoanactivitydesigner
+date: '2006-09-14 07:49:06 +0000'
+date_gmt: '2006-09-14 07:49:06 +0000'
+categories:
+- WinFX
+- Workflow
+tags: []
+comments: []
+---
+<p><!--start_raw--><P><IMG height=202 src="http:&#47;&#47;www.winterdom.com&#47;weblog&#47;content&#47;binary&#47;AddingSmartTagVerbstoanActivityDesigner_7197&#47;WF_SmartTagVerb1.png" width=295 align=right> Here's a small sample on how to add a new Verb and another SmartTag option to your custom Activity in the Windows Workflow Designer. Adding a new context-menu option to your activity is fairly easy and intuitive: You just need to create a new instance of the ActivityDesignerVerb class when your custom ActivityDesigner-derived class in initialized and add it to the Verbs collection.</P><br />
+<P>Adding a new SmartTag&nbsp;option is a little bit more work. SmartTag options are also ActivityDesignerVerb instances; however, configured SmartTags are returned&nbsp;by the SmartTagVerb property&nbsp;as a readonly collection. To add a new one, you need to override this property and return you own collection instead.</P><br />
+<P><IMG height=167 src="http:&#47;&#47;www.winterdom.com&#47;weblog&#47;content&#47;binary&#47;AddingSmartTagVerbstoanActivityDesigner_7197&#47;WF_MenuVerb8.png" width=348>&nbsp;</P><br />
+<P>Here's a small code sample that adds a single new "Save Image" Verb to right-click menu as well as adding a SmartTag for it:</P></p>
+<div class='codebg'><code><span class="StorageClass">public</span>&nbsp;<span class="StorageClass">class</span>&nbsp;CodeFirstSequentialActivityDesigner : SequenceDesigner<br &#47;><br />
+{<br &#47;><br />
+&nbsp;&nbsp; <span class="Comment">&#47;&#47; ...</span><br &#47;><br />
+&nbsp;<br &#47;><br />
+&nbsp;&nbsp; <span class="StorageClass">private</span>&nbsp;List<ActivityDesignerVerb> _smartTagVerbs =<br &#47;><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="Statement">new</span>&nbsp;List<ActivityDesignerVerb>();<br &#47;><br />
+&nbsp;<br &#47;><br />
+&nbsp;&nbsp; <span class="Comment">&#47;&#47;&#47;</span><span class="Comment">&nbsp;</span><span class="Function"><</span><span class="Statement">summary</span><span class="Function">></span><br &#47;><br />
+&nbsp;&nbsp; <span class="Comment">&#47;&#47;&#47;</span><span class="Comment">&nbsp;Overide the SmartTagVerbs collection to return our own</span><br &#47;><br />
+&nbsp;&nbsp; <span class="Comment">&#47;&#47;&#47;</span><span class="Comment">&nbsp;</span><span class="Identifier"></</span><span class="Statement">summary</span><span class="Identifier">></span><br &#47;><br />
+&nbsp;&nbsp; <span class="StorageClass">protected</span>&nbsp;<span class="StorageClass">override</span>&nbsp;ReadOnlyCollection<ActivityDesignerVerb> SmartTagVerbs<br &#47;><br />
+&nbsp;&nbsp; {<br &#47;><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="Statement">get</span>&nbsp;{ <span class="Repeat">return</span>&nbsp;_smartTagVerbs.AsReadOnly(); }<br &#47;><br />
+&nbsp;&nbsp; }<br &#47;><br />
+&nbsp;<br &#47;><br />
+&nbsp;&nbsp; <span class="Comment">&#47;&#47;&#47;</span><span class="Comment">&nbsp;</span><span class="Function"><</span><span class="Statement">summary</span><span class="Function">></span><br &#47;><br />
+&nbsp;&nbsp; <span class="Comment">&#47;&#47;&#47;</span><span class="Comment">&nbsp;Override the Initialize method to add</span><br &#47;><br />
+&nbsp;&nbsp; <span class="Comment">&#47;&#47;&#47;</span><span class="Comment">&nbsp;our custom verbs</span><br &#47;><br />
+&nbsp;&nbsp; <span class="Comment">&#47;&#47;&#47;</span><span class="Comment">&nbsp;</span><span class="Identifier"></</span><span class="Statement">summary</span><span class="Identifier">></span><br &#47;><br />
+&nbsp;&nbsp; <span class="Comment">&#47;&#47;&#47;</span><span class="Comment">&nbsp;</span><span class="Function"><</span><span class="Statement">param</span><span class="Function">&nbsp;</span><span class="Type">name</span>=<span class="String">"activity"</span><span class="Function">></span><span class="Comment">Activity to associate with this</span><br &#47;><br />
+&nbsp;&nbsp; <span class="Comment">&#47;&#47;&#47;</span><span class="Comment">&nbsp;designer instance</span><span class="Identifier"></</span><span class="Statement">param</span><span class="Identifier">></span><br &#47;><br />
+&nbsp;&nbsp; <span class="StorageClass">protected</span>&nbsp;<span class="StorageClass">override</span>&nbsp;<span class="Type">void</span>&nbsp;Initialize(Activity activity)<br &#47;><br />
+&nbsp;&nbsp; {<br &#47;><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="Statement">base</span>.Initialize(activity);<br &#47;><br />
+&nbsp;<br &#47;><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="Comment">&#47;&#47; get parent verbs and add them before our own custom verbs</span><br &#47;><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;_smartTagVerbs.AddRange(<span class="Statement">base</span>.SmartTagVerbs);<br &#47;><br />
+&nbsp;<br &#47;><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;ActivityDesignerVerb saveImageVerb = <span class="Statement">new</span>&nbsp;ActivityDesignerVerb(<br &#47;><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span class="Statement">this</span>, DesignerVerbGroup.Misc,<br &#47;><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span class="String">"Save Image"</span>, OnSaveImageVerbSelected<br &#47;><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; );<br &#47;><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;saveImageVerb.Enabled = <span class="Constant">true</span>;<br &#47;><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;saveImageVerb.Supported = <span class="Constant">true</span>;<br &#47;><br />
+&nbsp;<br &#47;><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="Comment">&#47;&#47; add an image</span><br &#47;><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Guid&nbsp;&nbsp;imageProp = <span class="Statement">new</span>&nbsp;Guid(<span class="String">"B4C2B905-A6D3-4CD6-A91A-5005A02B9676"</span>);<br &#47;><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;saveImageVerb.Properties[imageProp] =<br &#47;><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Properties.Resources.Resource_Bitmap.ToBitmap();<br &#47;><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="Comment">&#47;&#47; add verb to both verb collections</span><br &#47;><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;_smartTagVerbs.Add(saveImageVerb);<br &#47;><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Verbs.Add(saveImageVerb);<br &#47;><br />
+&nbsp;&nbsp; }<br &#47;><br />
+&nbsp;<br &#47;><br />
+&nbsp;&nbsp; <span class="StorageClass">private</span>&nbsp;<span class="Type">void</span>&nbsp;OnSaveImageVerbSelected(<span class="Type">object</span>&nbsp;sender, EventArgs e)<br &#47;><br />
+&nbsp;&nbsp; {<br &#47;><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="Type">string</span>&nbsp;name = Activity.Name;<br &#47;><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Bitmap emptyImage = <span class="Statement">new</span>&nbsp;Bitmap(Size.Width, Size.Height,<br &#47;><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; PixelFormat.Format32bppArgb);<br &#47;><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="Statement">using</span>&nbsp;( Graphics graphics = Graphics.FromImage(emptyImage) )<br &#47;><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{<br &#47;><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Image ourReflection = <span class="Statement">this</span>.GetPreviewImage(graphics);<br &#47;><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span class="Statement">using</span>&nbsp;( SaveFileDialog dlg = <span class="Statement">new</span>&nbsp;SaveFileDialog() )<br &#47;><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br &#47;><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;dlg.Filter = <span class="String">"Image File (*.png)|*.png"</span>;<br &#47;><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;DialogResult res = dlg.ShowDialog();<br &#47;><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="Conditional">if</span>&nbsp;( res == DialogResult.OK )<br &#47;><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{<br &#47;><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ourReflection.Save(dlg.FileName, ImageFormat.Png);<br &#47;><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<br &#47;><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<br &#47;><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<br &#47;><br />
+&nbsp;&nbsp; }<br &#47;><br />
+}<br />
+</code></div><br />
+<P class=MsoNormal style="MARGIN: 0in 0in 10pt"><o:p><FONT face=Calibri color=#000000 size=3>&nbsp;</FONT></o:p></P><br />
+<DIV class=wlWriterSmartContent id=d7bf807d-7bb0-458a-811f-90c51817d5c2:6ee27055-cbe2-4eb4-8233-962429e5f283 contentEditable=false style="PADDING-RIGHT: 0px; DISPLAY: inline; PADDING-LEFT: 0px; PADDING-BOTTOM: 0px; MARGIN: 0px; PADDING-TOP: 0px"><br />
+<P><SPAN class=TagSite>Technorati:</SPAN> <A class=tag href="http:&#47;&#47;technorati.com&#47;tag&#47;WF" rel=tag>WF</A>, <A class=tag href="http:&#47;&#47;technorati.com&#47;tag&#47;Windows+Workflow+Foundation" rel=tag>Windows Workflow Foundation</A>, <A class=tag href="http:&#47;&#47;technorati.com&#47;tag&#47;ActivityDesigner" rel=tag>ActivityDesigner</A><BR><!-- StartInsertedTags: WF, Windows Workflow Foundation, ActivityDesigner :EndInsertedTags --></P></DIV><!--end_raw--></p>

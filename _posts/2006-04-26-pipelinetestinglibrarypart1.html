@@ -1,0 +1,115 @@
+---
+layout: post
+status: publish
+published: true
+title: Pipeline Testing Library - Part 1
+author:
+  display_name: Tomas Restrepo
+  login: tomasr
+  email: tomas@winterdom.com
+  url: http://winterdom.com/
+author_login: tomasr
+author_email: tomas@winterdom.com
+author_url: http://winterdom.com/
+wordpress_id: 812
+wordpress_url: http://winterdom.com/2006/04/pipelinetestinglibrarypart1
+date: '2006-04-26 19:01:07 +0000'
+date_gmt: '2006-04-26 19:01:07 +0000'
+categories:
+- BizTalk
+tags: []
+comments: []
+---
+<p><!--start_raw--></p>
+<p>As I mentioned on a <a href="http:&#47;&#47;www.winterdom.com&#47;weblog&#47;2006&#47;04&#47;24&#47;TestingPipelineComponents.aspx">previous<br />
+post</a>, I've been working on a helper library to test BizTalk Pipelines and<br />
+Custom Pipeline Components using NUnit or your unit testing framework of choice.<br />
+I've uploaded V1.0 of the library, which you can download from <a href="http:&#47;&#47;www.winterdom.com&#47;dev&#47;bts&#47;PipelineTesting.zip">here</a>.</p></p>
+<p>The library is pretty straightforward to use, but I'm going to document its<br />
+features on this and following posts so that you can get started with it<br />
+easily.</p></p>
+<p><strong>Preparing to use the library</strong></p></p>
+<p>First of all, you'll need to build the library from the downloaded source<br />
+code distribution, using Visual Studio 2005. The distribution includes the unit<br />
+tests for the library, which you can run to verify it is working correctly, if<br />
+you want.</p></p>
+<p>To use the library once you've built it, you'll want your projects to<br />
+reference the following three libraries:</p></p>
+<ul>
+<li>Winterdom.BizTalk.PipelineTesting.dll
+<li>Microsoft.BizTalk.Pipeline.dll
+<li>Microsoft.BizTalk.Pipeline.Components.dll</li></li></li></ul>
+<p><strong>Creating Pipelines</strong></p></p>
+<p>To test a pipeline component, or a pipeline, the first thing you'll need to<br />
+do pretty much is instantiate a pipeline. The library supports two different<br />
+ways of doing this: Create an empty pipeline and add the necessary components<br />
+using code, or create an instance of an existing BizTalk pipeline. Both of these<br />
+operations are supported for send and receive pipelines through the methods in<br />
+the PipelineFactory class.</p></p>
+<ul>
+<li>CreateEmptyReceivePipeline() and CreateEmptySendPipeline() create a new<br />
+receive&nbsp;or send pipeline respectively, that has no components configured<br />
+on any of&nbsp;its stages. You then are responsable for adding the necessary<br />
+components to configure your pipeline as necessary; I'll show later how this<br />
+can be done.</p>
+<p>Here's an example of how these methods can be called:</p></p>
+<p class="MsoNormal" style="MARGIN: 0in 0in 0pt; mso-pagination: none; mso-layout-grid-align: none"><span style="FONT-SIZE: 10pt; COLOR: teal; FONT-FAMILY: Consolas; mso-bidi-font-family: Consolas">SendPipelineWrapper</span><span style="FONT-SIZE: 10pt; FONT-FAMILY: Consolas; mso-bidi-font-family: Consolas"><br />
+sendPipeline <span style="COLOR: blue">=<o:p></o:p></span></span></p></p>
+<p class="MsoNormal" style="MARGIN: 0in 0in 0pt; mso-pagination: none; mso-layout-grid-align: none"><span style="FONT-SIZE: 10pt; FONT-FAMILY: Consolas; mso-bidi-font-family: Consolas"><span style="mso-spacerun: yes">&nbsp;&nbsp; </span><span style="COLOR: teal">PipelineFactory</span><span style="COLOR: blue">.</span>CreateEmptySendPipeline();<o:p></o:p></span></p></p>
+<p class="MsoNormal" style="MARGIN: 0in 0in 0pt; mso-pagination: none; mso-layout-grid-align: none"><span style="FONT-SIZE: 10pt; COLOR: teal; FONT-FAMILY: Consolas; mso-bidi-font-family: Consolas">ReceivePipelineWrapper</span><span style="FONT-SIZE: 10pt; FONT-FAMILY: Consolas; mso-bidi-font-family: Consolas"><br />
+receivePipeline <span style="COLOR: blue">=<o:p></o:p></span></span></p></p>
+<p class="MsoNormal" style="MARGIN: 0in 0in 0pt; mso-pagination: none; mso-layout-grid-align: none"><span style="FONT-SIZE: 10pt; FONT-FAMILY: Consolas; mso-bidi-font-family: Consolas"><span style="mso-spacerun: yes">&nbsp;&nbsp; </span><span style="COLOR: teal">PipelineFactory</span><span style="COLOR: blue">.</span>CreateReceivePipeline(<span style="COLOR: blue">typeof</span>(<span style="COLOR: teal">XMLReceive</span>));<br></span></p></p>
+<li>CreateReceivePipeline() and CreateSendPipeline() create a new instance of<br />
+an existing BizTalk pipeline. Each of these methods take a Type handle as an<br />
+argument. When you compile a BizTalk project that contains a pipeline, said<br />
+pipeline is generated as a new CLR type into your BizTalk assembly (with the<br />
+same name as the .BTP file it is derived from).</p>
+<p>This is very convenient, as it allows you to just add a project or file<br />
+reference to the BizTalk project where you designed the pipeline and use the<br />
+type directly. In fact, built-in pipelines like the XMLTransmit or XMLReceive<br />
+pipeline can be used just this way: simply reference the<br />
+Microsoft.BizTalk.DefaultPipelines.dll assembly and write this:</p></p>
+<p class="MsoNormal" style="MARGIN: 0in 0in 0pt; mso-pagination: none; mso-layout-grid-align: none"><span style="FONT-SIZE: 10pt; COLOR: blue; FONT-FAMILY: Consolas; mso-bidi-font-family: Consolas">using</span><span style="FONT-SIZE: 10pt; FONT-FAMILY: Consolas; mso-bidi-font-family: Consolas"><br />
+Microsoft<span style="COLOR: blue">.</span>BizTalk<span style="COLOR: blue">.</span>DefaultPipelines;<o:p></o:p></span></p></p>
+<p class="MsoNormal" style="MARGIN: 0in 0in 0pt; mso-pagination: none; mso-layout-grid-align: none"><span style="FONT-SIZE: 10pt; COLOR: green; FONT-FAMILY: Consolas; mso-bidi-font-family: Consolas">&#47;&#47;<br />
+...<o:p></o:p></span></p></p>
+<p class="MsoNormal" style="MARGIN: 0in 0in 0pt; mso-pagination: none; mso-layout-grid-align: none"><span style="FONT-SIZE: 10pt; COLOR: teal; FONT-FAMILY: Consolas; mso-bidi-font-family: Consolas">ReceivePipelineWrapper</span><span style="FONT-SIZE: 10pt; FONT-FAMILY: Consolas; mso-bidi-font-family: Consolas"><br />
+receivePipeline <span style="COLOR: blue">=<o:p></o:p></span></span></p></p>
+<p class="MsoNormal" style="MARGIN: 0in 0in 0pt; mso-pagination: none; mso-layout-grid-align: none"><span style="FONT-SIZE: 10pt; FONT-FAMILY: Consolas; mso-bidi-font-family: Consolas"><span style="mso-spacerun: yes">&nbsp;&nbsp; </span><span style="COLOR: teal">PipelineFactory</span><span style="COLOR: blue">.</span>CreateReceivePipeline(<span style="COLOR: blue">typeof</span>(<span style="COLOR: teal">XMLReceive</span>));<o:p></o:p></span></p></p>
+<p class="MsoNormal" style="MARGIN: 0in 0in 0pt; mso-pagination: none; mso-layout-grid-align: none"><span style="FONT-SIZE: 10pt; FONT-FAMILY: Arial"><o:p>&nbsp;</o:p></span></p></li></li></ul></p>
+<p><strong>Configuring Components</strong></p></p>
+<p>If you've created an instance of an&nbsp;existing pipeline, you've probably<br />
+set to go and can skip this part (though you can still add new components to an<br />
+existing pipeline this way), if not, you'll now want to add some components to<br />
+each of the stages you're interested in to your pipeline.</p></p>
+<p>To do this, you can use the AddComponent() method of each of the pipeline<br />
+classes, which take an object implementing IBaseComponent (a pipeline component)<br />
+and an object of type PipelineStage representing the stage you want to add that<br />
+component to. The PipelineStage class contains a set of static readonly objects<br />
+you can use to refer to the possible stages you can use, so you'll never create<br />
+an instance of this type directly.</p></p>
+<p>So, for example, if you want to add a new XML Disassembler component to the<br />
+disassemble stage of a receive pipeline, you can write this:</p></p>
+<p class="MsoNormal" style="MARGIN: 0in 0in 0pt; mso-pagination: none; mso-layout-grid-align: none"><span style="FONT-SIZE: 10pt; COLOR: teal; FONT-FAMILY: Consolas; mso-bidi-font-family: Consolas">ReceivePipelineWrapper</span><span style="FONT-SIZE: 10pt; FONT-FAMILY: Consolas; mso-bidi-font-family: Consolas"><br />
+pipeline <span style="COLOR: blue">=</span> <o:p></o:p></span></p></p>
+<p class="MsoNormal" style="MARGIN: 0in 0in 0pt; mso-pagination: none; mso-layout-grid-align: none"><span style="FONT-SIZE: 10pt; FONT-FAMILY: Consolas; mso-bidi-font-family: Consolas"><span style="mso-spacerun: yes">&nbsp;&nbsp; </span><span style="COLOR: teal">PipelineFactory</span><span style="COLOR: blue">.</span>CreateEmptyReceivePipeline();<o:p></o:p></span></p></p>
+<p class="MsoNormal" style="MARGIN: 0in 0in 0pt; mso-pagination: none; mso-layout-grid-align: none"><span style="FONT-SIZE: 10pt; COLOR: teal; FONT-FAMILY: Consolas; mso-bidi-font-family: Consolas">IBaseComponent</span><span style="FONT-SIZE: 10pt; FONT-FAMILY: Consolas; mso-bidi-font-family: Consolas"><br />
+component <span style="COLOR: blue">=</span> <span style="COLOR: blue">new</span> <span style="COLOR: teal">XmlDasmComp</span>();<o:p></o:p></span></p></p>
+<p class="MsoNormal" style="MARGIN: 0in 0in 0pt; mso-pagination: none; mso-layout-grid-align: none"><span style="FONT-SIZE: 10pt; FONT-FAMILY: Consolas; mso-bidi-font-family: Consolas">pipeline<span style="COLOR: blue">.</span>AddComponent(component, <span style="COLOR: teal">PipelineStage</span><span style="COLOR: blue">.</span>Disassemble);<o:p></o:p></span></p></p>
+<p class="MsoNormal" style="MARGIN: 0in 0in 0pt; mso-pagination: none; mso-layout-grid-align: none"><span style="FONT-SIZE: 10pt; FONT-FAMILY: Arial"><o:p>&nbsp;</o:p></span></p></p>
+<p><p>Here's an example of adding an encoding component to a send pipeline:</p></p></p>
+<p class="MsoNormal" style="MARGIN: 0in 0in 0pt; mso-pagination: none; mso-layout-grid-align: none"><span style="FONT-SIZE: 10pt; COLOR: teal; FONT-FAMILY: Consolas; mso-bidi-font-family: Consolas">SendPipelineWrapper</span><span style="FONT-SIZE: 10pt; FONT-FAMILY: Consolas; mso-bidi-font-family: Consolas"><br />
+pipeline <span style="COLOR: blue">=</span> <o:p></o:p></span></p></p>
+<p class="MsoNormal" style="MARGIN: 0in 0in 0pt; mso-pagination: none; mso-layout-grid-align: none"><span style="FONT-SIZE: 10pt; FONT-FAMILY: Consolas; mso-bidi-font-family: Consolas"><span style="mso-spacerun: yes">&nbsp;&nbsp; </span><span style="COLOR: teal">PipelineFactory</span><span style="COLOR: blue">.</span>CreateEmptySendPipeline();<o:p></o:p></span></p></p>
+<p class="MsoNormal" style="MARGIN: 0in 0in 0pt; mso-pagination: none; mso-layout-grid-align: none"><span style="FONT-SIZE: 10pt; COLOR: teal; FONT-FAMILY: Consolas; mso-bidi-font-family: Consolas">MIME_SMIME_Encoder</span><span style="FONT-SIZE: 10pt; FONT-FAMILY: Consolas; mso-bidi-font-family: Consolas"><br />
+encoder <span style="COLOR: blue">=</span> <span style="COLOR: blue">new</span><br />
+<span style="COLOR: teal">MIME_SMIME_Encoder</span>();<o:p></o:p></span></p></p>
+<p class="MsoNormal" style="MARGIN: 0in 0in 0pt; mso-pagination: none; mso-layout-grid-align: none"><span style="FONT-SIZE: 10pt; FONT-FAMILY: Consolas; mso-bidi-font-family: Consolas">encoder<span style="COLOR: blue">.</span>AddSigningCertToMessage <span style="COLOR: blue">=</span> <span style="COLOR: blue">true</span>;<o:p></o:p></span></p></p>
+<p class="MsoNormal" style="MARGIN: 0in 0in 0pt; mso-pagination: none; mso-layout-grid-align: none"><span style="FONT-SIZE: 10pt; FONT-FAMILY: Consolas; mso-bidi-font-family: Consolas">encoder<span style="COLOR: blue">.</span>ContentTransferEncoding <span style="COLOR: blue">=</span> <o:p></o:p></span></p></p>
+<p class="MsoNormal" style="MARGIN: 0in 0in 0pt; mso-pagination: none; mso-layout-grid-align: none"><span style="FONT-SIZE: 10pt; FONT-FAMILY: Consolas; mso-bidi-font-family: Consolas"><span style="mso-spacerun: yes">&nbsp;&nbsp; </span><span style="COLOR: teal">MIME_SMIME_Encoder</span><span style="COLOR: blue">.</span><span style="COLOR: teal">MIMETransferEncodingType</span><span style="COLOR: blue">.</span>Base64;<o:p></o:p></span></p></p>
+<p class="MsoNormal" style="MARGIN: 0in 0in 0pt; mso-pagination: none; mso-layout-grid-align: none"><span style="FONT-SIZE: 10pt; FONT-FAMILY: Consolas; mso-bidi-font-family: Consolas">encoder<span style="COLOR: blue">.</span>EnableEncryption <span style="COLOR: blue">=</span><br />
+<span style="COLOR: blue">true</span>;<o:p></o:p></span></p></p>
+<p class="MsoNormal" style="MARGIN: 0in 0in 0pt; mso-pagination: none; mso-layout-grid-align: none"><span style="FONT-SIZE: 10pt; FONT-FAMILY: Consolas; mso-bidi-font-family: Consolas">pipeline<span style="COLOR: blue">.</span>AddComponent(encoder, <span style="COLOR: teal">PipelineStage</span><span style="COLOR: blue">.</span>Encode);<o:p></o:p></span></p></p>
+<p class="MsoNormal" style="MARGIN: 0in 0in 0pt; mso-pagination: none; mso-layout-grid-align: none"><span style="FONT-SIZE: 10pt; FONT-FAMILY: Arial"><o:p>&nbsp;</o:p></span></p></p>
+<p>In a following post I'll talk about configuring document specifications<br />
+(schemas) and executing the pipelines.</p><!--end_raw--></p>

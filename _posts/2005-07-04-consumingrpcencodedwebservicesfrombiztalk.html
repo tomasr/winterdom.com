@@ -1,0 +1,47 @@
+---
+layout: post
+status: publish
+published: true
+title: Consuming RPC&#47;Encoded WebServices from BizTalk
+author:
+  display_name: Tomas Restrepo
+  login: tomasr
+  email: tomas@winterdom.com
+  url: http://winterdom.com/
+author_login: tomasr
+author_email: tomas@winterdom.com
+author_url: http://winterdom.com/
+wordpress_id: 117
+wordpress_url: http://winterdom.com/2005/07/consumingrpcencodedwebservicesfrombiztalk
+date: '2005-07-04 11:00:39 +0000'
+date_gmt: '2005-07-04 11:00:39 +0000'
+categories:
+- BizTalk
+tags: []
+comments:
+- id: 79
+  author: mics
+  author_email: micz_17@yahoo.com
+  author_url: ''
+  date: '2006-08-10 03:39:30 +0000'
+  date_gmt: '2006-08-10 03:39:30 +0000'
+  content: |
+    hi, sorry to post it here but i am really lost. i'm trying to consume an rpc&#47;encoded web service using biztalk and SOAP as transport type. the orchestration goes smoothly but the passthrutransmit pipeline terminates with an error "Required part string was not found in the message". I am assuming that my request doesn't even reach the web service. From HAT, i can see that I populate the message part (there's only one message part and it is of type string). I was thinking that I'm missing out sending the method name,
+    and finally set it to the operation name in their wsdl file. But still getting the same error. Thanks in advance. :)
+- id: 1264
+  author: Exposing BizTalk Schemas as a SOAP-RPC&#47;Encoded webservice - Vincent
+    Scheel
+  author_email: ''
+  author_url: http://bloggingabout.net/blogs/vincent/archive/2010/01/12/exposing-biztalk-schemas-as-a-soap-rpc-encoded-webservice.aspx
+  date: '2010-01-12 11:58:02 +0000'
+  date_gmt: '2010-01-12 11:58:02 +0000'
+  content: "[...] While searching on this subject I found a good post of Tomas Restrepo
+    on consuming SOAP-RPC&#47;Encoded webservices: http:&#47;&#47;winterdom.com&#47;2005&#47;07&#47;consumingrpcencodedwebservicesfrombiztalk.
+    [...]"
+---
+<p><!--start_raw-->BizTalk Server 2004 makes it fairly easy to consume Web Services from orchestrations through the use of the SOAP Adapter and the ubiquitous Add Web Reference wizard it supports. Usually, when you consume a WebService, the Add Web Reference wizard will create a set of multi-part message types (although called a Web Message Type), one for each input and output message from the service operations.</p>
+<p>For Document&#47;Literal services, this works out perfectly, because the generate message types contain only a single part (it maps cleanly to the WSDL definition of the message), making it very easy to manipulate request and response messages for the webservice using the standard BizTalk tools. You can even manipulate the generated schemas to, for example, mark elements and attributes in them as Distinguished fields.</p></p>
+<p>However, BizTalk Server can also consume RPC&#47;Encoded Web Services just as well. However, if you have to work with them, you should be aware of how the message types are generated so you know what tools you'll be able to use. As usual, the Add Web Reference Wizard will create multi-part message types for input and output messages from the service's operations. The key difference, though, is that these will actually have multiple parts; one for each argument in the operation signature (for input messages, or for out parameters for output messages).</p></p>
+<p>This is important because now you have to manipulate the messages manually, using Expression Shapes in your orchestrations. Using tools like maps is out of the question because you can't directly manipulate the entire message as a single unit (since it is multi-part).</p></p>
+<p>Another common scenario with RPC&#47;Encoded services is that at least one of the parameters to an operation is a string type used to carry an encoded XML fragment. To manipulate those, you'll want to manually define schemas for the fragments, and then load them at runtime into separate messages using an intermediate XmlDocument instance (there are many examples of this out there, so I won't cover it in more detail here). If you need to assign a value to one of these parameters, you'll probably want to use a simple component that can extract a string from a regular BizTalk message you can assign to it (you can certainly manipulate them directly as strings, but that might be harder).</p></p>
+<p>While all of this might not be a big deal in the end, it might be wise to remember this because depending on the complexity of your mappings, this can mean doing a lot of work manually using components and expression shapes to do custom mapping and transformations and message assignment, so it can change how you estimate the effort necessary for your project.</p><!--end_raw--></p>

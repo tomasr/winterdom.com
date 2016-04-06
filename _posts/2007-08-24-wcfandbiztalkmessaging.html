@@ -1,0 +1,62 @@
+---
+layout: post
+status: publish
+published: true
+title: WCF and BizTalk Messaging
+author:
+  display_name: Tomas Restrepo
+  login: tomasr
+  email: tomas@winterdom.com
+  url: http://winterdom.com/
+author_login: tomasr
+author_email: tomas@winterdom.com
+author_url: http://winterdom.com/
+wordpress_id: 69
+wordpress_url: http://winterdom.com/2007/08/wcfandbiztalkmessaging
+date: '2007-08-24 20:13:28 +0000'
+date_gmt: '2007-08-24 20:13:28 +0000'
+categories:
+- BizTalk
+- WCF
+tags: []
+comments:
+- id: 53
+  author: Walter
+  author_email: ''
+  author_url: http://geekswithblogs.net/wmichel/Default.aspx
+  date: '2007-09-02 11:42:22 +0000'
+  date_gmt: '2007-09-02 11:42:22 +0000'
+  content: |
+    A wonderful article.  I have a great deal of experience with BT, but no experience with WCF and this really give me a good sense of some aspects of WCF.  I too am very curious (and generally confused) about what BT + WCF + WF will bring.  I would be interested in hearing about your gut-feelings.  Especially about BT + WF, because there seem to be some underlying architectural diffences that seem (to me) to make the two like oil and water.
+---
+<p><!--start_raw-->
+<p><a href="http:&#47;&#47;weblogs.asp.net&#47;gsusx&#47;">Jesus Rodriguez</a> started an interesting discussion here about the differences between <a href="http:&#47;&#47;weblogs.asp.net&#47;gsusx&#47;archive&#47;2007&#47;08&#47;23&#47;wcf-behavior-vs-pipelines-on-biztalk-server-r2.aspx">WCF Behaviors and BizTalk Server Pipelines</a>, focused on what the right use cases for each one are when developing solutions on BizTalk Server 2006 R2 and the WCF adapters included in it. I think this is a really interesting discussion, and one I've given a bit of thought over the past few weeks. As Jesus&nbsp;correctly points out, this discussion is also more important because of the changes that might ripple through the product as WCF and WF permeate the underlying BizTalk architecture as they get integrated into the core product.</p>
+<p>Instead of explicitly talking about Behaviors Vs. Pipelines; I'd like to approach the topic from a slightly different point of view: the messaging stacks. </p>
+<p>In BizTalk 2006 R2, integration between WCF and BizTalk is done by talking advantage of one of the key extensibility points in BizTalk: The adapter framework. In other words, both WCF send and receive facilities are exposed to BizTalk (and from BizTalk) through a set of adapters that hook the WCF model to the BizTalk Messaging Engine (and ultimately the BizTalk Message Box). </p>
+<p>This is obviously a simplification of sorts, but the main idea is that, for this release, the BizTalk architecture itself didn't suffer significant changes in order to enable WCF connectivity. At the same time, WCF didn't need itself any changes either; though certainly a <a href="http:&#47;&#47;www.microsoft.com&#47;biztalk&#47;technologies&#47;wcflobadaptersdk.mspx">number of extensions</a> needed to be added in order to create fully functional BizTalk our of the core WCF binding&#47;channels. In many ways, this is a testament of the power and flexibility&nbsp;of the extensibility models for both platforms. On the other hand, it means that both messaging stacks are almost fully present, with all the differences and similarities they have.</p>
+<p>What will future versions of WCF&#47;BizTalk look like? I honestly don't know, but one can speculate a bit. An interesting thing that might give us some clues about what is to come is to examine some interesting differences between the two models. While there are many similarities, there are also some key aspects where WCF approaches things differently from BizTalk. Here are a few:</p>
+<p><strong>Messages</strong></p>
+<p>A lot of people mistakenly think that BizTalk Server is all about XML messages and that anything flowing through BizTalk must be XML. While it is true that XML messages are first class citizen in BizTalk and that many aspects are modeled around XML-like concepts, this isn't really true.</p>
+<p>In particular, at the messaging level, when you're working with Adapters and Pipelines, messages are simply streams of bytes. What those bytes contain is really irrelevant to BizTalk; all it cares is that it can read and manipulate those streams. In fact; it's pretty easy at this layer to deal with purely obscure or binary data; though obviously some components will make assumptions about what the data should look like (example: the Xml Disassembler expects to be able to interpret the message stream as XML text).</p>
+<p>In WCF, on the other hand, the message concept is more closely tied to XML; however, not to the textual XML representation, but rather to the XML InfoSet. This means that it is still perfectly possible to deal with other kinds of data as long as there's a component in the WCF stack that can make it look like an XML Infoset. This can be done either by actually translating from another representation into XML (say a database structure to XML) or by "faking it" (such as a binary stream with fake open&#47;close XML tags).</p>
+<p>In practical terms it means that, for the most part, you can accomplish the same thing in both models; though it does mean some things get done at different layers in the stack. For example, in BizTalk, interpreting message content is usually done fairly up in the stack (i.e. the pipeline, unless you have an application adapter with specific needs), meaning things like message format are only looked into until fairly late in the game. In WCF, however, these tasks are usually done very early own, usually at the request of the Transport Channel. </p>
+<p>This does not mean that the transport channel author has to necessarily need to implement things like message parsing, but it may mean that it is his&#47;her responsibility to ensure it gets done. For example, a transport channel will call the configured MessageEncoder to encode&#47;decode messages into&#47;from the network.</p>
+<p><strong>Message Structure</strong></p>
+<p>Another interesting aspects is message structure. In BizTalk Server, messages are not really a single entity. Instead, each message is composed of one or more "message parts", each one containing it's own data stream independent of the rest, with one of them being marked as the "body" of the message. Also, each message carries around a property bag [1] associated to it (the Message Context),&nbsp;which can be used to carry "out-of-band" data. &nbsp;and that is a critical part of BizTalk's Pub&#47;Sub mechanism. </p>
+<p><img style="border: 0px none ;" alt="Bts-Wcf-Messages" src="http:&#47;&#47;www.winterdom.com&#47;weblog&#47;content&#47;binary&#47;WindowsLiveWriter&#47;WCFandBizTalkMessaging_99F7&#47;Bts-Wcf-Messages_1.png" border="0"> </p>
+<p>WCF messages aren't quite structured the same way. In fact, WCF messages don't quite have the concept of "multi-part messages" as clear as the one in BizTalk Server (though support for protocols like MTOM certainly make it possible) and so only really have a single, body data stream (or really, Xml feed) associated with them. However, unlike BizTalk, they also have two different ways to&nbsp;carry out of band data: Message Headers (obvious, if you consider that the WCF model is closely tied to SOAP), and Message Properties.</p>
+<p><strong>Assembling and Disassembling</strong></p>
+<p>Another interesting difference between BizTalk and WCF, and that Jesus already pointed to, is the fact that, in WCF, interchanges are really one-to-one throughout the WCF stack. That is, one message comes in, one message comes out.</p>
+<p>This is rather different from BizTalk, in which the assembling and disassembling stages&nbsp;of send and receive pipelines respectively&nbsp;were created explicitly with the idea that messages might be joined or split during processing. This is why the stages are referred to using the terms assemble&#47;disassemble and not simply as "parsing" or "translating".</p>
+<p>On the receive side, this enables some really powerful mechanics for processing large interchanges, by breaking (<em>debatching</em>) messages as they come in into smaller parts that can be processed individually. Similarly, on the send side, multiple messages can be joined into a single, larger message. Unfortunately, the latter functionality is never used by the messaging engine (though it is accessible when calling pipelines directly from orchestrations).</p>
+<p>So this is one point where there's a significant difference between the two messaging models. Certainly, nothing would prevent a WCF transport channel from implementing it's own disassembling&#47;assembling functionality, though it might be a complex job, and likely not very reusable. It might be possible to implement it at higher levels of the channel stack as well, but I really haven't looked too closely into this, as, in general, this isn't as useful a feature in the context WCF services are normally used (but it is a very important one in the context BizTalk is used).</p>
+<p><strong>Channel Shapes</strong></p>
+<p>BizTalk Server only really has two different Message Exchange Patterns: Either you support exchanging messages in a single direction (<em>one-way</em>) or in both directions (<em>two-way</em>). </p>
+<p>WCF, however, supports <a href="http:&#47;&#47;blogs.msdn.com&#47;drnick&#47;archive&#47;2006&#47;03&#47;07&#47;544724.aspx">3 different</a> message exchange patterns (you could say the third one can also be simulated in BizTalk). The ke<br />
+y differentiating here, however, is that WCF creates, on top of these three basic MEPs, a large number of different <em>Channel Shapes</em>, which complement the basic interactions by separating stateless and state-aware variants. Thus, the appearance of Session-aware channels.</p>
+<p>It's obvious that WCF's model is here quite a bit more powerful than what BizTalk offers right out of the box, though it can be argued as well that this makes the model a lot more complex (and more confusing) for channel authors. BizTalk essentially assumes that all interactions are stateless (i.e. the concept of session doesn't exist); which is partially mitigated by the powerful orchestration + correlation sets combo.</p>
+<p>I think it will be extremely interesting to see how the concept of sessions is brought into the main BizTalk architecture in a future version as WCF gets integrated more deeply with the BizTalk messaging engine. It certainly adds a few new challenges to the decoupled, highly asynchronous interaction model between BizTalk components.</p>
+<p><strong>Conclusion</strong></p>
+<p>I don't really know what the future will bring for these two platforms, but certainly the combination of WCF + WF + BizTalk is going to bring significant changes to the platform. I have a few gut-feelings about what it may look like, but they don't even qualify as educated guesses :-). Still, it's going to be pretty interesting to see how it evolves.</p>
+<p><strong>[1]</strong> There's also a property bag associated with each <em>message part</em>; but it is used less often and isn't as important as the message context.</p>
+<div class="wlWriterSmartContent" id="0767317B-992E-4b12-91E0-4F059A8CECA8:84e6439d-1bc7-4e38-8d76-5fb3a8677e43" contenteditable="false" style="margin: 0px; padding: 0px; display: inline;">Technorati tags: <a href="http:&#47;&#47;technorati.com&#47;tags&#47;BizTalk" rel="tag">BizTalk</a>, <a href="http:&#47;&#47;technorati.com&#47;tags&#47;Windows%20Communication%20Foundation" rel="tag">Windows Communication Foundation</a></div> <!--end_raw--></p>

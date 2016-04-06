@@ -1,0 +1,116 @@
+---
+layout: post
+status: publish
+published: true
+title: The Future of BizTalk&#47;WCF&#47;WF
+author:
+  display_name: Tomas Restrepo
+  login: tomasr
+  email: tomas@winterdom.com
+  url: http://winterdom.com/
+author_login: tomasr
+author_email: tomas@winterdom.com
+author_url: http://winterdom.com/
+wordpress_id: 287
+wordpress_url: http://winterdom.com/2007/09/thefutureofbiztalkwcfwf
+date: '2007-09-03 16:55:50 +0000'
+date_gmt: '2007-09-03 16:55:50 +0000'
+categories:
+- BizTalk
+- WCF
+- Workflow
+tags: []
+comments:
+- id: 215
+  author: Jon Flanders
+  author_email: jon.flanders@gmail.com
+  author_url: http://www.masteringbiztalk.com/
+  date: '2007-09-03 19:31:27 +0000'
+  date_gmt: '2007-09-03 19:31:27 +0000'
+  content: |
+    Nice post Tomas.  The part about me is flattering - but I am not sure its true ;-).  I'm pretty sure I am guessing just as much as the next guy.
+- id: 216
+  author: Tomas Restrepo
+  author_email: tomas@winterdom.com
+  author_url: http://www.winterdom.com/weblog/
+  date: '2007-09-03 19:35:19 +0000'
+  date_gmt: '2007-09-03 19:35:19 +0000'
+  content: |
+    Jon: Well, you know much more than me about BizTalk and WF, and you wrote *the* sample about integrating WF with BizTalk orchestrations. In my book, that makes you pretty qualified for an educated guess :)
+- id: 217
+  author: Walter Michel
+  author_email: wmichel@earthlink.et
+  author_url: http://geekswithblogs.net/wmichel/Default.aspx
+  date: '2007-09-09 16:12:54 +0000'
+  date_gmt: '2007-09-09 16:12:54 +0000'
+  content: |
+    Hi Tomas,
+    Thanks for sharing your thoughts on the future BT&#47;WCF&#47;WF.  Your article gives us many good things to think about.  And you are quite right in that everyone (especially me) should get up to speed on WF and WCF.
+    I mainly work on EAI and B2Bi solutions.  It seems to me that if Microsoft wants to remain a player in this arena it really need to retain many of the capabilities of BizTalk.  You mentioned that BizTalk is message oriented.  I believe that EAI and B2Bi tools really need to support many message oriented patterns and practices in order to be effective.  MS will either have to hang on to BT or overhaul WF and WCF to provide the features necessary to implement message based architectures.  I am definitely very keen to see how things play out... :)
+    Walter
+- id: 218
+  author: Leonid Ganeline
+  author_email: leo.gan.57@gmail.com
+  author_url: http://geekswithblogs.net/LeonidGaneline
+  date: '2007-09-19 11:45:53 +0000'
+  date_gmt: '2007-09-19 11:45:53 +0000'
+  content: |
+    Great article!
+    I think the lightweight MessgeBox Engine in the v.Next is quite possible. It would be really good to support synchronous WCF features. And possible the WCF WS-* security stuff can be implemented much more easily then now in BizTalk.
+    BTW What about ESS-service? Now BizTalk has not to much to propose on the security area.
+    Regards,
+    Leonid Ganeline [BizTalk MVP]
+    http:&#47;&#47;geekswithblogs.net&#47;leonidganeline&#47;
+- id: 219
+  author: Sam Vanhoutte
+  author_email: sam.vanhoutte@codit.be
+  author_url: http://www.codit.eu
+  date: '2007-09-20 07:17:15 +0000'
+  date_gmt: '2007-09-20 07:17:15 +0000'
+  content: |
+    Nice post Thomas.
+    I think a lot of guessing will be done for a while, but most of the issues and thinking you have make sense.
+    I definitely agree on the migration path that is extremely important, since BizTalk is typically used in mission-critical long term enterprise wide projects, and IT managers really need to get this guarantee.
+    What we are also feeling is that Microsoft is moving more and more BizTalk functionality to the framework or to seperate packages (ie. WCF LOB adapters).  Could we imagine to see mapping, pipeline components, flat file parsing... to move to the vNext framework?
+    If this would be the case the only (but very important!) advantage of BizTalk Server compared to the framework would be the enterprise ready scalable high performant host. (with tracking etc...)
+    Time will tell ;-)
+---
+<p><!--start_raw-->
+<p><a href="http:&#47;&#47;geekswithblogs.net&#47;wmichel&#47;Default.aspx">Walter Michel</a> commented on my recent entry on the <a href="http:&#47;&#47;www.winterdom.com&#47;weblog&#47;2007&#47;08&#47;25&#47;WCFAndBizTalkMessaging.aspx">BizTalk and WCF Messaging Models</a> and asked if I had some guesses as to what the architecture of a future BizTalk version might look like in regards to WF&#47;WCF integration. I think that, at this point in time, it is anybody's guess what it might look like,&nbsp;as it is just too early to tell. </p>
+<p>Honestly, I don't know what it might end up looking like, and I can't even say I can make an educated guess&nbsp;(and there are people with far more criteria for making such educated guesses than me, such as <a href="http:&#47;&#47;www.masteringbiztalk.com&#47;blogs&#47;jon&#47;">Jon Flanders</a>). Instead, I'll address the question in a different way, by mentioning what I consider a few challenges I see regarding the integration and other things like that.</p>
+<p><strong>The Impact of Significant Architecture Changes</strong></p>
+<p>One key aspect of the whole integration process between the three technologies is what the impact of significant changes to the core BizTalk architecture. Microsoft already went down that path during the transition between BizTalk 2002 and 2004, and while those of us developing BizTalk solutions are extremely grateful for the benefits that the new architecture brought over, companies with large investments in BizTalk 2000&#47;2002 solutions were not so happy. For most of them, going to BizTalk 2004&#47;2006 meant a complete rewrite of their integration solutions, and that can be very expensive, and though to justify to the business side, not only because of cost, but also because of the associated risks.</p>
+<p>With BizTalk 2004&#47;2006, BizTalk brought over not only a significantly revamped platform, but also a new, effective, and very welcome extensibility model that has been tested with time. That's why the current core product architecture has been good for three release cycles already, and the fact that even complex things like WCF could be integrated without significant changes to it is pretty substantial. </p>
+<p>A lot of Microsoft clients and partners have made significant investments in that architecture and its not clear how that investment might be preserved (or at least their loss mitigated a bit) if significant architecture changes happen. I'm pretty sure the people at the Connected Systems Division at Microsoft are aware of this, and from my own, outside perspective, I can only say that it seems like a daunting and complex decision to make. Whatever way they decide to go, it's not going to be easy.</p>
+<p>So, what happens if the complex changes do become a reality?&nbsp;We can only hope that good migration tools are not left by the side; but even with those migration tools, you'd probably be looking at a complete rewrite scenario again for the most part.</p>
+<p><strong>Messaging</strong></p>
+<p>In my previous entry, I commented that the current WCF integration in BizTalk 2006 R2 leverages the existing BizTalk messaging extensibility model (the adapter framework) on top of the messaging engine. However, I think that in the long run, keeping both is probably not the&nbsp;best solution. Despite their differences, there's still a lot of common ground and responsibilities between the BizTalk Messaging Engine and the WCF model, and simply keeping both models in place, with their independent extensibility models, would be too expensive (for example, keeping both the BizTalk adapter framework and the WCF transport channel model).</p>
+<p>So my best guess is that, at some point in time, <em>one of them would tend to disappear</em>, and needless to say, that would have to be the BizTalk one. Does it mean that the BizTalk Messaging Engine will disappear? Probably not, but it will change and its responsibilities will adjust to that.</p>
+<p>For example, assuming that the core message moving responsibilities are absorbed by the WCF stack, then the Messaging Engine would concentrate on it's other tasks: Managing Receive Locations&#47;Ports and Send Ports&#47;Port Groups (assuming those concepts still exists in some fashion), managing port configuration settings at runtime, managing errors and, assuming the Message Box concept remains (or some equivalent centralized routing agent), then submitting and retrieving messages from it.</p>
+<p>There are some interesting aspects deriving from this:</p>
+<ul>
+<li>The pipeline model would disappear. Personally, I'm a little saddened by this because I consider the pipeline extensibility model to be simple [1], elegant and very effective; and it's one of the great assets BizTalk has when integrating against legacy&nbsp;and third party systems with peculiarities in the messages they generate&#47;consume. That said, WCF does have a good extensibility story, though the responsibilities of where each things happened are a bit more diluted across the stack, instead of being centralized like in the BizTalk pipeline concept.</li>
+<li>The WCF model&nbsp;has some bias&nbsp;towards XML&#47;SOAP. Certainly, it allows other things&nbsp;as messages, depending on how much work you're willing to invest in it. This is changing a bit, though, in .NET 3.5 with the REST support, and I expect&nbsp;it will change even more in later releases. To be an effective messaging stack for an integration platform, however, this <em>needs</em> to be a non-issue.</li>
+<li>WCF supports a more complex set of interactions (and MEPs) than those supported by BizTalk at this time, and it's not clear how some of those could be used to extend BizTalk. This includes things like composite duplex channels, as well as the durable services&#47;sessions model supported in .NET 3.5 (the current implementation of which makes little sense if the service is backed by a real&nbsp;workflow in WF&#47;BizTalk).</li></ul>
+<p><strong>The Message Box</strong></p>
+<p>An interesting question that comes up is whether a future BizTalk version might still have the Message Box. Currently, the MessageBox is the cornerstone and heart of the BizTalk architecture, and a key element in supporting BizTalk's highly reliable, loosely-coupled, asynchronous model.</p>
+<p>However, I don't discard that, if a major architecture change is done, the MessageBox model isn't reevaluated, because it also is a disadvantage at times. For example, it can impact message throughput and latency in low-latency, synchronous scenarios, and after a certain point, the centralized model doesn't scale all that well without some really heavy-duty DB servers (which is expensive). </p>
+<p>I don't think the message box concept will go away soon, but it may change in how it is implemented. I also think (but this is just a wild guess) that we might see some support for more lightweight operation modes were you trade off some of the features of the MessageBox for lower latency for purely synchronous operations (this would be interesting, particularly for some messaging-only scenarios).</p>
+<p><strong>The Orchestration Engine</strong></p>
+<p>As far as I know (at least from the little tidbits MS has let out), XLANGs is going away to be replaced by a WF-based orchestration engine. At the least, this means that some migration tools would be needed here, possibly with a set of custom WF activities that match more closely to the behavior of the built-in XLANGs shapes in current BizTalk versions.</p>
+<p>There are some interesting implications and questions coming from this change:</p>
+<ol>
+<li>One of the core advantages that WF has over the current BizTalk Orchestration model is that it is extensible through custom Activities. However, as we've already seen, some custom WF hosts will restrict the set of activities that can be used in Workflows executing on them. Whether BizTalk will have an open or closed model here is anybody's guess.</li>
+<li>WF has one low-level mechanism for getting data into a workflow: Workflow Queues (getting data out of a workflow isn't quite as clear). While the queue model is very flexible, it is also too low-level for what most people are comfortable with. Unfortunately, the current WF releases don't<br />
+really have a very good higher-level mechanism for this (the HandleExternalEvent and CallExternalMethod activities are woefully inadequate). In other words, the existing Port model in BizTalk is&nbsp;a far better model, which the new WCF integration into WF in .NET 3.5 is sort of related to (at least they are much more similar).<br>This is, in a lot of ways, a key point in making WF usable as an XLANGs alternative. The current port model in BizTalk is tied to the BizTalk MessageBox, and it is instrumental in the design of loosely-coupled orchestrations and services, scaling processing to multiple hosts (via the BizTalk Host model and bindings), and versioning complex long-running processes (direct binding is extremely useful when breaking up complex processes into multiple orchestrations and letting each one be versioned independently).</li>
+<li>A key difference between WF and XLANGs is the fact that XLANGs is message oriented. This means that messages are a first-class language construct, and so message construction, manipulation and the receiving&#47;sending of messages is a clear concept. WF, on the other hand, has no clear of what a message is at all, and execution is not related at all to how data (messages) flows around the process. On one hand, this is an advantage&nbsp;because it opens new&nbsp;possibilities&nbsp;and adds expressiveness to the tool,&nbsp;but it is also a downside because the message-orientated nature of BizTalk and BizTalk orchestrations has been one of BizTalk's strongest points and really aligns it with Service-Oriented Architectures.<br>In fact, even in the WCF integration in .NET 3.5, the concept of message isn't directly mentioned; instead we talk about [data]contracts, which are still just CLR objects. If this remains so, then an interesting follow-up question to consider is what happens to the existing BizTalk features that are closely related to its message-oriented nature, like maps and the support for non-XML message formats (including EDI and Flat Files, but not limited to them). There are certainly alternatives for this, and I do doubt we'll see a significant reduction in functionality in this space, though how it is accomplished could change significantly.</li></ol>
+<p><strong>Human Workflow</strong></p>
+<p>Traditionally, BizTalk hasn't been oriented towards automating processes with heavy user-involvement (the stronghold of more workflow oriented tools like K2.net&nbsp;or Ultimus). With BizTalk 2004, Microsoft made a weak attempt at providing some tools for building these kind of solutions as part of EAI projects with Human Workflow Services (HWS), which were deprecated on BizTalk 2006.</p>
+<p>WF has more potential in this arena, although the core WF is too basic to build human workflow solutions out of the box without a large number of extensions. I don't expect a future BizTalk version to incorporate more Human Workflow oriented features; given that Microsoft has said they are investing in positioning Microsoft Office Sharepoint Server&nbsp;as a contender in that space. We might see some more BizTalk to Sharepoint integration tools, though.</p>
+<p><strong>Business Rules Engine</strong></p>
+<p>Both BizTalk and WF have some business rules functionality. While the BRE in BizTalk is, in general terms,&nbsp;more advanced than WF's, it's not clear exactly what's going to happen. I seem to remember reading that both engines are now owned by the same dev team, so we should certainly be seeing some convergence there. </p>
+<p>What is not clear to me is whether there will continue to exist two separate engines (one for the core WF and one for server oriented products like BizTalk). If both continue to exists, then that does mean a bit more confusion for BizTalk developers as it will mean having to choose on a case by case basis which of both engines to use from orchestrations (now WF workflows). If they converge into a single rules engine, then I would expect the WF engine to absorb, one way or another, the extended functionality offered by the BRE.</p>
+<p><strong>Conclusion</strong></p>
+<p>The only conclusion I can make of this is that I have more questions than answers :-). It's certainly going to be interesting to see how the core framework evolves and how that impacts the architecture and functionality of BizTalk as a standalone server product, and for us BizTalk developers it will sure have some significant impacts. The best I can say is that learning a bit about WCF and WF and understanding their architecture now sure will help when the time to make the transition comes along.</p>
+<p><strong>[1]</strong> The only reason writing pipeline components&nbsp;is complex at times is because of the COM-compatible interfaces you need to implement to satisfy the old, internal unmanaged implementation in the Messaging Engine, as well as the need to&nbsp;do streaming&nbsp;as much as possible to minimize the performance impact.</p>
+<div class="wlWriterSmartContent" id="0767317B-992E-4b12-91E0-4F059A8CECA8:0f5809fc-086e-4d6a-ad08-c3563f029896" contenteditable="false" style="padding-right: 0px; display: inline; padding-left: 0px; padding-bottom: 0px; margin: 0px; padding-top: 0px">Technorati tags: <a href="http:&#47;&#47;technorati.com&#47;tags&#47;BizTalk" rel="tag">BizTalk</a>, <a href="http:&#47;&#47;technorati.com&#47;tags&#47;Windows%20Workflow%20Foundation" rel="tag">Windows Workflow Foundation</a>, <a href="http:&#47;&#47;technorati.com&#47;tags&#47;Windows%20Communication%20Foundation" rel="tag">Windows Communication Foundation</a></div><!--end_raw--></p>

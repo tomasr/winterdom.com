@@ -1,0 +1,104 @@
+---
+layout: post
+status: publish
+published: true
+title: My PowerShell Prompt
+author:
+  display_name: Tomas Restrepo
+  login: tomasr
+  email: tomas@winterdom.com
+  url: http://winterdom.com/
+author_login: tomasr
+author_email: tomas@winterdom.com
+author_url: http://winterdom.com/
+wordpress_id: 43
+wordpress_url: http://winterdom.com/2008/08/mypowershellprompt
+date: '2008-08-13 19:12:36 +0000'
+date_gmt: '2008-08-13 19:12:36 +0000'
+categories:
+- PowerShell
+tags: []
+comments:
+- id: 38
+  author: Hal Rottenberg
+  author_email: hal@halr9000.com
+  author_url: http://halr9000.com
+  date: '2008-08-14 07:51:23 +0000'
+  date_gmt: '2008-08-14 07:51:23 +0000'
+  content: |
+    And if you want more than one letter of the parent folders in the prompt, Tomas gave this to me to use:
+    return ($loc -replace '\\(\.?)([^\\]{3})[^\\]*(?=\\)','\$1$2')
+    This replaces the similar line in the shorten-path function.
+- id: 39
+  author: Lance
+  author_email: lmrobins@gmail.com
+  author_url: http://www.lancerobinson.net
+  date: '2008-08-14 08:03:00 +0000'
+  date_gmt: '2008-08-14 08:03:00 +0000'
+  content: |
+    Nice, thanks Tomas!
+- id: 40
+  author: Alex Espinoza
+  author_email: cured@yahoo.com
+  author_url: http://neonlabs.structum.net/
+  date: '2008-08-14 10:19:02 +0000'
+  date_gmt: '2008-08-14 10:19:02 +0000'
+  content: |
+    Very nice. Thank you. I just recently found your site... and it rocks!!.... You Color Schemes are very cool. I am recently porting my Web Highlighter profile to your color scheme. And after that, I will add it to my emacs script.
+- id: 41
+  author: Tomas Restrepo
+  author_email: tomas@winterdom.com
+  author_url: http://www.winterdom.com/weblog/
+  date: '2008-08-14 12:19:24 +0000'
+  date_gmt: '2008-08-14 12:19:24 +0000'
+  content: |
+    Glad you guys liked it :)
+- id: 42
+  author: Shay Levy
+  author_email: scriptolog@gmail.com
+  author_url: http://blogs.microsoft.co.il/blogs/ScriptFanatic/
+  date: '2008-08-15 00:20:57 +0000'
+  date_gmt: '2008-08-15 00:20:57 +0000'
+  content: |
+    To get your computer name try the $env:COMPUTERNAME enevironment variable, it is much more fatser to get and less expnensive than [net.dns]::GetHostName().
+- id: 1458
+  author: Episode 110 &#8211; Andrew Mason From Microsoft on Server Core &laquo; PowerScripting
+    Podcast
+  author_email: ''
+  author_url: http://powerscripting.wordpress.com/2010/04/25/episode-110-andrew-mason-from-microsoft-on-server-core/
+  date: '2010-04-25 23:14:27 +0000'
+  date_gmt: '2010-04-25 23:14:27 +0000'
+  content: "[...] Mod your Powershell prompt [...]"
+- id: 1949
+  author: PowerShell Magazine &raquo; Pimp Your Profile
+  author_email: ''
+  author_url: http://www.powershellmagazine.com/2012/02/13/pimp-your-profile-2/
+  date: '2012-02-13 18:39:56 +0000'
+  date_gmt: '2012-02-13 18:39:56 +0000'
+  content: "[...] It overrides the default prompt and allows you to specialize it
+    the way you see fit. I found a wonderful prompt that looks nice and provides information
+    about the current directory. I&#8217;ve added some [...]"
+- id: 5835
+  author: Create a PowerShell Visual Studio prompt | Peters&#039;s PowerShell Blog
+  author_email: ''
+  author_url: http://powershell-knowhow.de/powershell/?p=344
+  date: '2013-01-02 17:25:38 +0000'
+  date_gmt: '2013-01-02 17:25:38 +0000'
+  content: "[...] Instead I came up with a Profile script that sets all environment
+    variables necessary to call both&nbsp;the C++ and the .NET Compilers from the
+    PowerShell prompt. I also&nbsp;exchange the prompt itself to make it more &#8220;developer
+    style&#8221; (I found a nice prompt here http:&#47;&#47;winterdom.com&#47;2008&#47;08&#47;mypowershellprompt).
+    [...]"
+---
+<p><!--start_raw-->
+<p>Neil Houghton asked a couple of days ago if I could share my PowerShell <code>prompt()</code> function. Here's what my prompt looks like:</p>
+<p><img style="border-right: 0px; border-top: 0px; border-left: 0px; border-bottom: 0px" height="106" alt="ps-prompt" src="http:&#47;&#47;www.winterdom.com&#47;weblog&#47;content&#47;binary&#47;WindowsLiveWriter&#47;MyPowerShellPrompt_11E91&#47;ps-prompt_3.png" width="357" border="0" &#47;> </p>
+<p>I tried to keep my prompt relatively short while still on a single line. There are two things I care about in my prompt: The machine name I'm working on (useful when I have VMs opened) and the current path, in abbreviated form.</p>
+<p>Thus, my <code>prompt()</code> function looks like this:</p>
+<div class="codebg"><code><span class="Keyword">function</span>&#160;<span class="Function">prompt</span> {       <br &#47;>&#160;&#160; <span class="Comment"># our theme</span>       <br &#47;>&#160;&#160; <span class="Identifier">$cdelim</span> = <span class="Type">[ConsoleColor]</span>::DarkCyan       <br &#47;>&#160;&#160; <span class="Identifier">$chost</span> = <span class="Type">[ConsoleColor]</span>::Green       <br &#47;>&#160;&#160; <span class="Identifier">$cloc</span> = <span class="Type">[ConsoleColor]</span>::Cyan       <br &#47;>      <br &#47;>&#160;&#160; <span class="Statement">write-host</span>&#160;<span class="String">"$([char]0x0A7) "</span> -n -<span class="Operator">f</span>&#160;<span class="Identifier">$cloc</span>       <br &#47;>&#160;&#160; <span class="Statement">write-host</span> (<span class="Type">[net.dns]</span>::GetHostName()) -n -<span class="Operator">f</span>&#160;<span class="Identifier">$chost</span>       <br &#47;>&#160;&#160; <span class="Statement">write-host</span>&#160;<span class="String">' {'</span> -n -<span class="Operator">f</span>&#160;<span class="Identifier">$cdelim</span>       <br &#47;>&#160;&#160; <span class="Statement">write-host</span> (<span class="Statement">shorten-path</span> (pwd).Path) -n -<span class="Operator">f</span>&#160;<span class="Identifier">$cloc</span>       <br &#47;>&#160;&#160; <span class="Statement">write-host</span>&#160;<span class="String">'}'</span> -n -<span class="Operator">f</span>&#160;<span class="Identifier">$cdelim</span>       <br &#47;>&#160;&#160; <span class="Keyword">return</span>&#160;<span class="String">' '</span>       <br &#47;>} </code></div>
+<p>The abbreviation of the current directory is partially inspired by Unix (use ~ if it's under the $HOME) and partially by how GVim shortens paths for its tab captions:</p>
+<p><img style="border-right: 0px; border-top: 0px; border-left: 0px; border-bottom: 0px" height="77" alt="vim-tabs" src="http:&#47;&#47;www.winterdom.com&#47;weblog&#47;content&#47;binary&#47;WindowsLiveWriter&#47;MyPowerShellPrompt_11E91&#47;vim-tabs_3.png" width="657" border="0" &#47;> </p>
+<p>Here's the function that takes care of this:</p>
+<div class="codebg"><code><span class="Keyword">function</span>&#160;<span class="Function">shorten-path</span>(<span class="Type">[string]</span>&#160;<span class="Identifier">$path</span>) {       <br &#47;>&#160;&#160; <span class="Identifier">$loc</span> = <span class="Identifier">$path</span>.Replace(<span class="Identifier">$HOME</span>, <span class="String">'~'</span>)       <br &#47;>&#160;&#160; <span class="Comment"># remove prefix for UNC paths</span>       <br &#47;>&#160;&#160; <span class="Identifier">$loc</span> = <span class="Identifier">$loc</span> -<span class="Operator">replace</span>&#160;<span class="String">'^[^:]+::'</span>, <span class="String">''</span>       <br &#47;>&#160;&#160; <span class="Comment"># make path shorter like tabs in Vim,</span>       <br &#47;>&#160;&#160; <span class="Comment"># handle paths starting with \\ and . correctly</span>       <br &#47;>&#160;&#160; <span class="Keyword">return</span> (<span class="Identifier">$loc</span> -<span class="Operator">replace</span>&#160;<span class="String">'\\(\.?)([^\\])[^\\]*(?=\\)'</span>,<span class="String">'\$1$2'</span>)       <br &#47;>} </code></div>
+<p>One thing to keep in mind regarding <code>shorten-path</code>: I do a very simple replace of $HOME by ~. The reason it works correctly is that I ensure in my profile script that the <code>$HOME</code> variable has a fully qualified path and "completed" using the <code>resolve-path</code> command. I also modify what the home directory is under PowerShell by using a trick I've <a href="http:&#47;&#47;www.winterdom.com&#47;weblog&#47;2008&#47;01&#47;24&#47;ModifyingTheHomeInPowerShell.aspx">described previously</a>.</p>
+<div class="wlWriterSmartContent" id="scid:0767317B-992E-4b12-91E0-4F059A8CECA8:18927d7c-314b-43ab-8d18-e7e5fd8d662c" style="padding-right: 0px; display: inline; padding-left: 0px; float: none; padding-bottom: 0px; margin: 0px; padding-top: 0px">Technorati tags: <a href="http:&#47;&#47;technorati.com&#47;tags&#47;PowerShell" rel="tag">PowerShell</a>, <a href="http:&#47;&#47;technorati.com&#47;tags&#47;Customization" rel="tag">Customization</a></div><!--end_raw--></p>

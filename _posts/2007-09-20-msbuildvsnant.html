@@ -1,0 +1,54 @@
+---
+layout: post
+status: publish
+published: true
+title: MSBuild Vs. NAnt
+author:
+  display_name: Tomas Restrepo
+  login: tomasr
+  email: tomas@winterdom.com
+  url: http://winterdom.com/
+author_login: tomasr
+author_email: tomas@winterdom.com
+author_url: http://winterdom.com/
+wordpress_id: 316
+wordpress_url: http://winterdom.com/2007/09/msbuildvsnant
+date: '2007-09-20 18:36:17 +0000'
+date_gmt: '2007-09-20 18:36:17 +0000'
+categories:
+- ".NET"
+- Tools
+tags: []
+comments:
+- id: 230
+  author: Matt Katz
+  author_email: ''
+  author_url: http://www.MoreLightMoreLight.com
+  date: '2007-09-21 09:09:35 +0000'
+  date_gmt: '2007-09-21 09:09:35 +0000'
+  content: |
+    Reasons we use msbuild at my place:
+    Getting a vdproj file to build easily.
+    Getting a VSTO application to build easily.
+    Trying to get Nant to perform those tricks was not fun.
+- id: 231
+  author: James
+  author_email: ''
+  author_url: ''
+  date: '2007-09-21 09:28:15 +0000'
+  date_gmt: '2007-09-21 09:28:15 +0000'
+  content: |
+    I am confused by Matt Katz' assertion that he uses msbuild in order to build deployment projects easily since from my own experience PLUS everything I can find on Google (including comments from MS employees) that vdproj files are not supported by msbuild. The only way to build them is command line, which works basically the same in both NAnt and msbuild.
+---
+<p><!--start_raw-->
+<p><a href="http:&#47;&#47;codebetter.com&#47;blogs&#47;jeremy.miller&#47;">Jeremy Miller</a> asked about switching from <a href="http:&#47;&#47;codebetter.com&#47;blogs&#47;jeremy.miller&#47;archive&#47;2007&#47;09&#47;20&#47;is-there-a-good-reason-to-switch-to-msbuild.aspx">NAnt to MSBuild</a> and if it would be worth it. I've thought about this in the past, and here's what it always comes out for me:</p>
+<ul>
+<li>In raw power and flexibility, I don't think there's a clear winner. </li>
+<li>MSBuild has the advantage of being "built-in" and that as Microsoft itself extends the compilation process (or brings more things into it, as is the case with, say the Workflow Foundation validation targets), it will have some stuff earlier than NAnt.</li>
+<li>NAnt, however, has a fairly extensive (more extensive, I'd say) set of tasks, if only because it has been around earlier and has a good community around it.</li>
+<li>Personally, I prefer NAnt's structure; I find it easier to read and maintain than MSBuild's one. This is pretty significant to me because build scripts can easily get fairly complex. Syntax itself is irrelevant here because both are XML dialects.</li>
+<li>Documentation for NAnt is, I'd say, far better than for MSBuild. In particular, I found MSBuild documentation to be pretty useless in general because what you will usually find documented is the API (raw methods and properties) of the MSBuild task classes, instead of documenting them in a way that more obviously maps to how you would actually use them in a build script.</li>
+<li>It might be wise sometimes not to choose one over the other, but instead have them collaborate.</li>
+<li>If you need multi-targeting support (that is, compiling a single code base against multiple framework targets), then NAnt is the clear winner here. NAnt's framework support is pretty good and it's very easy to create a build-script that can compile a single code based against .NET 1.1, 2.0 and Mono. MSBuild is rather lacking in this area (MSBee can help with .NET 1.1, but it really is a hack and a pain in the neck to use).</li></ul>
+<p>In general, I would say that if you're already familiar with NAnt, and can use it effectively and efficiently, there is little compelling reason at this time to switch. But if you're not familiar, then at least trying to get acquainted with MSBuild should be worth it.</p>
+<div class="wlWriterSmartContent" id="scid:0767317B-992E-4b12-91E0-4F059A8CECA8:9ecd2583-5542-4874-89d0-a9a74eab9ed1" style="padding-right: 0px; display: inline; padding-left: 0px; padding-bottom: 0px; margin: 0px; padding-top: 0px">Technorati tags: <a href="http:&#47;&#47;technorati.com&#47;tags&#47;NAnt" rel="tag">NAnt</a>, <a href="http:&#47;&#47;technorati.com&#47;tags&#47;MSBuild" rel="tag">MSBuild</a></div><!--end_raw--></p>

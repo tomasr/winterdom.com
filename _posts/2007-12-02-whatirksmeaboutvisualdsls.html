@@ -1,0 +1,69 @@
+---
+layout: post
+status: publish
+published: true
+title: What Irks Me About Visual DSLs
+author:
+  display_name: Tomas Restrepo
+  login: tomasr
+  email: tomas@winterdom.com
+  url: http://winterdom.com/
+author_login: tomasr
+author_email: tomas@winterdom.com
+author_url: http://winterdom.com/
+wordpress_id: 496
+wordpress_url: http://winterdom.com/2007/12/whatirksmeaboutvisualdsls
+date: '2007-12-02 19:11:27 +0000'
+date_gmt: '2007-12-02 19:11:27 +0000'
+categories:
+- Development
+- Architecture
+tags: []
+comments:
+- id: 349
+  author: leovernazza
+  author_email: ''
+  author_url: http://himalia.net/blogs/leovernazza
+  date: '2007-12-03 16:59:17 +0000'
+  date_gmt: '2007-12-03 16:59:17 +0000'
+  content: |
+    I think we need to distiguish between two things: languages and notations.
+    As you said, XAML is a serialization format (notation). From my point of view, this is also true for "visual" DSLs. Once you have the language, you can provide different notations, some text-based, some visual, and others in 3D...
+    I agree with you about this: notations are a very important part of the productivity jump you can achieve, and also, different "personas" may prefer different notations.
+- id: 350
+  author: Amit Sharma
+  author_email: amit@zuberon.com
+  author_url: http://www.zuberon.com
+  date: '2007-12-07 09:49:04 +0000'
+  date_gmt: '2007-12-07 09:49:04 +0000'
+  content: |
+    Well there is another approach that has been prevalent in the Unix world. Design the language such that it can be written by hand and then design the tooling that simplifies the process for the un-initiated.
+    You describe XAML as basically a serialization format, but what would you say for a language that was meant to be written by hand but the format was also amenable to machine generation?
+    Successful design approaches are those that have withstood the test of time. Consider the internet protocols IMAP, POP, SMTP or even HTTP. They are primarily used by machines, but I can still type the commands on a telnet terminal and make sense of things. I am not against visualization, but I see a lot of value in transparency.
+---
+<p><!--start_raw-->
+<p>There's a lot of talk about Domain Specific Languages lately. The exact definition of what a DSL is, however, might change depending on who you ask. Microsoft itself tends to favor significantly <em><a href="http:&#47;&#47;www.winterdom.com&#47;weblog&#47;2007&#47;07&#47;13&#47;VisualDSLs.aspx">Visual DSLs</a></em>, that is, domain specific languages that are made of visual components (as opposed to Text-based DSLs that are made of some kind of text driven representation).</p>
+<p>Frankly, I don't expect MS to change their direction, nor am I sure it would be the wisest decision given their target audience, but I do tend to favor text-based DSLs myself, for several reasons:</p>
+<ol>
+<li>Text-based DSLs work best during development. We have a significant amount of experience and a rich set of tools available to deal with text in an effective fashion: Source control and comparison tools, good editors, diff'ing and merging, and so on.</li>
+<li>A text-based DSL is illustrative in and of itself. Anyone with a text editor can look at it, so it only requires special tooling during execution, unlike their visual counterparts. </li>
+<li>If you're spending significant time using a DSL to create new things (versus, say, simply visualizing existing stuff), then a textual DSL is usually more effective.</li> </ol>
+<p>I should say at this point that XML-based languages don't necessarily fit this descriptions. XML can be clunky at times, and a lot of people hate having to manually crank XML to do something. For example, many people dislike manually editing NAnt or MSBuild build files.</p><br />
+<h2>What's not to like about Visual DSLs</h2>
+<p>Many Visual DSLs are very appealing at first to create new things when you're unfamiliar with the language, as they can be very didactic. But once you're familiar with the language, Visual DSLs, as implemented by most tooling out there, will usually get in the way instead of boosting your productivity.</p>
+<p>Don't get me wrong; there are a lot of things to like about Visual languages. In particular, they can be great tools for visualizing things. In some cases, they are great tools to editing existing things and occasionally, even creating new things. </p>
+<p>The last one, however, is pretty rare. I've been thinking a lot about this, and I've started to think that one of the reasons this is so is that there's a fundamental disconnect in how we usually think about Visual Languages and Tools.</p><br />
+<blockquote>
+<p>The disconnect is that we tend to assume that the visual representation of the underlying domain that is best for visualizing and describing the language is actually an acceptable choice for "writing" in that language.</p> </blockquote>
+<p>For example, let's consider Windows Workflow Foundation workflows or BizTalk Orchestrations. Both could be consider DSLs for building processes and workflows, and they are actually pretty effective at that. Both use a visual representation that feels more or less natural to people used to working with processes (or state machines, in the case of WF). Both of those representations are great for working with existing processes, as they allow the reader to quickly grasp the flow of it, and it even works very well when debugging a running process.</p>
+<p>But, to be honest, both leave a lot to be desired when you're actually sitting down to create and define a new process, and both tend to get a lot in the way. I personally feel that WF is a lot worse in this respect.</p><br />
+<h2>XAML</h2>
+<p>I should mention that I do not consider XAML a text-based DSL (even if it is "just text"). Fundamentally, XAML is just a serialization format, and that shows in a number of places. It is build to be created and consumed by software tools, not the human developer (though it is possible to do so, as many people found out with WPF in the early days). </p>
+<p>More importantly, these kinds of XML&#47;XAML languages that are aimed at tools don't necessarily work great with the tooling we have for dealing with text (see the all-important point 1 above). For example, a lot of people have found the hard way that trying to do a diff or trying to merge two copies of a tool-generated XML&#47;XAML file can be nearly impossible at times.</p>
+<p>It's pretty evident that Microsoft is working on a lot more tools based on XAML, so that's here to stay, but it remains to be seen yet how that is going to work out. I'm sure there's going to be good Visual tooling around it, but, as usual, the problem is that it just isn't enough.</p><br />
+<h2>What about Oslo?</h2>
+<p>A lot of my fellow MVPs and a bunch of people that attended the recent SOA and Business Process Conference have mentioned Microsoft's <a href="http:&#47;&#47;www.microsoft.com&#47;soa&#47;products&#47;oslo.aspx">Oslo</a> initiative that was announced at the conference.</p>
+<p>From what little I know of it, it is a far reaching initiative, touching multiple key products in the Microsoft development platform. A significant component of this effort is investment in models and, you guessed it, modeling tools around them. I think it's obvious to everyone by now that a substantial set of those tools will be built around visual DSLs and visual designer tools (that XAML's in there somewhere is probably also a safe bet). Some people will think this is a key advantage, others will probably hate it.</p>
+<p>The one conclusion I've reached so far regarding Oslo is that will likely mean a significant shift in how we do development on the MS platform (at least for those of us involved in connected systems). However, I'm holding my thoughts on what will be good or bad about those changes until we know more precisely what the Oslo technologies will be delivering and we have a clearer picture of how we will interact with them. Also, it's clear that this is an initiative that will be gradually rolled out, so it will probably be a long transition period around it (which is both good and bad in itself).</p>
+<p>As customers, and users of those technologies, however, we have a big opportunity, and a big responsibility in letting Microsoft know what kind of tooling we want&#47;need to have around the modeling tools and other technologies. Like I told someone at MS recently: <em>"I don't expect MS to shift its position on visual tooling and Visual DSLs, but I do wish the hooks and infrastructure was there for us in the community, creating our own, non-visual DSL tools around it that allow us to work more effectively with the technology"</em>. Hopefully, that little thought will not be forgotten.</p>
+<div class="wlWriterSmartContent" id="scid:0767317B-992E-4b12-91E0-4F059A8CECA8:f0815e4d-bc34-4dac-b9f7-fbc3d458ed55" style="padding-right: 0px; display: inline; padding-left: 0px; padding-bottom: 0px; margin: 0px; padding-top: 0px">Technorati tags: <a href="http:&#47;&#47;technorati.com&#47;tags&#47;DSL" rel="tag">DSL</a>, <a href="http:&#47;&#47;technorati.com&#47;tags&#47;Oslo" rel="tag">Oslo</a>, <a href="http:&#47;&#47;technorati.com&#47;tags&#47;XAML" rel="tag">XAML</a></div><!--end_raw--></p>

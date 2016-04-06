@@ -1,0 +1,29 @@
+---
+layout: post
+status: publish
+published: true
+title: Final Ubuntu Hibernate Touches
+author:
+  display_name: Tomas Restrepo
+  login: tomasr
+  email: tomas@winterdom.com
+  url: http://winterdom.com/
+author_login: tomasr
+author_email: tomas@winterdom.com
+author_url: http://winterdom.com/
+wordpress_id: 669
+wordpress_url: http://winterdom.com/2009/02/finalubuntuhibernatetouches
+date: '2009-02-19 19:11:05 +0000'
+date_gmt: '2009-02-19 19:11:05 +0000'
+categories:
+- Linux
+tags: []
+comments: []
+---
+<p><!--start_raw-->
+<p>As I <a href="http:&#47;&#47;winterdom.com&#47;weblog&#47;2008&#47;12&#47;30&#47;D820IbexAndHibernate.aspx">commented</a> back in December, I &ldquo;fixed&rdquo; the hibernate functionality in Ubuntu 8.10 on my Dell Latitude D820 by making sure there was an active swap partition configured for the resume functionality.</p>
+<p>This wasn&rsquo;t quite true, however. Hibernate seemed to work. but occasionally (about 33% of the time), it would seem as if the machine would restart when trying to resume from hibernation. I didn&rsquo;t look into this for a while, but it was certainly annoying.</p>
+<p>I did figure out what was going on eventually: The machine was actually coming out of hibernation just fine, but X was restarting. I realized this after noticing some live <a href="http:&#47;&#47;winterdom.com&#47;weblog&#47;2009&#47;01&#47;16&#47;SomeLinuxAppsIDiscoveredRecently.aspx">gnu screen</a> sessions running in the background right after coming from hibernation. </p>
+<p>So that pretty much meant the problem had to be related to issues with the NVidia video driver, and the fix was something I had <a href="http:&#47;&#47;winterdom.com&#47;weblog&#47;2007&#47;10&#47;23&#47;FixingSleepInUbuntu710.aspx">already tried in the past</a>: Adjusting <code>&#47;etc&#47;default&#47;acpi-support</code>:</p>
+<div class="codebg"><code>SAVE_VBE_STATE=false<br>POST_VIDEO=false </code></div>
+<p>I did this a couple weeks ago, and haven&rsquo;t run into the resume problem since. Hopefully next time I will remember it when I reinstall the OS instead of fumbling with it for weeks!</p><!--end_raw--></p>

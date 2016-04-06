@@ -1,0 +1,24 @@
+---
+layout: post
+status: publish
+published: true
+title: Porting Adapter to BizTalk 2006
+author:
+  display_name: Tomas Restrepo
+  login: tomasr
+  email: tomas@winterdom.com
+  url: http://winterdom.com/
+author_login: tomasr
+author_email: tomas@winterdom.com
+author_url: http://winterdom.com/
+wordpress_id: 134
+wordpress_url: http://winterdom.com/2005/07/portingadaptertobiztalk2006
+date: '2005-07-11 17:08:05 +0000'
+date_gmt: '2005-07-11 17:08:05 +0000'
+categories:
+- BizTalk
+tags: []
+comments: []
+---
+<p><!--start_raw-->Today I sat down and ported one adapter we had built for one of our customers from BizTalk Server 2004 to the BizTalk 2006 CTP. I am glad to report that it worked pretty much at the first tried. I just took the solution, upgraded it in VS 2005, recompiled and registered the adapter.</p>
+<p>I did have to do a few minor changes, but mostly to eliminate new warnings emitted by the C# compiler, but I did not have to do any changes to the basic code. Happily enough, most of the BizTalk API appears to be the same as in 2004, so if any problems arise they should be mostly caused by changes in the .NET Framework itself.</p><!--end_raw--></p>

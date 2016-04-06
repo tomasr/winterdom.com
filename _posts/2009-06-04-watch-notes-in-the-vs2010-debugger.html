@@ -1,0 +1,43 @@
+---
+layout: post
+status: publish
+published: true
+title: Watch Notes in the VS2010 Debugger
+author:
+  display_name: Tomas Restrepo
+  login: tomasr
+  email: tomas@winterdom.com
+  url: http://winterdom.com/
+author_login: tomasr
+author_email: tomas@winterdom.com
+author_url: http://winterdom.com/
+wordpress_id: 1266
+wordpress_url: http://winterdom.com/2009/06/watch-notes-in-the-vs2010-debugger
+date: '2009-06-04 04:13:37 +0000'
+date_gmt: '2009-06-04 04:13:37 +0000'
+categories:
+- Visual Studio
+tags: []
+comments:
+- id: 868
+  author: DotNetShoutout
+  author_email: ''
+  author_url: http://dotnetshoutout.com/Watch-Notes-in-the-VS2010-Debugger-Tomas-Restrepo
+  date: '2009-06-05 09:23:07 +0000'
+  date_gmt: '2009-06-05 09:23:07 +0000'
+  content: |-
+    <strong>Watch Notes in the VS2010 Debugger - Tomas Restrepo...</strong>
+
+    Thank you for submitting this cool story - Trackback from DotNetShoutout...
+---
+<p>One interesting new feature I noticed in the Visual Studio 2010 beta 1 debugger: You can now turn watch expressions into little detached &ldquo;post-it&rdquo;-like notes that float around your debugger window. I&rsquo;m calling them Watch Notes for now, since I have no clue what the feature is actually called.</p>
+<p><a href="http:&#47;&#47;winterdom.com&#47;wp-content&#47;uploads&#47;2009&#47;06&#47;vs10-bg-notes-1.png"><img style="border-right-width: 0px; display: inline; border-top-width: 0px; border-bottom-width: 0px; border-left-width: 0px" title="vs10_bg_notes_1" border="0" alt="vs10_bg_notes_1" src="http:&#47;&#47;winterdom.com&#47;wp-content&#47;uploads&#47;2009&#47;06&#47;vs10-bg-notes-1-thumb.png" width="640" height="390" &#47;></a> </p>
+<p>You can create them by hovering the mouse over an expression. Like in previous versions, you&rsquo;ll get the watch popup with the details and value of the expression, but notice the little Note-icon on the right:</p>
+<p><img style="border-right-width: 0px; display: inline; border-top-width: 0px; border-bottom-width: 0px; border-left-width: 0px" title="vs10_bg_notes_2" border="0" alt="vs10_bg_notes_2" src="http:&#47;&#47;winterdom.com&#47;wp-content&#47;uploads&#47;2009&#47;06&#47;vs10-bg-notes-2.png" width="286" height="54" &#47;> </p>
+<p></p>
+<p>If you click on it, the watch expression window will be moved to turn yellow and get detached. It keeps around during your debugging and works just like any expression in the real watch window (that is, it&rsquo;s context sensitive and insensitive at the same time). </p>
+<p>I think this is pretty nifty for some debugging helpers. They will even persist across debugger sessions! More interesting, you can add a brief descriptive text to each watch note and keep it visible (or hidden).</p>
+<p>I think these will be very useful when debugging complex issues in small pieces of code, because for general debugging sessions when you go through lots of places in the code, they will get a bit in the way.</p><br />
+<h2>Something Fishy</h2>
+<p>Something I did not like, though, is that the note icon used to create these gets hidden away whenever you look into a complex expression that can be drilled down (i.e. one that has [+] next to it):</p>
+<p>As soon as the expression properties is expanded, the note icon disappears, and since they always expand automatically as soon as you hover the the cursor over the expression <em>and</em> you need to move over it anyway to reach the note icon (otherwise, the whole popup disappears), then you have to go right away to collapse the properties before being able to create a watch note from the expression. This can get annoying real quick.</p></p>

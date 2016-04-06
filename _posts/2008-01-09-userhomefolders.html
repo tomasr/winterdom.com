@@ -1,0 +1,51 @@
+---
+layout: post
+status: publish
+published: true
+title: User Home Folders
+author:
+  display_name: Tomas Restrepo
+  login: tomasr
+  email: tomas@winterdom.com
+  url: http://winterdom.com/
+author_login: tomasr
+author_email: tomas@winterdom.com
+author_url: http://winterdom.com/
+wordpress_id: 41
+wordpress_url: http://winterdom.com/2008/01/userhomefolders
+date: '2008-01-09 11:19:56 +0000'
+date_gmt: '2008-01-09 11:19:56 +0000'
+categories:
+- Development
+- Vista
+tags: []
+comments:
+- id: 37
+  author: Josh Berke
+  author_email: ''
+  author_url: ''
+  date: '2008-01-10 12:44:00 +0000'
+  date_gmt: '2008-01-10 12:44:00 +0000'
+  content: |
+    I think you hit the nail on the head. I've never really used My Documents because of this reason. Everytime I setup a new machine I am always finding myself changing the default locations for all the programs I use. Sure would be nice if I could just back and restore the application settings;-)
+    Josh
+---
+<p><!--start_raw-->
+<p>Jeff Atwood has an interesting piece about applications <a href="http:&#47;&#47;www.codinghorror.com&#47;blog&#47;archives&#47;001032.html">polluting the user space</a>, forcing their own folder and file structures and other crap into the user's home folder. He's right, but I think he stops too early.</p>
+<p>Jeff's right that the classical Unix practice is a bit better than what Windows has always provided (even on Vista). In a lot of ways, Unix is in a better position because of things that are not directly related, but that do end up helping the issue in the end, like a better (simpler!) overall file system layout, and not having to deal with drive letters (or the stupid registry, for that matter).</p>
+<p>However, even Unix suffers from user space pollution quite a bit, though in a different way than Windows user suffer. On Unix, the issue is mostly applications storing temporary and configuration data all over the user's home folder in hidden directories.</p><br />
+<h2>Different Kinds of Data</h2>
+<p>There are several problems that affect how Windows and Windows Applications handle the users directory. For me, however, the lack of good, clear guidelines and the way that application developers abuse the user's home folder are secondary issues.</p>
+<p>The real problem to me is that very few developers (or the OS providers, for that matter) realize that there's different kinds of user-specific data, each one with different requirements and storage needs.</p>
+<p>I see at least three different kinds of data you might want to store in some user-specific location:</p>
+<ol>
+<li><em>The user's own data</em> (documents, videos, music, projects, etc.). Applications will produce and manipulate this data but they should not dictate where and how it has to be stored; that's the user's problem.
+<p>I hate it when applications insist on forcing a specific folder structure on me or on creating their own folders in my documents folder. Exactly because of this is that I've completely given up on using the "My Documents" folder on windows; and consider it pretty much a storage for temporary or throw-away data I don't care about (too many applications putting their crap there).</p>
+<p>I should point out that this category, for me, is, for the most part, about data the user is explicitly aware he is creating, not about other crap the application might be producing as a side effect. In other words, if you're thinking about saving a new file without asking me for a location, don't even dream about storing it here.</p>
+<p>Everything in this location is stuff I want to backup easily, without having to go around excluding folders created by tyrant applications.</p>   </li>
+<li><em>Application configuration data</em>: This is basically your typical application user-specific settings. To me, data belonging here should be, unless something extraordinary is required, <em><strong>machine independent</strong></em>. This is the settings I simply want to take with me when I switch machines, or that I want to keep synchronized between machines to keep my applications working the same everywhere. Again, this is stuff I want to be able to backup easily without carrying extra loads of crap, but at the same time I don't want to have to deal with it (like navigate through it) unless I explicitly want to modify something here.
+<p>I very much prefer applications store their settings in the Unix-fashion: using simple text files (whatever the format). Even though windows stores the user registry hive file inside the user's profile directory, backing it up is mostly an exercise in futility and it is non-portable for the most part. </p>   </li>
+<li>Other stuff: This will be mostly temporary or cache data used by applications, that I should never have to backup or care about. If it's gone, the application should be able to recreate it as needed or simply work without it. Classical example: a browser's cache and history files.
+<p>Some Unix applications, for example, intermingle this data with their applications settings, which is a big no-no. You don't want to have to worry about backing up your browser settings and ending up with 200MB of its cache in it.</p>   </li> </ol>
+<p>There are probably other kinds of data I'm missing, but the key point is that they are different and should be stored separately. I really wish more application and OS developers started using something like the above discrimination. It would make our lives oh, so much simpler.</p>
+<div class="wlWriterSmartContent" id="scid:0767317B-992E-4b12-91E0-4F059A8CECA8:13aa0efe-50f6-4137-9511-a903c7d356c5" style="padding-right: 0px; display: inline; padding-left: 0px; padding-bottom: 0px; margin: 0px; padding-top: 0px">Technorati tags: <a href="http:&#47;&#47;technorati.com&#47;tags&#47;Operating%20Systems" rel="tag">Operating Systems</a></div><!--end_raw--></p>

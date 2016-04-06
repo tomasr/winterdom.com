@@ -1,0 +1,27 @@
+---
+layout: post
+status: publish
+published: true
+title: wsa:To and Output Channels
+author:
+  display_name: Tomas Restrepo
+  login: tomasr
+  email: tomas@winterdom.com
+  url: http://winterdom.com/
+author_login: tomasr
+author_email: tomas@winterdom.com
+author_url: http://winterdom.com/
+wordpress_id: 1015
+wordpress_url: http://winterdom.com/2007/04/wsatoandoutputchannels
+date: '2007-04-18 09:51:20 +0000'
+date_gmt: '2007-04-18 09:51:20 +0000'
+categories:
+- WCF
+tags: []
+comments: []
+---
+<p><!--start_raw-->
+<p>Here's one tip I discovered while building&nbsp;a Windows Communication Foundation output channel: The client channel can rewrite the URI sent in the wsa:To WS-Addressing header on the request message to the server.</p>
+<p>Normally, the URI sent in wsa:To matches the destination URI passed in by the user when the client channel is created. However, the channel itself can override this value, by simply making sure that the RemoteAddress property returns an EndpointAddress instance intialized with the modified URL. WCF will then use the RemoteAddress property and use that value in the wsa:To header.</p>
+<p>I found this pretty useful to clean sensitive URLs before they get used by the WS-Addressing infrastructure. Pretty useful if you don't want your messages to go around carrying usernames and passwords as part of the destination URL in the headers :-).</p>
+<div class="wlWriterSmartContent" id="0767317B-992E-4b12-91E0-4F059A8CECA8:8ab31fdb-7e57-4fa8-93a8-5ff2cf134401" contenteditable="false" style="padding-right: 0px; display: inline; padding-left: 0px; padding-bottom: 0px; margin: 0px; padding-top: 0px">Technorati tags: <a href="http:&#47;&#47;technorati.com&#47;tags&#47;Windows%20Communication%20Foundation" rel="tag">Windows Communication Foundation</a>, <a href="http:&#47;&#47;technorati.com&#47;tags&#47;WCF%20Channels" rel="tag">WCF Channels</a></div><!--end_raw--></p>

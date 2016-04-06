@@ -1,0 +1,87 @@
+---
+layout: post
+status: publish
+published: true
+title: Where do you put your braces?
+author:
+  display_name: Tomas Restrepo
+  login: tomasr
+  email: tomas@winterdom.com
+  url: http://winterdom.com/
+author_login: tomasr
+author_email: tomas@winterdom.com
+author_url: http://winterdom.com/
+wordpress_id: 686
+wordpress_url: http://winterdom.com/2007/10/wheredoyouputyourbraces
+date: '2007-10-24 08:54:56 +0000'
+date_gmt: '2007-10-24 08:54:56 +0000'
+categories:
+- Development
+tags: []
+comments:
+- id: 461
+  author: Damien Guard
+  author_email: damien@envytech.co.uk
+  author_url: http://damieng.com
+  date: '2007-10-24 09:56:00 +0000'
+  date_gmt: '2007-10-24 09:56:00 +0000'
+  content: |
+    I tend to put my braces on the same line within control statements etc. but on a separate line when writing methods&#47;functions etc... except on my blog where I tend to compress those down to keep posts short...
+    [)amien
+- id: 462
+  author: Tomas Restrepo
+  author_email: tomas@winterdom.com
+  author_url: http://www.winterdom.com/weblog/
+  date: '2007-10-24 10:02:13 +0000'
+  date_gmt: '2007-10-24 10:02:13 +0000'
+  content: |
+    I used to do something similar, but the VS automatic formatting just gets too much in the way :)
+- id: 463
+  author: Josh
+  author_email: ''
+  author_url: ''
+  date: '2007-10-24 13:14:12 +0000'
+  date_gmt: '2007-10-24 13:14:12 +0000'
+  content: |
+    I like to put my braces on a new line, it gives the appearence of more readability to me, by putting a little bit of white space between your function declarations and the body of the function. Of course like all good rules, I have one exception:
+    Simple property getters and setters I tend to do get { return _variable; }
+    This probally stems from the fact that this is the default behavior of the prop snippet which I love so dearly!
+    josh
+- id: 464
+  author: Jeremy D. Miller
+  author_email: ''
+  author_url: http://codebetter.com/blogs/jeremy.miller
+  date: '2007-10-24 16:41:15 +0000'
+  date_gmt: '2007-10-24 16:41:15 +0000'
+  content: |
+    I put mine wherever ReSharper decides they should be.  I used to have an opinion but it's too easy just to let the tool do its thing.
+- id: 465
+  author: John Lam
+  author_email: jflam@microsoft.com
+  author_url: http://www.iunknown.com
+  date: '2007-10-26 09:51:08 +0000'
+  date_gmt: '2007-10-26 09:51:08 +0000'
+  content: |
+    I prefer the brace on the same line style because I find that vertical space is always at a premium - I want to see more code and avoid scrolling if necessary. I'm happy that this was the default style on the DLR team when I joined.
+    BTW, you can always re-jig your VS 2005+ editor settings so that CTRL-A CTRL-K CTRL-F formats your code in whatever style that you want.
+- id: 466
+  author: Andre
+  author_email: blog@dotnetclr.com
+  author_url: http://blog.dotnetclr.com
+  date: '2007-10-31 16:18:33 +0000'
+  date_gmt: '2007-10-31 16:18:33 +0000'
+  content: |
+    I like my braces on a dedicated line, it makes the code more cleaner. Sometimes when its just a single like of code, especially getter and setters, I just put them on a single line.
+---
+<p><!--start_raw-->
+<p>If you're writing code in a programming language derived from C (i.e. one of those with pesky curly braces), where do you like putting your braces? </p>
+<p>Some people like putting the opening brace on a line by itself right after the declaration&#47;statement:</p>
+<p>&nbsp;<img style="border-right: 0px; border-top: 0px; border-left: 0px; border-bottom: 0px" height="133" alt="NextLineBraces" src="http:&#47;&#47;www.winterdom.com&#47;weblog&#47;content&#47;binary&#47;WindowsLiveWriter&#47;Wheredoyouputyourbraces_8911&#47;NextLineBraces_8.png" width="586" border="0"> </p>
+<p>I'm one of those that usually does this. It just was something I got used to from my C&#47;C++ days and since it was the common convention in .NET back when I started fiddling around with it in 2000&#47;2001. So this is usually what I use when coding on C#. </p>
+<p>However, other people like to put the opening brace inline with the declaration&#47;statement:</p>
+<p>&nbsp;<img style="border-right: 0px; border-top: 0px; border-left: 0px; border-bottom: 0px" height="106" alt="InlineBraces" src="http:&#47;&#47;www.winterdom.com&#47;weblog&#47;content&#47;binary&#47;WindowsLiveWriter&#47;Wheredoyouputyourbraces_8911&#47;InlineBraces_6.png" width="585" border="0"> </p>
+<p><em>This question is brought to you courtesy of me noticing that <a href="http:&#47;&#47;www.ironruby.net">IronRuby</a> favors the "inline opening brace" style.</em></p>
+<p>Actually, I use the inline-opening-brace style myself when I'm working with Java. I don't mind it, but it somehow seems wrong sometimes. I mean, using different styles when working across two languages so similar? I mean, I already have enough trouble remembering stuff like string vs. String and ToLower() vs toLowerCase() to worry about how the code looks ;-).</p>
+<p><em>Historical Note:</em> A few years back I used to be weirder and used a mixed style where I used braces-on-next-line for some things and inline-opening-brace for others depending on what it was and how many lines were in between the opening and closing braces. Yes, I was (am?) anal like that. I finally gave up on it when I grew tired of fighting the auto-formatting rules in IDEs.</p>
+<p>What style do you favor, and why?</p>
+<div class="wlWriterSmartContent" id="scid:0767317B-992E-4b12-91E0-4F059A8CECA8:ea79c3ba-6707-4e09-ac8f-db886c8ea971" style="padding-right: 0px; display: inline; padding-left: 0px; padding-bottom: 0px; margin: 0px; padding-top: 0px">Technorati tags: <a href="http:&#47;&#47;technorati.com&#47;tags&#47;Code%20Style" rel="tag">Code Style</a></div><!--end_raw--></p>

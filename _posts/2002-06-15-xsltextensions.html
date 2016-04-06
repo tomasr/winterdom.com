@@ -1,0 +1,25 @@
+---
+layout: post
+status: publish
+published: true
+title: XSLT Extensions
+author:
+  display_name: Tomas Restrepo
+  login: tomasr
+  email: tomas@winterdom.com
+  url: http://winterdom.com/
+author_login: tomasr
+author_email: tomas@winterdom.com
+author_url: http://winterdom.com/
+wordpress_id: 605
+wordpress_url: http://winterdom.com/2002/06/xsltextensions
+date: '2002-06-15 05:00:01 +0000'
+date_gmt: '2002-06-15 05:00:01 +0000'
+categories:
+- XML
+tags: []
+comments: []
+---
+<p><!--start_raw--><a href="http:&#47;&#47;radio.weblogs.com&#47;0104813&#47;2002&#47;06&#47;14.html#a48">Drew</a> on XSLT: <i>"You can import and execute any .NET code you wanted to via extension objects."</i>. It's a pretty cool technique. Playing with it a couple of weeks ago, however, I ran into a tight spot.</p>
+<p>As far as I can see, nowhere in the .NET XslTransform docs is is explicitly said that you can create extension functions that return a node-set. However, I tried a couple of times and discovered it <i>is</i> possible simply by making sure your function returns an <code>XPathNodeIterator</code>. Cool.</p></p>
+<p>However, after experimenting a bit and tons of debugging, I discovered this isn't exactly true. You see, the XslTransform code doesn't expect just any kind of <code>XPathNodeIterator</code> implementation (it is an abstract class, after all), but instead expects you return an object of a very precise type: <code>ResetableIterator</code>, which is a subclass of <code>XPathNodeIterator</code> implemented internally inside System.Xml.dll. So, basically, I see no way you can provide your own extension function returning a custom <code>XPathNodeIterator</code>, which is something I was interested in doing in order to provide an extension function that could "filter" an existing node-set.</p><!--end_raw--></p>

@@ -1,0 +1,73 @@
+---
+layout: post
+status: publish
+published: true
+title: Free-Floating entities...
+author:
+  display_name: Tomas Restrepo
+  login: tomasr
+  email: tomas@winterdom.com
+  url: http://winterdom.com/
+author_login: tomasr
+author_email: tomas@winterdom.com
+author_url: http://winterdom.com/
+wordpress_id: 32
+wordpress_url: http://winterdom.com/2002/12/freefloatingentities
+date: '2002-12-18 16:04:03 +0000'
+date_gmt: '2002-12-18 16:04:03 +0000'
+categories:
+- XML
+tags: []
+comments:
+- id: 32
+  author: Gordon Weakliem
+  author_email: gweakliem@oddpost.com
+  author_url: http://radio.weblogs.com/0106046
+  date: '2002-12-18 18:50:53 +0000'
+  date_gmt: '2002-12-18 18:50:53 +0000'
+  content: |
+    <p>Considering Graham's background, I guessed that he's pining for the STL  package.</p>
+- id: 33
+  author: Tomas Restrepo
+  author_email: tomasr@mvps.org
+  author_url: http://www.winterdom.com/weblog
+  date: '2002-12-18 19:12:36 +0000'
+  date_gmt: '2002-12-18 19:12:36 +0000'
+  content: |
+    <p>Well, I really have no clue who Graham is (I just read his blog for the first time) so I wouldn't know :)</p>
+- id: 34
+  author: graham glass
+  author_email: graham-glass@mindspring.com
+  author_url: http://www.themindelectric.com
+  date: '2002-12-18 21:56:24 +0000'
+  date_gmt: '2002-12-18 21:56:24 +0000'
+  content: |
+    <p>pining for STL - i don't think so! i like operations as first class entities that can be copied, bound dynamically, versioned, and specialized so that to capture information about, say, bill, you could add a new operation into the pool like:</p>
+    <p>&#47;&#47; C-like binding just for illustrative purposes<br &#47;>
+    int getAge( "bill" ) { return 34; }</p>
+    <p>so operations can be general purpose or maintain specific information for specific arguments. i don't claim that this is revolutionary, but at the same time, i haven't seen a popular language take this approach (apart from perhaps prolog, but that's a stretch).</p>
+- id: 35
+  author: Gordon Weakliem
+  author_email: gweakliem@oddpost.com
+  author_url: http://radio.weblogs.com/0106046
+  date: '2002-12-19 10:58:59 +0000'
+  date_gmt: '2002-12-19 10:58:59 +0000'
+  content: |
+    <p>I didn't realize it, but the editor ate part of my comment - I was referring specifically to the <algorithm> package, not STL in general.  Anyway, Graham's debunked that notion :-)</p>
+- id: 36
+  author: David Bennett
+  author_email: dmb@pfxcorp.com
+  author_url: ''
+  date: '2002-12-19 16:18:00 +0000'
+  date_gmt: '2002-12-19 16:18:00 +0000'
+  content: |
+    <p>Linda has some of the characteristics Graham talks about, although its primary purpose is totally different (MMP).</p>
+---
+<p><!--start_raw-->Found Graham Glass' <a href="http:&#47;&#47;radio.weblogs.com&#47;0109134&#47;2002&#47;12&#47;18.html#a30">comments</a> on X# through Jason Whittington's <a href="http:&#47;&#47;staff.develop.com&#47;jasonw&#47;weblog&#47;2002&#47;12&#47;18.html#a90">musings</a>, and actually, I kinda agree with Graham, although this is an issue I'm ambivalent about...</p>
+<p>I think it al comes down to what your problem domain and application type are. So, while I really like OOP&uml;, I think it really sucks at some tasks, and one of those is, hear this, <i>Enterprise Applications</i>. The problem is, that while OOP solves <i>some</i> of the difficulties that appear during Enterprise Application design and implementation, it also adds it fair share of limitations and difficulties of its own.</p></p>
+<p>Most Enterprise Applications (EAs)I've worked on are all about manipulating data: Getting data out of a DB and displaying it, updating the data, moving data around, etc. While "Business Logic" sure is a large part of them, I found it's not necessarily the largest part.</p></p>
+<p>Actually, the largest parts of most EAs are related to getting the data in and out of the database, preparing the data for displaying to the user, formatting data around, drilling down through data, etc. While there are tools here that help, still a large part of a project is done implementing this, which is further exasperated by the fact that most EAs need to present multiple representations of the same data, or with different levels of details, which usually implies yet more DB-access code, more formatting code, etc.</p></p>
+<p>Now, if you're not object-freak, you might reach for a paradigm similar to what MS data access technologies have always projected: most data goes into a data-container (a Recordset&#47;DataSet&#47;whatever), and components (think objects here, really) have methods that act on that data. Again, this helps somewhat, but also brings yet another whole different set of problems and limitations with it, the least of which is not that you really loose a lot of control about the datatypes and data manipulation is relatively poor (yep, even in DataSets).</p></p>
+<p>I guess my point is, I'd love to see a more flexible way of dealing with data, and one that allowed me to even deal with data types in a more flexible fashion (guess I'm finally catching on to Tim Ewald's <a href="http:&#47;&#47;www.gotdotnet.com&#47;team&#47;tewald&#47;spoutlet.aspx#nn2002-10-19T10:00-05:00">"Loose-coupling and run-time typing"</a> comment... or at least I hope I am), while still making it easy at design time to deal with the data. See, most strongly-typed languages, like C#, make it awfully hard to deal <i>correctly</i> with data for which no typed schema is known at compile time, and sometimes, knowing the schema at compile time makes it significantly harder to maintain and evolve the application... </p></p>
+<p>Graham's idea of free-floating operations and entities is not that revolutionary, as I see it. It's very functional-programming like, and I for one, think it might make a lot of sense, specially in distributed applications.</p></p>
+<p>Then again, this is just my opinion. I could be wrong, or I could change it tomorrow. No guarantees...</p><!--end_raw--></p>

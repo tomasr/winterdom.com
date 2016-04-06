@@ -1,0 +1,84 @@
+---
+layout: post
+status: publish
+published: true
+title: Pretty QuickInfo Tooltips and VS Themes
+author:
+  display_name: Tomas Restrepo
+  login: tomasr
+  email: tomas@winterdom.com
+  url: http://winterdom.com/
+author_login: tomasr
+author_email: tomas@winterdom.com
+author_url: http://winterdom.com/
+wordpress_id: 1399
+wordpress_url: http://winterdom.com/?p=1399
+date: '2014-01-04 02:18:48 +0000'
+date_gmt: '2014-01-04 02:18:48 +0000'
+categories:
+- Visual Studio
+tags: []
+comments:
+- id: 49822
+  author: John Schroedl
+  author_email: john.schroedl@outlook.com
+  author_url: ''
+  date: '2014-01-04 14:07:35 +0000'
+  date_gmt: '2014-01-04 14:07:35 +0000'
+  content: A good tip! I was pondering a small quickinfo extension and this is a good
+    lesson.
+---
+<p>A Visual Studio Extension can extend quick info tooltips by implementing the <a href='http:&#47;&#47;msdn.microsoft.com&#47;EN-US&#47;library&#47;vstudio&#47;microsoft.visualstudio.language.intellisense.iquickinfosource.aspx'><code>IQuickInfoSource</code></a> interface (and a <a href='http:&#47;&#47;msdn.microsoft.com&#47;en-us&#47;library&#47;ee197646.aspx'>few other things</a>).</p>
+<p>Most of the samples implement the <a href='http:&#47;&#47;msdn.microsoft.com&#47;EN-US&#47;library&#47;vstudio&#47;microsoft.visualstudio.language.intellisense.iquickinfosource.augmentquickinfosession.aspx'><code>AugmentQuickInfoSession()</code></a> method by adding string values into the <code>quickInfoContent</code> collection. However, you can also add <a href='http:&#47;&#47;msdn.microsoft.com&#47;en-us&#47;library&#47;system.windows.uielement(v=vs.110).aspx'><code>UIElement</code></a> objects when you want to present tooltips that have complex content.</p></p>
+<p>I implemented this for <a href='http:&#47;&#47;viasfora.com&#47;'>Viasfora</a> as part of the <code>XmlQuickInfoSource</code> class, in order to present a much nicer tooltip for XML namespace prefixes. The end result was this:</p></p>
+<p>[caption id="attachment_1400" align="alignnone" width="520"]<a href="http:&#47;&#47;winterdom.com&#47;wp-content&#47;uploads&#47;2014&#47;01&#47;vs-lightstyle.png"><img src="http:&#47;&#47;winterdom.com&#47;wp-content&#47;uploads&#47;2014&#47;01&#47;vs-lightstyle.png" alt="Tooltip on Light Theme" width="520" height="111" class="size-full wp-image-1400" &#47;></a> Tooltip on Light Theme[&#47;caption]</p>
+<p>It looked great. That is, until I tried it on Visual Studio 2012&#47;2013 using the Dark Theme, which turned out to be unreadable:</p></p>
+<p>[caption id="attachment_1401" align="alignnone" width="520"]<a href="http:&#47;&#47;winterdom.com&#47;wp-content&#47;uploads&#47;2014&#47;01&#47;vs-darkstyle.png"><img src="http:&#47;&#47;winterdom.com&#47;wp-content&#47;uploads&#47;2014&#47;01&#47;vs-darkstyle.png" alt="Tooltip on Dark Theme" width="520" height="122" class="size-full wp-image-1401" &#47;></a> Tooltip on Dark Theme[&#47;caption]</p>
+<p>After a lot of researching, I ran into the answer: There is an <a href='http:&#47;&#47;msdn.microsoft.com&#47;en-us&#47;library&#47;vstudio&#47;microsoft.visualstudio.platformui.environmentcolors.aspx'><code>EnvironmentColors</code></a> class included in the <code>Microsoft.VisualStudio.Shell.(11|12).0.dll</code> assembly, which will contains styles you can use to theme your WPF elements to properly match the selected theme.</p></p>
+<p>For my needs, I could just use the <code>ToolTipBrushKey</code>, <code>ToolTipTextBrushKey</code> and <code>PanelHyperlinkBrushKey</code> properties to style my controls. However, I ran into a snag: The <code>EnvironmentColors</code> class is not available on the Visual Studio 2010 assemblies, which was a problem for me in order to support VS2010&#47;2012&#47;2013 with a single assembly.</p></p>
+<p>While not a very pretty solution, I resorted to using Reflection coupled with the major Visual Studio version number in order to support this feature. The relevant pieces of code are:</p></p>
+<pre class='codebg'><code><span class="StorageClass">private</span> UIElement CreateInfoText<span class="level16c">(</span>String xmlns, String url<span class="level16c">)</span> <span class="level16c">{</span><br />
+  var textBlock = <span class="Statement">new</span> TextBlock<span class="level15c">()</span>;<br />
+  Hyperlink hl = <span class="Statement">new</span> Hyperlink<span class="level15c">(</span><span class="Statement">new</span> Run<span class="level14c">(</span>url<span class="level14c">)</span><span class="level15c">)</span>;<br />
+  textBlock.Inlines.AddRange<span class="level15c">(</span><span class="Statement">new</span> Inline<span class="level14c">[]</span> <span class="level14c">{</span><br />
+    <span class="Statement">new</span> Bold<span class="level13c">(</span><span class="Statement">new</span> Run<span class="level12c">(</span><span class="String">"Prefix: "</span><span class="level12c">)</span><span class="level13c">)</span>,<br />
+    <span class="Statement">new</span> Run<span class="level13c">(</span>xmlns<span class="level13c">)</span>,<br />
+    <span class="Statement">new</span> LineBreak<span class="level13c">()</span>,<br />
+    <span class="Statement">new</span> Bold<span class="level13c">(</span><span class="Statement">new</span> Run<span class="level12c">(</span><span class="String">"Namespace: "</span><span class="level12c">)</span><span class="level13c">)</span>,<br />
+    hl<br />
+  <span class="level14c">}</span><span class="level15c">)</span>;<br />
+  <span class="Comment">&#47;&#47; set styles in order to support other </span><br />
+  <span class="Comment">&#47;&#47; visual studio themes on 2012&#47;2013</span><br />
+  <span class="Type">object</span> tooltipBrushKey = VsfPackage.Instance.FindColorResource<span class="level15c">(</span><span class="String">"ToolTipBrushKey"</span><span class="level15c">)</span>;<br />
+  <span class="Conditional">if</span> <span class="level15c">(</span> tooltipBrushKey != <span class="Constant">null</span>  <span class="level15c">)</span> <span class="level15c">{</span><br />
+    textBlock.SetResourceReference<span class="level14c">(</span>TextBlock.BackgroundProperty, tooltipBrushKey<span class="level14c">)</span>;<br />
+  <span class="level15c">}</span><br />
+  <span class="Type">object</span> tooltipTextBrushKey = VsfPackage.Instance.FindColorResource<span class="level15c">(</span><span class="String">"ToolTipTextBrushKey"</span><span class="level15c">)</span>;<br />
+  <span class="Conditional">if</span> <span class="level15c">(</span> tooltipTextBrushKey != <span class="Constant">null</span> <span class="level15c">)</span> <span class="level15c">{</span><br />
+    textBlock.SetResourceReference<span class="level14c">(</span>TextBlock.ForegroundProperty, tooltipTextBrushKey<span class="level14c">)</span>;<br />
+  <span class="level15c">}</span><br />
+  <span class="Type">object</span> hlBrushKey = VsfPackage.Instance.FindColorResource<span class="level15c">(</span><span class="String">"PanelHyperlinkBrushKey"</span><span class="level15c">)</span>;<br />
+  <span class="Conditional">if</span> <span class="level15c">(</span> hlBrushKey != <span class="Constant">null</span> <span class="level15c">)</span> <span class="level15c">{</span><br />
+    hl.SetResourceReference<span class="level14c">(</span>Hyperlink.ForegroundProperty, hlBrushKey<span class="level14c">)</span>;<br />
+  <span class="level15c">}</span><br />
+  <span class="Repeat">return</span> textBlock;<br />
+<span class="level16c">}</span><br />
+</code></pre></p>
+<pre class='codebg'><code><span class="StorageClass">private</span> Version vsVersion;</p>
+<p><span class="StorageClass">public</span> <span class="Type">object</span> FindColorResource<span class="level16c">(</span>String name<span class="level16c">)</span> <span class="level16c">{</span><br />
+  <span class="Conditional">if</span> <span class="level15c">(</span> vsVersion.Major <= <span class="Number">10</span> <span class="level15c">)</span> <span class="level15c">{</span><br />
+    <span class="Repeat">return</span> <span class="Constant">null</span>;<br />
+  <span class="level15c">}</span><br />
+  Assembly assembly = Assembly.Load<span class="level15c">(</span>String.Format<span class="level14c">(</span><br />
+    <span class="String">"Microsoft.VisualStudio.Shell.{0}.0, Version={0}.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a"</span>,<br />
+    vsVersion.Major<br />
+    <span class="level14c">)</span><span class="level15c">)</span>;<br />
+  <span class="Conditional">if</span> <span class="level15c">(</span> assembly != <span class="Constant">null</span> <span class="level15c">)</span> <span class="level15c">{</span><br />
+    Type type = assembly.GetType<span class="level14c">(</span><span class="String">"Microsoft.VisualStudio.PlatformUI.EnvironmentColors"</span><span class="level14c">)</span>;<br />
+    var prop = type.GetProperty<span class="level14c">(</span>name<span class="level14c">)</span>;<br />
+    <span class="Repeat">return</span> prop.GetValue<span class="level14c">(</span><span class="Constant">null</span>, <span class="Constant">null</span><span class="level14c">)</span>;<br />
+  <span class="level15c">}</span><br />
+  <span class="Repeat">return</span> <span class="Constant">null</span>;<br />
+<span class="level16c">}</span><br />
+</code></pre></p>
+<p>Hope someone else finds this useful. Enjoy!</p></p>

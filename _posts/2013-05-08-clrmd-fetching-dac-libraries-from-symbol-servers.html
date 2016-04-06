@@ -1,0 +1,73 @@
+---
+layout: post
+status: publish
+published: true
+title: 'ClrMD: Fetching DAC Libraries From Symbol Servers'
+author:
+  display_name: Tomas Restrepo
+  login: tomasr
+  email: tomas@winterdom.com
+  url: http://winterdom.com/
+author_login: tomasr
+author_email: tomas@winterdom.com
+author_url: http://winterdom.com/
+wordpress_id: 1352
+wordpress_url: http://winterdom.com/?p=1352
+date: '2013-05-08 02:35:37 +0000'
+date_gmt: '2013-05-08 02:35:37 +0000'
+categories:
+- ".NET"
+tags: []
+comments: []
+---
+<p>Last week, the <a href="http:&#47;&#47;blogs.msdn.com&#47;b&#47;dotnet&#47;archive&#47;2013&#47;05&#47;01&#47;net-crash-dump-and-live-process-inspection.aspx">first public beta</a> of the Microsoft.Diagnostics.Runtime library was released. This is a very cool library that can be used to write automated dump analysis of processes hosting the CLR.</p>
+<p>One of the first things you will need in order to use ClrMD is get a hold of the DAC library for the specific version of the CLR that your dump&#47;live process is using. If this is a local dump&#47;process, then you'll have the DAC handy, as it will be part of your .NET Framework installation (example: <code>c:\windows\Microsoft.NET\Framework64\v2.0.50727\mscordacwks.dll</code>).</p></p>
+<p>If you're inspecting a dump from another machine, then you could also copy the mscordacwks.dll from the right folder in the remote machine. A more interesting option, however, is to dynamically fetch the right DAC library from the public Microsoft Symbol Server. ClrMD does not have built-in code to do this, and it can be a bit tricky, but it's possible to implement it relatively easy in many scenarios.</p></p>
+<p>In order to do this, you first need find two native libraries and copy them over to the same directory your application executable is located:</p></p>
+<ul>
+<li>dbghelp.dll</li>
+<li>symsrv.dll</li><br />
+</ul></p>
+<p>The right place to pick these up is as part of the Debugging Tools For Windows package. Remember that you need to pick these for the right bitness (x64 or x86) depending on your process architecture, which needs to match the architecture of the dump&#47;process you're going to be inspecting. For this case, I picked the debugger tools package that comes with the <a href="http:&#47;&#47;msdn.microsoft.com&#47;en-US&#47;windows&#47;hardware&#47;hh852363">Windows 8 SDK</a>. When you install the tools from the SDK installer, these get installed to <code>c:\Program Files (x86)\Windows Kits\8.0\Debuggers</code>.</p></p>
+<p>For this sample, you need to put the x64 and x86 versions of the libraries in the corresponding folder under .\dbglibs in the project folder. A custom build action will then copy the right version over to the output directory:</a></p>
+<pre class="codebg"><code>copy "$(ProjectDir)dbglibs\$(PlatformName)\*.dll" "$(TargetDir)"<br />
+</code></pre></p>
+<p>The relevant code can be found in the <code>DacLocator</code> class. This class will load the dbghelp.dll library and initialize it. Using it is relatively simple:</p></p>
+<pre class="codebg"><code>dacloc = DacLocator.FromPublicSymbolServer<span class="level16c">(</span>localCachePathTextBox.Text<span class="level16c">)</span>;<br />
+DataTarget dt = DataTarget.LoadCrashDump<span class="level16c">(</span>dumpFileTextBox.Text<span class="level16c">)</span>;<br />
+String dac = dacloc.FindDac<span class="level16c">(</span>dt.ClrVersions<span class="level15c">[</span><span class="Number">0</span><span class="level15c">]</span><span class="level16c">)</span>;<br />
+</code></pre></p>
+<p>Here we're just initializing the library to use the public Symbol Server and using the specified path as the local cache, and then attempting to locate the DAC library that is required. Finding the DAC itself is done using the <a href="http:&#47;&#47;msdn.microsoft.com&#47;en-us&#47;library&#47;windows&#47;desktop&#47;ms680726(v=vs.85).aspx"><code>SymFindFileInPath()</code></a> function:</p>
+<pre class="codebg"><code>StringBuilder symbolFile = <span class="Statement">new</span> StringBuilder<span class="level16c">(</span><span class="Number">2048</span><span class="level16c">)</span>;<br />
+<span class="Conditional">if</span> <span class="level16c">(</span> SymFindFileInPath<span class="level15c">(</span>ourProcess.Handle, searchPath, dacname,<br />
+    timestamp, fileSize, <span class="Number">0</span>, <span class="Number">0x02</span>, symbolFile, IntPtr.Zero, IntPtr.Zero<span class="level15c">)</span> <span class="level16c">)</span> <span class="level16c">{</span><br />
+  <span class="Repeat">return</span> symbolFile.ToString<span class="level15c">()</span>;<br />
+<span class="level16c">}</span> <span class="Conditional">else</span> <span class="level16c">{</span><br />
+  <span class="Exception">throw</span> <span class="Statement">new</span> Win32Exception<span class="level15c">(</span>String.Format<span class="level14c">(</span><span class="String">"SymFindFileInPath() failed: {0}"</span>, Marshal.GetLastWin32Error<span class="level13c">()</span><span class="level14c">)</span><span class="level15c">)</span>;<br />
+<span class="level16c">}</span><br />
+</code></pre></p>
+<p>The rest of the sample is pretty straightforward: It just iterates through all objects in the heap, looking for HttpContext items and then<br />
+printing out some basic details of each one:</p></p>
+<pre class="codebg"><code><span class="StorageClass">private</span> IEnumerable<HttpCtxtInfo> FindHttpContexts<span class="level16c">(</span>ClrRuntime clr<span class="level16c">)</span> <span class="level16c">{</span><br />
+  ClrHeap heap = clr.GetHeap<span class="level15c">()</span>;<br />
+  <span class="Repeat">foreach</span> <span class="level15c">(</span> <span class="Type">ulong</span> addr <span class="Statement">in</span> heap.EnumerateObjects<span class="level14c">()</span> <span class="level15c">)</span> <span class="level15c">{</span><br />
+    ClrType type = heap.GetObjectType<span class="level14c">(</span>addr<span class="level14c">)</span>;<br />
+    <span class="Conditional">if</span> <span class="level14c">(</span> type == <span class="Constant">null</span> <span class="level14c">)</span> <span class="Repeat">continue</span>;<br />
+    <span class="Conditional">if</span> <span class="level14c">(</span> type.Name != <span class="String">"System.Web.HttpContext"</span> <span class="level14c">)</span> <span class="Repeat">continue</span>;</p>
+<p>    <span class="Repeat">yield</span> <span class="Repeat">return</span> GetHttpContextInfo<span class="level14c">(</span>heap, addr, type<span class="level14c">)</span>;<br />
+  <span class="level15c">}</span><br />
+<span class="level16c">}</span></p>
+<p><span class="StorageClass">private</span> HttpCtxtInfo GetHttpContextInfo<span class="level16c">(</span>ClrHeap heap, <span class="Type">ulong</span> addr, ClrType type<span class="level16c">)</span> <span class="level16c">{</span><br />
+  HttpCtxtInfo info = <span class="Statement">new</span> HttpCtxtInfo <span class="level15c">{</span><br />
+    Address = addr<br />
+  <span class="level15c">}</span>;<br />
+  <span class="Type">ulong</span> reqAddr = <span class="level15c">(</span><span class="Type">ulong</span><span class="level15c">)</span>type.GetFieldByName<span class="level15c">(</span><span class="String">"_request"</span><span class="level15c">)</span>.GetFieldValue<span class="level15c">(</span>addr<span class="level15c">)</span>;<br />
+  ClrType reqType = heap.GetObjectType<span class="level15c">(</span>reqAddr<span class="level15c">)</span>;<br />
+  info.Method = <span class="level15c">(</span><span class="Type">string</span><span class="level15c">)</span>reqType.GetFieldByName<span class="level15c">(</span><span class="String">"_httpMethod"</span><span class="level15c">)</span>.GetFieldValue<span class="level15c">(</span>reqAddr<span class="level15c">)</span>;<br />
+  info.Url = <span class="level15c">(</span><span class="Type">string</span><span class="level15c">)</span>reqType.GetFieldByName<span class="level15c">(</span><span class="String">"_rawUrl"</span><span class="level15c">)</span>.GetFieldValue<span class="level15c">(</span>reqAddr<span class="level15c">)</span>;<br />
+  <span class="Repeat">return</span> info;<br />
+<span class="level16c">}</span><br />
+</code></pre></p>
+<p>Running the sample app will look something like this:</p></p>
+<p>[caption id="attachment_1354" align="alignnone" width="670"]<a href="http:&#47;&#47;winterdom.com&#47;wp-content&#47;uploads&#47;2013&#47;05&#47;DacSample.png"><img src="http:&#47;&#47;winterdom.com&#47;wp-content&#47;uploads&#47;2013&#47;05&#47;DacSample.png" alt="" title="DacSample" width="670" height="439" class="size-full wp-image-1354" &#47;></a> DacSample Screenshot[&#47;caption]</p>
+<p>The sample code can be downloaded <a href="http:&#47;&#47;winterdom.com&#47;files&#47;DacSample.zip">here</a>. Enjoy!</p></p>

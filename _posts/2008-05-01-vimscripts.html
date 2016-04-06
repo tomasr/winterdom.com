@@ -1,0 +1,79 @@
+---
+layout: post
+status: publish
+published: true
+title: Vim Scripts
+author:
+  display_name: Tomas Restrepo
+  login: tomasr
+  email: tomas@winterdom.com
+  url: http://winterdom.com/
+author_login: tomasr
+author_email: tomas@winterdom.com
+author_url: http://winterdom.com/
+wordpress_id: 84
+wordpress_url: http://winterdom.com/2008/05/vimscripts
+date: '2008-05-01 16:16:37 +0000'
+date_gmt: '2008-05-01 16:16:37 +0000'
+categories:
+- Vim
+tags: []
+comments:
+- id: 58
+  author: Jason
+  author_email: jrseney@gmail.com
+  author_url: http://jasonrseney.tumblr.com
+  date: '2008-05-01 18:01:33 +0000'
+  date_gmt: '2008-05-01 18:01:33 +0000'
+  content: |
+    Wow, thanks so much for these! I honestly can see myself using 90% of these... Some, for example the file browser and number mark I have been meaning to find but haven't had the time to dig around for plugins. And I can't wait to try out that CSS syntax for my next stylesheet.
+    Thanks again, and keep up the great posts!
+    - Jason
+    "Go Vim! Woohoo!"
+- id: 1665
+  author: Ashish Jain
+  author_email: ashishjain@gmail.com
+  author_url: ''
+  date: '2011-02-02 01:50:40 +0000'
+  date_gmt: '2011-02-02 01:50:40 +0000'
+  content: Thanks a lot :).
+- id: 1713
+  author: Hanumanth
+  author_email: paaps456@gmail.com
+  author_url: ''
+  date: '2011-05-06 06:30:03 +0000'
+  date_gmt: '2011-05-06 06:30:03 +0000'
+  content: How to change default color scheme for vim..
+---
+<p><!--start_raw-->
+<p>Someone recently asked me what Vim scripts and plug-ins I use on my Vim setup. There are literally hundreds of plug-ins on the <a href="http:&#47;&#47;www.vim.org&#47;">Vim site</a>, some of them quite complex and interesting.</p>
+<p>Though I've customized my own Vim setup quite a bit, I don't use all that many plug-ins. Here's what I normally use:</p><br />
+<h2>Plug-Ins</h2>
+<ul>
+<li><a href="http:&#47;&#47;www.vim.org&#47;scripts&#47;script.php?script_id=52">Calendar</a>: Displays a calendar in a Vim buffer. Though not as complete as the functionality in Emac's calendar, it is still pretty useful :-). </li>
+<li><a href="http:&#47;&#47;www.vim.org&#47;scripts&#47;script.php?script_id=1905">Camelcasemotion</a>: This one adds word-movement navigation motions that are aware of the casing of characters inside words. So, for example, if you're at the beginning of "<code>newIdentifier</code>" and press "<code>,w</code>", you'll navigate to the 'I' instead of to the end of the complete word like with "<code>w</code>".       <br>This is one of the features I missed the most from Eclipse. Unlike Eclipse, though, I rather like how with Camelcasemotion I can keep both behaviors at the same time. </li>
+<li><a href="http:&#47;&#47;www.vim.org&#47;scripts&#47;script.php?script_id=2194"><img style="border: 0px none ;" alt="NumberMarks" src="http:&#47;&#47;www.winterdom.com&#47;weblog&#47;content&#47;binary&#47;WindowsLiveWriter&#47;VimPlugins_80A9&#47;NumberMarks_3.png" width="169" align="right" border="0" height="36">Number Marks</a>:&nbsp; Allows you to define numbered marks that behave a lot more like bookmarks in Visual Studio (you can even navigate them using F2!). The nice part about this one is that it will show the mark in a column to the left of the text, unlike regular Vim marks which are hidden.
+<p>While on the topic of marks, there's also <a href="http:&#47;&#47;www.vim.org&#47;scripts&#47;script.php?script_id=152">ShowMarks</a>, which solves the issue of the hidden Vim marks: It also adds a new column at the left of the editing window showing which marks have been defined and where in the current document. It does its job, but I've found it to be more intrusive than Number Marks and it also seems to cause some issues with a few other plug-ins at times, which is why I don't like it as much.</p>   </li>
+<li><a href="http:&#47;&#47;www.vim.org&#47;scripts&#47;script.php?script_id=1658">NERD_Tree</a>: Provides a "side pane" for browsing the file system and opening files within Vim, which is sometimes better than simply opening up a directory in the main buffer. I've hooked it up so that Ctrl+E,Ctrl+E pops up the tree.       <br>      <br><img style="border: 0px none ;" alt="NerdTree" src="http:&#47;&#47;www.winterdom.com&#47;weblog&#47;content&#47;binary&#47;WindowsLiveWriter&#47;VimPlugins_80A9&#47;NerdTree_3.png" width="654" border="0" height="305"> </li>
+<li><a href="http:&#47;&#47;www.vim.org&#47;scripts&#47;script.php?script_id=2212">Obvious Mode</a>: Great little plug-in recently released that highlights the status bar in a different color when you're in insert mode. This is particularly useful for me when working on the console version of Vim (which I do every so often) because I don't normally get the block-vs-line cursor difference that's common in GVim. </li>
+<li><a href="http:&#47;&#47;www.vim.org&#47;scripts&#47;script.php?script_id=1950">VimExplorer</a>: For more complex file browsing and file manipulation options, I also use VimExplorer occasionally. This is more like Windows Explorer embedded inside Vim [<a href="http:&#47;&#47;mbbill.googlepages.com&#47;VE1.PNG">screenshot</a>], so it is a lot more complex than NERD_Tree, and has a lot more options. I use it a lot less, but it's still pretty useful. </li>
+<li><a href="http:&#47;&#47;www.vim.org&#47;scripts&#47;script.php?script_id=301">Xmledit</a>: Makes editing XML files in Vim a bit nicer, adding things like automatic insertion of closing tags. </li>
+<li><a href="http:&#47;&#47;www.vim.org&#47;scripts&#47;script.php?script_id=2130">Xmlpretty</a>: Helps in doing a basic pretty print formatting of XML files. It's not very sophisticated, but it's occasionally useful. The downside of Xmlpretty is that it requires a bit more work to setup than other scripts since it doesn't configure itself automatically. I bound it to Ctrl+K, Ctrl+F. </li>
+<li><a href="http:&#47;&#47;cream.sourceforge.net&#47;">Cream</a>: Cream is sort of an alternate, highly customized distribution of Vim that makes it behave more like "normal" text editors (particularly for Windows users). I don't use Cream per-se, but I've occasionally plucked some functions from the cream source for my own Vim setup. In particular, I use Cream's functions for tab-ifying lines of text in select mode. </li> </ul><br />
+<h2>Syntax and Others</h2>
+<p>Besides the built-in syntax, indent and file type plug-ins that come with the Vim runtime, I use a few other ones:</p>
+<ul>
+<li><a href="http:&#47;&#47;www.vim.org&#47;scripts&#47;script.php?script_id=2150"><img style="border: 0px none ;" alt="CssColor" src="http:&#47;&#47;www.winterdom.com&#47;weblog&#47;content&#47;binary&#47;WindowsLiveWriter&#47;VimPlugins_80A9&#47;CssColor_3.png" width="223" align="right" border="0" height="75">CSS Color</a>:&nbsp; Cool little plug-in that highlights color specifications in CSS with the color they represent. I've found this particularly useful when modifying or inspecting an existing CSS file. </li>
+<li><a href="http:&#47;&#47;www.vim.org&#47;scripts&#47;script_search_results.php?keywords=PowerShell&amp;script_type=&amp;order_by=rating&amp;direction=descending&amp;search=search">PS1</a>: I use slightly modified versions of Peter <a href="http:&#47;&#47;www.peterprovost.org&#47;">Provost</a>'s indent, syntax and file type plug-ins to edit Windows PowerShell scripts. </li>
+<li>CSharp: A slightly modified version of the Built-in cs.vim syntax file. It's ok, but could use a bunch of improvements, I mostly just browse C# code on Vim, though, so it's not that big of a deal. </li> </ul><br />
+<h2>Color Schemes</h2>
+<p>Like with Visual Studio, I change the color schemes I use in Vim every so often. Here are some of the ones I use the most:</p>
+<ul>
+<li><a href="http:&#47;&#47;www.vim.org&#47;scripts&#47;script.php?script_id=1464">Moria</a>: A nice color scheme for Vim featuring versions with both dark and black background colors. Lately I've been using the version with the black background more (<code>:Colo Black</code>). </li>
+<li><a href="http:&#47;&#47;www.vim.org&#47;scripts&#47;script.php?script_id=1677">Twilight</a>: This is another dark color scheme, with some some khaki&#47;gold highlights. It works particularly well for source code from scripting languages like Ruby, PowerShell or Python, though not as well for C# and Java code. For some reason, however, this looks a lot better on my Ubuntu machine than on my Windows one (something to do with gamma correction I'm sure). </li>
+<li><a href="http:&#47;&#47;www.vim.org&#47;scripts&#47;script.php?script_id=1778">Wombat</a>: I've <a href="http:&#47;&#47;www.winterdom.com&#47;weblog&#47;2007&#47;07&#47;11&#47;Wombat.aspx">talked</a> about wombat before. Lately I haven't been in love with it so much and have switched to some of the other ones. </li>
+<li><a href="http:&#47;&#47;www.vim.org&#47;scripts&#47;script.php?script_id=415">Zenburn</a>: This is an old time favorite of many Vim users, and it's a really nice color scheme. I've been using this one a lot more lately, as it has fairly soothing colors, without being so low-contrast that it becomes harder to use with the LCD brightness turned down.       <br>I use Zenburn with the "<code>zenburn_high_Contrast</code>" option enabled, though, which makes the background slightly darker than what this <a href="http:&#47;&#47;slinky.imukuppi.org&#47;zenburn&#47;">screenshot</a> shows.       <br>The CSS I'm using to highlight my code samples in this blog lately is Zenburn. </li>
+<li><a href="http:&#47;&#47;www.vim.org&#47;scripts&#47;script.php?script_id=2215">DarkSpectrum</a>: This one I've been using lately as well. It features a darkish gray background with blue&#47;gold&#47;orange&#47;green highlights and some bold white for keywords and such [<a href="http:&#47;&#47;img371.imageshack.us&#47;img371&#47;3700&#47;gvim3so4.png">screenshot</a>]. It doesn't work as well for some languages, most notably Vim scripts themselves, though. </li>
+<li>Impact: This is the one I use for console vim, as it works better with the limited color palette available there (partic<br />
+ularly on windows). </li> </ul>
+<div class="wlWriterSmartContent" id="scid:0767317B-992E-4b12-91E0-4F059A8CECA8:3c2086ad-f35d-41c5-a4be-30c705339eec" style="margin: 0px; padding: 0px; display: inline;">Technorati tags: <a href="http:&#47;&#47;technorati.com&#47;tags&#47;Vim" rel="tag">Vim</a></div><!--end_raw--></p>

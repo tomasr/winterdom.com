@@ -1,0 +1,34 @@
+---
+layout: post
+status: publish
+published: true
+title: Content-Type Header and the HTTP Adapter
+author:
+  display_name: Tomas Restrepo
+  login: tomasr
+  email: tomas@winterdom.com
+  url: http://winterdom.com/
+author_login: tomasr
+author_email: tomas@winterdom.com
+author_url: http://winterdom.com/
+wordpress_id: 412
+wordpress_url: http://winterdom.com/2006/11/contenttypeheaderandthehttpadapter
+date: '2006-11-15 14:47:56 +0000'
+date_gmt: '2006-11-15 14:47:56 +0000'
+categories:
+- BizTalk
+tags: []
+comments: []
+---
+<p><!--start_raw-->
+<p>A recent question in <a href="http:&#47;&#47;www.biztalkgurus.com&#47;blogs&#47;biztalk&#47;">Stephen W. Thomas</a>' excellent <a href="http:&#47;&#47;www.biztalkgurus.com&#47;forums&#47;">BizTalkGurus forums</a> asked about how to control the value the HTTP send-side adapter in BizTalk Server 2006 sends on HTTP requests. After a little investigation through the adapter code (which lives in the Microsoft.Biztalk.HttpTransport.dll assembly), here's my guess of what goes on:</p>
+<p>When the adapter is going to send the message, it gets the value for the Content-Type header from one of theses two locations:</p>
+<ul>
+<li>If the body part of the message has the ContentType property set (<a href="http:&#47;&#47;msdn.microsoft.com&#47;library&#47;default.asp?url=&#47;library&#47;en-us&#47;sdk&#47;htm&#47;frlrfmicrosoftbiztalkmessageinteropibasemessagepartclasscontenttypetopic.asp">IBaseMessagePart.ContentType</a>), then it is considered</li>
+<li>If the send port configuration has the Content Type property set, then this value overrides the previous value.</li></ul>
+<p>However, that's not all that is considered. As it turns out, the adapter explicitly considers text content types (i.e. "text&#47;*"&nbsp;MIME types). If the content type is a text type, then the adapter will append the encoding of the message to the content type, like this:</p>
+<p><font face="Lucida Console" size="2">Content-Type: text&#47;xml; charset=utf-8</font></p>
+<p>If the content type is not a text type, then it leaves it alone.</p>
+<p>If you don't want the charset to be appended to the Content-Type header for any reason, it appears there might be a way around it: The value for the charset is extracted from the <a href="http:&#47;&#47;msdn.microsoft.com&#47;library&#47;default.asp?url=&#47;library&#47;en-us&#47;sdk&#47;htm&#47;frlrfmicrosoftbiztalkmessageinteropibasemessagepartclasscharsettopic.asp">Charset property</a> of the body part of the message, but&nbsp;the Content-Type header is only modified if this property contains a non-null, non-empty value. </p>
+<p>It would appear possible to work around this then by simply ensuring the Charset property is empty by the time the adapter gets hold of the message; using a custom pipeline component in the send pipeline would seem a good way of accomplishing this.</p>
+<div class="wlWriterSmartContent" id="0767317B-992E-4b12-91E0-4F059A8CECA8:3e2f8162-5722-4094-8f94-122f0c32c631" contenteditable="false" style="padding-right: 0px; display: inline; padding-left: 0px; padding-bottom: 0px; margin: 0px; padding-top: 0px">Technorati tags: <a href="http:&#47;&#47;technorati.com&#47;tags&#47;BizTalk" rel="tag">BizTalk</a>, <a href="http:&#47;&#47;technorati.com&#47;tags&#47;HTTP" rel="tag">HTTP</a>, <a href="http:&#47;&#47;technorati.com&#47;tags&#47;Content-Type" rel="tag">Content-Type</a></div><!--end_raw--></p>

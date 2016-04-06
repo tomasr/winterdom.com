@@ -1,0 +1,66 @@
+---
+layout: post
+status: publish
+published: true
+title: Purpose-Agnostic data representations
+author:
+  display_name: Tomas Restrepo
+  login: tomasr
+  email: tomas@winterdom.com
+  url: http://winterdom.com/
+author_login: tomasr
+author_email: tomas@winterdom.com
+author_url: http://winterdom.com/
+wordpress_id: 422
+wordpress_url: http://winterdom.com/2003/06/purposeagnosticdatarepresentations
+date: '2003-06-30 09:35:08 +0000'
+date_gmt: '2003-06-30 09:35:08 +0000'
+categories:
+- ".NET"
+tags: []
+comments:
+- id: 303
+  author: Gerke Geurts
+  author_email: gerke.geurts@logicacmg.com
+  author_url: ''
+  date: '2003-07-09 04:36:28 +0000'
+  date_gmt: '2003-07-09 04:36:28 +0000'
+  content: |
+    <p>I do not believe in purpose-agnostic data as much as I don't believe in purpose-agnostic object models.</p>
+    <p>The problem is that concepts of person, invoice, etc. have different meanings to different people. The main reason is that different people with different roles have different views of the same object. People with different roles tend to use similar terms when talking about a certain object but tend to define these terms in different ways. This is bound to happen because they need different views of the same object to fulfill the tasks&#47;responsibilities associated with their roles. </p>
+    <p>It is not realistic to expect everyone in an organisation to agree on common terms. So striving for purpose-agnostic messages is bound to fail. </p>
+- id: 304
+  author: Tomas Restrepo
+  author_email: tomasr@mvps.org
+  author_url: http://www.winterdom.com/weblog
+  date: '2003-07-09 22:01:39 +0000'
+  date_gmt: '2003-07-09 22:01:39 +0000'
+  content: |
+    <p>Gerke,</p>
+    <p>I'm curious about what your definition of what a "purpose-agnostic object model" is. The common argument on objects goes for mixing behavior and data, and as soon as you include behavior, is hard to consider it "purpose-agnostic" in any way.</p>
+    <p>You do bring out what I consider an important point: Different people might interpret the data in different ways. But you know what? I think that as a fairly significant level of flexibility, rather than a problem per se. It does, however, hilight one important point: there's no ammount of pure mechanical description of the data that's going to help, so catering for the human element is still key. You still need (and will likely always need) to provide human level documentation and agreements on what the data is. Structure is only a part of the issue, and it's the easy one to deal with at a machine level. Expecting the machines to be able to also fully understand the semantics behind the data...well, I consider that a fairly unrealistic expectation... at least for now.</p>
+---
+<p><!--start_raw-->
+<p>
+<font size="2"><a href="http:&#47;&#47;seanmcgrath.blogspot.com">Sean McGrath</a> posted earlier<br />
+today a <a href="http:&#47;&#47;groups.yahoo.com&#47;group&#47;service-orientated-architecture&#47;message&#47;426">reply</a> to<br />
+a message in the Service-Orientated-Architecture group that I think grasped a pretty<br />
+significant idea: Purpose-agnostic data representations, and their value in SOAs and<br />
+EAI (or just interoperability in general).</font><br />
+</p></p>
+<p>
+<font size="2">The key sentence was: <em>"<font size="2">The real trick with EAI I<br />
+think, is to get purpose-agnostic data representations of business level concepts<br />
+like person, invoice, bill of lading etc., flowing around processing nodes. <font size="2">The<br />
+purpose-agnostic bit is the most important bit. OO is predicated on a crystal ball<br />
+- developers will have sufficient perfect foresight to expose everything you might<br />
+need via an API. History has shown that non of us have such crystal balls."</font></font></em></font><br />
+</p></p>
+<p>
+<font size="2"><font size="2"><font size="2">I&#160;happen to agree partly with his<br />
+ideas on OO also presented in the message, but that's another story :)<br />
+</font><br />
+</font><br />
+</font><br />
+</p><br />
+<!--end_raw--></p>

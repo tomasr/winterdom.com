@@ -1,0 +1,139 @@
+---
+layout: post
+status: publish
+published: true
+title: Filenames Starting with a Dot
+author:
+  display_name: Tomas Restrepo
+  login: tomasr
+  email: tomas@winterdom.com
+  url: http://winterdom.com/
+author_login: tomasr
+author_email: tomas@winterdom.com
+author_url: http://winterdom.com/
+wordpress_id: 186
+wordpress_url: http://winterdom.com/2008/02/filenamesstartingwithadot
+date: '2008-02-25 13:25:03 +0000'
+date_gmt: '2008-02-25 13:25:03 +0000'
+categories:
+- Vista
+tags: []
+comments:
+- id: 134
+  author: Damien Guard
+  author_email: damien@envytech.co.uk
+  author_url: http://damieng.com
+  date: '2008-02-25 15:08:30 +0000'
+  date_gmt: '2008-02-25 15:08:30 +0000'
+  content: |
+    Visual Studio 2003 used to be very troublesome with .folders and files which was a real pain as Subversion created .svn folders for the metadata by default.
+    Most Windows based Subversion tools had the ability to switch this over to _svn for exactly that reason.
+    [)amien
+- id: 135
+  author: Tomas Restrepo
+  author_email: tomas@winterdom.com
+  author_url: http://www.winterdom.com/weblog/
+  date: '2008-02-25 15:28:51 +0000'
+  date_gmt: '2008-02-25 15:28:51 +0000'
+  content: |
+    Wasn't ASP.NET the one causing trouble? At least I remember reading something about it, though never caused me any trouble (or maybe it is IIS, trying to figure out the right mime type for it or something).
+    Either way, anyway you look at it, it is those tools&#47;apps that are broken; not the file system semantics.
+- id: 136
+  author: Flatliner
+  author_email: flatliner60@hotmail.com
+  author_url: ''
+  date: '2008-03-10 15:26:05 +0000'
+  date_gmt: '2008-03-10 15:26:05 +0000'
+  content: |
+    I believe Windows Explorer disallows filenames starting with a . because it's default setting of hiding File Extensions.
+    It deems .txt (for example) as just an extension so nothing would show after you named a file like this.
+- id: 137
+  author: Tomas Restrepo
+  author_email: tomas@winterdom.com
+  author_url: http://www.winterdom.com/weblog/
+  date: '2008-03-10 15:42:13 +0000'
+  date_gmt: '2008-03-10 15:42:13 +0000'
+  content: |
+    @Flatliner: That might very well be true; but, heck, I *always* disable that option as soon as I install windows; it's the most stupid setting anyone ever came up with.
+- id: 138
+  author: Flatliner
+  author_email: flatliner60@hotmail.com
+  author_url: ''
+  date: '2008-03-11 15:13:08 +0000'
+  date_gmt: '2008-03-11 15:13:08 +0000'
+  content: |
+    Oh totally agree on that point, I also think it's a security risk to hide file extensions from users. (remember the old .vbs attachment viruses?). I was really hoping that setting would be off in Vista by default as part of MS's whole "secure by default" strategy. Sadly not.
+- id: 139
+  author: Tomas Restrepo
+  author_email: tomas@winterdom.com
+  author_url: http://www.winterdom.com/weblog/
+  date: '2008-03-11 15:17:56 +0000'
+  date_gmt: '2008-03-11 15:17:56 +0000'
+  content: |
+    I'm far more surprised that setting is still enabled by default on Windows Server 2008.
+- id: 140
+  author: George V. Reilly
+  author_email: george@reilly.org
+  author_url: http://www.georgevreilly.com/blog/
+  date: '2008-03-25 23:29:15 +0000'
+  date_gmt: '2008-03-25 23:29:15 +0000'
+  content: |
+    I wrote a lot of the Vim Win32 console mode code back in the mid-90s. If I remember correctly, NT 3.x supported FAT-16. I'm pretty sure Win95 (cursed be its name) did. And Bram had a policy at the time of trying to unify the Win32 and the DOS codebases as much as possible. A filename like .vimrc wouldn't have worked on FAT-16.
+    (Or something like that. I had to page these memories back in from tape, where they were stored with a lossy compressor.)
+- id: 141
+  author: Tomas Restrepo
+  author_email: tomas@winterdom.com
+  author_url: http://www.winterdom.com/weblog/
+  date: '2008-03-26 15:25:24 +0000'
+  date_gmt: '2008-03-26 15:25:24 +0000'
+  content: |
+    George: I wasn't singling VIM out, just using it as an example. And I do understand it was because of old FAT compatibility and stuff like that (which does make you wonder how long we'll carry that noose around our necks). And, btw, thanks for all the work on VIM :)
+- id: 1821
+  author: Max
+  author_email: buttbadger@gmail.com
+  author_url: ''
+  date: '2011-10-26 18:37:34 +0000'
+  date_gmt: '2011-10-26 18:37:34 +0000'
+  content: "I actually found a way to do this !\r\n\r\nIn my example, i'll try to
+    make a file named .nomedia (for Android app purposes :p )\r\n\r\nI create a file,
+    i name it \".nomedia.txt\". I rename it and i remove the \"txt\" so the name is
+    about to be called \".nomedia.\", and i press enter. Windows will automatically
+    remove the extra dot and you will have your .nomedia file ^^"
+- id: 10445
+  author: Charles Lee
+  author_email: ze.emobile@hotmail.com
+  author_url: ''
+  date: '2013-03-11 20:32:45 +0000'
+  date_gmt: '2013-03-11 20:32:45 +0000'
+  content: "Thanks Max.   I found out you can also do it at the command line in Win7.
+    \ Needed .RHistory file for the R statistical package.  First I named it with
+    the .txt extension, then at the command line: \r\n   ren .Rhistory.txt .RHistory,"
+- id: 70500
+  author: Michael
+  author_email: alcexhim@gmail.com
+  author_url: http://www.alceproject.net/
+  date: '2014-02-04 15:35:53 +0000'
+  date_gmt: '2014-02-04 15:35:53 +0000'
+  content: "Just wanted to point out, you don't even have to create and then rename
+    the file...\r\n\r\nAt least on Windows 7, it works quite nicely as long as you
+    add in the extra period. ;)\r\n\r\nMakes me wonder if this is a hidden \"feature\",
+    something the Windows devs thought could give us the best of both worlds&mdash;prevent
+    unknowing \"novice\" users from creating file names that would disappear under
+    default settings, while still allowing \"power\" users to create files beginning
+    with dot, as long as they *acknowledged* they were doing this with the ending
+    dot.\r\n\r\nThough I still feel that, if this were really intended to protect
+    novices from Windows' own \"hide file extensions\" feature, it should at least
+    check to see if the option were enabled before yelling at the user. I too agree
+    that the \"hide file extensions\" feature is repulsive; especially for novices,
+    it lulls people into a false sense of security and doesn't help them determine
+    if that innocent-looking JPEG image is really an executable file with the Windows
+    default JPEG icon as its executable icon."
+---
+<p><!--start_raw-->
+<p>In Unix, it's common to name files and folders with names starting with a '.' to make them "hidden". This convention is not really needed in Windows, since there's a file system attribute for that, but still interesting.</p>
+<p>See, a few tools ported from Unix that relied on this convention use a different one in Windows, replacing the '.' with a '_'. So, for example, your Vim settings file will be "_vimrc" instead of ".vimrc" and so on. Seems pretty obvious they did this because at some point in time file&#47;folder names could not start with a dot.</p>
+<p>Windows 9x probably had this limitation, and probably still lives on in FAT-based file systems (but I don't have one anywhere to test this assertion, nor do I particularly care about it). However, modern Windows and NTFS have no such limitation. Almost.</p>
+<p>See, NTFS certainly let's you create a folder named ".vimfiles" or a file named ".txt" for that matter. You can do so programatically using the standard file handling APIs. You can do it from the command line using mkdir&#47;echo. </p>
+<p>But you can't do it using Windows Explorer. For example, Vista and WinServer2k8 will complain that "You must type a filename" if you attempt to name a folder&#47;file with a dot as the first character in the name.</p>
+<p>Why Explorer explicitly disallows it, I'm not sure, but seems pretty funky. There are probably thousands of applications or utilities out there that might get confused with a file or folder named like that, though.</p>
+<div class="wlWriterSmartContent" id="scid:0767317B-992E-4b12-91E0-4F059A8CECA8:db189520-fbe9-413a-8a04-56675b617444" style="padding-right: 0px; display: inline; padding-left: 0px; padding-bottom: 0px; margin: 0px; padding-top: 0px">Technorati tags: <a href="http:&#47;&#47;technorati.com&#47;tags&#47;Windows" rel="tag">Windows</a></div><!--end_raw--></p>

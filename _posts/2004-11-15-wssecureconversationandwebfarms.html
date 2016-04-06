@@ -1,0 +1,25 @@
+---
+layout: post
+status: publish
+published: true
+title: WS-SecureConversation and WebFarms
+author:
+  display_name: Tomas Restrepo
+  login: tomasr
+  email: tomas@winterdom.com
+  url: http://winterdom.com/
+author_login: tomasr
+author_email: tomas@winterdom.com
+author_url: http://winterdom.com/
+wordpress_id: 311
+wordpress_url: http://winterdom.com/2004/11/wssecureconversationandwebfarms
+date: '2004-11-15 16:35:01 +0000'
+date_gmt: '2004-11-15 16:35:01 +0000'
+categories:
+- Web Services
+tags: []
+comments: []
+---
+<p><!--start_raw-->Chris Keyser just published an article on MSDN called <a href="http:&#47;&#47;msdn.microsoft.com&#47;webservices&#47;default.aspx?pull=&#47;library&#47;en-us&#47;dnwebsrv&#47;html&#47;sctinfarm.asp">"Managing Security Context Tokens in a Web Farm"</a>. Much needed information and one I'm personally very interested in.</p>
+<p>I do have to ask one thing... does anyone have any sort of metrics or whatever for when it might be useful to implement such an optimization? (I guess the question rather goes all the way to the use of WS-SecureConversation, and not just plain WS-Security).</p></p>
+<p>I ask this because in our current system (which currently hosts several webservices, though they don't currently use WSE), our current interaction pattern is where the front end system (out of our control, a workflow application, basically, but there are at least two other applications that could be in their position) does a bunch of requests to a few services on behalk of an end user (which we don't authenticate, that's their problem). There's no "conversation" per se, just a bunch of calls that might, or might not be related to each other (and there's actually no need for them all to be called, that depends on what you want to do). I'm just wondering if it would be a possible scenario...</p><!--end_raw--></p>

@@ -1,0 +1,57 @@
+---
+layout: post
+status: publish
+published: true
+title: Decoding UTF-16 Messages with the BizTalk Framework Disassembler
+author:
+  display_name: Tomas Restrepo
+  login: tomasr
+  email: tomas@winterdom.com
+  url: http://winterdom.com/
+author_login: tomasr
+author_email: tomas@winterdom.com
+author_url: http://winterdom.com/
+wordpress_id: 625
+wordpress_url: http://winterdom.com/2006/05/decodingutf16messageswiththebiztalkframeworkdisassembler
+date: '2006-05-18 19:09:25 +0000'
+date_gmt: '2006-05-18 19:09:25 +0000'
+categories:
+- BizTalk
+tags: []
+comments:
+- id: 417
+  author: Aki86
+  author_email: ''
+  author_url: ''
+  date: '2007-03-16 09:29:59 +0000'
+  date_gmt: '2007-03-16 09:29:59 +0000'
+  content: |
+    thanks for your post!
+- id: 29103
+  author: Codit Blog
+  author_email: ''
+  author_url: http://blog.codit.eu/post/2010/02/17/XML-encoding-detection-in-BizTalk-Server.aspx
+  date: '2013-10-29 09:03:41 +0000'
+  date_gmt: '2013-10-29 09:03:41 +0000'
+  content: |-
+    <strong>XML encoding detection in BizTalk Server.</strong>
+
+    XML encoding detection in BizTalk Server.
+---
+<p><!--start_raw--><P>A few days ago Sam Vanhoutte posted on the BizTalk newsgroups about an issue he was having while trying to process Unicode encoded messages using the BizTalk Framework Disassembler. Here's the tale of what we discovered in the process.</P><br />
+<P><STRONG>Problem description<BR></STRONG>The error&nbsp;happened while&nbsp;trying to process an UTF-16LE encoded XML message using the BizTalk Framework Disassembler component. The message in question was received with no <?xml?> declaration and hence no encoding attribute, and contained no BOM. This cause the&nbsp;operation to fail with the <EM>"None of the components at Disassemble stage can recognize the data"</EM> error, suggesting that the disassembler couldn't figure out the document encoding.</P><br />
+<P>After looking around a bit using&nbsp;Reflector, I noticed that the BizTalk Framework Disassembler used the XML Disassembler (XmlDasm) underneath. Because of this I suggested Sam he tried using my FixEncoding Pipeline component in the decode stage of his pipeline to set the message's Body part Charset to the correct encoding (UTF-16 Little Endian, Codepage 1200). It worked, almost. Now the document was being recognized by the disassembler, but the disassemble itself failed, with the following error:</P><br />
+<P><FONT face="Courier New">System.Xml.XmlException : Name cannot begin with the '.' character, hexadecimal value 0x00. Line 1, position 2.<BR>&nbsp;at Microsoft.BizTalk.Component.NamespaceTranslatorStream.Read(Byte[] buffer, Int32 offset, Int32 count)<BR>&nbsp;at Microsoft.BizTalk.Streaming.MarkableForwardOnlyEventingReadStream.ReadInternal(Byte[] buffer, Int32 offset, Int32 count)<BR>&nbsp;at Microsoft.BizTalk.Streaming.EventingReadStream.Read(Byte[] buffer, Int32 offset, Int32 count)<BR>&nbsp;at System.IO.StreamReader.ReadBuffer(Char[] userBuffer, Int32 userOffset, Int32 desiredChars, Boolean&amp; readToUserBuffer)<BR>&nbsp;at System.IO.StreamReader.Read(Char[] buffer, Int32 index, Int32 count)<BR>&nbsp;at System.Xml.XmlTextReaderImpl.ReadData()<BR>&nbsp;at System.Xml.XmlTextReaderImpl.InitTextReaderInput(String baseUriStr, TextReader input)<BR>&nbsp;at System.Xml.XmlTextReaderImpl..ctor(String url, TextReader input, XmlNameTable nt)<BR>&nbsp;at System.Xml.XmlTextReader..ctor(TextReader input)<BR>&nbsp;at Microsoft.BizTalk.Streaming.Utils.GetDocType(MarkableForwardOnlyEventingReadStream stm, Encoding encoding)<BR>&nbsp;at Microsoft.BizTalk.Component.XmlDasmReader.CreateReader(IPipelineContext pipelineContext, IBaseMessageContext messageContext, MarkableForwardOnlyEventingReadStream data, Encoding encoding, Boolean saveEnvelopes, Boolean allowUnrecognizedMessage, Boolean validateDocument, SchemaList envelopeSpecNames, SchemaList documentSpecNames, IFFDocumentSpec docSpecType, SuspendCurrentMessageFunction documentScanner)<BR>&nbsp;at Microsoft.BizTalk.Component.XmlDasmComp.Disassemble2(IPipelineContext pc, IBaseMessage inMsg)<BR>&nbsp;at Microsoft.BizTalk.Component.XmlDasmComp.Disassemble(IPipelineContext pc, IBaseMessage inMsg)<BR>&nbsp;at Microsoft.BizTalk.Component.BtfDasmComp.DoLoad(IPipelineContext pc, IBaseMessage inMsg)<BR>&nbsp;at Microsoft.BizTalk.Component.BtfDasmStateLoad.LoadMessage(IBtfDasmAction act, IPipelineContext pc, IBaseMessage inMsg)<BR>&nbsp;at Microsoft.BizTalk.Component.BtfDasmComp.Disassemble2(IPipelineContext pc, IBaseMessage inMsg)<BR>&nbsp;at Microsoft.BizTalk.Component.BtfDasmComp.Disassemble(IPipelineContext pc, IBaseMessage inMsg)<BR>&nbsp;at Microsoft.Test.BizTalk.PipelineObjects.Stage.Execute(IPipelineContext pipelineContext, IBaseMessage inputMessage)</FONT></P><br />
+<P><BR>This was a clear sign that the disassembler was somehow trying to interpret the document using the wrong encoding, even though we were clearly specifying the correct Charset. At this point, I asked Sam to pass on the problematic file to see what I could find out.</P><br />
+<P><STRONG>The Real Problem</STRONG><BR>After a lot of digging, I think I've discovered what seems to be a bug in the way the BtfDasmComp component works. It seems like it doesn't correctly decode documents encoding with anything else than UTF-8, unless the .NET Framework's XmlTextReader can figure out the document encoding on it's own. None of the requirements to be able to do this were met by the problematic document, so apparently the disassembler was defaulting to trying to interpret the document using UTF-8, which caused the error.</P><br />
+<P>The question was then why this was happening, when we were specifying the correct Charset for the document, and it was pretty obvious that made a difference, since probing was succeeding. Why was the correct encoding being used while probing but not while disassembling?</P><br />
+<P><STRONG>A guess</STRONG><BR>After spending a couple more hours going though the BizTalk Framework disassembler, I can venture an educated guess as to why the wrong encoding is being used.</P><br />
+<P>The first thing I noticed was that the BtfDasmComp component, just like the XmlDasmComp component, clearly looked specifically for the part's Chartset property (IBaseMessagePart.Charset) both before probing and before disassembling the document. So up to here, everything was just fine.</P><br />
+<P>However, during disassembling, eventually control lands on the BtfDasmComp.DoLoad() method, where the body part data stream of the message is replaced with an instance of the BTFDasmTranslator class:</P><br />
+<P>stream1 = new BTFDasmTranslatorStream(pc, stream1, "<A href="http:&#47;&#47;schemas.xmlsoap.org&#47;soap&#47;envelope&#47;">http:&#47;&#47;schemas.xmlsoap.org&#47;soap&#47;envelope&#47;</A>", "<A href="http:&#47;&#47;schemas.biztalk.org&#47;btf-2-0&#47;envelope">http:&#47;&#47;schemas.biztalk.org&#47;btf-2-0&#47;envelope</A>", encoding1);<BR>inMsg.BodyPart.Data = stream1;</P><br />
+<P>Up to here, encoding1 correctly has the encoding created from the value of the part's Charset property. While the code correctly passes an encoding to the new stream, I spotted that the BTFDasmTranslatorStream class is derived from the NamespaceTranslatorStream class.</P><br />
+<P>In one of the constructors for the NamespaceTranslatorStream class, a new XmlTextReader class is created to process the document, but no encoding is specified for it; thus letting the reader try to figure out itself what encoding the message stream has. This makes no sense because by this point the disassembler knows exactly what encoding to use. Here's the relevant code:</P><br />
+<P>public NamespaceTranslatorStream(IPipelineContext pipelineContext, Stream data, string oldNamespace, string newNamespace, Encoding encoding) : base(new XmlTextReader(data), encoding)</P><br />
+<P>You can see that while the specified encoding is passed on to the base class (XmlBufferedStreamReader), but it is not used in the creation of the XmlTextReader itself. Of course, the encoding cannot be provided directly to it because the XmlTextReader class doesn't contain a constructor that contains an Encoding argument (which I think it should, really), so instead you need to create a StreamReader object with the correct encoding and construct the XmlTextReader on top of that, instead.</P><br />
+<P><BR><STRONG>Workaround</STRONG><BR>It became clear with this that getting the messages to process correctly was not going to be possible by simply selecting the proper Charset. Instead, Sam was able to work around the problem successfully by creating a custom pipeline component that actually transcoded the message from UTF-16 to UTF-8 and using that as part of the decoding stage before the disassembler runs.</P><br />
+<P></P><!--end_raw--></p>

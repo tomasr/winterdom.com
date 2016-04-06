@@ -1,0 +1,37 @@
+---
+layout: post
+status: publish
+published: true
+title: NTFS Junction Points
+author:
+  display_name: Tomas Restrepo
+  login: tomasr
+  email: tomas@winterdom.com
+  url: http://winterdom.com/
+author_login: tomasr
+author_email: tomas@winterdom.com
+author_url: http://winterdom.com/
+wordpress_id: 232
+wordpress_url: http://winterdom.com/2008/07/ntfsjunctionpoints
+date: '2008-07-07 06:34:12 +0000'
+date_gmt: '2008-07-07 06:34:12 +0000'
+categories:
+- Tools
+- Vista
+tags: []
+comments: []
+---
+<p><!--start_raw-->
+<p>I spent some time this weekend organizing a few files and source code repositories. As part of this process, I wanted to take advantage of NTFS hard-links and junction points, both of which are supported on Windows Server 2003&#47;8 and Vista.</p>
+<p>I had no problems with hard-links at all. I'm using the ln.exe tool from <a title="http:&#47;&#47;www.flexhex.com&#47;docs&#47;articles&#47;hard-links.phtml" href="http:&#47;&#47;www.flexhex.com&#47;docs&#47;articles&#47;hard-links.phtml">http:&#47;&#47;www.flexhex.com&#47;docs&#47;articles&#47;hard-links.phtml</a> to create them, and it worked great right from the start (I could also use the <code>"fsutil hardlink create"</code> command).</p>
+<p>Junction points, however, gave me quite a bit more trouble. I've used Junction points in the past very successfully. I work with some code bases that for many reasons expect to have certain directories in the C:\ drive, but I keep all my code in the E:\ drive. </p>
+<p>For this I've used cross-drive junction points to have the folder in C:\ point to the real folder in E:\ and it's worked great for a couple of years. One other tool I've used for this sometimes is <a href="http:&#47;&#47;www.rekenwonder.com&#47;linkmagic.htm">Junction Link Magic</a>.</p>
+<p>Yesterday, however, I discovered that on Windows Server 2003, if the junction folder was on the same drive as the target folder, it just wouldn't work correctly. I could create the junction just fine, and I could even see the contents of the directory through the junction using explorer, cmd.exe or PowerShell. </p>
+<p>Actually trying to access any of the children through the junction would result in the error:</p>
+<div class="codebg"><code>The filename, directory name, or volume label syntax is incorrect.</code></div>
+<p>I tried both of the tools I mentioned before, and it just wouldn't work. I tried creating the junctions from WinServer2K8 (where they worked perfectly) and then using the drive from 2003, and it still wouldn't work. This was easy to test, by the way, since this is a VHD image I share between several virtual machines.</p>
+<p>Eventually, fellow MVP Juan T. Libre insisted I tried the linkd.exe tool in the Windows Server 2003 Resource Kit. I was reluctant to it since the other tools could create working cross-drive junctions and I was starting to suspect an OS limitation, but I gave it a go.</p>
+<p>Much to my surprised, linkd.exe was able to create working same-drive junction points on Windows Server 2003. My guess is that there's some (probably undocumented) detail about how the APIs need to be called that can affect whether this works correctly or not. </p>
+<p>Looking at the junctions using the <code>"fsutil reparsepoint query"</code> command clearly shows that the Reparse Data is slightly different between cross and same drive junctions, but not sure what it means from the API point of view. Just something to watch out for.</p>
+<p>The lesson: <em>Use linkd.exe on Windows Server 2003 to create same-drive junctions.</em></p>
+<div class="wlWriterSmartContent" id="scid:0767317B-992E-4b12-91E0-4F059A8CECA8:8e7ac6db-bfd1-4b78-a3a2-05337d9797a3" style="padding-right: 0px; display: inline; padding-left: 0px; padding-bottom: 0px; margin: 0px; padding-top: 0px">Technorati tags: <a href="http:&#47;&#47;technorati.com&#47;tags&#47;Windows%20Server%202003" rel="tag">Windows Server 2003</a>, <a href="http:&#47;&#47;technorati.com&#47;tags&#47;NTFS" rel="tag">NTFS</a></div><!--end_raw--></p>

@@ -1,0 +1,32 @@
+---
+layout: post
+status: publish
+published: true
+title: Running the BTF Assembler using the PipelineTesting Library
+author:
+  display_name: Tomas Restrepo
+  login: tomasr
+  email: tomas@winterdom.com
+  url: http://winterdom.com/
+author_login: tomasr
+author_email: tomas@winterdom.com
+author_url: http://winterdom.com/
+wordpress_id: 391
+wordpress_url: http://winterdom.com/2006/12/runningthebtfassemblerusingthepipelinetestinglibrary
+date: '2006-12-13 09:24:42 +0000'
+date_gmt: '2006-12-13 09:24:42 +0000'
+categories:
+- BizTalk
+tags: []
+comments: []
+---
+<p><!--start_raw-->
+<p>Here are a couple of tips if you plan on running the BizTalk Framework (BTF) Assembler Component as part of a send pipeline using my BizTalk PipelineTesting Library:</p>
+<p><strong>Tip 1: Ensure all necessary schemas are available</strong></p>
+<p>The BTF Assembler will require access to all its own set of envelope and header schemas from the pipeline context, so be sure they are available. All the schemas are in the Microsoft.BizTalk.GlobalPropertySchemas.dll assembly, so you can easily add them to the pipeline like this:</p>
+<p><font face="Lucida Console">pipeline.AddDocSpec(typeof(BTF2Schemas.btf2_endpoints_header));<br>pipeline.AddDocSpec(typeof(BTF2Schemas.btf2_envelope));<br>pipeline.AddDocSpec(typeof(BTF2Schemas.btf2_manifest_header));<br>pipeline.AddDocSpec(typeof(BTF2Schemas.btf2_process_header));<br>pipeline.AddDocSpec(typeof(BTF2Schemas.btf2_receipt_header));<br>pipeline.AddDocSpec(typeof(BTF2Schemas.btf2_services_header));</font></p>
+<p><strong>Tip 2: How to set the content encoding</strong></p>
+<p>If you're also using the MIME&#47;SMIME encoder component on your pipeline, keep this in mind: For some reason, while playing with this yesterday, I could not get the value of the ContentTransferEncoding property of the MIME encoder to be used when running my pipeline (an empty pipeline where I added the component manually). However, I found that I could work around this by directly setting the value on a property in the body part of the input message to the pipeline, like this:</p>
+<p><font face="Lucida Console">inputMsg.BodyPart.PartProperties.Write("ContentTransferEncoding", "http:&#47;&#47;schemas.microsoft.com&#47;BizTalk&#47;2003&#47;mime-properties", "7bit");</font></p>
+<p>Hope this helps!</p>
+<div class="wlWriterSmartContent" id="0767317B-992E-4b12-91E0-4F059A8CECA8:cd40f5a7-9980-46cb-aa77-c190a80c3c64" contenteditable="false" style="margin: 0px; padding: 0px; display: inline;">Technorati tags: <a href="http:&#47;&#47;technorati.com&#47;tags&#47;BizTalk%20Server" rel="tag">BizTalk Server</a>, <a href="http:&#47;&#47;technorati.com&#47;tags&#47;BTS" rel="tag">BTS</a>, <a href="http:&#47;&#47;technorati.com&#47;tags&#47;BizTalk%20Framework" rel="tag">BizTalk Framework</a></div><!--end_raw--></p>

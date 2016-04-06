@@ -1,0 +1,30 @@
+---
+layout: post
+status: publish
+published: true
+title: Send Handlers and Adapters
+author:
+  display_name: Tomas Restrepo
+  login: tomasr
+  email: tomas@winterdom.com
+  url: http://winterdom.com/
+author_login: tomasr
+author_email: tomas@winterdom.com
+author_url: http://winterdom.com/
+wordpress_id: 516
+wordpress_url: http://winterdom.com/2005/02/sendhandlersandadapters
+date: '2005-02-10 19:22:31 +0000'
+date_gmt: '2005-02-10 19:22:31 +0000'
+categories:
+- BizTalk
+tags: []
+comments: []
+---
+<p><!--start_raw-->In BizTalk Server 2004, there's an interesting asimmetry between how handlers relate to the send and receive sides of adapters. Handlers are, in essence, how runtime execution contexts are provided for adapters by linking them to hosts.</p>
+<p>On one side, we have Receive Handlers. A receive adapter can have more than one receive handler associated with it, and each receive handler represents on possible host. Usually all handlers will point to either application hosts or isolated hosts. Now, when you create a port and choose to use a given adapter, you can select the runtime context of the adapter for this port by binding the port to a specific host, which is selected from the set of receive handlers associated to the adapter.</p></p>
+<p>However, for Send Adapters, things work very differently. All send adapters are, in essence, in-process. This means that they can only be bound to Application Hosts. When a send adapter is installed, you can only associate a single application host as the Send Handler for the adapter.</p></p>
+<p>What this means is that a given send adapter will only run on a single specific application host, regardless of how many you have installed. This is made more apparent by the fact that, unlike receive adapters, you can't bind a send port to a host during configuration.</p></p>
+<p>One one hand, this seems to make sense: if there's no way to bind a port to a host, then someway has to be there to enable BizTalk to know on which host to schedule send operations for the adapter. Also, this makes a lot of sense for adapters that are always-connected-driven (say, for example one that opens up a TCP&#47;IP connection to a mainframe that's always on), since you want to ensure a stable execution context to keep the connection up, and you don't want each host to open up it's own connection, possibly wasting resources that way. (This is also valid for the HTTP adapter that, while it can open multiple connections to a single machine, it tries to keep them to a minimum and pools them up to a point).</p></p>
+<p>However, this does have a very unfortunate downside: you can't run an send adapter on multiple hosts (duh!). Why would you want to do this? Well, one reason I can think of is security: You might want to open the possibility of running the adapter in two hosts under different security contexts.</p></p>
+<p>For example, consider the SQL Adapter: If you use it quite a bit, chances are you might want to connect to multiple databases and servers with it but for different integration solutions that are deployed to the same BizTalk Server Group. All connections are done using integrated security (possibly because of security restrictions in place in the organization). Now, with the current BizTalk architecture, you'll need to create a single application host running under user X, use it as the send handler for the SQL Adapter, and then give X access to both database servers.</p></p>
+<p>I believe, from a security standpoint, that this might very well be an undesirable solution. I would much prefer to be able to create two application hosts, each running under different users X and Y, and do all operations on the SQL Adapter to server 1 through one of the hosts, and all operations to server 2 from the other. This would allow me to still keep using integrated security, but connect with separate identities to each database server, by simply binding all send ports that send messages to server 1 to the host running under user X and all send ports that send messages to server 2 to the host running under user Y.</p><!--end_raw--></p>

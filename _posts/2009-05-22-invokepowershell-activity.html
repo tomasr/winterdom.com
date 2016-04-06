@@ -1,0 +1,51 @@
+---
+layout: post
+status: publish
+published: true
+title: InvokePowerShell Activity
+author:
+  display_name: Tomas Restrepo
+  login: tomasr
+  email: tomas@winterdom.com
+  url: http://winterdom.com/
+author_login: tomasr
+author_email: tomas@winterdom.com
+author_url: http://winterdom.com/
+wordpress_id: 1242
+wordpress_url: http://winterdom.com/2009/05/invokepowershell-activity
+date: '2009-05-22 13:10:59 +0000'
+date_gmt: '2009-05-22 13:10:59 +0000'
+categories:
+- PowerShell
+- Workflow
+tags: []
+comments: []
+---
+<p><img style="border-right-width: 0px; margin: 0px 10px 10px 0px; display: inline; border-top-width: 0px; border-bottom-width: 0px; border-left-width: 0px" title="vs10_wf_ps" border="0" alt="vs10_wf_ps" align="left" src="http:&#47;&#47;winterdom.com&#47;wp-content&#47;uploads&#47;2009&#47;05&#47;vs10-wf-ps.png" width="234" height="117" &#47;> I&rsquo;ve been fooling a bit with the new Windows PowerShell-related activities included in Windows Workflow Foundation 4.0 alongside the Visual Studio 2010 Beta 1 release. It&rsquo;s pretty cool seeing PowerShell being directly supported right out of the box!</p>
+<p>There are two different activities: <code>InvokePowerShell</code> and <code>InvokePowerShell<T></code>. The difference (as far as I can see) is that the latter allows you to capture the output of the PowerShell command being executed (that is, the results from the pipeline). I can understand why both variants might be needed, but not thrilled about the naming. At the least, it&rsquo;s not immediately obvious what the difference between the two is, so it&rsquo;s going to be confusing.</p><br />
+<h2>Using InvokePowerShell</h2>
+<p>I struggled a bit understanding how the <code>InvokePowerShell</code> activity was meant to be used. In particular, I didn&rsquo;t grasp immediately the significance of the <code>IsScript</code> property of the activity:</p>
+<p><img style="border-right-width: 0px; display: inline; border-top-width: 0px; border-bottom-width: 0px; border-left-width: 0px" title="vs10_wf_ps_params" border="0" alt="vs10_wf_ps_params" src="http:&#47;&#47;winterdom.com&#47;wp-content&#47;uploads&#47;2009&#47;05&#47;vs10-wf-ps-params.png" width="433" height="182" &#47;> </p>
+<p>If I understand it correctly, here&rsquo;s the key difference: If <code>IsScript</code> is not checked (the default), then <code>CommandText</code> cannot be an arbitrary PowerShell expression. Instead it must be the <em>name</em> of the PowerShell cmdlet to invoke, but you cannot add any extra information there (such as the value of a parameter). By contrast, if <code>IsScript</code> is checked, then <code>CommandText</code> can be a list of (more or less) arbitrary PowerShell expressions, including variable declarations and all.</p>
+<p>I believe that for a lot of people, enabling <code>IsScript</code> will make the activity behave in a more natural way.</p>
+<p>There are a few more interesting details about the PowerShell activities:</p><br />
+<h3>Passing Data into PowerShell</h3>
+<p>There are two ways to pass data into the PowerShell script to execute:</p>
+<ol>
+<li>If you&rsquo;re executing a cmdlet, then the Parameters collection can be used to provide input arguments to the cmdlet call. For example, if <code>CommandText</code> is <code>&ldquo;Get-Process&rdquo;</code>, then you can add a <code>Name</code> parameter to the <code>Parameters</code> collection with the value set to an expression returning a string, and it will be the same as if you had invoked <code>&ldquo;Get-Process -Name <value>&rdquo;</code>. I&rsquo;m not 100% sure yet, but it would seem like this would only really apply if <code>IsScript</code> is <em>unchecked</em> (otherwise, it&rsquo;s not very clear what you&rsquo;re passing the parameters to). </li>
+<li>You can have WF push variables into the PowerShell runspace before the invocation. This is what the <code>PowerShellVariables</code> property is for. If you add a variable there call <code>Error</code>, then the PowerShell expression in <code>CommandText</code> can reference the value by using <code>$Error</code>. Again, this would appear to be mostly useful when <code>IsScript</code> is <em>checked</em>. </li> </ol>
+<p>Based on this, one might suspect that the <code>Parameters</code> and <code>PowerShellVariables</code> properties are basically there to support both modes of operation of the activity: One when invoking a cmdlet directly and one when executing a more free-form script. Is this good? I&rsquo;m not sure yet. I can see a sort of logic to both ways of using the <code>InvokePowerShell</code> activity, but it seems a bit complex and potentially confusing. I sure know I was confused the first time I tried to use it.</p><br />
+<h3>Pipeline Input</h3>
+<p>It should be obvious by now that I wasn&rsquo;t exactly right when I said there were two ways to pass data into the PowerShell script. There&rsquo;s a third (main?) one: Provide an object (or collection of objects) as the pipeline input, which is what the <code>Input</code> property of the activity is for.</p>
+<p>It should be fairly obvious how to use it: If the command is a cmdlet, then the input will be feed just like if you had piped something to it in PowerShell. You might expect that if the command is a free-form script, then you&rsquo;d be able to access it the inputs <code>$_</code>; however, I haven&rsquo;t been successful in that so not sure if it&rsquo;s supported.</p><br />
+<h3>Pipeline Output</h3>
+<p>Handling pipeline output is only done in the <code>InvokePowerShell<T></code> activity, and it&rsquo;s basically very simple: When adding the activity to your workflow, the designer will ask you to bind <code>T</code> to a type, and that&rsquo;s what you expect your PowerShell command to return. I can imagine that in most cases, this should be some sort of collection (like <code>IEnumerable</code>) since most PowerShell commands will return multiple objects.</p>
+<p>Then, just bind the <code>Output</code> property of the activity to a variable in your workflow that will receive the pipeline output after the activity executes.</p><br />
+<h3>Pipeline Errors</h3>
+<p>Errors resulting from executing the <code>InvokePowerShell</code> activity can surface in one of two ways:</p>
+<ul>
+<li>Certain errors, such as trying to invoke a malformed expression or a non-existent cmdlet will result in an exception being thrown and the Workflow faulting, unless you have the activity inside try&#47;catch blocks. </li>
+<li>Anything that gets written by the command to the error stream (through the Write-Error cmdlet) will get exposed through the <code>Errors</code> property of the <code>InvokePowerShell</code> activity. To handle those, you&rsquo;ll want to create a new variable in your workflow (of type <code>Collection<ErrorRecord></code> or just <code>IEnumerable</code>), and then bind it to the <code>Errors</code> property.&#160; Now you should be able to simply iterate over your variable right after <code>InvokePowerShell</code> finishes executing. </li> </ul><br />
+<h3>Designer Support</h3>
+<p>I&rsquo;m not totally happy with the designer support for the PowerShell activities. Besides my general complaints about the Workflow Designer (a subject for another blog post), there&rsquo;s something that really bugs me: There&rsquo;s no proper editor support for entering the <code>CommandText</code> in the activity.</p>
+<p>Sure, you can attempt to write your script directly into the text editor in the activity designer, but that&rsquo;s way too small for anything more complex than, say, calling <code>Get-Process</code>. You could also attempt to use the property window, but that&rsquo;s even worse because all it has is a single-line text box. At the very least, it needs to popup into a multi-line text editor window.</p></p>

@@ -1,0 +1,39 @@
+---
+layout: post
+status: publish
+published: true
+title: Decoding Components and Streams
+author:
+  display_name: Tomas Restrepo
+  login: tomasr
+  email: tomas@winterdom.com
+  url: http://winterdom.com/
+author_login: tomasr
+author_email: tomas@winterdom.com
+author_url: http://winterdom.com/
+wordpress_id: 218
+wordpress_url: http://winterdom.com/2006/04/decodingcomponentsandstreams
+date: '2006-04-10 18:20:09 +0000'
+date_gmt: '2006-04-10 18:20:09 +0000'
+categories:
+- BizTalk
+tags: []
+comments: []
+---
+<p><!--start_raw--><P>I've been writing some Pipeline Components for BizTalk 2006, and I ran into a bit of a problem while testing one of them. The problem is a fairly common, but obscure issue that appears with most non-trivial pipeline components: Stream Handling.<BR>&nbsp;&nbsp; <BR>Charles Young has a pretty good article <A href="http:&#47;&#47;geekswithblogs.net&#47;cyoung&#47;articles&#47;12132.aspx">here</A> about the problems that appear when pipeline components don't handle message stream correctly. In particular, Charles talks about a bug in BizTalk 2004 which caused inbound maps to fail when a pipeline component returned a seekable stream, and thus recommends pipeline component developers always make sure they return a non-seekable stream to avoid the issue.</P><br />
+<P>My case, however, was a little bit different. It seems that Charles recommendation only holds true for pipeline components that run <EM>in or after</EM> the disassemble stage in a receive pipeline. I was, instead, writing a decoding component, and, in my test, the receive interchange kept failing with the following message in the machine's Application Event Log: "Stream does not support seeking". Indeed I was returning a non-seekable stream from my pipeline component, but I haven't figure out exactly why this is an issue.</P><br />
+<P>As far as I can see, this is related to the presence of the Xml Disassembler component in the disassemble stage of the receive pipeline I was using to test my component. Though BizTalk unfortunately doesn't give you any details about the error (not even a stack trace), it's pretty hard to diagnose exactly what the problem is with non-seekable streams here, but I think it has something to use with the use of the MarkableForwardOnlyEventingReadStream used by the Xml Disassembler, which is constructed during message probing (IProbeMessage.Probe()). I did some spelunking around doing some tracing and using Reflector, and it does indeed seem that this special stream class that the disassembler creates called my Stream's CanSeek method (which properly returned false), but I could not see code where explicitly an error message was returned or processing was halted based on this value, and instead some alternative work was done, which I found rather confusing.</P><br />
+<P>These kind of issues can be quite a bit of stressful because the semantics expected by BizTalk (or rather, but the standard components included in BizTalk) are not documented anywhere, making the process of writing a good and efficient pipeline component a trial-and-error process, which is wildly frustrating and a very innefficient process itself.</P><br />
+<P>I think this is pretty nasty requirements for decoding component writers, as, in general, they are usually built to decode a stream start to finish without moving around the stream (most encryption&#47;decryption components are easy, natural and efficient to write this way). Additionally, it makes it imposible to simply have a decoding component that returns a System.Security.Cryptography.CryptoStream stream to BizTalk, because it is always non-seekable.</P><br />
+<P><STRONG>Solving the Issue</STRONG></P><br />
+<P>The easiest way to work around this problem would be to have the decoding component decode the entire message into a seekable in-memory stream, but this is highly inneficient, and it is sure to cause performance and scalability problems with either large interchanges or a lot of concurrent messages flowing through the system.</P><br />
+<P>What's more frustraring about this is that it seems that the BizTalk Developers were aware of this problem and solved it. After quite a bit of looking around, I discovered that the MIME&#47;SMIME component included in BizTalk is apparently aware of the problem with non-seekable streams! It verifies if the data stream coming off the adapter is seekable, and, if not, wraps it around a custom stream that allows read-only, seekable access to it in what looks like a more efficient way than just loading it entirely into memory. It basically does something like this:</P><br />
+<P class=MsoNormal style="MARGIN: 0in 0in 0pt; mso-pagination: none; mso-layout-grid-align: none"><SPAN style="FONT-SIZE: 10pt; COLOR: blue; FONT-FAMILY: Consolas; mso-bidi-font-family: Consolas">if</SPAN><SPAN style="FONT-SIZE: 10pt; FONT-FAMILY: Consolas; mso-bidi-font-family: Consolas"><FONT color=#000000> ( </FONT><SPAN style="COLOR: blue">!</SPAN><FONT color=#000000>stream</FONT><SPAN style="COLOR: blue">.</SPAN><FONT color=#000000>CanSeek )<?xml:namespace prefix = o ns = "urn:schemas-microsoft-com:office:office" &#47;><o:p></o:p></FONT></SPAN></P><br />
+<P class=MsoNormal style="MARGIN: 0in 0in 0pt; mso-pagination: none; mso-layout-grid-align: none"><SPAN style="FONT-SIZE: 10pt; FONT-FAMILY: Consolas; mso-bidi-font-family: Consolas"><FONT color=#000000>{<o:p></o:p></FONT></SPAN></P><br />
+<P class=MsoNormal style="MARGIN: 0in 0in 0pt; mso-pagination: none; mso-layout-grid-align: none"><SPAN style="FONT-SIZE: 10pt; FONT-FAMILY: Consolas; mso-bidi-font-family: Consolas"><FONT color=#000000><SPAN style="mso-spacerun: yes">&nbsp;&nbsp; </SPAN>part</FONT><SPAN style="COLOR: blue">.</SPAN><FONT color=#000000>Data </FONT><SPAN style="COLOR: blue">=</SPAN><FONT color=#000000> stream </FONT><SPAN style="COLOR: blue">=</SPAN><FONT color=#000000> </FONT><SPAN style="COLOR: blue">new</SPAN><FONT color=#000000> ReadOnlySeekableStream(stream);<o:p></o:p></FONT></SPAN></P><br />
+<P class=MsoNormal style="MARGIN: 0in 0in 0pt; mso-pagination: none; mso-layout-grid-align: none"><SPAN style="FONT-SIZE: 10pt; FONT-FAMILY: Consolas; mso-bidi-font-family: Consolas"><FONT color=#000000>}<o:p></o:p></FONT></SPAN></P><br />
+<P class=MsoNormal style="MARGIN: 0in 0in 0pt; mso-pagination: none; mso-layout-grid-align: none"><SPAN style="FONT-SIZE: 10pt; FONT-FAMILY: Arial"><o:p><FONT color=#000000></FONT></o:p></SPAN></P><br />
+<P><br />
+<P>The ReadOnlySeekableStream class is implemented in Microsoft.BizTalk.Streaming.dll, and is a public class. Unfortunately, it is undocumented, and the assembly is only installed to the GAC, making it, at the very least, cumbersome and risky to reuse on your own. </P><br />
+<P>If anyone has any explanations of why seekable streams appear to be required on this case, I'd sure would like to hear about it!<BR></P><br />
+<P></P></P><!--end_raw--></p>

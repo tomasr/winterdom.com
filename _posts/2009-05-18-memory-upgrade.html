@@ -1,0 +1,26 @@
+---
+layout: post
+status: publish
+published: true
+title: Memory Upgrade
+author:
+  display_name: Tomas Restrepo
+  login: tomasr
+  email: tomas@winterdom.com
+  url: http://winterdom.com/
+author_login: tomasr
+author_email: tomas@winterdom.com
+author_url: http://winterdom.com/
+wordpress_id: 1219
+wordpress_url: http://winterdom.com/2009/05/memory-upgrade
+date: '2009-05-18 00:55:57 +0000'
+date_gmt: '2009-05-18 00:55:57 +0000'
+categories:
+- Personal
+tags: []
+comments: []
+---
+<p>I went shopping around yesterday, and ended up getting 4GB of additional memory for my desktop machine, so now it has 8GB of RAM (the maximum this motherboard supports). This should help a lot, as I&rsquo;ve been starting to run a couple of Virtual Machines at the same time more often now.</p>
+<p>For example, I recently needed to test that some stuff was working correctly on a 64-bit Linux system, so with the added memory running an Ubuntu 64-bit image and a 32-bit or 64-bit Windows VM at the same time becomes a lot easier.</p>
+<p>Of course, I use <a href="http:&#47;&#47;www.virtualbox.org&#47;">Virtual Box</a> for this, since Virtual PC doesn&rsquo;t support 64-bit at all, and running multiple VMs at the same time with a decent amount of memory each is just not possible with it, either. The recent v2.2.2 release seems to have made things a bit more stable for me; particularly using VHD disk images. I was also pleasantly surprised with the great performance of my 64-bit Ubuntu image on VBox: Even with full desktop effects on the guest enabled, the UI was very smooth and responsive. I never turn those anyway, but it was an interesting test to see how it performed.</p>
+<p>With the new memory, I&rsquo;ve turned off paging files on the host OS (Windows Server 2008 x64), which should help a little bit with performance in some cases. Other than that, the only downside is that with so much memory, using hibernation is really no longer an option; using it with 4GB of RAM was already stretching things&hellip;</p></p>

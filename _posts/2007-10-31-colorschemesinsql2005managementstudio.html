@@ -1,0 +1,475 @@
+---
+layout: post
+status: publish
+published: true
+title: Color Schemes in SQL 2005 Management Studio
+author:
+  display_name: Tomas Restrepo
+  login: tomasr
+  email: tomas@winterdom.com
+  url: http://winterdom.com/
+author_login: tomasr
+author_email: tomas@winterdom.com
+author_url: http://winterdom.com/
+wordpress_id: 938
+wordpress_url: http://winterdom.com/2007/10/colorschemesinsql2005managementstudio
+date: '2007-10-31 06:23:32 +0000'
+date_gmt: '2007-10-31 06:23:32 +0000'
+categories:
+- VS Color Scheme
+tags: []
+comments:
+- id: 659
+  author: Damien Guard
+  author_email: damien@envytech.co.uk
+  author_url: http://damieng.com/
+  date: '2007-10-31 14:41:29 +0000'
+  date_gmt: '2007-10-31 14:41:29 +0000'
+  content: |
+    Cool, look forward to trying this back in the office tomorrow.
+    [)amien
+- id: 660
+  author: Murat Top&#231;u
+  author_email: murattpc@gmail.com
+  author_url: http://www.murattopcu.com
+  date: '2007-12-10 07:15:48 +0000'
+  date_gmt: '2007-12-10 07:15:48 +0000'
+  content: |
+    Thanx ;)
+- id: 1035
+  author: Pradeep K.
+  author_email: p2kpradeep@gmail.com
+  author_url: ''
+  date: '2009-07-15 15:20:59 +0000'
+  date_gmt: '2009-07-15 15:20:59 +0000'
+  content: Took me some time to convert this to VB .Net, and figure out a way to make
+    it work between VS 2008 and SSMS 2008... But it was well worth it! Many thanks.
+- id: 1067
+  author: Chris
+  author_email: chris.bolyard@gmail.com
+  author_url: ''
+  date: '2009-07-31 19:27:31 +0000'
+  date_gmt: '2009-07-31 19:27:31 +0000'
+  content: Pradeep, can you share?
+- id: 1090
+  author: Simon Morley
+  author_email: simon@starfleetmud.org
+  author_url: ''
+  date: '2009-08-13 12:34:23 +0000'
+  date_gmt: '2009-08-13 12:34:23 +0000'
+  content: "Just change the registry values to the following for Visual Studio 2008
+    -> SSMS 2008\r\n\r\nSRC_KEY = @\"Software\\Microsoft\\VisualStudio\\9.0\\FontAndColors\\{A27B4E24-A735-4D1D-B8E7-9716E1E3D8E0}\";\r\n\r\nDST_KEY
+    = @\"Software\\Microsoft\\Microsoft SQL Server\\100\\Tools\\Shell\\FontAndColors\\{A27B4E24-A735-4D1D-B8E7-9716E1E3D8E0}\";\r\n\r\nThanks
+    to Tomas for this handy tool!"
+- id: 1104
+  author: TextMate theme for SSMS 2005&#47;2008 - blah blah blah
+  author_email: ''
+  author_url: http://slinkysoftware.com/blog/?p=10
+  date: '2009-08-25 23:23:02 +0000'
+  date_gmt: '2009-08-25 23:23:02 +0000'
+  content: "[...] after a little digging on google I managed to find this post by
+    Tomas Restrepo where he had actually written a tool to import the registry settings
+    from [...]"
+- id: 1203
+  author: Dragos
+  author_email: dragoshel@gamestrike.ro
+  author_url: http://adchubs.com
+  date: '2009-11-05 11:40:23 +0000'
+  date_gmt: '2009-11-05 11:40:23 +0000'
+  content: Thanks a lot man!
+- id: 1318
+  author: kostya
+  author_email: berlicon@mail.ru
+  author_url: http://www.wordz.ru
+  date: '2010-03-04 10:01:33 +0000'
+  date_gmt: '2010-03-04 10:01:33 +0000'
+  content: "Great job!!!\r\nYou save my eyes ;-)"
+- id: 1319
+  author: Stu
+  author_email: stuart.liston@gmail.com
+  author_url: ''
+  date: '2010-03-04 12:15:58 +0000'
+  date_gmt: '2010-03-04 12:15:58 +0000'
+  content: "Hey Tomas\r\n\r\nI've been using one of your dark themes (Ragnarok Grey)
+    with VS2008 for a while and I love it.  I'm looking to use this in SSMS2008 too
+    but I'm struggling to find by reg key to back it up. You might say that if I don't
+    even know where to find this I really shouldn't be messing about with it, but
+    I'm dying to bring SSMS to the dark side!"
+- id: 1320
+  author: Tomas Restrepo
+  author_email: tomas@winterdom.com
+  author_url: http://winterdom.com/
+  date: '2010-03-04 23:32:18 +0000'
+  date_gmt: '2010-03-04 23:32:18 +0000'
+  content: "@Stu: Did you see the comment left by Simon above about which keys to
+    change in the app to do the migration for you?"
+- id: 1322
+  author: Stu
+  author_email: stuart.liston@gmail.com
+  author_url: ''
+  date: '2010-03-09 12:27:46 +0000'
+  date_gmt: '2010-03-09 12:27:46 +0000'
+  content: "@Tomas - I saw that, sorry my question wasn't clear. The part I'm having
+    difficulty with is backing up my existing registry key in case of catastrophe!
+    Should I modify the code to do this before the settings are transferred over or
+    is there a way of doing this through Windows explorer?"
+- id: 1323
+  author: Stu
+  author_email: stuart.liston@gmail.com
+  author_url: ''
+  date: '2010-03-09 12:33:44 +0000'
+  date_gmt: '2010-03-09 12:33:44 +0000'
+  content: "@Tomas\r\n\r\nSorry - I've done some googling as I should have in the
+    first place and found some regedit docs... I'll figure it out. Thanks a lot!"
+- id: 1397
+  author: Mareo Code &raquo; List of freeware goodies for C# developer &#8211; tools,
+    libraries, visualizers, controls etc. for free
+  author_email: ''
+  author_url: http://code.mareoblo.pl/2010/04/05/freeware-list-csharp-developer-toolbox-tools-libraries-visualizers/
+  date: '2010-04-15 08:22:33 +0000'
+  date_gmt: '2010-04-15 08:22:33 +0000'
+  content: "[...] http:&#47;&#47;winterdom.com&#47;2007&#47;10&#47;colorschemesinsql2005managementstudio
+    This is a simple utility that will port your current VS2005&#47;2008 Fonts And
+    Colors Settings (just [...]"
+- id: 1481
+  author: Jeff S
+  author_email: jeff@spark9.com
+  author_url: ''
+  date: '2010-05-07 20:07:33 +0000'
+  date_gmt: '2010-05-07 20:07:33 +0000'
+  content: "This worked fine with Visual Studio 2010 as well. Just change Simon's
+    suggestion from above:\r\n\r\nJust change the registry values to the following
+    for Visual Studio 2010 -> SSMS 2008\r\n\r\nSRC_KEY = @&rdquo;Software\\Microsoft\\VisualStudio\\10.0\\FontAndColors\\{A27B4E24-A735-4D1D-B8E7-9716E1E3D8E0}&rdquo;;\r\n\r\nDST_KEY
+    = @&rdquo;Software\\Microsoft\\Microsoft SQL Server\\100\\Tools\\Shell\\FontAndColors\\{A27B4E24-A735-4D1D-B8E7-9716E1E3D8E0}&rdquo;;"
+- id: 1490
+  author: Rodolfo
+  author_email: rodolfo.aragundi@gmail.com
+  author_url: ''
+  date: '2010-05-18 21:57:47 +0000'
+  date_gmt: '2010-05-18 21:57:47 +0000'
+  content: "What happens if im using windows 7 64bits  (sql server 2005, visual studio
+    2008)\r\ndo the keys referenced on the program change?\r\n\r\nthanks"
+- id: 1491
+  author: Tomas Restrepo
+  author_email: tomas@winterdom.com
+  author_url: http://winterdom.com/
+  date: '2010-05-19 00:19:22 +0000'
+  date_gmt: '2010-05-19 00:19:22 +0000'
+  content: "@Rodolfo: They shouldn't, I think, but not sure; I don't usually run my
+    main dev environment on x64. However, both VS and SQL management tools are 32-bit,
+    so you'd likely be fine if you force the tool to run as a 32-bit process as well."
+- id: 1547
+  author: Chris Grove
+  author_email: cjgrove@eastbourne-college.co.uk
+  author_url: ''
+  date: '2010-07-29 07:59:27 +0000'
+  date_gmt: '2010-07-29 07:59:27 +0000'
+  content: Top utility, thanks.
+- id: 1549
+  author: Shardul
+  author_email: coolshardul@hotmail.com
+  author_url: ''
+  date: '2010-08-07 18:30:42 +0000'
+  date_gmt: '2010-08-07 18:30:42 +0000'
+  content: "This worked like a charm !\r\nJust the kind of stuff that makes me more
+    productive while not being bothered by the unnecessary eye-strain.\r\nBy the way,
+    with a bit of tweak, I got my SSMS2008 to wear the Ragnar&ouml;k Grey theme by
+    borrowing it from VS2010. Pretty neat."
+- id: 1565
+  author: kyrisu
+  author_email: krystian.paszkiewicz@gmail.com
+  author_url: http://codingzombies.com
+  date: '2010-09-15 11:20:23 +0000'
+  date_gmt: '2010-09-15 11:20:23 +0000'
+  content: Just stopped by to say thanks! Great tool!
+- id: 1592
+  author: rene martin
+  author_email: rene.martin@gmail.com
+  author_url: ''
+  date: '2010-10-14 16:55:35 +0000'
+  date_gmt: '2010-10-14 16:55:35 +0000'
+  content: great utility, thanks man
+- id: 1626
+  author: Greg
+  author_email: gtburgin2@nc.rr.com
+  author_url: ''
+  date: '2010-12-01 13:28:52 +0000'
+  date_gmt: '2010-12-01 13:28:52 +0000'
+  content: "Is there a simple way to port the VS2010 editor colors to a different
+    computer\r\nalso running VS2010?"
+- id: 1639
+  author: Dave
+  author_email: dupton2000@hotmail.com
+  author_url: ''
+  date: '2010-12-23 01:55:37 +0000'
+  date_gmt: '2010-12-23 01:55:37 +0000'
+  content: Just want to say thank you.  Saved me loads of time instead of doing this
+    manually.
+- id: 1662
+  author: Maverik Gately
+  author_email: Venomed@GMail.com
+  author_url: ''
+  date: '2011-01-27 11:07:23 +0000'
+  date_gmt: '2011-01-27 11:07:23 +0000'
+  content: "Thanks a lot for this utility.\r\n\r\n@Greg: use the Import&#47;Export
+    Settings from Tools menu in VS2010\r\n\r\n@Tomas Restrepo: The utility is doing
+    the registry magic in HKEY_CURRENT_USER, so bitness of OS doesn't matter :) Confirmed
+    working on 64bit OS with VS2010-SSMS2008 (Thanks @Jeff S for saving me time to
+    find the tweak myself :) )."
+- id: 1682
+  author: Richie
+  author_email: richie.alford@gmail.com
+  author_url: ''
+  date: '2011-03-17 15:50:22 +0000'
+  date_gmt: '2011-03-17 15:50:22 +0000'
+  content: Thanks a million!
+- id: 1690
+  author: Adam
+  author_email: adamdneal@gmail.com
+  author_url: ''
+  date: '2011-04-05 15:22:28 +0000'
+  date_gmt: '2011-04-05 15:22:28 +0000'
+  content: Thanks so much, awesome tool! Saved my time and sanity!
+- id: 1755
+  author: Sekhar
+  author_email: sekhar_ind@yahoo.ocm
+  author_url: ''
+  date: '2011-07-13 00:30:31 +0000'
+  date_gmt: '2011-07-13 00:30:31 +0000'
+  content: "Thnaks alot for this tool\r\n\r\nIt is working perfectly with VS2010 to
+    SSMS 2008.\r\n\r\nDo you know any to way change the color settings for message
+    window and result window in SSMS 2008 ?"
+- id: 1777
+  author: Rich F
+  author_email: Richard_Faulkner@Hotmail.com
+  author_url: ''
+  date: '2011-08-26 15:33:30 +0000'
+  date_gmt: '2011-08-26 15:33:30 +0000'
+  content: Thank you for doing this!  Dark backgrounds are so much easier on my aging
+    feeble eyes.
+- id: 1803
+  author: ald
+  author_email: afrael@yahoo.com
+  author_url: http://afrael.loquesea.org
+  date: '2011-10-04 14:41:46 +0000'
+  date_gmt: '2011-10-04 14:41:46 +0000'
+  content: Awesome tool -- buen trabajo pana =)
+- id: 1806
+  author: Tomislav
+  author_email: tocvirek@inet.hr
+  author_url: ''
+  date: '2011-10-09 11:14:25 +0000'
+  date_gmt: '2011-10-09 11:14:25 +0000'
+  content: Great, thanks a lot!!!
+- id: 1831
+  author: Jim
+  author_email: jimi1337@gmail.com
+  author_url: ''
+  date: '2011-11-03 03:37:32 +0000'
+  date_gmt: '2011-11-03 03:37:32 +0000'
+  content: SSMS is so much easier on the eyes now -- thank you!
+- id: 1836
+  author: Pek
+  author_email: pek15@yahoo.com
+  author_url: ''
+  date: '2011-11-07 15:59:43 +0000'
+  date_gmt: '2011-11-07 15:59:43 +0000'
+  content: "Thanks! But for some reason the column names and the  table names are
+    not being coloured. I tried the son-of-obsidian_vs2008.vssettings which is the
+    one I have in VS2008, but for some reason it does not make it completely. Have
+    some run into this and knows have to solve it?\r\nThanks!"
+- id: 1846
+  author: Novice
+  author_email: amiel.register@gmail.com
+  author_url: ''
+  date: '2011-11-16 07:08:11 +0000'
+  date_gmt: '2011-11-16 07:08:11 +0000'
+  content: This is great..! color tweaking to prevent your eyes from getting too much
+    stress. ^.^
+- id: 1851
+  author: debuke
+  author_email: debuke@yahoo.com
+  author_url: ''
+  date: '2011-12-02 17:46:55 +0000'
+  date_gmt: '2011-12-02 17:46:55 +0000'
+  content: i just lost my system (thx safeboot) and was restoring my colours... since
+    the Oren Ellenbogen's Dark Scheme links don't work anymore, i found another good
+    one (close to that one)... and it looks awesome in my sql ide... thx again!
+- id: 2065
+  author: John DelNostro
+  author_email: john.delnostro@gmail.com
+  author_url: ''
+  date: '2012-03-09 16:25:06 +0000'
+  date_gmt: '2012-03-09 16:25:06 +0000'
+  content: "Any ideas on how to apply this to SSMS 2012? I'm not seeing the registry
+    key. This color scheme is awesome would love to use it in 2012. Any ideas on the
+    font, colors etc might have to manually edit it for the time being.\r\n\r\nThanks!"
+- id: 2154
+  author: Duncan
+  author_email: winterdom.com@mcrae.ca
+  author_url: ''
+  date: '2012-03-21 16:43:45 +0000'
+  date_gmt: '2012-03-21 16:43:45 +0000'
+  content: Mr. Restrepo, any chance of an upgrade for 2012?  I love this tool....
+- id: 2319
+  author: Tony Carolla
+  author_email: carolla@gmail.com
+  author_url: http://www.medamericabilling.com/
+  date: '2012-04-12 14:51:47 +0000'
+  date_gmt: '2012-04-12 14:51:47 +0000'
+  content: "Thanks for the utility!  I am running Win7 with Microsoft SSMS 2008 R2,
+    and Visual Studio 2010 Pro, and I had success by changing the two variables to:\r\n\r\n
+    \     private const string SRC_KEY = @\"Software\\Microsoft\\VisualStudio\\10.0\\FontAndColors\\{A27B4E24-A735-4D1D-B8E7-9716E1E3D8E0}\";\r\n
+    \     private const string DST_KEY = @\"Software\\Microsoft\\Microsoft SQL Server\\100\\Tools\\Shell\\FontAndColors\\{A27B4E24-A735-4D1D-B8E7-9716E1E3D8E0}\";\r\n\r\nAgain,
+    thanks much, this will make my forays into SQL easy on the peepers!"
+- id: 2629
+  author: Chirag
+  author_email: chirag.vb@gmail.com
+  author_url: ''
+  date: '2012-06-13 15:12:08 +0000'
+  date_gmt: '2012-06-13 15:12:08 +0000'
+  content: 'Thanks a lot .! it Saved my lots of time : )'
+- id: 2866
+  author: Eric Sabine
+  author_email: esabine@gmail.com
+  author_url: https://twitter.com/esabine
+  date: '2012-08-04 21:11:42 +0000'
+  date_gmt: '2012-08-04 21:11:42 +0000'
+  content: Porting to SSMS 2012, use @"Software\Microsoft\SQL Server Management Studio\11.0\FontAndColors\{A27B4E24-A735-4D1D-B8E7-9716E1E3D8E0}
+- id: 3348
+  author: Keith
+  author_email: rmuddragon@gmail.com
+  author_url: ''
+  date: '2012-10-23 15:59:17 +0000'
+  date_gmt: '2012-10-23 15:59:17 +0000'
+  content: The src will change with VS2012. I entered 11.0 for the version and no
+    go. Any ideas?
+- id: 6660
+  author: John
+  author_email: john@hotmail.com
+  author_url: ''
+  date: '2013-01-15 16:08:10 +0000'
+  date_gmt: '2013-01-15 16:08:10 +0000'
+  content: Doesn't work with Visual Studio 2012, there is no Software\Microsoft\SQL
+    Server Management Studio\11.0\FontAndColors\{A27B4E24-A735-4D1D-B8E7-9716E1E3D8E0}.
+    The dark theme for Visual Studio 2012 is excellent as well
+- id: 7077
+  author: ike
+  author_email: cenri8@hotmail.com
+  author_url: http://zonafriki.apphb.com
+  date: '2013-01-20 22:33:17 +0000'
+  date_gmt: '2013-01-20 22:33:17 +0000'
+  content: i have a little problem with numbers on sql, it&rsquo;s black color like
+    the background, exist any solution???
+- id: 8917
+  author: SQL Server Management Studio Color Schemes?
+  author_email: ''
+  author_url: http://denihow.com/sql-server-management-studio-color-schemes/
+  date: '2013-02-14 03:21:33 +0000'
+  date_gmt: '2013-02-14 03:21:33 +0000'
+  content: "[...] With some googling, I came across: Color Schemes in SQL 2005 Management
+    Studio. [...]"
+- id: 11483
+  author: Muthu
+  author_email: muthurama.r@live.com
+  author_url: ''
+  date: '2013-04-03 18:45:12 +0000'
+  date_gmt: '2013-04-03 18:45:12 +0000'
+  content: Cool tool to use. Thanks a lot.
+- id: 22045
+  author: patrick
+  author_email: phonore@comcast.net
+  author_url: ''
+  date: '2013-08-22 21:47:57 +0000'
+  date_gmt: '2013-08-22 21:47:57 +0000'
+  content: How to apply color theme to SSMS 2008. I do not have VS installed in the
+    Laptop and I do not have admin rights so I cannot make changes to the registry.  Please
+    help and my eyes would appreciate very much.  Thanks
+- id: 25343
+  author: Bill
+  author_email: blb516762000@yahoo.com
+  author_url: ''
+  date: '2013-09-11 19:47:34 +0000'
+  date_gmt: '2013-09-11 19:47:34 +0000'
+  content: "Awesome!  Thank you!  I got it to work with VS 2012 to SSMS 2008 R2  by
+    modifying the source code in the following manner:\r\n\r\n1 - Add a new private
+    const string for the category the Plain Text registry values are in 'private const
+    string SRC_PT_KEY = @\"Software\\Microsoft\\VisualStudio\\11.0\\FontAndColors\\{58E96763-1D3B-4E05-B6BA-FF7115FD0B7B}\";'\r\n2
+    - Comment out old ' &#47;&#47; hack: ' in CopyValue function that was for older
+    VS.\r\n3 - Add new '_map' key&#47;value pair(s) for 'Plain Text' registry values.\r\n
+    \   a - Plain Text Background, Plain Text FontFlags, Plain Text Foreground\r\n4
+    - Done!  Run program!"
+- id: 25344
+  author: Bill
+  author_email: blb516762000@yahoo.com
+  author_url: ''
+  date: '2013-09-11 19:51:00 +0000'
+  date_gmt: '2013-09-11 19:51:00 +0000'
+  content: "I forgot to mention one more step after step 3 in my previous post.  Add
+    the following to the Copy method.\r\n\r\nRegistryKey PTsrc = Registry.CurrentUser.OpenSubKey(SRC_PT_KEY);\r\n\r\n
+    \           &#47;&#47; now copy plain text from seperate category (VS2012)            \r\n
+    \           foreach (KeyValuePair valname in _map)\r\n            {\r\n                if
+    (valname.Key.StartsWith(\"Plain Text\"))\r\n                {\r\n                    dst.SetValue(valname.Key,
+    PTsrc.GetValue(valname.Key));\r\n                }\r\n            }"
+- id: 27445
+  author: barquerol
+  author_email: barquerol@yahoo.es
+  author_url: ''
+  date: '2013-10-10 22:23:04 +0000'
+  date_gmt: '2013-10-10 22:23:04 +0000'
+  content: Thank you very much!!
+- id: 27543
+  author: KL
+  author_email: lkean@hotmail.com
+  author_url: ''
+  date: '2013-10-11 20:53:40 +0000'
+  date_gmt: '2013-10-11 20:53:40 +0000'
+  content: Absolutely a wonderful tool. Ported SSMS 2008 R2 color scheme to SSMS 2012.
+    It is an eye sore for me to look at the teal table&#47;column color scheme in
+    SSMS 2012, glad it is back to black color just like SSMS 2008. Thank you so much,
+    I love everything about SSMS 2012 and almost abandon using it because I hate the
+    query color scheme. Thanks again.
+- id: 41129
+  author: Jeff
+  author_email: Jeffs1977@gmail.com
+  author_url: ''
+  date: '2013-12-09 03:46:12 +0000'
+  date_gmt: '2013-12-09 03:46:12 +0000'
+  content: "Can someone explain step by step for a complete noob how to do this? I
+    read this comment and found the registry file and dont undertand what in the world
+    i am exactly needing to do. I want to Change SSMS 2008 to dark as its easier on
+    my eyes. \r\n\r\nJust change the registry values to the following for Visual Studio
+    2008 -> SSMS 2008\r\n\r\nSRC_KEY = @&rdquo;Software\\Microsoft\\VisualStudio\\9.0\\FontAndColors\\{A27B4E24-A735-4D1D-B8E7-9716E1E3D8E0}&rdquo;;\r\n\r\nDST_KEY
+    = @&rdquo;Software\\Microsoft\\Microsoft SQL Server\\100\\Tools\\Shell\\FontAndColors\\{A27B4E24-A735-4D1D-B8E7-9716E1E3D8E0}&rdquo;;"
+- id: 46538
+  author: Diego Galeano
+  author_email: diego.galeano@gmail.com
+  author_url: ''
+  date: '2013-12-24 16:02:40 +0000'
+  date_gmt: '2013-12-24 16:02:40 +0000'
+  content: "Hi\r\nCould someone please post the code to export VS2012 to SSMS 2008
+    ?\r\nor email it to me at diego.galeano at gmail ?\r\nI tried to follow Bill's
+    instructions and couldn't make it work.\r\nThanks in advance"
+- id: 515761
+  author: Joshua Himing
+  author_email: autbsx@gmail.com
+  author_url: ''
+  date: '2015-04-30 06:05:36 +0000'
+  date_gmt: '2015-04-30 06:05:36 +0000'
+  content: To target SMSS 2014, update DST_KEY to "Software\Microsoft\SQL Server Management
+    Studio\12.0\FontAndColors\{A27B4E24-A735-4D1D-B8E7-9716E1E3D8E0}"
+---
+<p><!--start_raw-->
+<p>As many of you know, I spend time every now and then coming up with new <a href="http:&#47;&#47;www.winterdom.com&#47;weblog&#47;CategoryView,category,VS%2BColor%2BScheme.aspx">color schemes</a> for Visual Studio 2005. It's fun, and having a good color scheme can make all the difference in the world to your eyes when spending long times in front of your screen writing code.</p>
+<p>I use dark backgrounds, so it was always painful to switch to SQL Server 2005 Management Studio to write SQL code, because I had not configured a custom color scheme there. I also didn't want to have to spend more time doing so, particularly since Management Studio has no Import&#47;Export Settings wizard.</p>
+<p><strong>Enter VSColorsToSql</strong></p>
+<p>This is a simple utility I wrote last night that will port your current VS2005 Fonts And Colors Settings (just for the code editor, mind you) to Management Studio. It's nothing fancy, so all it does is copy some registry settings around. Here's my current scheme:</p></p>
+<p><a href="http:&#47;&#47;www.flickr.com&#47;photos&#47;tomasr&#47;1816368729&#47;" title="Photo Sharing"><img src="http:&#47;&#47;farm3.static.flickr.com&#47;2331&#47;1816368729_b3b3809c7f.jpg" width="500" height="350" alt="SqlColors" &#47;></a></p></p>
+<p>It does make some assumptions and and a few changes: Turns out the SQL and XML editors in VS use different settings than the corresponding ones in Management Studio! Hopefully, the mappings I selected will give you something usable as well. </p>
+<p>Just to be on the safe side, you can export your existing Management Studio settings by backing up this registry key:</p>
+<pre>HKEY_CURRENT_USER\Software\Microsoft\Microsoft SQL Server\90\<br />
+Tools\Shell\FontAndColors\{A27B4E24-A735-4D1D-B8E7-9716E1E3D8E0}</pre></p>
+<p>You can download the code from <a href="http:&#47;&#47;www.winterdom.com&#47;dev&#47;dotnet&#47;VSColorsToSql.zip">here</a>.</p></p>
+<p><a href="http:&#47;&#47;www.dotnetkicks.com&#47;kick&#47;?url=http%3a%2f%2fwww.winterdom.com%2fweblog%2f2007%2f10%2f31%2fColorSchemesInSQL2005ManagementStudio.aspx"><img src="http:&#47;&#47;www.dotnetkicks.com&#47;Services&#47;Images&#47;KickItImageGenerator.ashx?url=http%3a%2f%2fwww.winterdom.com%2fweblog%2f2007%2f10%2f31%2fColorSchemesInSQL2005ManagementStudio.aspx" alt="kick it on DotNetKicks.com" border="0"></a></p></p>
+<div class="wlWriterSmartContent" id="scid:0767317B-992E-4b12-91E0-4F059A8CECA8:ad11cf87-5567-41ff-88ee-a691976fcdc1" style="margin: 0px; padding: 0px; display: inline;">Technorati tags: <a href="http:&#47;&#47;technorati.com&#47;tags&#47;Visual%20Studio" rel="tag">Visual Studio</a>, <a href="http:&#47;&#47;technorati.com&#47;tags&#47;SQL%20Server%20Management%20Studio" rel="tag">SQL Server Management Studio</a>, <a href="http:&#47;&#47;technorati.com&#47;tags&#47;Color%20Scheme" rel="tag">Color Scheme</a></div>
+<p></p><!--end_raw--></p>

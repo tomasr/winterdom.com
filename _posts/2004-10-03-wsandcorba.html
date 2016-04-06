@@ -1,0 +1,28 @@
+---
+layout: post
+status: publish
+published: true
+title: WS and Corba
+author:
+  display_name: Tomas Restrepo
+  login: tomasr
+  email: tomas@winterdom.com
+  url: http://winterdom.com/
+author_login: tomasr
+author_email: tomas@winterdom.com
+author_url: http://winterdom.com/
+wordpress_id: 199
+wordpress_url: http://winterdom.com/2004/10/wsandcorba
+date: '2004-10-03 15:53:04 +0000'
+date_gmt: '2004-10-03 15:53:04 +0000'
+categories:
+- Web Services
+tags: []
+comments: []
+---
+<p><!--start_raw-->I found Ted Neward's <a href="http:&#47;&#47;www.neward.net&#47;ted&#47;weblog&#47;index.jsp?date=20041003#1096790014204">post</a> on WS and Corba quite interesting. I tend to agree with most of what's being said by Ted, <a href="http:&#47;&#47;pluralsight.com&#47;blogs&#47;dbox&#47;archive&#47;2004&#47;10&#47;02&#47;2561.aspx">Don</a> and Steve, except for a few particular points.</p>
+<p>First of all, let's start with <a href="http:&#47;&#47;www.iona.com&#47;blogs&#47;vinoski&#47;archives&#47;000098.html">Steve's</a> comment <i>"Something else that Don doesn't mention about what CORBA (and DCOM and others) got wrong is something that drove Don to help create SOAP in the first place: the need for the same infrastructure at each end of the wire. Not only the same infrastructure, but in some cases, the same heavyweight infrastructure"</i>. Now, in principle, I'd agree. However, in all honesty, the entire WS-* stack is becoming so large and changing so rapidly and requiring ever mode infrastructure on each end, that I'd say this seems to be the case less and less now :( Yep, indigo is just that: infrastructure. And let's be honest.... supporting WS-ReliableMessaging, WS-Security, WS-Addressing and all the rest of the boys does require some non-trivially implementable infraestructure.</p></p>
+<p>Now, I don't complain about it (all that much), but it does seem to me (incorrectly, perhaps) that with all the WS-* specs coming out, the whole WS stack is more and more complex, and some of the simplicity of the model seems to be getting lost alongside the way. I agree with Ted, though, that the composability of the overall stack is great, but, doesn't that add its own share of complexity to the mix? </p></p>
+<p>Sigh. Personally, I just gave up trying to keep up with the WS-* specs for now. Too much hassle, no real return on [time] investment on doing so right now. Shortsighted? Perhaps a little bit, but the whole WS-* mess just doesn't seem to be worth it right now, except for a few key specs (and even those seem to be still churning... how long do you guys think you can keep fidgeting with WS-addressing, for example? Come'on, we need something that works NOW, not something perfect that never stays put!).</p></p>
+<p>As for WS-ReliableMessaging? Well... can't say I fully see the point now. If SOAP is just meant to be an application-level protocol... and one that is supposed to be transport-independent, why try to replicate at its level all the good functionality existing transports provide? Isn't one of the biggest points of making it transport-independent being able to take advantage of the benefits each transport provides? </p></p>
+<p>OK, rant over :) I don't even know if this makes any sense...</p><!--end_raw--></p>

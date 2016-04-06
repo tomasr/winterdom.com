@@ -1,0 +1,26 @@
+---
+layout: post
+status: publish
+published: true
+title: Transactions over the Web
+author:
+  display_name: Tomas Restrepo
+  login: tomasr
+  email: tomas@winterdom.com
+  url: http://winterdom.com/
+author_login: tomasr
+author_email: tomas@winterdom.com
+author_url: http://winterdom.com/
+wordpress_id: 869
+wordpress_url: http://winterdom.com/2002/08/transactionsovertheweb
+date: '2002-08-03 15:56:11 +0000'
+date_gmt: '2002-08-03 15:56:11 +0000'
+categories:
+- Web Services
+tags: []
+comments: []
+---
+<p><!--start_raw-->Clemens Vasters has a fine <a href="http:&#47;&#47;radio.weblogs.com&#47;0108971&#47;2002&#47;08&#47;03.html">article</a> on Transactions, SOAP and the Web. I think he makes some wonderful points.</p>
+<p>This prompted me to clarify some of the feelings I had on this topic, and the quote Clemens has on Mark Backer's words: <i>"For many years, people have talked about normal ACID&#47;2PC transaction semantics are unsuitable for use on the Internet. That is still the case. We need to rethink what a transaction is on the Web, and I can guarantee you that when we do, it will be implementable as an HTTP extension."</i></p></p>
+<p>Ahh... I respectfully disagree, Mark. I think you pretty much got it backwards. There's a reason why transactions were defined as they were, and their essence is deeply embedded in that four letter acronym you mention: ACID. <i>Redefine Transactions?</i> And make them what? just A? just C? just AD? What? Either I'm plain dumb, or I've been working on the wrong kind of applications. At least those I'm currently working in, when you need transactions, you <i>need</i> ACID, period. There's no ifs or buts. Particularly not when someone's payment on the mortage on his home is at stake, for example.</p></p>
+<p>What we need to rethink is the notion of doing transactions over HTTP. What we need is transactions over the internet (you said it yourself), not <i>over the web, or HTTP</i>. If the only reason is the old "get through the firewalls" argument, then it is just plain silly... if the need is there (and business transactions between partners requiring real ACID semantics is a very powerful need, imho), then, given the correct security measures (a strict requirement, in this context), an Sysadmin will be much more confident in opening a special port on his firewall. Trying to cram everything on HTTP is not only the wrong choice; it is also a <i>very</i> dangerous choice in the long run.</p><!--end_raw--></p>

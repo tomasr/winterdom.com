@@ -1,0 +1,33 @@
+---
+layout: post
+status: publish
+published: true
+title: Installing TFS Beta 3 - The Oddisey
+author:
+  display_name: Tomas Restrepo
+  login: tomasr
+  email: tomas@winterdom.com
+  url: http://winterdom.com/
+author_login: tomasr
+author_email: tomas@winterdom.com
+author_url: http://winterdom.com/
+wordpress_id: 241
+wordpress_url: http://winterdom.com/2005/10/installingtfsbeta3theoddisey
+date: '2005-10-08 10:25:35 +0000'
+date_gmt: '2005-10-08 10:25:35 +0000'
+categories:
+- Architecture
+tags: []
+comments: []
+---
+<p><!--start_raw-->I spent yesterday afternoon and this morning getting Team Foundation Server beta 3 installed at work for our project. Before diving into it, I downloaded and read carefully the updated readme and known issues, as recommended by Rob Caron <a href="http:&#47;&#47;blogs.msdn.com&#47;robcaron&#47;archive&#47;2005&#47;09&#47;23&#47;473482.aspx">here</a>. I made sure I followed the <a href="http:&#47;&#47;blogs.msdn.com&#47;robcaron&#47;archive&#47;2005&#47;09&#47;23&#47;473410.aspx">installation guide</a> step by step all the way starting with getting the machine ready and the sql server 2005 installation.</p>
+<p>No dice. The installation still crapped during the install and later found out that I could not create new projects entirely. I had to uninstall Team Foundation and Windows Sharepoint Services again and start all over, and even then I got into problems again.</p></p>
+<p>I eventually succeeded in getting it up and running, and I can say I'm much more pleased with this new build than with the previous ones: Despite the troubles, installation was far more easier than before. The new build runs much, much faster, and the UI improvements seem good so far (though not earthshattering). I also liked that the project portal actually works right from the start and permissions seem to get configured correctly :)</p></p>
+<p>Now, let me just mention what errors I ran into, perhaps someone else might find them useful. The problematic issue here was, as expected, Windows Sharepoint Services (or as I like to call it sometimes, Windows Sh*tpoint Services), even though I made sure I followed all the installation steps to the letter (though everything else worked like a charm).</p></p>
+<p>The first problem I noticed was that the TFS installation was failing, and I noticed a bunch of SQL Server login failures in the server's event log. Apparently, the TFS installer failed to grant the TFSService user permissions to access the STS_Config database, causing the installer to fail when trying to configure Sharepoint. Once I granted permissions explicitly, the installer was able to finish.</p></p>
+<p>The second thing that happened was that folder permissions caused the sharepoint configuration to fail miserably (even to a point where the sharepoint administration page would not open). The reason? The NETWORK SERVICE and TFSService accounts did not have write permissions to the ASP.NET Temporary Files folder. Would be really nice if this was added to the preinstallation checklists, so that things don't fail with no error message (all TFS says is that it got an HTML page where it expected XML when calling the sharepoint services).</p></p>
+<p>At this point, I realized everything was way too kaputt, and bit the bullet, uninstalled TFS and WSS and tried again. This time, I checked that the WSS administration page could be run correctly before installing TFS, and after that the TFS installer went by without a hitch. Unfortunately, I still couldn't create a new team project succesfully, as it still failed when trying to create the project's portal page.</p></p>
+<p>At this point, I realized the project creation wizard was failing when calling the WSS services, getting a 404 error, which is were I noticed that the TFS installation had not configured WSS to extend the machine's default website. Fortunately, I found <a href="http:&#47;&#47;forums.microsoft.com&#47;msdn&#47;ShowPost.aspx?PostID=98331">this</a> which explained the issue.</p></p>
+<p>Once I went ahead and manually extended the website, and excluded the ReportServices directories from the WSS configuration (&#47;Reports and &#47;ReportServer), it all worked as expected and I fully up and running! It would've been nice if the TFS installation had told me of the problem, saving me a couple of hours of work, but hey, nothing comes for free, I guess.</p></p>
+<p>Now, a question: Does anyone know how to actually remove the projects that failed creation from the TFS database? Trying to diagnose the issue I had to create a couple of test team projects; which failed midway through the creation. However, I can find no way to actually remove the partially created projects! Any ideas?</p><br />
+<!--end_raw--></p>

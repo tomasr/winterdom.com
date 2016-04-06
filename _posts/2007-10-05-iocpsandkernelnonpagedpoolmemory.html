@@ -1,0 +1,30 @@
+---
+layout: post
+status: publish
+published: true
+title: IOCPs and Kernel Non-Paged Pool Memory
+author:
+  display_name: Tomas Restrepo
+  login: tomasr
+  email: tomas@winterdom.com
+  url: http://winterdom.com/
+author_login: tomasr
+author_email: tomas@winterdom.com
+author_url: http://winterdom.com/
+wordpress_id: 95
+wordpress_url: http://winterdom.com/2007/10/iocpsandkernelnonpagedpoolmemory
+date: '2007-10-05 05:54:26 +0000'
+date_gmt: '2007-10-05 05:54:26 +0000'
+categories:
+- ".NET"
+tags: []
+comments: []
+---
+<p><!--start_raw-->
+<p><a href="http:&#47;&#47;www.ayende.com&#47;Blog&#47;">Ayende</a> has been doing some interesting stuff recently with threading and using the .NET Thread Pool which is based on the I&#47;O Completion Ports (IOCP) model in the Win32 API and the NT kernel. IOCPs are a very efficient way of handling threads and thread pools and doing async I&#47;O, so they are definitely a good fit, and it's good that the .NET framework encapsulates some of the complexity of using them (though as they are exposed to .NET reduces a bit what you can do with them and how you do so).</p>
+<p>In <a href="http:&#47;&#47;www.ayende.com&#47;Blog&#47;archive&#47;2007&#47;10&#47;05&#47;Trying-to-mimic-Erlang-style-tasks-in-C.aspx">one of those</a> posts, Ayende mentioned trying to emulate the parallel structures in Erlang using the ThreadPool class, and specifically taking advantage of ThreadPool.QueueUserWorkItem() and ThreadPool.RegisterWaitForSingleObject(), and he mentioned he was running into a "Not enough storage available to process this command" error as he increased the size of the dataset he was testing with.</p>
+<p>On a comment on the post, I mentioned that perhaps the use of IOCPs here was causing the kernel to exhaust its Non-Paged Pool memory [1], though Ayende mentioned he wasn't convinced that ThreadPool.RegisterWaitForSingleObject() would do this.</p>
+<p>I decided to give it a try, so I added a bit of simple code around Ayende's sample and ran it, and sure enough, usage of non-paged pool kernel memory starts going off like a rocket. This is easy to verify using the Task Manager performance tab (under Kernel Memory - Non paged) or using Performance Monitor and the Memory performance counters.</p>
+<p>That said, I don't think ThreadPool.RegisterWaitForSingleObject() is the culprit. Rather, I think what causes heavy usage of the non-paged pool memory is ThreadPool.QueueUserWorkItem(). I had vague recollections of a discussion long ago in the MS newsgroups about threading, IOCPs and finding out that IOCPs used non-paged pool memory to keep track of pending request. After searching for a bit on google, I was able to find the original thread on <a href="http:&#47;&#47;groups.google.com&#47;group&#47;microsoft.public.win32.programmer.kernel&#47;browse_thread&#47;thread&#47;66da50a56a9cfb9b&#47;b04dd13583405b24?#b04dd13583405b24">microsoft.public.win32.programmer.kernel</a>. It's a long, but interesting discussion (and do note this was 1999!)</p>
+<p><strong>[1]</strong> The non-paged pool is a region of physical memory allocated by the kernel that cannot be swapped out to disk. Because of this, it is a very precious and limited resource, and abusing it can impact performance in a big way. There;s some discussion as to how the different memory pools are allocated by the kernel <a href="http:&#47;&#47;smallvoid.com&#47;article&#47;winnt-kernel-memory.html">here</a>.</p>
+<div class="wlWriterSmartContent" id="scid:0767317B-992E-4b12-91E0-4F059A8CECA8:e2c36318-11aa-41b5-87b8-7a750e0426fc" style="padding-right: 0px; display: inline; padding-left: 0px; padding-bottom: 0px; margin: 0px; padding-top: 0px">Technorati tags: <a href="http:&#47;&#47;technorati.com&#47;tags&#47;.NET" rel="tag">.NET</a>, <a href="http:&#47;&#47;technorati.com&#47;tags&#47;IOCP" rel="tag">IOCP</a>, <a href="http:&#47;&#47;technorati.com&#47;tags&#47;Threading" rel="tag">Threading</a></div><!--end_raw--></p>

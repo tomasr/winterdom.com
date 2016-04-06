@@ -1,0 +1,41 @@
+---
+layout: post
+status: publish
+published: true
+title: XSD Resolved!
+author:
+  display_name: Tomas Restrepo
+  login: tomasr
+  email: tomas@winterdom.com
+  url: http://winterdom.com/
+author_login: tomasr
+author_email: tomas@winterdom.com
+author_url: http://winterdom.com/
+wordpress_id: 936
+wordpress_url: http://winterdom.com/2002/09/xsdresolved
+date: '2002-09-23 17:22:44 +0000'
+date_gmt: '2002-09-23 17:22:44 +0000'
+categories:
+- XML
+tags: []
+comments: []
+---
+<p><!--start_raw--><a href="http:&#47;&#47;www.injektilo.org">Jason</a> was right on the money. This works as expected:</p>
+<pre class="codes"><code><xs:complexType name="block"><br />
+<xs:choice><br />
+<xs:sequence><br />
+<xs:element name="from"<br />
+type="xs:string"<br />
+&#47;><br />
+<xs:element name="to"<br />
+type="xs:string"<br />
+minOccurs="0"<br />
+&#47;><br />
+</xs:sequence><br />
+<xs:element name="to"<br />
+type="xs:string"<br />
+&#47;><br />
+</xs:choice><br />
+</xs:complexType><br />
+</code></pre></p>
+<p>Thanks, Jason!</p><!--end_raw--></p>

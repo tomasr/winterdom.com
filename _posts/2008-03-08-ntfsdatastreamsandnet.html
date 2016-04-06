@@ -1,0 +1,36 @@
+---
+layout: post
+status: publish
+published: true
+title: NTFS Data Streams and .NET
+author:
+  display_name: Tomas Restrepo
+  login: tomasr
+  email: tomas@winterdom.com
+  url: http://winterdom.com/
+author_login: tomasr
+author_email: tomas@winterdom.com
+author_url: http://winterdom.com/
+wordpress_id: 718
+wordpress_url: http://winterdom.com/2008/03/ntfsdatastreamsandnet
+date: '2008-03-08 08:34:13 +0000'
+date_gmt: '2008-03-08 08:34:13 +0000'
+categories:
+- ".NET"
+tags: []
+comments: []
+---
+<p><!--start_raw-->
+<p>Several people have written in the past about accessing Alternate Data Streams in the NTFS file system from .NET code. The reason for this is that accessing streams is not natively supported in .NET. What you don't hear very often is exactly why this is so.</p>
+<p>There are two things you might want to do with data streams:</p>
+<ol>
+<li>Manipulate them: create&#47;read&#47;write&#47;delete them </li>
+<li>Enumerate them: list all the alternate data streams for a file </li> </ol>
+<p>Neither of these operations are not supported by System.IO. To be perfectly honest, I think not supporting (2) is an understandable option; after all, it requires exposing some fairly specific windows APIs that are really only useful with NTFS itself (as far as I know). There's an old MSDN Magazine <a href="http:&#47;&#47;msdn2.microsoft.com&#47;en-us&#47;magazine&#47;cc163677.aspx">article</a> on this topic by Stephen Toub, by the way.</p>
+<p>But I was always pretty surprised that (1) wasn't natively supported. After all, you don't really need special APIs to do most of that stuff; it's built into the native Win32 APIs that .NET has to call anyway to perform the basic file and I&#47;O operations. Heck, it is so basic that you can create a new alternate stream using "echo" in a cmd prompt!</p>
+<p>You can find some <a href="http:&#47;&#47;www.dotnet247.com&#47;247reference&#47;msgs&#47;11&#47;55437.aspx">mentions</a> out there about this being because complexities introduced by file name aliases and what not, but I'm not sure I buy it. Seriously, number (1) should just work; if it doesn't then something smells wrong. After all, it takes work to get something that you get for free to not work at all!</p>
+<p>I think the overall reason this doesn't happen is just that the way paths are handled (and path canonicalization is done) in regards to FileIOPermissions and such, but frankly, I'm not sure why it is such a big deal. There are certainly a bunch of other file system features in NT, which .NET doesn't supports either, but those are a bit more understandable (to me, at least).</p>
+<p>Other than that, there's also the fact that System.IO.Path isn't particularly bright about how it handles paths. For example, it is hard to argue that this could be proper behavior:</p>
+<p><img style="border-right: 0px; border-top: 0px; border-left: 0px; border-bottom: 0px" height="42" alt="path" src="http:&#47;&#47;www.winterdom.com&#47;weblog&#47;content&#47;binary&#47;WindowsLiveWriter&#47;NTFSDataStreamsand.NET_99C9&#47;path_3.png" width="640" border="0" &#47;> </p>
+<p>Fortunately, using alternate data streams isn't so common, so this isn't such a big deal. Still, it is a curious bit.</p>
+<div class="wlWriterSmartContent" id="scid:0767317B-992E-4b12-91E0-4F059A8CECA8:ffe6f3da-772f-4ffc-a860-288bb5777a82" style="padding-right: 0px; display: inline; padding-left: 0px; padding-bottom: 0px; margin: 0px; padding-top: 0px">Technorati tags: <a href="http:&#47;&#47;technorati.com&#47;tags&#47;.NET" rel="tag">.NET</a>, <a href="http:&#47;&#47;technorati.com&#47;tags&#47;NTFS" rel="tag">NTFS</a></div><!--end_raw--></p>

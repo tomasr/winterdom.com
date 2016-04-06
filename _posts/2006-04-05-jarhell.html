@@ -1,0 +1,24 @@
+---
+layout: post
+status: publish
+published: true
+title: JARHell
+author:
+  display_name: Tomas Restrepo
+  login: tomasr
+  email: tomas@winterdom.com
+  url: http://winterdom.com/
+author_login: tomasr
+author_email: tomas@winterdom.com
+author_url: http://winterdom.com/
+wordpress_id: 195
+wordpress_url: http://winterdom.com/2006/04/jarhell
+date: '2006-04-05 17:59:47 +0000'
+date_gmt: '2006-04-05 17:59:47 +0000'
+categories:
+- Development
+tags: []
+comments: []
+---
+<p><!--start_raw--><a href="http:&#47;&#47;www.pocketsoap.com&#47;weblog&#47;">Simon</a> has a rant <a href="http:&#47;&#47;www.pocketsoap.com&#47;weblog&#47;2006&#47;04&#47;1615.html">here</a> on what he calls "JARHell", which could briefly be described as the pain of dealing with the multitude of JAR files you need to reference&#47;import and version when working on java (primarily with java tools and frameworks).<br><br>Sadly, I have to agree. Working with JAR files is painful, not only because they are not versioned themselves, but also because there's no easy way to tell if you got the right version or not based on what another especific framework&#47;jar requires.&nbsp; But then again, the whole CLASSPATH mechanism always seemed clunky to me, at best. It's just one of those things that make me happy of being more focused on the .NET world :-)<br><br>One of the other things that really annoys me when working with java, and which Simon doesn't mention, is resolving references to missing classes when compiling. All you get is the class name (or rather the .class file name) that cannot be resolved, and it's up to you to figure out just where the hell it was supposed to come from and what JAR file you're missing. To be fair, it's just the same in .NET, except that the documentation convention that Microsoft chose for .NET (and which most of their .NET frameworks follow) include the name of the assembly each class is located in, which makes it much easier and less annoying to resolve (and because of MSDN online being widely indexed, a quick google seach usually reveals the information needed). <br>
+<p></p><!--end_raw--></p>

@@ -1,0 +1,86 @@
+---
+layout: post
+status: publish
+published: true
+title: PowerShell and Null Values
+author:
+  display_name: Tomas Restrepo
+  login: tomasr
+  email: tomas@winterdom.com
+  url: http://winterdom.com/
+author_login: tomasr
+author_email: tomas@winterdom.com
+author_url: http://winterdom.com/
+wordpress_id: 94
+wordpress_url: http://winterdom.com/2009/03/powershellandnullvalues
+date: '2009-03-06 04:48:28 +0000'
+date_gmt: '2009-03-06 04:48:28 +0000'
+categories:
+- PowerShell
+tags: []
+comments:
+- id: 738
+  author: Bruce Payette [msft]
+  author_email: brucepay@microsoft.com
+  author_url: ''
+  date: '2009-05-02 00:33:03 +0000'
+  date_gmt: '2009-05-02 00:33:03 +0000'
+  content: "As an interactive shell, having PowerShell not error out on missing properties
+    was pretty important.  However, when scripting, missing propertues can be a real
+    source of bugs. This is why we added 'Set-PSDebug -strict' (V1, V2) or 'Set-StrictMode
+    -version 2' (v2 only) to allow you to catch these errors.  Since there were no
+    useful scenarios for method calls on null even in interactive cases, we never
+    allowed it. \r\n\r\nThanks,\r\n-bruce"
+- id: 739
+  author: tomasr
+  author_email: tomas@winterdom.com
+  author_url: http://winterdom.com/
+  date: '2009-05-02 01:30:22 +0000'
+  date_gmt: '2009-05-02 01:30:22 +0000'
+  content: "Thanks for the comment, Bruce. I agree with the general theme, but I'm
+    not sure I completely agree that propagating the null value that way is always
+    useful. It's hard to balance making the tool easier less in-your-face about errors,
+    but also avoid pitfalls like this one.\r\n\r\nI'll be sure to check out set-strictmode
+    in v2!"
+- id: 2301
+  author: Computer Eyes
+  author_email: computereyes@live.com
+  author_url: ''
+  date: '2012-04-09 15:28:06 +0000'
+  date_gmt: '2012-04-09 15:28:06 +0000'
+  content: "Unable to process this code - Need help. Error is at the bottom of this
+    code.\r\n\r\n[System.Reflection.Assembly]::LoadWithPartialName(\"Microsoft.SharePoint\")
+    \r\n\r\n$site    =     new-object Microsoft.SharePoint.SPSite(\"http:&#47;&#47;sharepoint.mynetwork.com\")
+    \   \r\n$relweburl = \"&#47;regions&#47;north&#47;4v&#47;apps&#47;sods\"\r\n$web
+    = $site.openweb($relweburl)\r\n\r\n$list    =    $web.Lists[\"SODSProcess\"]                                                              \r\nfor
+    ($x=1;$x -le 500; $x++) \r\n{ \r\n  $deaditem= $list.GetItemById($x)\r\n  Write-Host(\"DELETED:
+    \" + $list[$x].name)\r\n  $deaditem.Delete()\r\n}\r\n$web.Dispose()\r\n$site.Dispose()
+    \r\n\r\nYou cannot call a method on a null-valued expression.\r\nline:11 char:34\r\n+
+    \  Write-Host(\"DELETED: \" + $list[ <<<< $x].name)\r\n    + CategoryInfo          :
+    InvalidOperation: (1:Int32) [], RuntimeException\r\n    + FullyQualifiedErrorId
+    : NullArray\r\n\r\nand\r\n\r\ncannot index into a null array\r\nline:12 char:19\r\n\r\n+
+    \  $deaditem.Delete <<<< ()\r\n    + CategoryInfo          : InvalidOperation:
+    (Delete:String) [], RuntimeExcept \r\n   ion\r\n    + FullyQualifiedErrorId :
+    InvokeMethodOnNull"
+- id: 358335
+  author: James
+  author_email: starascendant@hotmail.com
+  author_url: ''
+  date: '2014-12-11 18:09:32 +0000'
+  date_gmt: '2014-12-11 18:09:32 +0000'
+  content: Here's some more null handling chaos in PowerShell. Null strings passed
+    in to a commandlet or function don't stay null. See the Microsoft Connect bug
+    at https:&#47;&#47;connect.microsoft.com&#47;PowerShell&#47;feedback&#47;details&#47;861093&#47;nullstring-value-is-not-preserved-when-passed-to-functions.
+---
+<p><!--start_raw-->
+<p>I love Windows PowerShell, I really do. However, some of its language features drive me crazy sometimes. One of those is propagation of null values on expressions involving the <code>&lsquo;.&rsquo;</code> operator for property access.</p>
+<p>Basically the problem is this: Suppose you have a variable <code>$x</code>, and you reference a property on it. In languages like C#, if the $x holds a null value, you&rsquo;d expect an error. In PowerShell, instead, the null value of <code>$x</code> propagates through as many chained property access expressions are there so that the end return of said expression is also a null value.</p>
+<p>Let me explain with an example:</p>
+<div class="codebg"><code><span class="Identifier">$xp</span> = <span class="Constant">$null</span><br><span class="Identifier">$val</span> = <span class="Identifier">$xp</span>.Site.Lists.Count<br><span class="Identifier">$val</span> -<span class="Operator">eq</span>&nbsp;<span class="Constant">$null</span><br>>> True </code></div>
+<p>As you can see, referencing <code>$xp.Site.Lists.Count</code> above results in, well, nothing: You get a null value.
+<p>Given the nature of PowerShell and much of its intended audience, this behavior sort of make sense. My problem with it is that it can lead to subtle problems that will some times annoy me to no end; for example if you&rsquo;ve got a complex expression involving several chained property accesses, it&rsquo;s hard to know <em>which</em> of those returned the original null value that got propagated. It&rsquo;s annoying to debug, at least.</p>
+<p>It can also lead to more subtle behaviors. For example, if your expression was meant to return an enumerable object (such as an array or collection) and you were using that as input to a pipeline, you&rsquo;ll get an unexpected behavior: The pipeline will execute with a single <code>$null</code> input value:</p>
+<div class="codebg"><code><span class="Identifier">$xp</span>.Site.Lists | %{<br>&nbsp;&nbsp; <span class="String">"Holy Moses, </span><span class="SpecialChar">`$</span><span class="String">_ is </span><span class="SpecialChar">`$</span><span class="String">null? </span><span class="Delimiter">$(</span><span class="StorageClass">$_</span> -<span class="Operator">eq</span>&nbsp;<span class="Constant">$null</span><span class="Delimiter">)</span><span class="String">"</span><br>}<br>>> Holy Moses, $_ is $null? True </code></div>
+<p>This was a bit unexpected to me the first time it happened, though it sort of makes sense in sick sort of way :-).</p>
+<p>An interesting asymmetry, however, is that the null value propagation stops if there&rsquo;s a method call in there:</p>
+<div class="codebg"><code><span class="Identifier">$xp</span>.Site.Lists.Call()<br>>> <span class="Error">You cannot call a method on a null-valued expression.</span><br>>> <span class="Error">At line:1 char:20</span><br>>> <span class="Error">+ $xp.Site.Lists.Call( <<<< )</span><br></code></div><!--end_raw--></p>

@@ -1,0 +1,51 @@
+---
+layout: post
+status: publish
+published: true
+title: BizTalk 2009 Testing Features
+author:
+  display_name: Tomas Restrepo
+  login: tomasr
+  email: tomas@winterdom.com
+  url: http://winterdom.com/
+author_login: tomasr
+author_email: tomas@winterdom.com
+author_url: http://winterdom.com/
+wordpress_id: 546
+wordpress_url: http://winterdom.com/2008/12/biztalk2009testingfeatures
+date: '2008-12-31 18:35:49 +0000'
+date_gmt: '2008-12-31 18:35:49 +0000'
+categories:
+- BizTalk
+tags: []
+comments: []
+---
+<p><!--start_raw-->
+<p><em><font color="#ff8080">Warning:</font> This post is about a beta product. Details might change before final release.</em></p>
+<p>The beta of BizTalk Server 2009 brings a welcome new feature: Some basic support for Unit Testing BizTalk artifacts; specifically for Pipelines, Maps and Schemas.</p>
+<p>You can read the basics about how the new feature works in the <a href="http:&#47;&#47;msdn.microsoft.com&#47;en-us&#47;library&#47;dd257907.aspx">product documentation</a>; there&rsquo;s not too much yet, but it&rsquo;s enough to get a good idea of how you use it.</p>
+<p>I&rsquo;d like to now share a few thoughts on this feature. Note: This is just my personal opinion from playing with the API for a bit.</p><br />
+<h2>The Good</h2>
+<p>The first really good part about this feature is the fact that it even exists at all. Facilities for creating and automating tests of BizTalk artifacts has been a sorely lacking area of the product. </p>
+<p>While Visual Studio had the Test option for maps and schemas since BizTalk 2004, and it was sort of useful, it required way too much manual intervention and there was no way to decently drive it through automation, making it useless for either unit or regression testing.</p>
+<p>The second thing I like about the unit testing feature is that, in it&rsquo;s current incarnation, it&rsquo;s not intrinsically tied to MSTest (i.e. the Visual Studio Team System stuff). This means you can use it with NUnit, xUnit, or your favorite testing tool.</p>
+<p>The third interesting thing about the API is that it is a very simple API. In most cases it really consists of just a single method call. Here&rsquo;s an example of testing a schema:</p>
+<div class="codebg"><code><span class="Type">string</span> fin = <span class="SpecialChar">@</span><span class="String">"c:\temp\test1_in.xml"</span>;<br>Schema1 schema = <span class="Statement">new</span> Schema1();<br>Assert.IsTrue(schema.ValidateInstance(fin, OutputInstanceType.XML)); </code></div><br />
+<h2>The Not-so-Good</h2>
+<p>Not everything is rosy in BizTalk-land. Personally, I was somewhat underwhelmed by the implementation of the Unit Testing features available in beta 1; particularly since some of it could be addressed with fairly minor adjustments.</p><br />
+<h3>API Issues</h3>
+<p>Let&rsquo;s start with the API: I mentioned before that the new testing API was simple. However, it&rsquo;s actually <em>too</em> simple. For example, consider the small test for a schema I presented above: You simply create an input file to test with, call <code>ValidateInstance()</code> and check the result. Great, no?</p>
+<p>Well, if the test succeeds, then yes, it&rsquo;s just fine. If it fails, however, because the input file does not pass validation, then, it turns out, it&rsquo;s missing one extremely important functionality: There&rsquo;s no way to get <em>any</em> details about why the schema validation failed [1].</p>
+<p>This means that diagnosing a failed test involves, at the very least, changing your project settings in VS to use the failed input file as input to the schema in VS, use the Validate Instance option in the IDE and examine the results in the output window, where fortunately you do get more detailed error information.</p>
+<p>This is extremely sub-optimal and requires way too much manual work. Can you imagine if a change in a schema broke tens of tests and having to do this for each and every single one of those? Ouch!</p>
+<p>Another place where I feel the current API is not as nice as it could be is that it&rsquo;s strictly file-based. That is, you need to create actual files on disk to represent inputs to the tests and store the resulting outputs. This is somewhat convenient for many scenarios, and matches the existing functionality in BizTalk pretty well. It does, however, make it very inconvenient to deal with dynamically generated inputs or inputs stored someplace else.</p>
+<p>The classic example here, would be, resources. For example, I very much like to keep my unit tests as independent from the environment and as self-hosting as possible. One very nice way of doing this is to store necessary input files as embedded resources on my testing assembly. I do this all the time with <a href="http:&#47;&#47;github.com&#47;tomasr&#47;pipelinetesting&#47;wikis">PipelineTesting</a> and it works great. However, since you can&rsquo;t provide streams instead of file paths to the BizTalk 2009 testing features, you&rsquo;d need to first save the embedded resource to a temporary file, which adds a bit of friction to the process.</p><br />
+<h3>Compilation Changes</h3>
+<p>My biggest gripe with the Unit Testing features, is that enabling them implies a change in the build process, that changes the generated code for the BizTalk artifacts themselves.</p>
+<p>When you enable the Unit Testing option in Project &ndash;> Properties &ndash;> Deployment, the compilation process will change the generated CLR types so that they inherit from the <code>TestableXXX</code> classes defined in the <code>Microsoft.BizTalk.TestTools.dll</code> assembly, instead of the normal BizTalk artifact classes.</p>
+<p>These new Testable base classes, in turn, derive from the original BizTalk classes, so the change isn&rsquo;t all that big. However, it does <em>smell</em> wrong. Could it introduce any problems&#47;bugs if you were to enable the testing features for all builds? Hopefully no, but no way to know until you run into them.</p>
+<p>Of course, you could just enable Unit Testing for debug builds, but then you can&rsquo;t run your unit tests on the release builds of your BizTalk assemblies. It also introduces yet another asymmetry between development and deployment builds which, to be honest, makes me somewhat nervous. </p><br />
+<h2>Conclusion</h2>
+<p>The new Unit Testing features in BizTalk Server 2009 are a sorely needed and welcome feature, if somewhat lacking in the first beta.</p>
+<p>Will it improve? On one hand, I&rsquo;m somewhat optimistic that some improvements might make an appearance in forthcoming builds. However, I&rsquo;m also not getting my hopes up, as MS is notable for trying to avoid significant API changes during after beta 1 hits the street (BizTalk, unfortunately, doesn&rsquo;t use the CTP model, where significant API change requests are more likely to be considered).</p>
+<p>[1] <code>TestableMap.TestMap()</code> does throw exceptions on failure instead of a Boolean return value, but said exceptions might not contain detailed error information.</p><!--end_raw--></p>

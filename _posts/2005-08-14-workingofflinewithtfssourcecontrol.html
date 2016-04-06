@@ -1,0 +1,42 @@
+---
+layout: post
+status: publish
+published: true
+title: Working Offline with TFS Source Control
+author:
+  display_name: Tomas Restrepo
+  login: tomasr
+  email: tomas@winterdom.com
+  url: http://winterdom.com/
+author_login: tomasr
+author_email: tomas@winterdom.com
+author_url: http://winterdom.com/
+wordpress_id: 175
+wordpress_url: http://winterdom.com/2005/08/workingofflinewithtfssourcecontrol
+date: '2005-08-14 18:27:34 +0000'
+date_gmt: '2005-08-14 18:27:34 +0000'
+categories:
+- Development
+tags: []
+comments:
+- id: 120
+  author: rachel
+  author_email: rachelkendall@cogentrix.com
+  author_url: ''
+  date: '2006-09-13 09:14:51 +0000'
+  date_gmt: '2006-09-13 09:14:51 +0000'
+  content: |
+    have you found any work around or resolutions to your "working disconnected" problem?  i'm experiencing similar problems with tfs.
+- id: 121
+  author: Tomas Restrepo
+  author_email: tomasr@mvps.org
+  author_url: http://www.winterdom.com/weblog/
+  date: '2006-09-13 09:20:23 +0000'
+  date_gmt: '2006-09-13 09:20:23 +0000'
+  content: |
+    Rachel,
+    Not really, though I'm not using TFS since I switch jobs at the beginning of the year. There's not much you can do, though I understand you can use the TFS powertoys command line utility to manually disconnect and reconnect your solution when you need to work offline. See http:&#47;&#47;blogs.vertigosoftware.com&#47;teamsystem&#47;archive&#47;2006&#47;07&#47;03&#47;2984.aspx for the details.
+---
+<p><!--start_raw-->Has anyone here had success working in offline mode while using Team System's Source Control tool?</p>
+<p>We're trying to use Team System on a pilot project to see if we could accomodate to it, and since I tend to roam with my laptop between our two offices and need to work on my code while away, I really need to be able to just get the latest version while connected and then be able to just hack at the code without all this hassles. I've been having a really bad experience with this, having multiple delays in doing anything with the project system to getting slowed down because the project files are not checked out. I've had to go so far as to completely unbind the solution from source control (and thus having to suffer that really crappy "Change Source Control" dialog in VS) just to get anything done while disconnected.</p></p>
+<p>I'm probably doing (I hope!) something wrong... anyone got any advice? This is really frustrating! While tools like CVS and subversion do have some shortcomings, the overall support for working disconnected is, to say the least, 1000's of times better that what I'm putting up with from team system (and sourcesafe was even worse). I can't believe we still don't have a better user experience on this front!</p><!--end_raw--></p>

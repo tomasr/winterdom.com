@@ -1,0 +1,58 @@
+---
+layout: post
+status: publish
+published: true
+title: XSD Versioning and Semantic Changes
+author:
+  display_name: Tomas Restrepo
+  login: tomasr
+  email: tomas@winterdom.com
+  url: http://winterdom.com/
+author_login: tomasr
+author_email: tomas@winterdom.com
+author_url: http://winterdom.com/
+wordpress_id: 438
+wordpress_url: http://winterdom.com/2006/05/xsdversioningandsemanticchanges
+date: '2006-05-05 16:44:55 +0000'
+date_gmt: '2006-05-05 16:44:55 +0000'
+categories:
+- ".NET"
+- XML
+- Web Services
+tags: []
+comments: []
+---
+<p><!--start_raw-->
+<p><a href="http:&#47;&#47;pluralsight.com&#47;blogs&#47;tewald&#47;">Tim</a> has an interesting <a href="http:&#47;&#47;pluralsight.com&#47;blogs&#47;tewald&#47;archive&#47;2006&#47;05&#47;05&#47;22963.aspx">post<br />
+here</a> about dealing with semantic changes in existing interfaces on Web<br />
+Services (continuing from his posts <a href="http:&#47;&#47;pluralsight.com&#47;blogs&#47;tewald&#47;archive&#47;2006&#47;04&#47;14&#47;21733.aspx">here</a>,<br />
+<a href="http:&#47;&#47;pluralsight.com&#47;blogs&#47;tewald&#47;archive&#47;2006&#47;04&#47;19&#47;22111.aspx">here</a>,<br />
+and <a href="http:&#47;&#47;pluralsight.com&#47;blogs&#47;tewald&#47;archive&#47;2006&#47;04&#47;24&#47;22570.aspx">here</a>).<br />
+I found this particularly interesting because we followed a very similar<br />
+approach on our last project.</p></p>
+<p>In our case, we had a set of existing operations on a service with an<br />
+existing client using it, and needed to extend it with new operations. That was<br />
+no problem. However, during development we noticed that due to changes in a<br />
+backend LOB application our services connected with a new field was needed some<br />
+of the original operations. In particular, we needed the client to let us know<br />
+on what TimeZone (or rather what the time shift from UTC) to use when<br />
+registering the time some operations occurred. However, we required the original<br />
+client didn't change.</p></p>
+<p>What we ended up doing was basically making the new TimeZone field optional,<br />
+and then introducing logic on the operations that checked if it was missing. If<br />
+it was, instead of simply assuming a global default value, we actually queried<br />
+our security configuration and extracted a default value for this field that was<br />
+specific to the client making the call. This was possible because&nbsp;the<br />
+services were using WS-Security for authenticating the caller. This way, we<br />
+could actually set especific default values for other clients if needed. It<br />
+worked very nicely overall and was remarkably easy to put in place.</p></p>
+<p>Some of you might be wondering how we dealt with DST: We didn't. A explicit<br />
+decision from the business side was made not to support it because of some<br />
+complexity in the business side of things, and particularly because it would've<br />
+required clients in <em>other countries</em> to make changes to existing<br />
+infrastructure and the benefits just were not worth it. One thing we did learn<br />
+from that experience was that handling date and time fields in webservices where<br />
+consumers and service-providers are on different countries and time zones can be<br />
+easily get quite tricky, and that the way .NET <a href="http:&#47;&#47;blogs.msdn.com&#47;mattavis&#47;archive&#47;2005&#47;10&#47;11&#47;479782.aspx">handles</a><br />
+<a href="http:&#47;&#47;blogs.msdn.com&#47;bclteam&#47;archive&#47;2005&#47;03&#47;07&#47;387677.aspx">dates</a><br />
+on WebServices does not make things any easier.</p><!--end_raw--></p>

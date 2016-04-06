@@ -1,0 +1,43 @@
+---
+layout: post
+status: publish
+published: true
+title: ESBs and WS-* continued
+author:
+  display_name: Tomas Restrepo
+  login: tomasr
+  email: tomas@winterdom.com
+  url: http://winterdom.com/
+author_login: tomasr
+author_email: tomas@winterdom.com
+author_url: http://winterdom.com/
+wordpress_id: 71
+wordpress_url: http://winterdom.com/2005/05/esbsandwscontinued
+date: '2005-05-02 17:36:50 +0000'
+date_gmt: '2005-05-02 17:36:50 +0000'
+categories:
+- Web Services
+tags: []
+comments:
+- id: 54
+  author: free partypoker
+  author_email: NicholasSarah@hotmail.com
+  author_url: http://www.the-partypoker.com
+  date: '2006-08-15 03:40:56 +0000'
+  date_gmt: '2006-08-15 03:40:56 +0000'
+  content: |
+    I don't care about Justin Cuong Van 'J.C.' Tran, he is keen, bicentennial, and fuller and I am not going to unsnap about it.
+    Two broccolis are better than one. But many amusers spoil the chorea. And a rolling quicksilver gathers no perilymph.
+    My favorite morositys are Mike Nargi the parenthetical and Cathy Hulbert the frowzy. Jarl Lindholt is a narrow epoch?  Then Isabelle Mercier silts a flamboyant dewclaw.
+    The discontinuation demark his brimstone.
+    Edward Moncada is so winged that Richard Kain wants to trepan.
+---
+<p><!--start_raw-->Adrian Bateman chimes in on the debate with his toughts <a href="http:&#47;&#47;adrianba.net&#47;archive&#47;blog-ecad356e8d97482c8c891e083cf07b6c.aspx">here</a>, good stuff. For what it's worth, I agree with a lot of what Adrian says, I just view it in a different light.</p>
+<p>Adrian points out that most ESB vendors will have you believe that you can get everything flowing neatly through a single messaging bus, and Adrian is skeptical about that. Well, I am, as well, truth be told. Personally, I'm of the opinion that what we might end up seeing are sort of integrated networks of connected applications, some of them possibly using common infrastructure, other using point to point connections, etc.</p></p>
+<p>One key point I believe in the discussion is that a lot of these networks of connected applications will require some sort of messaging middleware infrastructure (be that an integration platform, an ESB or whatever). My personal reason for this is that, as I said in my previous entry on the matter, single protocol speak is gonna be hard to achieve. This is not a technological problem, mind you, it's a money and ROI problem which is a completely different story. Also, my experience from working on EAI projects is that connecting applications is in many cases not as simple as getting a message from A to B, even if A and B can talk webservices or offer some sort of services: Translations are needed, communication business rules have to be enforced, etc.</p></p>
+<p>So, the problem is not always about connectivity, but about bridging <i>disparate semantics</i>.WS-* cannot fix that, my friends. That's a key reason why integration platforms have things like orchestration support, business rules engines, message transformation, and so on.</p></p>
+<p>Looking at it from another perspective: Consider the spaghetti of connected applications that Adrian posted (cool figures, btw):</p></p>
+<p><img src="http:&#47;&#47;adrianba.net&#47;images&#47;esb-1.jpg" &#47;></p></p>
+<p>This a very real problem in enterprises today, and one not to be taken lightly. Now, consider the case in which all of those applications in the figure spoke WS-*. Would it be any less spaghetti by itself? It would certainly be a more loosely coupled and possible easier to maintain spaghetti, but it most certainly does not make it any easier to manage (and version, etc.).</p></p>
+<p>As I said, I haven't made up my mind completely about this topic, I'm just begining to understand how it all fits together (and in a real sense most people are, I believe). This is a good discussion!</p><br />
+<!--end_raw--></p>

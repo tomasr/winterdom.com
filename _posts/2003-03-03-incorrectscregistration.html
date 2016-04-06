@@ -1,0 +1,109 @@
+---
+layout: post
+status: publish
+published: true
+title: Incorrect SC Registration
+author:
+  display_name: Tomas Restrepo
+  login: tomasr
+  email: tomas@winterdom.com
+  url: http://winterdom.com/
+author_login: tomasr
+author_email: tomas@winterdom.com
+author_url: http://winterdom.com/
+wordpress_id: 681
+wordpress_url: http://winterdom.com/2003/03/incorrectscregistration
+date: '2003-03-03 19:49:36 +0000'
+date_gmt: '2003-03-03 19:49:36 +0000'
+categories:
+- ".NET"
+tags: []
+comments:
+- id: 458
+  author: enrico sabbadin
+  author_email: esabbadin@vb2themax.com
+  author_url: ''
+  date: '2003-03-14 08:03:47 +0000'
+  date_gmt: '2003-03-14 08:03:47 +0000'
+  content: |
+    <p>I posted about this problem to the MS NG about 3 or 4 month ago ;) <br &#47;>
+    </p>
+---
+<p><!--start_raw-->While fooling this afternoon at work with <a href="http:&#47;&#47;msdn.microsoft.com&#47;library&#47;default.asp?url=&#47;library&#47;en-us&#47;cossdk&#47;htm&#47;iprocessinitializer_0yia.asp">IProcessInitializer</a>, I found an interesting problem with the registration code in the .NET Framework v1.0. Consider the following snippet:</p>
+<pre><code>using System;<br />
+using System.Diagnostics;<br />
+using System.EnterpriseServices;<br />
+using System.Reflection;<br />
+using System.Runtime.InteropServices;<br />
+using System.Runtime.CompilerServices;<br />
+[<br />
+assembly:<br />
+AssemblyVersion("1.0.0.0"),<br />
+AssemblyKeyFile("procint.snk"),<br />
+ApplicationActivation(ActivationOption.Server),<br />
+ApplicationID("797fb7f8-d223-4d33-8f6c-be6fa27d42a4"),<br />
+ApplicationName("ProcInitializerTest")<br />
+]<br />
+namespace Winterdom.Samples.ComPlus<br />
+{<br />
+[<br />
+ComImport(),<br />
+InterfaceType(ComInterfaceType.InterfaceIsIUnknown),<br />
+Guid("1113f52d-dc7f-4943-aed6-88d04027e32a")<br />
+]<br />
+public interface IProcessInitializer<br />
+{<br />
+void Startup([MarshalAs(UnmanagedType.IUnknown)] object processControl);<br />
+void Shutdown();<br />
+}<br />
+[<br />
+ClassInterface(ClassInterfaceType.None),<br />
+Guid("9c9d323e-85fc-4122-a507-b0a74f2e7583")<br />
+]<br />
+public class ProcessInitializer<br />
+: ServicedComponent, IProcessInitializer<br />
+{<br />
+public void Startup(object processControl)<br />
+{<br />
+Debug.WriteLine("DLLHost is starting...");<br />
+}<br />
+public void Shutdown()<br />
+{<br />
+Debug.WriteLine("DLLHost is shutting down...");<br />
+}<br />
+} &#47;&#47; class ProcessInitializer<br />
+public class SomeOtherSC : ServicedComponent<br />
+{<br />
+public void DoSomething()<br />
+{<br />
+}<br />
+};<br />
+} &#47;&#47; namespace Winterdom.Samples.ComPlus<br />
+</code></pre></p>
+<p>Nothing really weird about this, huh? Well, it turns out that the registration code is aware of IProcessInitializer, and will try to set the InitializesServerApplication value in the catalog for the component. Unfortunately, if you compile the code above and use regsvcs.exe to register it, you'll notice the application is no longer able to startup.</p></p>
+<p>The cause? A bad registration. Instead of setting InitializesServerApplication to true for the ProcessInitializer class, as should be, it is set for the SomeOtherSC class. Huh? Now try this: Invert the order those two classes are defined in the source code and try again. Now it works as it should be.</p></p>
+<p>It's easy to work around this by creating a script that uses the catalog to fix the registration, but annoying. Fortunately, it seems to be corrected for v1.1 (although I didn't try to hard...)</p></p>
+<p>P.S. In case you're wondering how to easily check what I'm saying, here's a simple VBScript that given an Application ID, will print the value of the InitializesServerApplication property for each component of the application:</p></p>
+<pre><code><br />
+if WScript.Arguments.Count <> 1 Then<br />
+WScript.Echo "usage: CheckSCISA <appid>"<br />
+WScript.End<br />
+end if<br />
+Dim appID<br />
+appID = WScript.Arguments(0)<br />
+Dim catalog, root<br />
+set catalog = CreateObject("COMAdmin.COMAdminCatalog")<br />
+set root = catalog.Connect("localhost")<br />
+Dim appsCol<br />
+set appsCol = catalog.GetCollection("Applications")<br />
+appsCol.PopulateByKey Array(appID)<br />
+Dim components<br />
+set components = appsCol.GetCollection("Components", appID)<br />
+components.Populate<br />
+Dim obj<br />
+for each obj in components<br />
+WScript.Echo "Component: " &amp; obj.Name<br />
+WScript.Echo "   " &amp; obj.Value("InitializesServerApplication")<br />
+next<br />
+</code></pre><br />
+<!--end_raw--></p>

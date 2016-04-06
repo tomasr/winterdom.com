@@ -1,0 +1,35 @@
+---
+layout: post
+status: publish
+published: true
+title: Removing the MSMQT adapter once installed
+author:
+  display_name: Tomas Restrepo
+  login: tomasr
+  email: tomas@winterdom.com
+  url: http://winterdom.com/
+author_login: tomasr
+author_email: tomas@winterdom.com
+author_url: http://winterdom.com/
+wordpress_id: 572
+wordpress_url: http://winterdom.com/2005/03/removingthemsmqtadapteronceinstalled
+date: '2005-03-12 08:30:35 +0000'
+date_gmt: '2005-03-12 08:30:35 +0000'
+categories:
+- BizTalk
+tags: []
+comments: []
+---
+<p><!--start_raw-->According to the BizTalk Server 2004 documentation, once you've installed the MSMQT adapter, it cannot be uninstalled. Try it, and you'll see the warning is correct. However, it does not mean it cannot be done.</p>
+<p>As it turns out, the only reason that the adapter cannot be removed is because it is "Delete Protected", but this protection can be easily overriden. Here's how:</p></p>
+<ol>
+<li>Shut down the BizTalk Application Host the MSMQT adapter is bound to.</li>
+<li>Delete all send and receive ports you have bound to the MSMQT Adapter using BizTalk Explorer or a similar tool.</li>
+<li>Open up the SQL Server management tools (either Enterprise Manager, or Query Analizer) and connect to the BizTalk management database (usually BizTalkMgmtDb).</li>
+<li>Open the adm_Adapter table, and look for the record which has the Name column with the "MSMQT" value.</li>
+<li>Once located, notice that this record has the Capabilities column set to 16495 (0x406F). Here lies the trick: This flag includes the eProtocolDeleteProtected (0x0020) flag. What we need to do here is modify this value to remove that particular flag. Now, just set the value of the Capabilities column to 0x406F &amp;~0x0020 == 0x404F == 16463. Make sure you save the changes to the record.</li>
+<li>Open the BizTalk Administration Console, look for the MSMQT Adapter, righ click on it and select Delete.</li>
+<li>Restart your application host.</li><br />
+</ol></p>
+<p>And that's it. After doing this, you should've been able to remove the MSMQT adapter. You're now free, for example, to install the recently released MSMQ adapter without having to go through the whole unconfigure&#47;reconfigure cycle.</p></p>
+<p><i>Do this at your own risk; I do not know of any possible side effects of doing this (although I haven't noticed any yet) as opposed to doing the unconfigure&#47;configure. You probably don't want to do this in a production machine, though!</i></p><!--end_raw--></p>

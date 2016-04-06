@@ -1,0 +1,62 @@
+---
+layout: post
+status: publish
+published: true
+title: 'Administering BizTalk with PowerShell: Part 1'
+author:
+  display_name: Tomas Restrepo
+  login: tomasr
+  email: tomas@winterdom.com
+  url: http://winterdom.com/
+author_login: tomasr
+author_email: tomas@winterdom.com
+author_url: http://winterdom.com/
+wordpress_id: 692
+wordpress_url: http://winterdom.com/2006/09/administeringbiztalkwithpowershellpart1
+date: '2006-09-01 08:07:32 +0000'
+date_gmt: '2006-09-01 08:07:32 +0000'
+categories:
+- BizTalk
+- PowerShell
+tags: []
+comments:
+- id: 473
+  author: Jeffrey Snover
+  author_email: jsnover13@hotmail.com
+  author_url: ''
+  date: '2006-09-01 20:53:52 +0000'
+  date_gmt: '2006-09-01 20:53:52 +0000'
+  content: |
+    If you like Windows PowerShell's WMI support now - wait till you see what you get with RC2 (availability is not announced yet).
+    Check out the details at:
+    http:&#47;&#47;blogs.msdn.com&#47;powershell&#47;archive&#47;2006&#47;06&#47;26&#47;647038.aspx
+    Jeffrey Snover [MSFT]
+    Windows PowerShell&#47;Aspen Architect
+    Visit the Windows PowerShell Team blog at:    http:&#47;&#47;blogs.msdn.com&#47;PowerShell
+    Visit the Windows PowerShell ScriptCenter at:  http:&#47;&#47;www.microsoft.com&#47;technet&#47;scriptcenter&#47;hubs&#47;msh.mspx
+- id: 474
+  author: Tomas Restrepo
+  author_email: tomasr@mvps.org
+  author_url: http://www.winterdom.com/weblog/
+  date: '2006-09-01 20:56:23 +0000'
+  date_gmt: '2006-09-01 20:56:23 +0000'
+  content: |
+    Hi Jeffrey,
+    Yep, I'm quite looking forward to it :)
+    Heck, Actually I'm looking to the actual final bits so I can replace my usual cmd.exe prompt on my desktop with a powershell one :)
+---
+<p><!--start_raw-->
+<p>As many of you know, BizTalk Server has a fairly extensive WMI object model<br />
+you can use to&nbsp;manage and run your BizTalk servers. As even more of you know,<br />
+WMI is a pain in the neck to work with from pretty much anywhere, particularly<br />
+C#.</p></p>
+<p>However, <a href="http:&#47;&#47;www.microsoft.com&#47;windowsserver2003&#47;technologies&#47;management&#47;powershell&#47;default.mspx">PowerShell</a> does make it a lot easier and actually even fun, since<br />
+you can interactively execute and test any WMI query you need to perfection!<br />
+Given that, it will make a nifty complement to working with BizTalk Server's WMI<br />
+model. Here's something to open your appettite: List your BizTalk Hosts on the<br />
+local server:</p></p>
+<p><font face="Courier New">$hosts = get-wmiobject MSBTS_HostInstance -namespace<br />
+'root\MicrosoftBizTalkServer'<br>$hosts | sort HostName | ft HostName,<br />
+HostType</font></p>
+<p>I'll demonstrate some more interesting options in later posts!<br></p>
+<p></p><!--end_raw--></p>

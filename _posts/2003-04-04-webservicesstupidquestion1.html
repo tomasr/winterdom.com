@@ -1,0 +1,102 @@
+---
+layout: post
+status: publish
+published: true
+title: 'WebServices Stupid Question #1'
+author:
+  display_name: Tomas Restrepo
+  login: tomasr
+  email: tomas@winterdom.com
+  url: http://winterdom.com/
+author_login: tomasr
+author_email: tomas@winterdom.com
+author_url: http://winterdom.com/
+wordpress_id: 779
+wordpress_url: http://winterdom.com/2003/04/webservicesstupidquestion1
+date: '2003-04-04 06:05:09 +0000'
+date_gmt: '2003-04-04 06:05:09 +0000'
+categories:
+- Web Services
+tags: []
+comments:
+- id: 526
+  author: Christian Weyer
+  author_email: cw@eyesoft.de
+  author_url: http://dotnetweblogs.com/cweyer/
+  date: '2003-04-04 06:27:12 +0000'
+  date_gmt: '2003-04-04 06:27:12 +0000'
+  content: |
+    <p>Well, yes you can call it inconsistent - but I (and MS ;-) call it more like a convinient. As you are using a Document&#47;literal ASMX based Web Service which aims at *messages* and not *RPCs* (you know this distinction and the ongoing discussions ...), the top element of the serialized instance is just a signal for what kind of message is sent back to the original caller ... nothing more. The inbound message is GetCustomer and the outbound is GetCustomerResult - you see: just XML block :-)</p>
+    <p>Just my 2 cents.</p>
+    <p>Cheers,<br &#47;>
+    Christian</p>
+- id: 527
+  author: Christian Weyer
+  author_email: cw@eyesoft.de
+  author_url: http://dotnetweblogs.com/cweyer/
+  date: '2003-04-04 06:52:49 +0000'
+  date_gmt: '2003-04-04 06:52:49 +0000'
+  content: |
+    <p>Ah, what I just wanted to add: the name of the element is defined in the Web Service's metadata (WSDL). You can control through an attribute how the whole thing should look like. E.g.<br &#47;>
+    [SoapDocumentMethod(Action="<a href="http:&#47;&#47;www.contoso.com&#47;Sample" rel="nofollow">http:&#47;&#47;www.contoso.com&#47;Sample",</a> <br &#47;>
+    RequestNamespace="<a href="http:&#47;&#47;www.contoso.com&#47;Request," rel="nofollow">http:&#47;&#47;www.contoso.com&#47;Request,</a><br &#47;>
+    RequestElementName="GetUserNameRequest",<br &#47;>
+    ResponseNamespace="<a href="http:&#47;&#47;www.contoso.com&#47;Respone" rel="nofollow">http:&#47;&#47;www.contoso.com&#47;Respone",</a><br &#47;>
+    ResponseElementName="GetUserNameResponse")]</p>
+    <p>Cheers,<br &#47;>
+    Christian<br &#47;>
+    </p>
+---
+<p><!--start_raw-->I've been playing these last few days with ASP.NET WebServices [1], and, naturally, I've been running into a few snags. Yesterday I ran into what seems to be an inconsistency in the way XML serialization works where WebServices are invoked. Consider this simple ASMX file:</p>
+<pre class="codes"><code><%@ WebService Language="C#" class="WeirdBhv" %><br />
+using System;<br />
+using System.Web;<br />
+using System.Web.Services;<br />
+using System.Web.Services.Protocols;<br />
+using System.Xml;<br />
+using System.Xml.Serialization;<br />
+[ XmlRoot(Namespace="http:&#47;&#47;www.winterdom.com&#47;schemas&#47;customer") ]<br />
+public class Customer<br />
+{<br />
+[ XmlElement("name") ]<br />
+public string Name;<br />
+[ XmlElement("phone") ]<br />
+public string Phone;<br />
+}<br />
+[ WebService(Namespace="http:&#47;&#47;www.winterdom.com&#47;services&#47;WeirdBhv") ]<br />
+public class WeirdBhv<br />
+{<br />
+[ WebMethod ]<br />
+public Customer GetCustomer()<br />
+{<br />
+Customer c = new Customer();<br />
+c.Name = "Tomas";<br />
+c.Phone = "12223222";<br />
+return c;<br />
+}<br />
+}<br />
+</code></pre></p>
+<p>Now, here's the weirdness. If you invoked this webservice via the ASP.NET SOAP binding, the response would look something like this:</p></p>
+<pre class="codes"><code><?xml version="1.0" encoding="utf-8"?><br />
+<soap:Envelope xmlns:xsi="http:&#47;&#47;www.w3.org&#47;2001&#47;XMLSchema-instance"<br />
+xmlns:xsd="http:&#47;&#47;www.w3.org&#47;2001&#47;XMLSchema"<br />
+xmlns:soap="http:&#47;&#47;schemas.xmlsoap.org&#47;soap&#47;envelope&#47;"><br />
+<soap:Body><br />
+<GetCustomerResponse xmlns="http:&#47;&#47;www.winterdom.com&#47;services&#47;WeirdBhv"><br />
+<GetCustomerResult xmlns="http:&#47;&#47;www.winterdom.com&#47;schemas&#47;customer"><br />
+<name>string</name></p>
+<phone>string</phone><br />
+</GetCustomerResult><br />
+</GetCustomerResponse><br />
+</soap:Body><br />
+</soap:Envelope><br />
+</code></pre></p>
+<p>Notice how the Customer instance is serialized on an element named GetCustomerResult. Now, if you were to invoke the service with the HTTP POST binding, you'd get this, instead:</p></p>
+<pre class="codes"><code><?xml version="1.0" encoding="utf-8"?><br />
+<Customer xmlns="http:&#47;&#47;www.winterdom.com&#47;schemas&#47;customer"><br />
+<name>string</name></p>
+<phone>string</phone><br />
+</Customer><br />
+</code></pre></p>
+<p>Notice that this time the Customer instance is serialized with a Customer element name. My question is <i>why</i> this difference? I know that if I were to specify the element name in the XmlRoot attribute in the declaration of Customer, in both cases it would be serialized with that name. However, I find it very inconsistent that it doesn't use the same element name in both cases even if the XmlRoot didn't specify the element name to use.</p></p>
+<p>[1] Yes, I've actually worked more with other toolkits, such as the SOAP Toolkit than with ASP.NET.... go figure.</p><!--end_raw--></p>

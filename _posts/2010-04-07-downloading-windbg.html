@@ -1,0 +1,114 @@
+---
+layout: post
+status: publish
+published: true
+title: Downloading WinDBG
+author:
+  display_name: Tomas Restrepo
+  login: tomasr
+  email: tomas@winterdom.com
+  url: http://winterdom.com/
+author_login: tomasr
+author_email: tomas@winterdom.com
+author_url: http://winterdom.com/
+wordpress_id: 1319
+wordpress_url: http://winterdom.com/2010/04/downloading-windbg
+date: '2010-04-07 12:20:14 +0000'
+date_gmt: '2010-04-07 12:20:14 +0000'
+categories:
+- Tools
+tags: []
+comments:
+- id: 1368
+  author: Kevin Dente
+  author_email: kevind@denteworld.com
+  author_url: http://weblogs.asp.net/kdente
+  date: '2010-04-07 15:42:50 +0000'
+  date_gmt: '2010-04-07 15:42:50 +0000'
+  content: "Looks like your link to my ranty tweet is pointing to the wrong one. :)
+    Should be:\r\nhttp:&#47;&#47;twitter.com&#47;kevindente&#47;status&#47;11746246040\r\n\r\nThanks
+    for blogging this, it's a big problem IMO."
+- id: 1369
+  author: Tomas Restrepo
+  author_email: tomas@winterdom.com
+  author_url: http://winterdom.com/
+  date: '2010-04-07 16:54:26 +0000'
+  date_gmt: '2010-04-07 16:54:26 +0000'
+  content: Oops! Link fixed now :) Thanks
+- id: 1370
+  author: Michael Gebis
+  author_email: mike.gebis@gmail.com
+  author_url: ''
+  date: '2010-04-08 22:16:27 +0000'
+  date_gmt: '2010-04-08 22:16:27 +0000'
+  content: "As suggested in this thread, I sent a polite email to windbg@microsoft.com
+    expressing my displeasure:\r\n\r\nhttp:&#47;&#47;groups.google.com&#47;group&#47;microsoft.public.windbg&#47;browse_thread&#47;thread&#47;48bb6c9fb8d2971a&#47;e6b8745a2f716513?show_docid=e6b8745a2f716513&amp;pli=1\r\n\r\nI
+    mentioned in my email that I'm often debugging problems on remote machines with
+    limited internet connectivity and&#47;or no easy way to read a .ISO file or CD.
+    \ Getting windbg onto these machines was tough enough in the past--no need to
+    make it even harder."
+- id: 1374
+  author: 'Cheetsheet: 2010 04.08 ~ 04.11 - gOODiDEA.NET'
+  author_email: ''
+  author_url: http://weblogs.asp.net/yuanjian/archive/2010/04/11/cheetsheet-2010-04-08-04-11.aspx
+  date: '2010-04-11 05:09:17 +0000'
+  date_gmt: '2010-04-11 05:09:17 +0000'
+  content: "[...] Downloading WinDBG - New WinDbg requires entire WDK? [...]"
+- id: 1448
+  author: rxwen
+  author_email: rx.wen218@gmail.com
+  author_url: http://rxwen.blogspot.com
+  date: '2010-04-23 11:25:47 +0000'
+  date_gmt: '2010-04-23 11:25:47 +0000'
+  content: It's really hard to understand why ms hides such an important weapon upgrade
+    this way.
+- id: 1449
+  author: rxwen
+  author_email: rx.wen218@gmail.com
+  author_url: http://rxwen.blogspot.com
+  date: '2010-04-23 12:28:34 +0000'
+  date_gmt: '2010-04-23 12:28:34 +0000'
+  content: "I provided a standalone windbg here:\r\nhttp:&#47;&#47;rxwen.blogspot.com&#47;2010&#47;04&#47;standalone-windbg-v6120002633.html\r\nHope
+    it helps"
+- id: 1534
+  author: atpaz
+  author_email: kantele84@gmail.com
+  author_url: ''
+  date: '2010-07-17 16:04:02 +0000'
+  date_gmt: '2010-07-17 16:04:02 +0000'
+  content: "http:&#47;&#47;www.microsoft.com&#47;whdc&#47;devtools&#47;debugging&#47;default.mspx
+    \r\n\r\nFrom this address, you can download the tools and extract Windbg."
+- id: 1711
+  author: Dan
+  author_email: dan_j_thompson@hotmail.com
+  author_url: ''
+  date: '2011-05-02 07:03:09 +0000'
+  date_gmt: '2011-05-02 07:03:09 +0000'
+  content: It's definitely not as convenient as before, but you don't have to download
+    the whole SDK--use the web installer thingy, then you can select just the debugging
+    tools, and you download only the debugging tools.
+- id: 1775
+  author: SinbadEV
+  author_email: benjie.davis@gmail.com
+  author_url: ''
+  date: '2011-08-24 16:42:51 +0000'
+  date_gmt: '2011-08-24 16:42:51 +0000'
+  content: "This looks nominally official...\r\n\r\nhttp:&#47;&#47;archive.msdn.microsoft.com&#47;debugtoolswindows"
+- id: 2405
+  author: Windows
+  author_email: windows@gmail.com
+  author_url: ''
+  date: '2012-04-26 12:38:50 +0000'
+  date_gmt: '2012-04-26 12:38:50 +0000'
+  content: "Working:\r\nhttp:&#47;&#47;www.microsoft.com&#47;download&#47;en&#47;confirmation.aspx?displayLang=en&amp;id=11800"
+---
+<p>I only use WinDBG every once in a while, but, when I need it, I <em>really</em> <em>need </em>it and need it <em>now</em>. Kevin Dente <a href="http:&#47;&#47;twitter.com&#47;kevindente&#47;status&#47;11746246040">pointed out</a> earlier today that apparently, the latest versions of WinDBG was not available as a standalone installer, but only as part of the Windows Driver Kit ISO download.</p>
+<p>That&rsquo;s right. You now need to download a 620MB ISO, find a tool to open it up with (since Windows <em>still</em> lacks native support for opening ISO files directly) to extract a 17MB installer for WinDBG. From the <a href="http:&#47;&#47;www.microsoft.com&#47;whdc&#47;devtools&#47;debugging&#47;installx86.mspx#a">WinDBG download page</a>:</p><br />
+<blockquote>
+<p>This current version of Debugging Tools for Windows is available as part of the Windows Driver Kit (WDK) release 7.1.0. To download the WDK and manually install Debugging Tools for Windows:</p>
+<p>1. Download the <a href="http:&#47;&#47;www.microsoft.com&#47;whdc&#47;DevTools&#47;WDK&#47;WDKpkg.mspx">WDK</a> and burn the ISO to a DVD or other installation media. (The WDK ISO file is approximately 620 MB to download.)</p>
+<p>2. Open the ISO from the installation media and open the <b>Debuggers</b> directory.</p>
+<p>3. In the Debuggers directory, run the appropriate MSI or setup EXE for x86 and follow the instructions in the Setup Wizard.</p>
+<p>4. After installation is complete, you can find the debugger shortcuts by clicking <b>Start</b>, pointing to <b>All Programs</b>, and then pointing to <b>Debugging Tools for Windows (x86)</b>.</p> </blockquote>
+<p>This really sounds awesome, on par with other MS utilities that get distributed as an MSI installer that installs an MSI installer that you can install. Yes, I&rsquo;m being sarcastic.</p>
+<p>Get it together, Microsoft; WinDBG is too important for support to screw it up like this.</p></p>

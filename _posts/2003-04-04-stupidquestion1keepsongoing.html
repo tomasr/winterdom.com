@@ -1,0 +1,87 @@
+---
+layout: post
+status: publish
+published: true
+title: 'Stupid Question #1 (keeps on going)'
+author:
+  display_name: Tomas Restrepo
+  login: tomasr
+  email: tomas@winterdom.com
+  url: http://winterdom.com/
+author_login: tomasr
+author_email: tomas@winterdom.com
+author_url: http://winterdom.com/
+wordpress_id: 796
+wordpress_url: http://winterdom.com/2003/04/stupidquestion1keepsongoing
+date: '2003-04-04 18:14:19 +0000'
+date_gmt: '2003-04-04 18:14:19 +0000'
+categories:
+- Web Services
+tags: []
+comments:
+- id: 542
+  author: Ali
+  author_email: aghareza22@hotmail.com
+  author_url: http://radio.weblogs.com/0120671/
+  date: '2003-04-04 19:22:59 +0000'
+  date_gmt: '2003-04-04 19:22:59 +0000'
+  content: "<p>More unexpected behavior:<br &#47;>\nAfter I made the last comment
+    I tried another example.  Without an XmlRoot name try this example:  </p>\n<p>\t[WebMethod]<br
+    &#47;>\npublic Customer ReturnCustomer(out Customer ReturnCustomerResult)<br &#47;>\n{<br
+    &#47;>\n<br &#47;>\nCustomer customer1 = new Customer();<br &#47;>\n<br &#47;>\ncustomer1.name
+    = \"Ali\";<br &#47;>\ncustomer1.phone = \"555-1212\";</p>\n<p>\t<br &#47;>\nReturnCustomerResult
+    = customer1;<br &#47;>\nreturn customer1;<br &#47;>\n}</p>\n<p>I think I'm
+    going to throw on my to do list \"learn how reflection for web services work\".</p>\n<p>Ali</p>\n<p><br
+    &#47;>\nSide Note: I tried to post the soap message in the comments box and this
+    is what showed up in the preview:</p>\n<p>string</p>\n<p>string<br &#47;>\nstring</p>\n<p><br
+    &#47;>\nstring<br &#47;>\n</p>\n"
+---
+<p><!--start_raw--><a href="http:&#47;&#47;radio.weblogs.com&#47;0120671&#47;">Ali Aghareza</a> posted a reply to my earlier messages with a really insightful example that presents one reason for ASP.NET to change the element name the type is serialized as: when the method returns two different instances of the same type.</p>
+<p>However, all is not that rosy. If no element name is specified in the type's XmlRoot attribute, then ASP.NET will default to serializing the type with the <MethodName>Result element name if it is present as the method's return value; if the type is present as an out&#47;ref argument, instead, ASP.NET will serialize it with the argument name as the element name. This ensures no clashes occur (well, mostly).</p></p>
+<p>This behavior, however, breaks if you specify an element name in the types XmlRoot attribute, since the serialization will break (multiple elements with the same name introduced). This can be avoided, though, with careful use of the XmlElementAttribute in the method's signature. </p></p>
+<p>Which brings me to another tricky little detail: Using the XmlElementAttribute without filling in the namespace argument can lead to unexpected results. Consider this new code: </p></p>
+<pre class="codes"><code><%@ WebService Language="C#" class="Weird2" %><br />
+using System;<br />
+using System.Web;<br />
+using System.Web.Services;<br />
+using System.Web.Services.Protocols;<br />
+using System.Xml;<br />
+using System.Xml.Serialization;<br />
+[ XmlRoot(Namespace="http:&#47;&#47;www.winterdom.com&#47;schemas&#47;client") ]<br />
+public class Client<br />
+{<br />
+[ XmlAttribute("id") ]<br />
+public int ID;<br />
+[ XmlElement("name") ]<br />
+public string Name;<br />
+}<br />
+[ WebService(Namespace="http:&#47;&#47;www.winterdom.com&#47;services&#47;Weird2") ]<br />
+public class Weird2<br />
+{<br />
+[ WebMethod ]<br />
+[ return: XmlElement("client") ]<br />
+public Client GetClient(int id)<br />
+{<br />
+Client c = new Client();<br />
+c.ID = id;<br />
+c.Name = "Tomas";<br />
+return c;<br />
+}<br />
+}<br />
+</code></pre></p>
+<p>This code, when invoked via SOAP, will return something like this:</p></p>
+<pre class="codes"><code><?xml version="1.0" encoding="utf-8"?><br />
+<soap:Envelope xmlns:xsi="http:&#47;&#47;www.w3.org&#47;2001&#47;XMLSchema-instance"<br />
+xmlns:xsd="http:&#47;&#47;www.w3.org&#47;2001&#47;XMLSchema"<br />
+xmlns:soap="http:&#47;&#47;schemas.xmlsoap.org&#47;soap&#47;envelope&#47;"><br />
+<soap:Body><br />
+<GetClientResponse xmlns="http:&#47;&#47;www.winterdom.com&#47;services&#47;Weird2"><br />
+<client id="int"><br />
+<name xmlns="http:&#47;&#47;www.winterdom.com&#47;schemas&#47;client">string</name><br />
+</client><br />
+</GetClientResponse><br />
+</soap:Body><br />
+</soap:Envelope><br />
+</code></pre></p>
+<p>Notice how the client element is now serialized outside the http:&#47;&#47;www.winterdom.com&#47;schemas&#47;client schema and instead is serialized in the WebService's default namespace. The reason I point this out as a potential problem is that since the Client type is serialized with an attribute, that attribute has just been left hanging, too (Yes, I'm aware of the special way attributes fit within XSD).</p></p>
+<p>OK, maybe it's not a problem, but I sure as hell know this wasn't what I originally expected to happen :)</p><!--end_raw--></p>

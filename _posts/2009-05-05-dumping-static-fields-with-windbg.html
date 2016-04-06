@@ -1,0 +1,79 @@
+---
+layout: post
+status: publish
+published: true
+title: Dumping Static Fields with WinDBG
+author:
+  display_name: Tomas Restrepo
+  login: tomasr
+  email: tomas@winterdom.com
+  url: http://winterdom.com/
+author_login: tomasr
+author_email: tomas@winterdom.com
+author_url: http://winterdom.com/
+wordpress_id: 1190
+wordpress_url: http://winterdom.com/?p=1190
+date: '2009-05-05 14:11:19 +0000'
+date_gmt: '2009-05-05 14:11:19 +0000'
+categories:
+- Tools
+tags: []
+comments:
+- id: 750
+  author: Arjan`s World &raquo; LINKBLOG for May 6, 2009
+  author_email: ''
+  author_url: http://www.arjansworld.com/2009/05/06/linkblog-for-may-6-2009/
+  date: '2009-05-06 14:04:46 +0000'
+  date_gmt: '2009-05-06 14:04:46 +0000'
+  content: "[...] Dumping Static Fields with WinDBG - Tomas Restrepo [...]"
+---
+<p>Here's something that I very ocassionally have to do and always forget it's done: Getting the values of static fields in a managed class when debugging using WinDBG with the SOS extensions:</p></p>
+<p>Get the address where the CLASS object is located in memory. There are several ways to do this, but an easy one is to use the Name2EE function, passing in the assembly or module name and the fully qualified type name:</p></p>
+<div class='codebg'><code>0:007> !name2ee mscorlib.dll System.Console<br&#47;><br />
+Module: 0000064278854000 (mscorlib.dll)<br&#47;><br />
+Token: 0x000000000200008b<br&#47;><br />
+MethodTable: 00000642788c8d10<br&#47;><br />
+EEClass: 0000064278a271a8<br&#47;><br />
+Name: System.Console<br&#47;><br />
+</code></div></p>
+<p>Now, we can use the DumpClass function, passing in the EEClass value returned by the previous command:</p></p>
+<pre class='codebg'><code>0:007> !dumpclass 0000064278a271a8<br />
+Class Name: System.Console<br />
+mdToken: 000000000200008b (C:\WINDOWS\assembly\GAC_64\mscorlib\2.0.0.0__b77a5c561934e089\mscorlib.dll)<br />
+Parent Class: 00000642788c0c30<br />
+Module: 0000064278854000<br />
+Method Table: 00000642788c8d10<br />
+Vtable Slots: 4<br />
+Total Method Slots: 78<br />
+Class Attributes: 100181  Abstract,<br />
+NumInstanceFields: 0<br />
+NumStaticFields: d<br />
+              MT    Field   Offset                 Type VT     Attr            Value Name<br />
+00000642788f5aa0  40002ae       d8 System.IO.TextReader  0   shared           static _in<br />
+                                 >> Domain:Value  000000000015b120:NotInit  <<<br />
+00000642788cdd08  40002af       e0 System.IO.TextWriter  0   shared           static _out<br />
+                                 >> Domain:Value  000000000015b120:NotInit  <<<br />
+00000642788cdd08  40002b0       e8 System.IO.TextWriter  0   shared           static _error<br />
+                                 >> Domain:Value  000000000015b120:NotInit  <<<br />
+000006427895dcb0  40002b1       f0 ...ancelEventHandler  0   shared           static _cancelCallbacks<br />
+                                 >> Domain:Value  000000000015b120:NotInit  <<<br />
+000006427895db88  40002b2       f8 ...le+ControlCHooker  0   shared           static _hooker<br />
+                                 >> Domain:Value  000000000015b120:NotInit  <<<br />
+00000642788c91e0  40002b3       d0 ...ative+InputRecord  1   shared           static _cachedInputRecord<br />
+                                 >> Domain:Value  000000000015b120:NotInit  <<<br />
+00000642788dca98  40002b4      990       System.Boolean  1   shared           static _haveReadDefaultColors<br />
+                                 >> Domain:Value  000000000015b120:NotInit  <<<br />
+00000642788c9f78  40002b5      994          System.Byte  1   shared           static _defaultColors<br />
+                                 >> Domain:Value  000000000015b120:NotInit  <<<br />
+00000642788dca98  40002b6      998       System.Boolean  1   shared           static _wasOutRedirected<br />
+                                 >> Domain:Value  000000000015b120:NotInit  <<<br />
+00000642788dca98  40002b7      99c       System.Boolean  1   shared           static _wasErrorRedirected<br />
+                                 >> Domain:Value  000000000015b120:NotInit  <<<br />
+00000642788c0cd8  40002b8      100        System.Object  0   shared           static s_InternalSyncObject<br />
+                                 >> Domain:Value  000000000015b120:NotInit  <<<br />
+00000642788c9618  40002b9      980        System.IntPtr  1   shared           static _consoleInputHandle<br />
+                                 >> Domain:Value  000000000015b120:NotInit  <<<br />
+00000642788c9618  40002ba      988        System.IntPtr  1   shared           static _consoleOutputHandle<br />
+                                 >> Domain:Value  000000000015b120:NotInit  <<<br />
+</code></pre></p>
+<p>Notice that this was on an x86-64 system running 64-bit Windows, which is why all pointer values are 64-bit long.</p></p>

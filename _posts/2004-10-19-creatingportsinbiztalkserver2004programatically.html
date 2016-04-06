@@ -1,0 +1,143 @@
+---
+layout: post
+status: publish
+published: true
+title: Creating Ports in BizTalk Server 2004 Programatically
+author:
+  display_name: Tomas Restrepo
+  login: tomasr
+  email: tomas@winterdom.com
+  url: http://winterdom.com/
+author_login: tomasr
+author_email: tomas@winterdom.com
+author_url: http://winterdom.com/
+wordpress_id: 285
+wordpress_url: http://winterdom.com/2004/10/creatingportsinbiztalkserver2004programatically
+date: '2004-10-19 17:55:50 +0000'
+date_gmt: '2004-10-19 17:55:50 +0000'
+categories:
+- BizTalk
+tags: []
+comments:
+- id: 1830
+  author: Francisco Ruiz
+  author_email: lfruiz@hotmail.com
+  author_url: ''
+  date: '2011-11-02 17:25:00 +0000'
+  date_gmt: '2011-11-02 17:25:00 +0000'
+  content: Thank you very much, it has been very useful
+---
+<p><!--start_raw-->For a proof of concept I needed to start working on today at work involving BizTalk Server 2004, I needed a quick way to create a number of send ports (between 10 and 20), configured in a very specific manner each one (say, with a specific combination of filters and stuff like that).</p>
+<p>Before spending a lot of time creating them by hand (a pain!), I decided to check out what BizTalk could offer to do this programatically. Turned out to be fairly painless using the BizTalk Explorer Object Model (in Microsoft.BizTalk.ExplorerOM.dll).</p></p>
+<p>I decided to write a quick sample to show how it is done, perhaps someone will find it useful out there. The code just creates a SendPort called MySendPort, configured witht e XMLTransmit pipeline, the FILE adapter on a specific filesystem folder, and sets up a filter on the port that ties it to one of two receive ports. Here's the code to do it:</p></p>
+<pre><code>&#47;&#47;<br />
+&#47;&#47; CreatePort.cs<br />
+&#47;&#47;<br />
+&#47;&#47;    This is a sample application that uses<br />
+&#47;&#47;    the BizTalk Explorer Object Model<br />
+&#47;&#47;    to create a send port configured with a<br />
+&#47;&#47;    few filters.<br />
+&#47;&#47;<br />
+&#47;&#47; Author:<br />
+&#47;&#47;    Tomas Restrepo (tomasr@mvps.org)<br />
+&#47;&#47;<br />
+using System;<br />
+using System.Collections;<br />
+using Microsoft.BizTalk.ExplorerOM;<br />
+namespace Winterdom.BizTalk.Management.Samples<br />
+{<br />
+&#47;&#47;&#47;<br />
+<summary>
+&#47;&#47;&#47; Application class.<br />
+&#47;&#47;&#47; </summary><br />
+public class CreatePortApp<br />
+{<br />
+public static void Main(string[] args)<br />
+{<br />
+&#47;&#47;<br />
+&#47;&#47; Create the CatalogExplorer and connect<br />
+&#47;&#47; to the management database<br />
+&#47;&#47; we should definitely pick up the connection<br />
+&#47;&#47; string from the DB<br />
+&#47;&#47;<br />
+BtsCatalogExplorer om = new BtsCatalogExplorer();<br />
+om.ConnectionString = "Server=(local);Database=BizTalkMgmtDb;Integrated Security=true";<br />
+CreatePort(om);<br />
+&#47;&#47; once we are done we should<br />
+&#47;&#47; persist changes to the DB again.<br />
+om.SaveChanges();<br />
+}<br />
+&#47;&#47;&#47;<br />
+<summary>
+&#47;&#47;&#47; Create the send port<br />
+&#47;&#47;&#47; </summary><br />
+&#47;&#47;&#47;
+<param name="om">Catalog Explorer object</param><br />
+public static void CreatePort(BtsCatalogExplorer om)<br />
+{<br />
+&#47;&#47;<br />
+&#47;&#47; Create a new Send port, configured as<br />
+&#47;&#47; static, One Way port<br />
+&#47;&#47;<br />
+SendPort port = om.AddNewSendPort(false, false);<br />
+port.Name = "MySendPort";<br />
+&#47;&#47;<br />
+&#47;&#47; Create a new filter with this:<br />
+&#47;&#47; BTS.ReceivePortName == 'MyReceivePort' OR<br />
+&#47;&#47; BTS.ReceivePortName == 'MyReceivePort2'<br />
+&#47;&#47;<br />
+string filter =<br />
+@"<Filter><br />
+<Group><br />
+<Statement Property='BTS.ReceivePortName'<br />
+Operator='0'<br />
+Value='MyReceivePort'<br />
+&#47;><br />
+</Group><br />
+<Group><br />
+<Statement Property='BTS.ReceivePortName'<br />
+Operator='0'<br />
+Value='MyReceivePort2'<br />
+&#47;><br />
+</Group><br />
+</Filter>";<br />
+port.Filter = filter;<br />
+&#47;&#47;<br />
+&#47;&#47; Configure the primary transport and the<br />
+&#47;&#47; send pipeline to use<br />
+&#47;&#47;<br />
+TransportInfo transport = port.PrimaryTransport;<br />
+transport.Address = @"c:\temp\%MessageID%.xml";<br />
+transport.TransportType = FindProtocolType(om, "FILE");<br />
+port.SendPipeline = om.Pipelines["Microsoft.BizTalk.DefaultPipelines.XMLTransmit"];<br />
+}<br />
+&#47;&#47;&#47;<br />
+<summary>
+&#47;&#47;&#47; Finds the appropriate ProtocolType instance<br />
+&#47;&#47;&#47; from the list or registered transports<br />
+&#47;&#47;&#47; </summary><br />
+&#47;&#47;&#47;
+<param name="om">Catalog Explorer object</param><br />
+&#47;&#47;&#47;
+<param name="adapter">Name of the adapter</param><br />
+&#47;&#47;&#47; <returns>The ProtocolType instance</returns><br />
+public static ProtocolType<br />
+FindProtocolType(BtsCatalogExplorer om, String adapter)<br />
+{<br />
+for ( int i =0; i < om.ProtocolTypes.Count; i++ )<br />
+{<br />
+if ( om.ProtocolTypes[i].Name == adapter )<br />
+return om.ProtocolTypes[i];<br />
+}<br />
+return null;<br />
+}<br />
+} &#47;&#47; CreatePortApp<br />
+} &#47;&#47; namespace Winterdom.BizTalk.Management.Samples<br />
+</code></pre></p>
+<p>The overall code is actually fairly simple, though some things are not as intuitive as one might expect. Some things to keep in mind are:</p></p>
+<ul>
+<li>Filters are defined using an XML syntax, where each Group in the filter represents an AND group. This means that each group has a set of properties that are AND'edd together, and then groups are OR'ed together.</li>
+<li>The adapter that a port uses is configured on the transport, as an instance of the ProtocolType class. To find the one you want, I believe one should look at the ProtocolTypes collection on the Catalog Explorer object. This collection, however, is only indexed by position, so you have to iterate through it until you find the one you want by looking at its name.</li>
+<li>This one caught me by surprise: The Pipelinelines collection of the Catalog Explorer object is indexed by the type name only (namespace + class name), not by fully qualified type name (namespace + class name + assembly name).</li><br />
+</ul></p>
+<p>Hope someone finds this useful...</p><!--end_raw--></p>

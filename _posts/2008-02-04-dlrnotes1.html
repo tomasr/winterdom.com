@@ -1,0 +1,47 @@
+---
+layout: post
+status: publish
+published: true
+title: DLR Notes 1
+author:
+  display_name: Tomas Restrepo
+  login: tomasr
+  email: tomas@winterdom.com
+  url: http://winterdom.com/
+author_login: tomasr
+author_email: tomas@winterdom.com
+author_url: http://winterdom.com/
+wordpress_id: 100
+wordpress_url: http://winterdom.com/2008/02/dlrnotes1
+date: '2008-02-04 05:51:07 +0000'
+date_gmt: '2008-02-04 05:51:07 +0000'
+categories:
+- ".NET"
+- DLR
+tags: []
+comments:
+- id: 64
+  author: MichaelDotNet
+  author_email: michaeldotnet@gmail.com
+  author_url: http://michaeldotnet.blogspot.com
+  date: '2008-02-04 17:29:38 +0000'
+  date_gmt: '2008-02-04 17:29:38 +0000'
+  content: |
+    Excellent posts, I too am starting down the DLR path, mostly by hacking on IronRuby, but have some inclination to write a simple language to get the "hang" of it.  Very nice!
+---
+<p><!--start_raw-->
+<p>One of the first things I tried to get working on my simple programming language was being able to define functions. Initially I started just with global functions, and then with local (i.e. nested) functions.</p>
+<p>For the most part, this is easy in the DLR. You create a new function by creating a CodeBlock, which has a bunch of properties and methods such as the function name, the local variables it has, any parameters it takes and what the type of the return value is. It also has a Body, which is an Expression (normally a Block expression which contains a list of expressions). You create an empty CodeBlock using Ast.CodeBlock() and then you can fill in the rest using its properties.</p>
+<p>Currently, a CodeBlock isn't directly part of the AST itself, that is, it isn't directly a node in the tree. Instead, you build a CodeBlockExpressions out of it (using Ast.CodeBlockExpression(), naturally) and use that as a reference to your function. In fact, at runtime, a CodeBlockExpression eventually becomes just that: a delegate instance. </p>
+<p>My initial function implementation was extremely simplistic, meaning that functions weren't really handled using any language-specific object (like [Iron]Ruby's Proc or ToyScript's ToyFunction classes). Instead, I was directly storing CodeBlockExpressions in variables and using them instead. also didn't implementing function calls initially. </p>
+<p>To test that my function definitions were working, I instead opted for simply returning the CodeBlockExpression directly. My tests (built using NUnit) make use of the ScriptEngine.Execute() method to parse and evaluate a script and return the result (my language has implicit returns, so all expressions evaluate to something). So what comes out when I evaluated a variable containing a CodeBlockExpression? Yep, a delegate, which I could call directly from the outside to validate it was working!</p>
+<p>It's worth saying that the delegate you get directly from such a simple construct might have a bit of an unexpected syntax: The first parameter will always be of type CodeContext, after which the actual parameters you defined in the CodeBlock will appear (many times it's safe to simply pass null for this).</p><br />
+<h2>Variables</h2>
+<p>One of the things that I ran into while implementing this was getting variable definitions right. Creating and defining variables on the DLR isn't really hard:</p>
+<ul>
+<li>Global variables are somewhat supported (though at least from some comments in the source this might go away. What's not very obvious is that global variables don't need to be "defined" anywhere; they are just names. You manipulate them using Ast.Read(), Ast.Write() and Ast.Assign(), using the variants that take a SymbolId as argument.</li>
+<li>Local Variables are associated with a specific CodeBlock, so they actually do need to be defined, which is done using the CodeBlock.CreateLocalVariable() method. </li>
+<li>Parameters are much like local variables, but you create them using CodeBlock.CreateParameter() instead.</li> </ul>
+<p>Obviously, keeping track of variable definitions and their scope is your responsibility. For local and parameter variables, you need to keep track of the Variable objects returned by CreateLocalVariable()&#47;CreateParameter(), since that's how you reference the variable when reading&#47;writing to it using Ast.Read()&#47;ReadDefined()&#47;Write()&#47;Assign() and friends.</p>
+<p>If you somehow set up things incorrectly, then some debug asserts in the DLR might get triggered at runtime when you try to use the variables (surprisingly enough things still seemed to work after ignoring the asserts, but that was probably a fluke).</p>
+<div class="wlWriterSmartContent" id="scid:0767317B-992E-4b12-91E0-4F059A8CECA8:aa579245-2b28-4021-b746-db42c1de003e" style="margin: 0px; padding: 0px; display: inline;">Technorati tags: <a href="http:&#47;&#47;technorati.com&#47;tags&#47;Dynamic%20Language%20Runtime" rel="tag">Dynamic Language Runtime</a>, <a href="http:&#47;&#47;technorati.com&#47;tags&#47;DLR" rel="tag">DLR</a>, <a href="http:&#47;&#47;technorati.com&#47;tags&#47;.NET" rel="tag">.NET</a></div><hints id="hah_hints"></hints><!--end_raw--></p>

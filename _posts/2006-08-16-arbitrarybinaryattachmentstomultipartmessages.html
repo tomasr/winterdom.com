@@ -1,0 +1,78 @@
+---
+layout: post
+status: publish
+published: true
+title: Arbitrary Binary Attachments to Multi-Part Messages
+author:
+  display_name: Tomas Restrepo
+  login: tomasr
+  email: tomas@winterdom.com
+  url: http://winterdom.com/
+author_login: tomasr
+author_email: tomas@winterdom.com
+author_url: http://winterdom.com/
+wordpress_id: 284
+wordpress_url: http://winterdom.com/2006/08/arbitrarybinaryattachmentstomultipartmessages
+date: '2006-08-16 22:08:27 +0000'
+date_gmt: '2006-08-16 22:08:27 +0000'
+categories:
+- BizTalk
+tags: []
+comments: []
+---
+<p><!--start_raw-->
+<p>A question on the public BizTalk newsgroups brought the question of how to add arbitrary binary message parts to a multi-part message in an orchestration and have them be correctly processed by the MIME encoding component (or the SMTP adapter) in BizTalk 2006. By this I mean arbitrary parts (such as the contents of a bynary file) without having it declared as part of the multi-part message type itself.</p></p>
+<p>The first thing the poster turned to was to create a custom .NET component that received the message as an argument and then called AddPart() on it passing a byte[] array as an argument. Unfortunately, this causes the message part to be encoded by BizTalk as an XML document with a single root node "<base64Binary>" which contains the entire array as a base64 encoded string. Not quite what we wanted.</p></p>
+<p>After looking around for a bit, I found a way to get around this by taking advantage of the IStreamFactory interface: By providing a very simple implementation of this interface, and creating the message part on top of that, we can get around this issue. Here's some sample code illustrating the concept:</p></p>
+<div class='codebg'><code><span class="Statement">public</span>&nbsp;<span class="Type">class</span>&nbsp;BinaryStreamFactory : RefCountedBase<span class="Operator">,</span><br &#47;><br />
+&nbsp;&nbsp; IRefCountedStreamFactory<br &#47;><br />
+<span class="Operator">{</span><br &#47;><br />
+&nbsp;&nbsp; <span class="Statement">private</span>&nbsp;Stream _stream<span class="Operator">;</span><br &#47;><br />
+<br &#47;><br />
+&nbsp;&nbsp; <span class="Statement">public</span>&nbsp;BinaryStreamFactory<span class="Operator">(</span>Stream stream<span class="Operator">)</span><br &#47;><br />
+&nbsp;&nbsp; <span class="Operator">{</span><br &#47;><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="Conditional">if</span>&nbsp;<span class="Operator">(</span>&nbsp;stream <span class="Operator">==</span>&nbsp;<span class="Constant">null</span>&nbsp;<span class="Operator">)</span><br &#47;><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span class="Exception">throw</span>&nbsp;<span class="Statement">new</span>&nbsp;<span class="StorageClass">ArgumentNullException</span><span class="Operator">(</span><span class="String">"stream"</span><span class="Operator">);</span><br &#47;><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="Conditional">if</span>&nbsp;<span class="Operator">(</span>&nbsp;stream<span class="Operator">.</span>Position <span class="Operator">!=</span>&nbsp;0&nbsp;<span class="Operator">)</span><br &#47;><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="Operator">{</span><br &#47;><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; stream<span class="Operator">.</span>Position <span class="Operator">=</span>&nbsp;0<span class="Operator">;</span><br &#47;><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="Operator">}</span><br &#47;><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;_stream <span class="Operator">=</span>&nbsp;stream<span class="Operator">;</span><br &#47;><br />
+&nbsp;&nbsp; <span class="Operator">}</span><br &#47;><br />
+<br &#47;><br />
+&nbsp;&nbsp; <span class="Statement">public</span>&nbsp;Stream CreateStream<span class="Operator">()</span><br &#47;><br />
+&nbsp;&nbsp; <span class="Operator">{</span><br &#47;><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="Statement">return</span>&nbsp;_stream<span class="Operator">;</span><br &#47;><br />
+&nbsp;&nbsp; <span class="Operator">}</span><br &#47;><br />
+<br &#47;><br />
+&nbsp;&nbsp; <span class="Statement">public</span>&nbsp;<span class="Type">override</span>&nbsp;<span class="Type">void</span>&nbsp;Dispose<span class="Operator">()</span><br &#47;><br />
+&nbsp;&nbsp; <span class="Operator">{</span><br &#47;><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;_stream<span class="Operator">.</span>Dispose<span class="Operator">();</span><br &#47;><br />
+&nbsp;&nbsp; <span class="Operator">}</span><br &#47;><br />
+<span class="Operator">}</span>&nbsp;<span class="Comment">&#47;&#47; class BinaryStreamFactory</span><br />
+</code></div></p>
+<p>First we need an implementation of IStreamFactory. In this case, we have a fairly simple implementation that just returns the stream we pass in the constructor. Notice also that we also implement it as a RefCounted object (something that BizTalk also looks for an allows us to ensure we know when to close the stream) using the helper RefCountedBase base class.</p></p>
+<p>Now all we need is to add the part by using this BinaryStreamFactory class:</p></p>
+<div class='codebg'><code><span class="Statement">public</span>&nbsp;<span class="StorageClass">static</span>&nbsp;<span class="Type">void</span>&nbsp;AttachStream<span class="Operator">(</span>XLANGMessage message<span class="Operator">,</span>&nbsp;<span class="Type">string</span>&nbsp;partName<span class="Operator">,</span>&nbsp;Stream stream<span class="Operator">)</span><br &#47;><br />
+<span class="Operator">{</span><br &#47;><br />
+&nbsp;&nbsp; <span class="Conditional">if</span>&nbsp;<span class="Operator">(</span>&nbsp;message <span class="Operator">==</span>&nbsp;<span class="Constant">null</span>&nbsp;<span class="Operator">)</span><br &#47;><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="Exception">throw</span>&nbsp;<span class="Statement">new</span>&nbsp;<span class="StorageClass">ArgumentNullException</span><span class="Operator">(</span><span class="String">"message"</span><span class="Operator">);</span><br &#47;><br />
+&nbsp;&nbsp; <span class="Conditional">if</span>&nbsp;<span class="Operator">(</span>&nbsp;partName <span class="Operator">==</span>&nbsp;<span class="Constant">null</span>&nbsp;<span class="Operator">)</span><br &#47;><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="Exception">throw</span>&nbsp;<span class="Statement">new</span>&nbsp;<span class="StorageClass">ArgumentNullException</span><span class="Operator">(</span><span class="String">"partName"</span><span class="Operator">);</span><br &#47;><br />
+&nbsp;&nbsp; <span class="Conditional">if</span>&nbsp;<span class="Operator">(</span>&nbsp;stream <span class="Operator">==</span>&nbsp;<span class="Constant">null</span>&nbsp;<span class="Operator">)</span><br &#47;><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="Exception">throw</span>&nbsp;<span class="Statement">new</span>&nbsp;<span class="StorageClass">ArgumentNullException</span><span class="Operator">(</span><span class="String">"stream"</span><span class="Operator">);</span><br &#47;><br />
+<br &#47;><br />
+&nbsp;&nbsp; IStreamFactory factory <span class="Operator">=</span>&nbsp;<span class="Statement">new</span>&nbsp;BinaryStreamFactory<span class="Operator">(</span>stream<span class="Operator">);</span><br &#47;><br />
+&nbsp;&nbsp; message<span class="Operator">.</span>AddPart<span class="Operator">(</span>factory<span class="Operator">,</span>&nbsp;partName<span class="Operator">);</span><br &#47;><br />
+<br &#47;><br />
+&nbsp;&nbsp; <span class="Comment">&#47;&#47;</span><br &#47;><br />
+&nbsp;&nbsp; <span class="Comment">&#47;&#47; set the Filename property so that it</span><br &#47;><br />
+&nbsp;&nbsp; <span class="Comment">&#47;&#47; gets correctly recognized in the mail</span><br &#47;><br />
+&nbsp;&nbsp; <span class="Comment">&#47;&#47; reader app when it is received as an attachment</span><br &#47;><br />
+&nbsp;&nbsp; <span class="Comment">&#47;&#47;</span><br &#47;><br />
+&nbsp;&nbsp; XLANGPart part <span class="Operator">=</span>&nbsp;message<span class="Operator">[</span>partName<span class="Operator">];</span><br &#47;><br />
+&nbsp;&nbsp; part<span class="Operator">.</span>SetPartProperty<span class="Operator">(</span><span class="Statement">typeof</span><span class="Operator">(</span>MIME<span class="Operator">.</span>FileName<span class="Operator">),</span>&nbsp;partName<span class="Operator">);</span><br &#47;><br />
+<span class="Operator">}</span><br />
+</code></div></p>
+<p>I built a simple, yet complete example of how to use it, which can be downloaded from <a href="http:&#47;&#47;www.winterdom.com&#47;dev&#47;bts&#47;BinaryAttachments.zip">here</a>.</p></p>
+<p>One thing to note, however, is that if you are using the SMTP adapter in&nbsp;BizTalk 2006, it already has some features that might make this whole process easier using the SMTP.Attachments context property. My friend Carlos had an example of this <a href="http:&#47;&#47;blogs.devdeo.com&#47;carlos.medina&#47;PermaLink,guid,ac10bba7-a146-411f-b134-6925ac0eef28.aspx">here</a>.</p><!--end_raw--></p>

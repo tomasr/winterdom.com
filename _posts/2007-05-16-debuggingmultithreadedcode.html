@@ -1,0 +1,38 @@
+---
+layout: post
+status: publish
+published: true
+title: Debugging Multi-Threaded Code
+author:
+  display_name: Tomas Restrepo
+  login: tomasr
+  email: tomas@winterdom.com
+  url: http://winterdom.com/
+author_login: tomasr
+author_email: tomas@winterdom.com
+author_url: http://winterdom.com/
+wordpress_id: 1031
+wordpress_url: http://winterdom.com/2007/05/debuggingmultithreadedcode
+date: '2007-05-16 19:13:11 +0000'
+date_gmt: '2007-05-16 19:13:11 +0000'
+categories:
+- ".NET"
+- Development
+tags: []
+comments:
+- id: 726
+  author: Scott Allen
+  author_email: scott@OdeTocode.com
+  author_url: http://www.OdeToCode.com/blogs/scot/
+  date: '2007-05-17 16:58:12 +0000'
+  date_gmt: '2007-05-17 16:58:12 +0000'
+  content: |
+    I have felt your pain!
+---
+<p><!--start_raw-->
+<p>I just spent several (as in > 8) hours between last night and tonight diagnosing what appeared to be a threading issue in a fairly large and complex code base, and it just reminded me just how hard diagnosing race conditions in multi-threading code can be.</p>
+<p>While the code has some unit tests (not as many as I'd like; working on that), the problem only became apparent in a larger, very specific scenario involving long execution times and a big load (in fact running the whole scenario uses 100% CPU time for more than 10 minutes). The entire test scenario actually moves&nbsp;some 40.000 messages or so.</p>
+<p>Directly diagnosing these things in the debugger is usually impossible. Either the debugger gets in the way (as it affects how multi-threaded code runs) or you can only see the results of the problem (i.e. catch an unexpected exception as it is thrown, which may be too late to see what the problem actually was). Unfortunately this may mean resorting to good old Debug.WriteLine().</p>
+<p>One thing that made this problem a lot harder to diagnose than I expected was that trying putting a simple Debug.WriteLine() statement is some significant points of the code base, cause the problem to simply go away. Not cool. This mean&nbsp;I couldn't output too much data and instead had to infer a few things from what little trace information I could get.</p>
+<p>I eventually was able to get to the source of the problem (at least I think I did). Turned out to be, indeed, a nasty race condition: A buffer was compacted and reused while some upper&nbsp;layers of the stack were still holding on to "views" of sections of the buffer without actually having consumed them yet (think something like <a href="http:&#47;&#47;java.sun.com&#47;j2se&#47;1.4.2&#47;docs&#47;api&#47;java&#47;nio&#47;ByteBuffer.html#slice()">sliced ByteBuffers</a> in Java). Right now, I have the local scenario running with no errors, though I still have some cleanup to do after messing around a lot to get to the bottom of the problem :)</p>
+<div class="wlWriterSmartContent" id="0767317B-992E-4b12-91E0-4F059A8CECA8:ad11799d-aeca-4f84-bd86-0a4508f10ce1" contenteditable="false" style="padding-right: 0px; display: inline; padding-left: 0px; padding-bottom: 0px; margin: 0px; padding-top: 0px">Technorati tags: <a href="http:&#47;&#47;technorati.com&#47;tags&#47;Multithreading" rel="tag">Multithreading</a>, <a href="http:&#47;&#47;technorati.com&#47;tags&#47;Debugging" rel="tag">Debugging</a></div><!--end_raw--></p>

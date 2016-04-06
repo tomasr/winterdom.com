@@ -1,0 +1,65 @@
+---
+layout: post
+status: publish
+published: true
+title: Janrain.OpenId and .NET 2.0
+author:
+  display_name: Tomas Restrepo
+  login: tomasr
+  email: tomas@winterdom.com
+  url: http://winterdom.com/
+author_login: tomasr
+author_email: tomas@winterdom.com
+author_url: http://winterdom.com/
+wordpress_id: 604
+wordpress_url: http://winterdom.com/2007/03/janrainopenidandnet20
+date: '2007-03-23 10:25:49 +0000'
+date_gmt: '2007-03-23 10:25:49 +0000'
+categories:
+- ".NET"
+- ASP.NET
+tags: []
+comments:
+- id: 408
+  author: Kevin Turner
+  author_email: kevin@janrain.com
+  author_url: http://kevin.janrain.com/
+  date: '2007-03-27 18:48:10 +0000'
+  date_gmt: '2007-03-27 18:48:10 +0000'
+  content: |
+    Hi Tomas,
+    Glad you were able to track this one down.  I found this post by accident, and hopefully the wonders of modern search engines will make it available to those who need to find it, but this is the kind of thing that it would be wonderful to pass on to the mailing list at http:&#47;&#47;lists.openidenabled.com&#47;mailman&#47;listinfo&#47;dev
+    Thanks,
+    - Kevin
+    JanRain
+- id: 409
+  author: Tim Marman
+  author_email: tim@marman.org
+  author_url: http://slashstar.com/blogs/tim
+  date: '2007-07-11 20:00:30 +0000'
+  date_gmt: '2007-07-11 20:00:30 +0000'
+  content: |
+    Did you ever work out the session state issue? I was going to dig in - we have two machines and the request is not guaranteed to go back to the same machine, so we sometimes see issues after authenticating with the OpenID provider.
+---
+<p><!--start_raw-->
+<p>I've been doing some work this week integrating with OpenID, using <a href="http:&#47;&#47;www.openidenabled.com&#47;openid&#47;libraries&#47;csharp">Janrain's OpenID library</a>. Scott Hanselman talked about his <a href="http:&#47;&#47;www.hanselman.com&#47;blog&#47;TheProgrammerPhasesOfGriefOrLanguageTranslationIsHarderThanItLooks.aspx">experience</a> with it a few weeks ago, though I'll admit that frankly, the fact that the library is in Boo didn't really cause me any concerns. I still don't know Boo, really, but the syntax is simple and clear enough that following the code and even attempting a few modifications wasn't really a problem. I do want to take a deeper look at it, though, as it is pretty cool.</p>
+<p>But I disgress. This post is not really about Boo, but about actually putting the library to good use to build an OpenID-enabled consumer application. The API for the library is actually pretty straightforward, and takes care of most of the grunt work of implementing a Smart-mode consumer application (as far as I can see the public API doesn't allow you to implement a pure dumb-mode application). However, after fighting a lot with it, I still couldn't get it to work correctly.</p>
+<p>Here's what happening: I was pretty quickly able to generate an initial redirect URL for the initial authentication process that would take me to the identity provider's sign on page. In my case, I'm using <a href="http:&#47;&#47;www.myopenid.com&#47;">MyOpenID</a> for testing. That part worked well and I was able to sign in using my openid url. However, the redirect back to my application after signing on was failing: MyOpenID would, at the last step, present an error screen saying that the logon request had an invalid value for the openid.mode. I was using checkid_setup, and I could see that perfectly well in the redirect URL, so surely that wasn't it. Or was it?</p>
+<p>After a lot of fiddling around I came to the conclussion that indeed the problem was not the mode argument, but that the redirect URL that Janrain's OpenID library was generating. I started looking at the library code (which is actually very, very readable) and adding a bunch of Debug.WriteLine() statements for tracing.</p>
+<p>What I discovered was that the library actually takes great care to ensure that the redirect URLs it creates are wellformed, manually encoding all arguments that are added into the URL QueryString. This is particularly important because with OpenID you send a lot of encoded URLs in the query string. </p>
+<p>At last I was able to discover that the URL got mangled in the last step just before it was returned to the application. Well, mangled&nbsp;isn't the right word. What actually was happening was that the arguments in the query string of the generated URL were getting un-escaped, which in turn was causing MyOpenID to choke on them at the end of the authentication process. The last few lines I'm talking about are in the AuthRequest.boo file and are this:</p>
+<pre>redir = UriBuilder(self.endpoint.ServerUrl)<br />
+UriUtil.AppendQueryArgs(redir, qs_args)<br />
+UriUtil.AppendQueryArgs(redir, self.extra_args)<br />
+<span style="color: blue">return</span> Uri(redir.ToString(), <span style="color: maroon">true</span>)<br />
+</pre></p>
+<p>Now, Janrain's library was originally written for .NET 1.1 (although the site claims it supports .NET 2.0 as well), but I was running in .NET 2.0. After looking a bit in the documentation, I ran into the the docs for this specific overload of the <a href="http:&#47;&#47;msdn2.microsoft.com&#47;en-us&#47;library&#47;9zh9wcb3.aspx">System.Uri class constructor</a>, which is now deprecated:</p></p>
+<blockquote>
+<p><em>"</em><a><em>The constructor has been deprecated. Please use new Uri(string). The dontEscape parameter is deprecated and is always false</em></a><em>"</em></p></blockquote></p>
+<p>Of course, the orgiinal developers of the library knew very well they had already escaped their querystring properly and didn't want the Uri class to mess with it, but since the Uri class in .NET 2.0 simply ignores the dontEscape parameter and goes ahead and escapes it, it ended up breaking things up pretty heavily. It's not that it unescaped it, it was more that it didn't deal very well with embedded URLs in the query string.</p></p>
+<p>Now, I wanted to see if I could work around it without changing anything in the library, and found the promising <a href="http:&#47;&#47;msdn2.microsoft.com&#47;en-us&#47;library&#47;system.uri.escapeuristring.aspx">Uri.EscapeUriString()</a> method. I figured I could try to run the screwed up Uri I got from the library and see if it fixed it. No dice, it didn't deal with the URLs any better. I have yet to found a good way to work around this issue while keeping the use of&nbsp; the Uri class here, so if anyone has any suggestions, I'd sure appreciate them.</p></p>
+<p>For now, I resorted to simply modifying the CreateRedirectUrl() method of the AuthRequest class to return the URL as a string instead of a System.Uri instance, like this:</p>
+<pre><span style="color: blue">return</span> redir.ToString()</pre></p>
+<p>It's a bit of a hack, and I really didn't want to modify the library, but at least for now it allowed me to successfully pass the authentication process. My work is not yet complete, though, as I'm running into a separate issue with session state that has nothing to do with OpenID at all, but I can work around that in time.</p></p>
+<p>If you're using this library, this might be something to keep in mind!</p></p>
+<div class="wlWriterSmartContent" id="0767317B-992E-4b12-91E0-4F059A8CECA8:a62f141a-29be-49d1-b481-0732a7750dfd" contenteditable="false" style="padding-right: 0px; display: inline; padding-left: 0px; padding-bottom: 0px; margin: 0px; padding-top: 0px">Technorati tags: <a href="http:&#47;&#47;technorati.com&#47;tags&#47;OpenID" rel="tag">OpenID</a>, <a href="http:&#47;&#47;technorati.com&#47;tags&#47;Janrain" rel="tag">Janrain</a>, <a href="http:&#47;&#47;technorati.com&#47;tags&#47;Boo" rel="tag">Boo</a>, <a href="http:&#47;&#47;technorati.com&#47;tags&#47;.NET" rel="tag">.NET</a></div><!--end_raw--></p>

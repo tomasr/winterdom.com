@@ -1,0 +1,37 @@
+---
+layout: post
+status: publish
+published: true
+title: Setting attachment filename with the SMTP Adapter
+author:
+  display_name: Tomas Restrepo
+  login: tomasr
+  email: tomas@winterdom.com
+  url: http://winterdom.com/
+author_login: tomasr
+author_email: tomas@winterdom.com
+author_url: http://winterdom.com/
+wordpress_id: 997
+wordpress_url: http://winterdom.com/2006/07/settingattachmentfilenamewiththesmtpadapter
+date: '2006-07-27 07:05:52 +0000'
+date_gmt: '2006-07-27 07:05:52 +0000'
+categories:
+- BizTalk
+tags: []
+comments:
+- id: 5486
+  author: Jay
+  author_email: jsprenkle@gmail.com
+  author_url: ''
+  date: '2012-12-27 17:09:25 +0000'
+  date_gmt: '2012-12-27 17:09:25 +0000'
+  content: "Thanks! Helped me figure out my issue.\r\n\r\nIn my case I'm creating
+    and sending a single attachment with some explanatory text.\r\nI don't use the
+    mime encoder in the pipeline. I have only a flat file assembler to create a \".csv\"
+    file from the input message. Once it's created I setup the email in an assignment
+    shape:\r\n\r\nEMail=ErrorList;\r\nEMail(SMTP.Subject) = \"TESTMAIL\";\r\nEMail(SMTP.EmailBodyText)
+    = \"attached is the data created within the orchestration\";\r\nEMail(MIME.FileName)
+    = \"response.csv\";\r\n\r\nVery simple and gets the job done."
+---
+<p><!--start_raw-->In BizTalk 2004, if you wanted to specify how an attachment filename was defined when sending an email through the SMTP adapter, you'd need to use the SMTPUtils class (whose code was included in the BizTalk documentation), like this:<br><br>SMTPUtils.Part.SetFileName(Message, filename);<br><br>In BizTalk 2006, however, using SMTPUtils is no longer necessary, thanks to the fact that now you can directly reference the attachment part's properties using an expression in your orchestration. So now, you can do this:<br><br><Message>.<Part>(MIME.FileName) = <filename>;<br><br>e.g.<br><br>EMail.OriginalMessage(MIME.FileName) = "OriginalMessage.xml";<br><br>
+<p></p><!--end_raw--></p>

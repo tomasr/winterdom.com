@@ -1,0 +1,95 @@
+---
+layout: post
+status: publish
+published: true
+title: KDE4 on Kubuntu 7.10
+author:
+  display_name: Tomas Restrepo
+  login: tomasr
+  email: tomas@winterdom.com
+  url: http://winterdom.com/
+author_login: tomasr
+author_email: tomas@winterdom.com
+author_url: http://winterdom.com/
+wordpress_id: 877
+wordpress_url: http://winterdom.com/2008/01/kde4onkubuntu710
+date: '2008-01-12 10:40:09 +0000'
+date_gmt: '2008-01-12 10:40:09 +0000'
+categories:
+- Linux
+tags: []
+comments:
+- id: 593
+  author: jp
+  author_email: ''
+  author_url: ''
+  date: '2008-01-15 00:58:40 +0000'
+  date_gmt: '2008-01-15 00:58:40 +0000'
+  content: |
+    The elevated privileges problem is a kubuntu problem, not really kde 4. That is, kde 4 isn't configured to fully run off of su since ubuntu-based distros don't set a password on root. Simpler fix: sudo passwd root
+- id: 594
+  author: MilitantPotato
+  author_email: ''
+  author_url: ''
+  date: '2008-01-15 09:24:20 +0000'
+  date_gmt: '2008-01-15 09:24:20 +0000'
+  content: |
+    Using sudo for GUI programs isn't a good thing.
+    See if kdesudo works, as I believe that bug comes from the use of kdesu.
+- id: 595
+  author: John
+  author_email: jlawman@jelcom.co.uk
+  author_url: ''
+  date: '2008-01-19 05:45:00 +0000'
+  date_gmt: '2008-01-19 05:45:00 +0000'
+  content: |
+    I tried KDE 4 (Kbuntu) this morning and I have to say I am underwhelmed by the whole experience.
+    For example, the new start menu just feels "a bit clunky", the daft bouncing "busy" mouse pointer is still there and no networking configuration app (it may be there but I could not see it).
+    To be fair Kubuntu is not the optimal distribution for KDE so maybe some of the problems is with the distribution.
+    The positive side, KDE 4 look nice, seems quite fast on my laptop and the widgets are great.
+    I'll keep an eye on it's development and keep trying it over the next few months - even try a different distribution.
+    KDE 4 has a lot of potential.
+    For the time being I'll stick with Ubuntu and Gnome.
+- id: 596
+  author: John Bilicki III
+  author_email: jab_creations@yahoo.com
+  author_url: http://www.jabcreations.com/
+  date: '2008-02-19 04:35:49 +0000'
+  date_gmt: '2008-02-19 04:35:49 +0000'
+  content: |
+    I can't find KDE 4 RPM for Kubuntu. I downloaded and installed Kubuntu 7.10 after KDE 4's release simply to test the new version of Konqueror. Go figure that the site did not actually list what version of KDE desktop was part of the ISO. I can't find any RPMs. Can you help me out please?
+- id: 597
+  author: Tomas Restrepo
+  author_email: tomas@winterdom.com
+  author_url: http://www.winterdom.com/weblog/
+  date: '2008-02-19 05:02:15 +0000'
+  date_gmt: '2008-02-19 05:02:15 +0000'
+  content: |
+    John: You don't need to download the RPMs, apt-get can be used to install it; just follow the instructions at http:&#47;&#47;kubuntu.org&#47;announcements&#47;kde-4.0.php, which basically boils down to:
+    sudo apt-get install kde4-core
+---
+<p><!--start_raw-->
+<p>Yesterday I decided to go a bit on the bleeding edge and went ahead and <a href="http:&#47;&#47;kubuntu.org&#47;announcements&#47;kde-4.0.php">installed KDE 4.0</a> on my machine running Kubuntu Gutsy Gibbon. I started installing kde4-core first, then went for the whole kde4 package.</p>
+<p><a href="http:&#47;&#47;www.winterdom.com&#47;weblog&#47;content&#47;binary&#47;WindowsLiveWriter&#47;KDE4onKubuntu7.10_9E5C&#47;KubuntuKDE4_2.jpg"><img style="border: 0px none ;" alt="KubuntuKDE4" src="http:&#47;&#47;www.winterdom.com&#47;weblog&#47;content&#47;binary&#47;WindowsLiveWriter&#47;KDE4onKubuntu7.10_9E5C&#47;KubuntuKDE4_thumb.jpg" align="right" border="0" height="179" width="284"></a> For the most part, the installation went OK. There are many UI changes, and I'm not sure I like all of them, but it's nice enough for the most part. I did run into some issues, so maybe this might help others solve them.</p><br />
+<h2>Graphics Corruption</h2>
+<p>KDE 4.0 tends to use a bit more resources of your graphics card. Because of the <a href="http:&#47;&#47;www.winterdom.com&#47;weblog&#47;2007&#47;10&#47;23&#47;FixingSleepInUbuntu710.aspx">sleep&#47;hibernate issue</a> I was running the open source Radeon driver (which doesn't do much acceleration), so it was very slow at first and I was experiencing some nasty graphics corruptions at times that forced me to restart the machine. </p>
+<p>I then tried enabling again the restricted fxglr driver that Ubuntu can install automatically, and that felt a bit faster, but I was still suffering some heavy video corruption. </p>
+<p>Finally, I tried ATI's (AMD's, really) latest linux driver, which I downloaded from <a href="http:&#47;&#47;ati.amd.com&#47;support&#47;drivers&#47;linux&#47;linux-radeon.html">here</a>. This is actually working much better: I'm seeing no video corruption at all (as long as XComposite is disabled) and seems a bit snappier, though a few things in KDE4 (most notably, the shutdown screen) are just very sluggish overall regardless of which driver I was using.</p>
+<p>Of course, now sleep&#47;hibernate don't work again, so I need to try to find a workaround for that.</p>
+<p><b>Update:</b> I noticed that the fglrx driver wasn't loading properly, so I went in and removed all traces of the older ubuntu driver versions and reinstalled the ATI driver again, and now I've got both 2D and 3D acceleration (i.e. with DRI) working. Plus, it seems that sleep, at least is now working correctly again. Whoot!<br></p><br />
+<h2>Can't run with Elevated Privileges</h2>
+<p>The second problem I started to notice was that I couldn't run applications that required elevated privileges from the KDE menu. I could still run them using 'sudo' from the command line, but if I tried running them from the KDE menu, it would keep rejecting the password I was specifying. Sounds very like what other people reported <a href="http:&#47;&#47;kubuntuforums.net&#47;forums&#47;index.php?topic=3089653.0">here</a>.</p>
+<p>I was able to fix this by editing my ~&#47;.kde4&#47;share&#47;config&#47;kdeglobals file, and adding this at the bottom:</p> <code>[super-user-command]   <br>super-user-command=sudo </code><br />
+<h2>Wireless Networking</h2>
+<p>Whenever I boot directly into KDE4, I have no network right at the start, because the Wireless connection isn't configured. </p>
+<p>Under KDE3, it still works right away because I have setup knetworkmanager already setup with my network details and it auto starts when I login. For now, I've added a script in ~.&#47;kde4&#47;env&#47; that starts knetworkmanager when I login.</p>
+<p>Unfortunately, it seems the KDE4 updates don't include a native KDE4 version of knetworkmanager so it seems it still runs as a KDE3 app.</p>
+<p><strong>The Shutdown Screen</strong></p>
+<p>The shutdown dialog in KDE4 just nags me, for two reasons:</p>
+<ol>
+<li>The dimming on the screen while it is displayed takes forever in my machine; it's very slow, and the dialog itself takes quite a bit of time to paint correctly. I'm sure this has something to do with my video card settings, but I wish it wasn't quite so.</li>
+<li>KDE4 asks you twice for the same information: Once you select the "leave"&nbsp; option in the KDE menu, it asks you whether to logout&#47;restart&#47;shutdown, but all three options take you to the same dialog with the same choices again! Just dumb from an usability standpoint.</li> </ol>
+<p><strong>Other Problems</strong></p>
+<p>One issue I have not yet researched too much, but that is causing some issues is that kwalletmanager seems to crash right after I log in every other time, forcing a full reboot to get it to work again, which obviously breaks havoc with other things, including, for example, the wallpaper not getting painted on the desktop [1]. Hopefully this stuff will be fixed by the time Hardy Heron ships.</p>
+<p>[1] <b>Update:</b> Looks like this isn't related to the other issue at all. KDE simply refuses to paint the wallpaper on many ocassions (but opening the dialog settings and clicking apply fixes it). No idea yet what the issue is.<br></p>
+<div class="wlWriterSmartContent" id="scid:0767317B-992E-4b12-91E0-4F059A8CECA8:a880a5e6-ffd8-498a-ade1-a21508bed4a8" style="margin: 0px; padding: 0px; display: inline;">Technorati tags: <a href="http:&#47;&#47;technorati.com&#47;tags&#47;KDE4" rel="tag">KDE4</a>, <a href="http:&#47;&#47;technorati.com&#47;tags&#47;Ubuntu" rel="tag">Ubuntu</a></div><!--end_raw--></p>

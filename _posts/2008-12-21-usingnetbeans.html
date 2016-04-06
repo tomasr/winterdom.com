@@ -1,0 +1,43 @@
+---
+layout: post
+status: publish
+published: true
+title: Using NetBeans
+author:
+  display_name: Tomas Restrepo
+  login: tomasr
+  email: tomas@winterdom.com
+  url: http://winterdom.com/
+author_login: tomasr
+author_email: tomas@winterdom.com
+author_url: http://winterdom.com/
+wordpress_id: 594
+wordpress_url: http://winterdom.com/2008/12/usingnetbeans
+date: '2008-12-21 05:22:39 +0000'
+date_gmt: '2008-12-21 05:22:39 +0000'
+categories:
+- Tools
+- Java
+tags: []
+comments: []
+---
+<p><!--start_raw-->
+<p>A few months ago I <a href="http:&#47;&#47;winterdom.com&#47;weblog&#47;2008&#47;05&#47;26&#47;EnablingFontSmoothingOnNetBeans.aspx">mentioned</a> I had started using <a href="http:&#47;&#47;www.netbeans.org&#47;">NetBeans</a> 6.1 for my java development instead of <a href="http:&#47;&#47;www.eclipse.org&#47;">Eclipse</a>, which was my tool of choice until then. The reason for the change at that time was that I needed to look into some <a href="http:&#47;&#47;en.wikipedia.org&#47;wiki&#47;Java_Business_Integration">JBI</a> stuff and using NetBeans + Glassfish was a natural choice for that.</p>
+<p>By the time I was through with that project and had started to work on other things I realized that I had grown rather used to NetBeans and actually preferred it over Eclipse! Both are excellent developer environments, but I actually like the NetBeans UI a little better and sort of found it nicer to use overall. </p>
+<p>A couple of weeks ago I finally moved to <a href="http:&#47;&#47;www.netbeans.org&#47;community&#47;releases&#47;65&#47;">NetBeans 6.5</a>, the latest release, and it&rsquo;s been working pretty nicely for me. A few things have contributed to this:</p><br />
+<h2>A decent color scheme</h2>
+<p>The default NetBeans configuration isn&rsquo;t very usable for someone that prefers dark color schemes on their editor like me; and doesn&rsquo;t include many default choices.</p>
+<p>However, I found the additional Ruby themes plugin, which includes the Aloha and Dark Ruby Pastels schemes. I disliked the second (too similar to Vibrant Ink, which I hate), but Aloha was fairly nice.</p>
+<p>With a bit of customization of Aloha to tweak it a bit for Java code I ended up with something looking like this:</p>
+<p><a href="http:&#47;&#47;winterdom.com&#47;weblog&#47;content&#47;binary&#47;WindowsLiveWriter&#47;UsingNetBeans_75B5&#47;netbeans_2.png"><img title="netbeans" style="border-right: 0px; border-top: 0px; display: inline; border-left: 0px; border-bottom: 0px" height="480" alt="netbeans" src="http:&#47;&#47;winterdom.com&#47;weblog&#47;content&#47;binary&#47;WindowsLiveWriter&#47;UsingNetBeans_75B5&#47;netbeans_thumb.png" width="553" border="0"></a> </p>
+<p>You can install the extra ruby themes from the Tools &ndash;> Plugins menu option.</p><br />
+<h2>jVi</h2>
+<p>It&rsquo;s not secret I&rsquo;m a Vim user, and I rather like the way Vim handles editing text and the its modal behavior. In Visual Studio, I use the most excellent <a href="http:&#47;&#47;www.viemu.com&#47;">Viemu</a> plugin, which is the only plugin I consider a must-have these days. I&rsquo;ve <a href="http:&#47;&#47;winterdom.com&#47;weblog&#47;2007&#47;12&#47;18&#47;ViEmu.aspx">written about</a> Viemu before.</p>
+<p>NetBeans, however, didn&rsquo;t have anything like this, or so I thought, until I ran into <a href="http:&#47;&#47;jvi.sourceforge.net&#47;">jVi</a> on sourceforge. What a fantastic tool! It&rsquo;s actually a subset of Vim embedded into NetBeans and supporting the modal editor behavior and all the common key bindings and operations.</p>
+<p>I downloaded the alpha for NetBeans 6.5 and it&rsquo;s been extremely stable for me and working great! I love it!</p>
+<p><a href="http:&#47;&#47;winterdom.com&#47;weblog&#47;content&#47;binary&#47;WindowsLiveWriter&#47;UsingNetBeans_75B5&#47;jvi_2.png"><img title="jvi" style="border-right: 0px; border-top: 0px; display: inline; border-left: 0px; border-bottom: 0px" height="74" alt="jvi" src="http:&#47;&#47;winterdom.com&#47;weblog&#47;content&#47;binary&#47;WindowsLiveWriter&#47;UsingNetBeans_75B5&#47;jvi_thumb.png" width="557" border="0"></a> </p>
+<p>One downside with jVi I ran into is that it&rsquo;s configured through it&rsquo;s own set of settings, some of which overlap (and take precedence) over the NetBeans one, like the tab behavior. But once you&rsquo;ve configured it to your liking it works very nicely, though occasionally conflicts a little bit with NetBeans functionality (not often, though).</p><br />
+<h2>What I don&rsquo;t like about NetBeans</h2>
+<p>NetBeans does have a couple of issues that nag me. One is that memory usage is still fairly high (usually around 200MB), however, the slowdowns that I used to see after extended use with 6.1 don&rsquo;t seem to happen with 6.5 anymore, but I&rsquo;m not sure if that&rsquo;s because of changes in NetBeans itself or because I finally bit the bullet and installed JDK 1.6 to run it.</p>
+<p>The second issue is startup time: It still takes forever to load from scratch. Fortunately, performance once it finishes loading is quite acceptable and the editor is usually very responsive, so it hasn&rsquo;t been that much of an issue. It helps a lot that I usually just leave it open and save the state of my VMs instead.</p>
+<p>I still turn to Vim whenever I need to do some quick editing and don&rsquo;t need the full IDE, but then again, I also do that for C# code. That said, VS 2008 usually loads a lot faster than VS2005 for me, so this is less of an issue there (it helps that I don&rsquo;t install as much crap as I did for 2005).</p><!--end_raw--></p>

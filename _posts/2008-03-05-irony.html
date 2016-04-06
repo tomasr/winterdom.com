@@ -1,0 +1,45 @@
+---
+layout: post
+status: publish
+published: true
+title: Irony
+author:
+  display_name: Tomas Restrepo
+  login: tomasr
+  email: tomas@winterdom.com
+  url: http://winterdom.com/
+author_login: tomasr
+author_email: tomas@winterdom.com
+author_url: http://winterdom.com/
+wordpress_id: 472
+wordpress_url: http://winterdom.com/2008/03/irony
+date: '2008-03-05 04:33:17 +0000'
+date_gmt: '2008-03-05 04:33:17 +0000'
+categories:
+- ".NET"
+tags: []
+comments:
+- id: 328
+  author: Pavel
+  author_email: pavel.savara@gmail.com
+  author_url: ''
+  date: '2008-03-05 06:45:19 +0000'
+  date_gmt: '2008-03-05 06:45:19 +0000'
+  content: |
+    Hi,
+    there is C# implementation for super tool-set Goldparser. I used it for simple assembler language and BNF debugger of goldparser was most useful part.
+    http:&#47;&#47;www.calitha.com&#47;goldparser.html
+    http:&#47;&#47;www.devincook.com&#47;goldparser&#47;
+---
+<p><!--start_raw-->
+<p>I've been playing a bit with <a href="http:&#47;&#47;www.codeplex.com&#47;irony&#47;">Irony</a>, an open source .NET compiler construction toolkit created by Roman Ivantsov. My interest in Irony was sparked after watching the video of Roman's presentation at <a href="http:&#47;&#47;langnetsymposium.com&#47;talks.asp">Lang.NET</a> 2008 (I'd link to it, but they are unavailable at the moment).</p>
+<p>Currently, I have a little side project where I've been experimenting with the Dynamic Language Runtime, for which I was using GPPG and GPLEX to build the parser and tokenizer. The tools are OK, but it certainly requires quite a bit of manual work, you need to keep regenerating the code, and, frankly, the error messages both tools produce leave a bit to be desired.</p>
+<p>I'm aware of <a href="http:&#47;&#47;www.antlr.org&#47;">ANTLR</a>, but frankly don't want to mess around with the whole java generator thing at this time (already have way too much crap around).</p>
+<p>Irony is pretty interesting because all the tokenizer and grammar rules are expressed directly in C# code as a simple object model built from Terminal and NontTerminal objects. The syntax is fairly intuitive because Irony overloads several operators like | and &amp; to make the grammar definition look a lot similar to BNF. Here's a sample of what a simple expression grammar in Irony looks like: <a title="http:&#47;&#47;www.codeplex.com&#47;irony&#47;Wiki&#47;View.aspx?title=Expression%20grammar%20sample&amp;referringTitle=Home" href="http:&#47;&#47;www.codeplex.com&#47;irony&#47;Wiki&#47;View.aspx?title=Expression%20grammar%20sample">http:&#47;&#47;www.codeplex.com&#47;irony&#47;Wiki&#47;View.aspx?title=Expression%20grammar%20sample</a></p>
+<p>After testing a bit Irony, I'm very encouraged to give it a try on my pet project, so I've been playing around with my grammar (unfortunately broken at this time because of some ambiguities I haven't resolved yet), and its looking very nice overall. </p>
+<p>There's also a useful "Grammar Explorer" tool included with the Irony code which can be used to experiment and diagnose a compiled Irony grammar. Unfortunately right now it just has a predefined list of a few test grammars included with the project, but extending it to use others is trivial anyway, so I've been using it to test my grammar before actually committing to it.</p>
+<p>Another useful thing in Irony is the concept of TokenFilters, which are objects that can filter the token stream as it is produced by the scanner and can either remove&#47;modify&#47;add new tokens as necessary or provide extra validations. Right now Irony provides two built-in filters, but you can extend it with new ones as necessary:</p>
+<ul>
+<li>CodeOutlineFilter, which can be used in languages where whitespace is significant (indentation and&#47;or newlines).</li>
+<li>BraceMatchingFilter for matching brace characters, for example '()' in scheme&#47;lisp.</li> </ul>
+<div class="wlWriterSmartContent" id="scid:0767317B-992E-4b12-91E0-4F059A8CECA8:c9484206-6fe2-4f34-ad30-55c289fc9ccb" style="padding-right: 0px; display: inline; padding-left: 0px; padding-bottom: 0px; margin: 0px; padding-top: 0px">Technorati tags: <a href="http:&#47;&#47;technorati.com&#47;tags&#47;Irony" rel="tag">Irony</a></div><!--end_raw--></p>

@@ -1,0 +1,29 @@
+---
+layout: post
+status: publish
+published: true
+title: 'HOWTO: Disable CRL Checking for Certificates in BizTalk'
+author:
+  display_name: Tomas Restrepo
+  login: tomasr
+  email: tomas@winterdom.com
+  url: http://winterdom.com/
+author_login: tomasr
+author_email: tomas@winterdom.com
+author_url: http://winterdom.com/
+wordpress_id: 558
+wordpress_url: http://winterdom.com/2006/03/howtodisablecrlcheckingforcertificatesinbiztalk
+date: '2006-03-13 18:11:43 +0000'
+date_gmt: '2006-03-13 18:11:43 +0000'
+categories:
+- BizTalk
+tags: []
+comments: []
+---
+<p><!--start_raw--><P>When using the MIME&#47;SMIME Decoder Pipeline Component in BizTalk Server 2004 and 2006, you might get an error at runtime saying that "The revocation status of the certificate used to sign the message is unknown" or something to that effect.</P><br />
+<P>The cause of this error is that BizTalk is trying to check for certificate revocation against the Certificate Revocation List (CRL) of the certificate authority that generated the certificate used. There are two ways to fix this problem: </P><br />
+<P>The first one (and I would say preferred one in some scenarios) would be to configure things so that BizTalk can actually query the CRL. How this is done will depend on who your certificate authority is.</P><br />
+<P>The second option is the easiest, though most insecure one, and is to disable CRL checking altogether. You do this by setting the "Check Certificate Revocation" property of the MIME&#47;SMIME Decoder component to false, like this:</P><br />
+<P><IMG src="http:&#47;&#47;www.winterdom.com&#47;weblog&#47;content&#47;binary&#47;DisableCRL.png" border=0></P><br />
+<P>Once you've done this, just recompile and re-gac (or redeploy) your pipeline and you'll be all set. I would also recommend checking the <A href="http:&#47;&#47;msdn.microsoft.com&#47;biztalk&#47;hlarchive&#47;default.aspx?pull=&#47;library&#47;en-us&#47;BTS_2004WP&#47;html&#47;6dce8c77-002e-487d-8e2f-72052cf2f1ce.asp">BizTalk Server 2004 Technical Guide for Certificate Management</A> document, which should provide some good practices for working with X.509 certificates in BizTalk Server.<BR></P><br />
+<P></P><!--end_raw--></p>

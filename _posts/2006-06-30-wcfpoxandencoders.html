@@ -1,0 +1,36 @@
+---
+layout: post
+status: publish
+published: true
+title: WCF, POX and Encoders
+author:
+  display_name: Tomas Restrepo
+  login: tomasr
+  email: tomas@winterdom.com
+  url: http://winterdom.com/
+author_login: tomasr
+author_email: tomas@winterdom.com
+author_url: http://winterdom.com/
+wordpress_id: 984
+wordpress_url: http://winterdom.com/2006/06/wcfpoxandencoders
+date: '2006-06-30 07:32:32 +0000'
+date_gmt: '2006-06-30 07:32:32 +0000'
+categories:
+- ".NET"
+- BizTalk
+- WCF
+- WinFX
+tags: []
+comments:
+- id: 688
+  author: Steve Maine
+  author_email: stevem@hyperthink.net
+  author_url: http://hyperthink.net/blog
+  date: '2006-07-06 16:56:14 +0000'
+  date_gmt: '2006-07-06 16:56:14 +0000'
+  content: |
+    Fundamentally, the job of a MessageEncoder is fairly simple. It takes in some random bytes (a byte[] or a stream) and surfaces an instance of System.ServiceModel.Channels.Message up to the higher layers of the stack. How that transformation gets accomplished is designed to be opaque to the rest of the system.
+    We think of encoders as things that freely convert between two equivalent representations of the same fundamental information set. More advanced transformations (e.g. adding&#47;removing headers) are best done above the Encoder as layered channel. Our general rule is that an Encoder changes only the representation of the message, not its information model or contents.
+---
+<p><!--start_raw--><a href="http:&#47;&#47;blogs.msdn.com&#47;drnick&#47;">Nicholas Allen</a> <a href="http:&#47;&#47;blogs.msdn.com&#47;drnick&#47;archive&#47;2006&#47;06&#47;26&#47;646987.aspx">has</a> <a href="http:&#47;&#47;blogs.msdn.com&#47;drnick&#47;archive&#47;2006&#47;06&#47;28&#47;649463.aspx">been</a> <a href="http:&#47;&#47;blogs.msdn.com&#47;drnick&#47;archive&#47;2006&#47;06&#47;29&#47;650583.aspx">writing</a> <a href="http:&#47;&#47;blogs.msdn.com&#47;drnick&#47;archive&#47;2006&#47;06&#47;30&#47;651983.aspx">about</a> some of the changes in the June CTP of WCF (his blog is an excellent resource, by the way), and in entry #2 he talks a bit about some changes made to better support POX style applications in WCF. I'm very happy the WCF team is doing the right thing and fixing this kind of issues to support other application styles other than SOAP at the right level of abstraction in the platform. That's a very, very good think, particularly this early into the product lifetime (I'm assuming we'll get multiple versions of WCF over a number of years).<br><br>That said, one thing did get my attention: that the right abstraction level to fix this in was the normal Text Encoder. There are <a href="http:&#47;&#47;hyperthink.net&#47;blog&#47;PermaLink,guid,26833a41-6aa8-4aa3-bfa1-e64e78856945.aspx">several</a> <a href="http:&#47;&#47;staff.newtelligence.net&#47;clemensv&#47;PermaLink,guid,51327201-07c7-4a30-b79c-53842cda1e77.aspx">good</a> <a href="http:&#47;&#47;blogs.msdn.com&#47;drnick&#47;archive&#47;2006&#47;05&#47;09&#47;592933.aspx">blog</a> <a href="http:&#47;&#47;blogs.msdn.com&#47;drnick&#47;archive&#47;2006&#47;05&#47;10&#47;594134.aspx">entries</a> <a href="http:&#47;&#47;blogs.msdn.com&#47;drnick&#47;archive&#47;2006&#47;05&#47;15&#47;596638.aspx">by</a> several Indigettes on the topic of Message Encoders, but I'm not so sure I fully understand exactly how much (or many) responsabilities a Message Encoder has to fulfill in the WinFX architecture. Is there somewhere an explicit list of what those responsabilities are?<br><br>Maybe I'm misunderstanding how this goes, but it seems to me like the Message Encoder combines responsabilities for both message on-the-wire representation (i.e. XML, binary and so on), message encoding (in the case of text messages like XML), message assembling (i.e. introducing headers) and a few other things. <br><br>Comparisons are never nice, but they are incredibly useful to understand technology. One thing I would love to see is a comparison of the WCF channel and message encoder architecture to the BizTalk messaging architecture. They are definitely very differen beasts serving different purposes, but what I'd really like to get a hold on is how the functionality and extensibility offered by BizTalk pipelines (multi-stage, with clearly defined responsabilities for each stage) relates and compares to how WCF processes incoming messages and generates outgoing messages. I think this becomes even more interesting (and important) with the appearance of the WinFX adapter framework (<a href="http:&#47;&#47;geekswithblogs.net&#47;ajames&#47;archive&#47;2006&#47;06&#47;09&#47;81287.aspx">here's</a> a good introduction) coming in <a href="http:&#47;&#47;www.microsoft.com&#47;presspass&#47;press&#47;2006&#47;jun06&#47;06-06EtEBusinessProcessPR.mspx">BizTalk Server 2006 R2</a>.<br>
+<p></p><!--end_raw--></p>

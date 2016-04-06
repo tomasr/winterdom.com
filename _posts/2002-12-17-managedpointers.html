@@ -1,0 +1,55 @@
+---
+layout: post
+status: publish
+published: true
+title: Managed Pointers
+author:
+  display_name: Tomas Restrepo
+  login: tomasr
+  email: tomas@winterdom.com
+  url: http://winterdom.com/
+author_login: tomasr
+author_email: tomas@winterdom.com
+author_url: http://winterdom.com/
+wordpress_id: 31
+wordpress_url: http://winterdom.com/2002/12/managedpointers
+date: '2002-12-17 19:52:51 +0000'
+date_gmt: '2002-12-17 19:52:51 +0000'
+categories:
+- ".NET"
+tags: []
+comments:
+- id: 29
+  author: Jeroen Frijters
+  author_email: blog@jeroen.nu
+  author_url: http://jeroen.nu/
+  date: '2002-12-18 02:07:35 +0000'
+  date_gmt: '2002-12-18 02:07:35 +0000'
+  content: |
+    <p>Say you have a method that takes a reference to an int as argument (a managed pointer), the fact that you can pass an unmanaged pointer to an int can be convenient.<br &#47;>
+    By "safe" they mean that the GC will not be confused. If the managed pointer points to unmanaged data, it is perfectly fine to convert it to an unmanaged pointer (i.e. it is "safe"), however when the managed pointer points to managed data, you shouldn't convert the pointer to an unmanaged pointer (but you could, although that would be "unsafe", i.e. the system would probably crash at some later point in time).</p>
+- id: 30
+  author: Tomas Restrepo
+  author_email: tomasr@mvps.org
+  author_url: http://www.winterdom.com/weblog
+  date: '2002-12-18 19:15:19 +0000'
+  date_gmt: '2002-12-18 19:15:19 +0000'
+  content: |
+    <p>So, to put it another way: The conversion is safe. Using the resulting pointer probably isn't :)</p>
+- id: 31
+  author: David Bennett
+  author_email: dmb@pfxcorp.com
+  author_url: ''
+  date: '2002-12-30 02:55:51 +0000'
+  date_gmt: '2002-12-30 02:55:51 +0000'
+  content: |
+    <p>No, that's not what they mean. In this context, "safe" means a valid conversion so that the pointer still points to what it's supposed to ie the thing it used to point to cannot have been moved&#47;freed by the GC.<br &#47;>
+    In the wider sense it's far from safe. Give me one carefully chosen managed pointer and a little knowledge, and if I can convert it to unmanaged I can take over the CLR!!!<br &#47;>
+    Lemme see...start with a pointer to a value type as the only field in an object; back up to the object header; find the uplink; ... (hee hee, this is fun!)</p>
+---
+<p><!--start_raw-->While researching a problem someone was having in the newsgroups this weekend, I ran into section 1.1.4.2 of the <a href="http:&#47;&#47;msdn.microsoft.com&#47;net&#47;ecma&#47;">CIL spec</a> (Partition III), which covers managed pointers. While I understand what this section talks about, some questions did come up which I'm not sure about:</p>
+<ul>
+<li>What would managed pointers pointing to unmanaged memory be useful for? Obviously, the GC can't do anything with the memory they point to, anyway.</li>
+<li>Regarding the managed-to-unmanaged pointer conversion safety, I'm not sure I understand what they mean what they say that the conversion is safe if one of the mentioned rules hold true.... but what do they mean by "safe"? Would such an image be deemed verifiable? I don't think so (heck, if rule 1 holds true, and the pointer points to unmanaged memory, what's safe about that?)<br />
+</li><br />
+</ul><!--end_raw--></p>

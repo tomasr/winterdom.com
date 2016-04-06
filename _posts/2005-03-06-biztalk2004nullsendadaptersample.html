@@ -1,0 +1,145 @@
+---
+layout: post
+status: publish
+published: true
+title: BizTalk 2004 Null Send Adapter Sample
+author:
+  display_name: Tomas Restrepo
+  login: tomasr
+  email: tomas@winterdom.com
+  url: http://winterdom.com/
+author_login: tomasr
+author_email: tomas@winterdom.com
+author_url: http://winterdom.com/
+wordpress_id: 564
+wordpress_url: http://winterdom.com/2005/03/biztalk2004nullsendadaptersample
+date: '2005-03-06 08:35:38 +0000'
+date_gmt: '2005-03-06 08:35:38 +0000'
+categories:
+- BizTalk
+tags: []
+comments:
+- id: 384
+  author: BA
+  author_email: biztalk.architect@gmail.com
+  author_url: ''
+  date: '2006-05-11 05:40:53 +0000'
+  date_gmt: '2006-05-11 05:40:53 +0000'
+  content: |
+    Great job, Tomas.  I was looking for something just like this, works great!
+- id: 1574
+  author: Pinaki
+  author_email: pinaki@live.com
+  author_url: http://pinakig.Wordpress.com
+  date: '2010-09-20 16:18:10 +0000'
+  date_gmt: '2010-09-20 16:18:10 +0000'
+  content: "Hi there.\r\nThis is very interesting.\r\nIs there a way I can change
+    it to a null receive adapter?."
+- id: 1577
+  author: Tomas Restrepo
+  author_email: tomas@winterdom.com
+  author_url: http://winterdom.com/
+  date: '2010-09-24 13:26:41 +0000'
+  date_gmt: '2010-09-24 13:26:41 +0000'
+  content: "@Pinaki: Not without some changes. What would be the purpose of a null
+    receive adapter, though?"
+- id: 1578
+  author: anthony
+  author_email: mail@nahos.com
+  author_url: ''
+  date: '2010-09-29 00:25:14 +0000'
+  date_gmt: '2010-09-29 00:25:14 +0000'
+  content: "Does the Adapter work with BizTalk 2009 32Bit edition?\r\n\r\nHere are
+    the steps taken:\r\n\r\n1. Downloaded Source\r\n2. Compiled Source\r\n3. Merged
+    .reg file with Registry\r\n4. Ran>>regasm Winterdom.BizTalk.Adapters.NullAdapter.dll\r\n5.
+    Ran>> installutil.exe Winterdom.BizTalk.Adapters.NullAdapter.dll\r\n6. Registered
+    the adapter with BizTalk Server Administration Console\r\n7. Restarted Host Instance\r\n8.
+    Shutdown Console (Additional Step)\r\n9. Restarted OS (Additional Step)\r\n10.
+    Opened BTS Admin Console\r\n\r\nEnvironment\r\n-------------\r\nBizTalk 2009 32Bit\r\nOS:
+    Windows 7 32Bit\r\n\r\n\r\nHere's the error I get when attempting to configure
+    on send port\r\n----------------\r\nRetrieving the COM class factory for component
+    with CLSID\r\n{c6085098-b9f6-4214-be1c-b07ef5265e4d} failed due to the following
+    error: 80070002. (mscorlib)"
+- id: 1579
+  author: Tomas Restrepo
+  author_email: tomas@winterdom.com
+  author_url: http://winterdom.com/
+  date: '2010-09-29 01:15:50 +0000'
+  date_gmt: '2010-09-29 01:15:50 +0000'
+  content: "@anthony: Yes, it should work just fine.\r\n\r\nThat 0x80070002 error
+    means \"Cannot find the file specified\", so all it really means is that you have
+    the wrong path to the dll in the reg file, so you need to fix that, register again
+    in the registry, then drop the adapter and re-add it so that the biztalk db gets
+    fixed up as well."
+- id: 1629
+  author: anthony
+  author_email: mail@nahos.com
+  author_url: ''
+  date: '2010-12-06 22:20:47 +0000'
+  date_gmt: '2010-12-06 22:20:47 +0000'
+  content: "Thanks Tomas.  I returned to this today, and saw that VS Post Build was
+    set to register the assembly, and that path was being used instead of the path
+    I had specified.\r\n\r\nAppreciate it."
+- id: 1684
+  author: claudiu
+  author_email: claudiu.herman@fraserhealth.ca
+  author_url: ''
+  date: '2011-03-23 23:01:45 +0000'
+  date_gmt: '2011-03-23 23:01:45 +0000'
+  content: "Hi Tomas, we tried something similar, we have a ConsumeAll send port with
+    a file adapter and a custom pipeline component which inside Execute() method does
+    inmsg = null. \r\n\r\nStrange behavior in BizTalk though: we end up with a bunch
+    of active instances, which stay there for ever! Any idea what's going on? \r\n\r\nThanks\r\nClaudiu"
+- id: 1707
+  author: Kiran
+  author_email: kiranasokan@yahoo.com
+  author_url: ''
+  date: '2011-04-27 17:36:08 +0000'
+  date_gmt: '2011-04-27 17:36:08 +0000'
+  content: I was also looking some thing like this..since the complexity of a oracle
+    database transaction I was planning to use a custom send pipe line to send the  message
+    to Database rather than using the adapter...Once the message is send by the pipe
+    line I don't need  an adapter..This null adapter fits in well in those scenarios
+    too.. where u send the message to destination using the send pipe line and now
+    u don't want to have an adapter set up just because the port need an adapter.
+- id: 1770
+  author: Charles
+  author_email: charles.storm@planet.nl
+  author_url: ''
+  date: '2011-08-19 08:48:06 +0000'
+  date_gmt: '2011-08-19 08:48:06 +0000'
+  content: "When configuring the adapter for BizTalk Server 2010 using .Net 4.0, I
+    ran into some stuff that I would like to share:\r\n\r\n1) When trying to get the
+    Null Dev adapter to work on BizTalk Server 2010 64-bit, make sure you use Regasm.exe
+    for the .Net Framework 4 in the 32-bit framework directory. Else you will get
+    the following error when trying to configure the adapter:\r\n\r\nRetrieving the
+    COM class factory for component with CLSID xxx failed due to the following error:
+    80040154 Class not registered\r\n\r\n2) Also remember to register 'both ways'
+    as indicated elsewhere on this blog. (http:&#47;&#47;winterdom.com&#47;2008&#47;04&#47;registeringnulladapteron64bitmachines)\r\n\r\n3)
+    The adapter has been tested by me on a 64-bit platform. I found out that the adapter,
+    when compiled MSIL, only runs in a 64-bit host. When using a 32-bit host I get
+    different errors, depending on the scenario fresh send or resume. The errors are
+    'Unknown Error' and a message complaining about the assembly beinging compiled
+    for a newer runtime than the currently loaded one. I have not investigated this
+    any further.\r\n\r\n4) Make sure you have the path's to your DLL's configured
+    correctly in the .reg file"
+- id: 13156
+  author: BizTalk NULL Adapter Install | Microsoft Tech
+  author_email: ''
+  author_url: http://mikearnett.wordpress.com/2013/05/16/biztalk-null-adapter-install/
+  date: '2013-05-16 01:09:08 +0000'
+  date_gmt: '2013-05-16 01:09:08 +0000'
+  content: "[...] and you can get the adapter source code from here. &nbsp;The sample
+    is from way back in the BTS04 days but I&#8217;m using it on BizTalk 2013 at the
+    [...]"
+---
+<p><!--start_raw-->I've just uploaded to my site a new BizTalk 2004 <a href="http:&#47;&#47;www.winterdom.com&#47;dev&#47;bts&#47;NullAdapterSol.zip">sample adapter</a> called the "NullSendAdapter", because it basically does nothing at all with the messages it receives except completely ignoring them. While fairly useless, in general, it is a simple implementation of a basic Sinchronous Send Adapter, and can be useful in cases where you want to basically ignore some messages coming into the MsgBox without leaving the usual no-subscription-found errors in the event log.</p>
+<p>To install the sample adapter, follow these simple steps:</p></p>
+<ol>
+<li>Open the NullAdapter.reg file in notepad and modify the paths to the adapter assembly so that they point to the correct location on your machine.</li>
+<li>Use regedit to merge the registration file into you registry</li>
+<li>Run "installutil.exe Winterdom.BizTalk.Adapters.NullAdapter.dll" to create the adapter's event log source.</li>
+<li>Use the BizTalk Server Administration Console to register the adapter with BizTalk</li><br />
+</ol></p>
+<p>One useful thing in the adapter, for traceability purposes is that when you define a new send port with it, you can configure in the adapter properties whether to log messages. If the property is set to True, then the adapter will log an entry into the machine's application event log for each message it sends into oblivion.</p></p>
+<p>Enjoy!</p><!--end_raw--></p>

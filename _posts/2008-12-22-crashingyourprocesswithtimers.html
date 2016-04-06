@@ -1,0 +1,89 @@
+---
+layout: post
+status: publish
+published: true
+title: Crashing your Process with Timers
+author:
+  display_name: Tomas Restrepo
+  login: tomasr
+  email: tomas@winterdom.com
+  url: http://winterdom.com/
+author_login: tomasr
+author_email: tomas@winterdom.com
+author_url: http://winterdom.com/
+wordpress_id: 651
+wordpress_url: http://winterdom.com/2008/12/crashingyourprocesswithtimers
+date: '2008-12-22 14:56:27 +0000'
+date_gmt: '2008-12-22 14:56:27 +0000'
+categories:
+- ".NET"
+tags: []
+comments:
+- id: 857
+  author: Alex
+  author_email: alex.ivanoff@shavlik.com
+  author_url: ''
+  date: '2009-05-31 06:21:26 +0000'
+  date_gmt: '2009-05-31 06:21:26 +0000'
+  content: 'Did you file this bug? I believe this is the same: http:&#47;&#47;connect.microsoft.com&#47;VisualStudio&#47;feedback&#47;ViewFeedback.aspx?FeedbackID=324865.'
+- id: 898
+  author: Alex
+  author_email: alex.ivanoff@shavlik.com
+  author_url: ''
+  date: '2009-06-15 21:53:35 +0000'
+  date_gmt: '2009-06-15 21:53:35 +0000'
+  content: Seems to be fixed in .NET 4.0 Beta 1.
+- id: 1558
+  author: John
+  author_email: muncho@mail.ru
+  author_url: ''
+  date: '2010-08-31 11:27:52 +0000'
+  date_gmt: '2010-08-31 11:27:52 +0000'
+  content: "You can use the \"SecurityContext.SuppressFlow\" or the \"SecurityContext.SuppressFlowWindowsIdentity\"
+    method to suppress the flow of the security context or Windows identity across
+    asynchronous threads. I have tested this with SqlConnection and it works. However,
+    this can have some unpredictable consequences depending on if the asynchronous
+    thread actually needs to execute code as the impersonated user.\r\n\r\nhttp:&#47;&#47;msdn.microsoft.com&#47;en-us&#47;library&#47;system.security.securitycontext_members%28v=VS.90%29.aspx\r\n\r\nIn
+    my view this problem can be solved by the .NET Framework in two ways:\r\n1. By
+    intentionally suppressing the flow of the security context if running code as
+    the impersonated user is not required (as is in the case with SqlConnection and
+    probably in most of the other cases).\r\n2. By duplicating the token before passing
+    it to the new thread."
+- id: 1600
+  author: Ben
+  author_email: no@spam.com
+  author_url: ''
+  date: '2010-10-27 12:57:50 +0000'
+  date_gmt: '2010-10-27 12:57:50 +0000'
+  content: Thanks for this helpful post! Saved us a lot of bother.
+- id: 15922
+  author: Francois Beauchemin
+  author_email: wyv_@hotmail.com
+  author_url: ''
+  date: '2013-06-21 14:37:45 +0000'
+  date_gmt: '2013-06-21 14:37:45 +0000'
+  content: "We recently encountered this problem.\r\n\r\nThis post helped us a lot
+    to understand whats going on. John's comment (SuppressFlowWindowsIdentity) was
+    the the solution for us.\r\n\r\n\r\nSome observation i've made : \r\n- The problem
+    is solved in Framework 4.0, but our project is in framework 3.5\r\n- You need
+    to call SuppressFlowWindowsIdentity before the creation of the timer. It can in
+    fact be the first line of the \"Main \"\r\n- When you call SuppressFlowWindowsIdentity,
+    the timer will execute on the process identity instead of the impersonated user."
+---
+<p><!--start_raw-->
+<p>Here&rsquo;s a bug I had to diagnose this weekend that had me scratching my head for a bit before getting it. Consider this sample piece of code [1]:</p>
+<div class="codebg"><code><span class="Statement">using</span> System;<br><span class="Statement">using</span> System.Collections.Generic;<br><span class="Statement">using</span> System.Reflection;<br><span class="Statement">using</span> System.Runtime.InteropServices;<br><span class="Statement">using</span> System.Security;<br><span class="Statement">using</span> System.Security.Principal;<br><span class="Statement">using</span> System.Text;<br><span class="Statement">using</span> System.Threading;<br><br><span class="StorageClass">namespace</span> Winterdom.Samples {<br><br>&nbsp;&nbsp; <span class="StorageClass">class</span> Program {<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span class="StorageClass">private</span>&nbsp;<span class="StorageClass">const</span>&nbsp;<span class="Type">int</span> LOGON32_PROVIDER_DEFAULT = <span class="Number">0</span>;<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span class="StorageClass">private</span>&nbsp;<span class="StorageClass">const</span>&nbsp;<span class="Type">int</span> LOGON32_LOGON_NETWORK = <span class="Number">3</span>;<br><br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; [DllImport(<span class="String">"advapi32.dll"</span>, SetLastError = <span class="Constant">true</span>)]<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span class="StorageClass">public</span>&nbsp;<span class="StorageClass">static</span>&nbsp;<span class="StorageClass">extern</span>&nbsp;<span class="Type">bool</span> LogonUser(<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span class="Type">string</span> lpszUsername, <span class="Type">string</span> lpszDomain, <span class="Type">string</span> lpszPassword,<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span class="Type">int</span> dwLogonType, <span class="Type">int</span> dwLogonProvider, <span class="Statement">out</span> IntPtr phToken<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; );<br><br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span class="StorageClass">static</span>&nbsp;<span class="Type">void</span> Main(<span class="Type">string</span>[] args) {<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; AppDomain domain = AppDomain.CurrentDomain;<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; domain.UnhandledException += (sender, e) =><br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Console.WriteLine(e.ExceptionObject.ToString());<br><br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; WindowsIdentity wi = <span class="Statement">new</span> WindowsIdentity(GetLogon());<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; WindowsImpersonationContext wic = wi.Impersonate();<br><br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Timer timer = <span class="Statement">new</span> Timer(<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (state) => {}, <span class="Comment">&#47;&#47; do nothing on the callback!</span><br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span class="Constant">null</span>, <span class="Number">3000</span>, <span class="Number">3000</span><br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; );<br><br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; wic.Undo();<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span class="Comment">&#47;&#47; If we remove this line, no crash happens!</span><br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; wi.Dispose();<br><br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Console.WriteLine(<span class="String">"Wait for the crash!"</span>);<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Console.ReadLine();<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<br><br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span class="StorageClass">static</span> IntPtr GetLogon() {<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; String user = <span class="String">"<USER HERE>"</span>;<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; String pwd = <span class="String">"<PASSWORD HERE>"</span>;<br><br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; IntPtr token = IntPtr.Zero;<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span class="Type">bool</span> success = LogonUser(<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; user, <span class="String">"."</span>, pwd, LOGON32_LOGON_NETWORK,<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; LOGON32_PROVIDER_DEFAULT, <span class="Statement">out</span> token<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; );<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span class="Conditional">if</span> ( !success )<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span class="Exception">throw</span>&nbsp;<span class="Statement">new</span> System.ComponentModel.Win32Exception();<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span class="Repeat">return</span> token;<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<br><br>&nbsp;&nbsp; }<br>} </code></div>
+<p>Now put a valid username&#47;password in <code>GetLogon()</code> and run it. Then watch the application crash with an unhandled exception in a secondary thread. You should&rsquo;ve spotted an exception like this one:</p>
+<div class="codebg"><code>System.ObjectDisposedException: Safe handle has been closed<br>&nbsp;&nbsp; at System.Security.Principal.Win32.ImpersonateLoggedOnUser(SafeTokenHandle hToken)<br>&nbsp;&nbsp; at System.Security.Principal.WindowsIdentity.SafeImpersonate(SafeTokenHandle userToken, WindowsIdentity wi, StackCrawlMark&amp; stackMark)<br>&nbsp;&nbsp; at System.Security.Principal.WindowsIdentity.Impersonate(StackCrawlMark&amp; stackMark)<br>&nbsp;&nbsp; at System.Security.SecurityContext.SetSecurityContext(SecurityContext sc, SecurityContext prevSecurityContext, StackCrawlMark&amp; stackMark)<br>&nbsp;&nbsp; at System.Threading.ExecutionContext.SetExecutionContext(ExecutionContext executionContext)<br>&nbsp;&nbsp; at System.Threading.ExecutionContext.runTryCode(Object userData)<br>&nbsp;&nbsp; at System.Runtime.CompilerServices.RuntimeHelpers.ExecuteCodeWithGuaranteedCleanup(TryCode code, CleanupCode backoutCode, Object userData)<br>&nbsp;&nbsp; at System.Threading.ExecutionContext.RunInternal(ExecutionContext executionContext, ContextCallback callback, Object state)<br>&nbsp;&nbsp; at System.Threading.ExecutionContext.Run(ExecutionContext executionContext, ContextCallback callback, Object state)<br>&nbsp;&nbsp; at System.Threading._TimerCallback.PerformTimerCallback(Object state) </code></div><br />
+<h2>Why does it happen?</h2>
+<p>The problem appears because we impersonate an identity and soon after destroys the <code>WindowsIdentity</code> instance used to create impersonation token.</p>
+<p>Between those two moments, we start a timer. When that happens, the runtime will capture the state of the calling thread, including its <a href="http:&#47;&#47;msdn.microsoft.com&#47;en-us&#47;library&#47;system.security.securitycontext.aspx">SecurityContext</a>, and save it so that it can restore it on the background thread used to invoke the timer callback.</p>
+<p>Since we destroy the <code>WindowsIdentity</code> instance soon after starting the timer, by the time the callback tries to fire, the authentication token has been closed already. The problem is that the framework makes no attempt to verify that the security context it saved is still valid before trying to impersonate the identity on the callback thread as well.</p>
+<p>This leads to an unhandled exception which, on .NET 2.0, will cause your process to crash inevitably. It&rsquo;s fair to say, though, that even if the framework actively checked for this condition and found that the authentication token was no longer valid, there would not be much else it could do, since it might be a bit dangerous to simply ignore it and invoke the thread on the original process security context (or at least it would lead to some unexpected behavior).</p><br />
+<h2>The bad part</h2>
+<p>The bad part about this issue is that you really don&rsquo;t know who might be starting a new timer (or an<br />
+y other framework facility that saves the <code>SecurityContext</code> for later use) in between your <code>Impersonate()</code> and <code>Undo()</code> calls. </p>
+<p>For example, the original code I was tracking this problem in was a lot more complex, involving a custom Windows PowerShell host and the <code>invoke-sqlcmd</code> cmdlet that comes with SQL Server 2008. In that scenario, the problem wasn&rsquo;t <code>invoke-sqlcmd</code> per se.</p>
+<p>It just turned out that the ADO.NET Connection Pooling facilities will create background timers to handle cleanup of the connection pools the first time you get a new connection from the pool.</p>
+<p>The really nasty part, however, was that the timer is created with a random interval, which meant you could never be sure when the process would crash: Sometimes it would happen just a few seconds after disposing the WindowsIdentity instance, sometimes several minutes later. This made figuring out the problem a lot harder. </p>
+<p>[1] Yes, I&rsquo;m aware the sample is leaking a handle, but that&rsquo;s not really the problem. </p><!--end_raw--></p>

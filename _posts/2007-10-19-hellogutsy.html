@@ -1,0 +1,47 @@
+---
+layout: post
+status: publish
+published: true
+title: Hello Gutsy!
+author:
+  display_name: Tomas Restrepo
+  login: tomasr
+  email: tomas@winterdom.com
+  url: http://winterdom.com/
+author_login: tomasr
+author_email: tomas@winterdom.com
+author_url: http://winterdom.com/
+wordpress_id: 1013
+wordpress_url: http://winterdom.com/2007/10/hellogutsy
+date: '2007-10-19 06:14:37 +0000'
+date_gmt: '2007-10-19 06:14:37 +0000'
+categories:
+- Linux
+tags: []
+comments:
+- id: 716
+  author: Niels Olson
+  author_email: nolson@tulane.edu
+  author_url: http://nielsolson.us/
+  date: '2007-10-21 09:23:19 +0000'
+  date_gmt: '2007-10-21 09:23:19 +0000'
+  content: |
+    Hey, I'm having the exact same issue on my Dell 820. Find anything? Sounds like the Thinkpad folks have a working solution if they build their own kernel, but will that work for the Dell?
+- id: 717
+  author: Niels Olson
+  author_email: nolson@gmail.com
+  author_url: http://nielsolson.us/Haversian/
+  date: '2007-10-21 20:35:10 +0000'
+  date_gmt: '2007-10-21 20:35:10 +0000'
+  content: |
+    These <a href="http:&#47;&#47;koon.fr&#47;wiki&#47;suspend_to_ram_on_the_dell_d820_proprietary_nvidia_drivers_under_ubuntu_gutsy" rel="nofollow">directions worked like a champ</a>, and I'm not even using the same video card (I've got the nVidia GeForce 7300).
+---
+<p><!--start_raw-->
+<p>Yesterday was the release of Gutsy Gibbon (Ubuntu 7.10). For fun, I decided to try and see what it would mean to update my other laptop, which was running Kubuntu 7.04 (Feisty) over to the new release. I first started looking around the <a href="http:&#47;&#47;ubuntuforums.org&#47;forumdisplay.php?f=140">ubuntu forums</a>, where I read that the "proper" way to do an upgrade was to run the following command:</p>
+<p>gksu "update-manager -c"</p>
+<p>Well, turns out neither gksu nor update-manager were installed on my machine, so I got those first (sudo apt-get install....), and then ran the command. It asked a couple of questions and then proceeded to download all 950+ packages that needed updating.</p>
+<p>The entire update process was surprisingly problem-free. It took a long time, though - about 12 hours in total - but only because my Internet connection sucks and the ubuntu servers seemed to be a bit hammered. The download stalled several times, but it always restarted on it's own a while later without problems. </p>
+<p>After the download was complete, actually installing the packages probably took less than an hour, just had to answer a couple of questions in between, and finally restart, and the machine came back up without any issues. Then I installed the ATI restricted driver again and restarted once more and it was done.</p>
+<p>All in all, a much better experience than the last time I had tried to do an in-place upgrade of a linux distro (years and years ago!).</p>
+<p>The only problem I've noted so far is that putting the machine to sleep doesn't seem to be working. The machine tries to go into sleep mode but doesn't quite manage it and stays on, but non-responsive. Annoying, but not that much big of a deal, seeing how sleep didn't really work well on Feisty either (about 50% of the times it went on standby it wouldn't be able to wake up). </p>
+<div class="wlWriterSmartContent" id="scid:0767317B-992E-4b12-91E0-4F059A8CECA8:e654abad-0bb5-49f2-9a42-cb379191893d" style="margin: 0px; padding: 0px; display: inline;">Technorati tags: <a href="http:&#47;&#47;technorati.com&#47;tags&#47;Ubuntu" rel="tag">Ubuntu</a>, <a href="http:&#47;&#47;technorati.com&#47;tags&#47;Gutsy%20Gibbon" rel="tag">Gutsy Gibbon</a>, <a href="http:&#47;&#47;technorati.com&#47;tags&#47;Upgrade" rel="tag">Upgrade</a></div><hints id="hah_hints"></hints><!--end_raw--></p>

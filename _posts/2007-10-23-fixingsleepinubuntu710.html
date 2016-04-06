@@ -1,0 +1,51 @@
+---
+layout: post
+status: publish
+published: true
+title: Fixing Sleep in Ubuntu 7.10
+author:
+  display_name: Tomas Restrepo
+  login: tomasr
+  email: tomas@winterdom.com
+  url: http://winterdom.com/
+author_login: tomasr
+author_email: tomas@winterdom.com
+author_url: http://winterdom.com/
+wordpress_id: 223
+wordpress_url: http://winterdom.com/2007/10/fixingsleepinubuntu710
+date: '2007-10-23 07:28:27 +0000'
+date_gmt: '2007-10-23 07:28:27 +0000'
+categories:
+- Personal
+- Linux
+tags: []
+comments:
+- id: 165
+  author: alex
+  author_email: ''
+  author_url: ''
+  date: '2007-11-01 15:41:10 +0000'
+  date_gmt: '2007-11-01 15:41:10 +0000'
+  content: |
+    Very Cool!  totally worked on my d620.
+    thanks!
+- id: 166
+  author: ilmassi
+  author_email: ''
+  author_url: ''
+  date: '2007-12-03 00:11:57 +0000'
+  date_gmt: '2007-12-03 00:11:57 +0000'
+  content: |
+    it works on my dell d620 nvidia! some issues on resume but works! thanks
+---
+<p><!--start_raw-->
+<p>As I mentioned in a previous post, I did a successful upgrade of my Inspiron 6000 laptop over to Ubuntu 7.10 (Gutsy Gibbon) from 7.04 (Feisty Fawn), though sleep&#47;hibernate wasn't working. I spent a some time yesterday trying to fix it, with some partial success.</p>
+<p>Niels Olson was kind enough to comment on my post and mentioned <a href="http:&#47;&#47;koon.fr&#47;wiki&#47;suspend_to_ram_on_the_dell_d820_proprietary_nvidia_drivers_under_ubuntu_gutsy">some directions</a> that worked for him on his Latidude laptop. I tried some of those, but they didn't work for me, as my laptop has an ATI X300 card instead of an NVidia. However, it gave me some good ideas to play with.</p>
+<p>In the end, I wasn't able to get sleep working with the restricted&#47;proprietary ATI drivers (fxglr) so I reverted back to the initial open source Radeon driver. That way I was able to get sleep working back, though the machine still wouldn't come out of sleep successfully (it just locked up).</p>
+<p>Finally, I was able to work around this by tweaking a few parameters in &#47;etc&#47;default&#47;acpi-support:</p>
+<pre>SAVE_VBE_STATE=<span style="color: maroon;">false</span><br />
+POST_VIDEO=<span style="color: maroon;">false</span><br />
+SAVE_VIDEO_PCI_STATE=<span style="color: maroon;">false</span><br />
+USE_DPMS=<span style="color: maroon;">true</span></pre></p>
+<p>This works, though the video takes a bit of a long time to reestablish once the machine comes up from sleep, but at least it works ;-).</p></p>
+<div class="wlWriterSmartContent" id="scid:0767317B-992E-4b12-91E0-4F059A8CECA8:a1a56eb0-7b43-4133-b241-333f1f3d8e45" style="margin: 0px; padding: 0px; display: inline;">Technorati tags: <a href="http:&#47;&#47;technorati.com&#47;tags&#47;Ubuntu" rel="tag">Ubuntu</a></div><!--end_raw--></p>

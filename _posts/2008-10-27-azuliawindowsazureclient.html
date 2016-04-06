@@ -1,0 +1,64 @@
+---
+layout: post
+status: publish
+published: true
+title: 'Azuli: A Windows Azure Client'
+author:
+  display_name: Tomas Restrepo
+  login: tomasr
+  email: tomas@winterdom.com
+  url: http://winterdom.com/
+author_login: tomasr
+author_email: tomas@winterdom.com
+author_url: http://winterdom.com/
+wordpress_id: 366
+wordpress_url: http://winterdom.com/2008/10/azuliawindowsazureclient
+date: '2008-10-27 17:56:21 +0000'
+date_gmt: '2008-10-27 17:56:21 +0000'
+categories:
+- ".NET"
+- Ruby
+tags: []
+comments:
+- id: 271
+  author: Kevin Dente
+  author_email: kevind@denteworld.com
+  author_url: http://weblogs.asp.net/kdente
+  date: '2008-10-27 19:20:09 +0000'
+  date_gmt: '2008-10-27 19:20:09 +0000'
+  content: |
+    Is there already an SDK for Ruby?
+    http:&#47;&#47;www.dotnetservicesruby.com&#47;
+- id: 272
+  author: Tomas Restrepo
+  author_email: tomas@winterdom.com
+  author_url: http://winterdom.com/
+  date: '2008-10-27 19:44:46 +0000'
+  date_gmt: '2008-10-27 19:44:46 +0000'
+  content: |
+    Didn't know about it; honestly. If I'm reading it correctly, though, that's for what used to be called "BizTalk Services", which is built on top of the core Azure stuff. Maybe I'm wrong. Still, it's fun stuff to work with.
+- id: 273
+  author: Sriram Krishnan
+  author_email: sriramk@microsoft.com
+  author_url: http://www.sriramkrishnan.com
+  date: '2008-11-19 13:03:49 +0000'
+  date_gmt: '2008-11-19 13:03:49 +0000'
+  content: |
+    That is awesome work. Windows Azure storage is actually different from .NET Services.
+    Sriram Krishnan
+    Windows Azure
+- id: 274
+  author: Sriram Krishnan
+  author_email: sriramk@microsoft.com
+  author_url: http://www.sriramkrishnan.com
+  date: '2008-11-19 14:00:02 +0000'
+  date_gmt: '2008-11-19 14:00:02 +0000'
+  content: |
+    I would love to hear how you're doing tables as well. Do mail me (sriramk@microsoft.com) if you need anything from our end. We really do love what you're doing
+---
+<p><!--start_raw-->
+<p>As many have already heard or read, today Microsoft unveiled the <a href="http:&#47;&#47;www.microsoft.com&#47;azure&#47;windowsazure.mspx">Windows Azure</a> Cloud Computing Platform. Besides allowing you to host your own applications, Azure also provides a Blob storage service, a Queue Service and a Table service exposed over REST-based HTTP endpoints.</p>
+<p><a href="http:&#47;&#47;github.com&#47;tomasr&#47;azuli&#47;">Azuli</a> is my attempt to write a client library for these services in Ruby. Since it&rsquo;s one of my first attempts at any meaningful ruby code, it&rsquo;s pretty ugly, but already usable to get started with it.</p>
+<p>Currently there&rsquo;s no documentation (except a few tests), but it already has the authentication bits in place for using the default Shared-Key authentication, and some basic facilities for interacting with the Blob service: You can create&#47;list&#47;delete containers, &#47;create&#47;retrieve&#47;delete blobs. </p>
+<p>I&rsquo;ll be adding support for the Queue service soon and eventually for the Table service. Any feedback (particularly of the constructive kind) would be appreciated.</p>
+<p>Code is at GitHub, so feel free to play with it, hack at it or whatever you want.</p><!--end_raw--></p>

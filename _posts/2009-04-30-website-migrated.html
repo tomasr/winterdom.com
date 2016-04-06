@@ -1,0 +1,33 @@
+---
+layout: post
+status: publish
+published: true
+title: WebSite Migrated
+author:
+  display_name: Tomas Restrepo
+  login: tomasr
+  email: tomas@winterdom.com
+  url: http://winterdom.com/
+author_login: tomasr
+author_email: tomas@winterdom.com
+author_url: http://winterdom.com/
+wordpress_id: 1173
+wordpress_url: http://winterdom.com/?p=1173
+date: '2009-04-30 03:10:21 +0000'
+date_gmt: '2009-04-30 03:10:21 +0000'
+categories:
+- Blogging
+tags: []
+comments: []
+---
+
+<p>If you can read this, it means that my WebSite and Weblog migration worked. Hopefully, by now DNS changes have replicated correctly and even FeedBurner is picking up the updated feed from the new site. Now for some minor technical details:</p></p>
+<p>For now, I've decided to stick with Wordpress as my blogging&#47;CMS tool. It seems nice enough and with a bit of work on my .htaccess files, I was able to get all proper redirects working for most of my content, thus mantaining old URLs working, which was very important to me.</p></p>
+<p>Importing all the entries from dasBlog took a bit of work. A few months ago I had toyed with an (ugly, but effective) ruby script that would read all the dasBlog XML content files, extracting posts and comments. A couple of weeks ago I modified it to generate a big text file from all the data in there in the Movable Type import&#47;export format, which the WordPress import tools can read.</p></p>
+<p>During the process, I eventually did a minor modification to the WordPress import tool, so that it would use the BASENAME field of the mt import file and use that to set part of the URL for imported posts. Keeping this in mind, it was easy to modify my ruby script to also generate a text file mapping old dasBlog URLs into new WP URLs, which I then feed to mod_rewrite on my apache installation.</p></p>
+<h2>A new host</h2></p>
+<p>Previously, my website was hosted on Windows. For years, I just had a shared hosting account with <a href='http:&#47;&#47;www.webstrikesolutions.com&#47;'>WebStrike Solutions</a>. While pretty basic, it was just fine for my  needs and was reasonably affordable. I can honestly say that support with webstrike was always very good and everyone was very nice and competent. All problems (the few I had) were always resolved quickly and I don't believe I ever had a billing problem or any other kind.</p></p>
+<p>Until a couple of months ago, that is, when WebStrike was sold over to <a href='http:&#47;&#47;www.easycgi.com&#47;'>EasyCGI</a> and all accounts migrated to them. Unfortunately, this was a horrible process, beginning with the fact that, for whatever reason, I didn't even realize this was happening until I got a confirmation email that my domains had already been switched over to the EasyCGI platform.</p></p>
+<p>It all went downhill from there. Honestly, I've had lots of trouble in the past few weeks since the migration, and so far I can't recommend EasyCGI at all. It just didn't work out for me, I guess.</p></p>
+<p>Given this, I took the opportunity to move my site to a new host. Since I've got a few things I want to experiment with, I ended up deciding on getting a Linux-based Virtual Private Server. After looks of shopping around and reading several reviews, I ended up going with a VPS with <a href='http:&#47;&#47;linode.com&#47;'>Linode</a> (a Linode 360, to be precise).</p></p>
+<p>I just very recently got it, but so far, everything has worked out great. The whole signup experience was very nice, and getting my VPS up and running was much easier than I initially expected. The management console is also pretty nice, with lots of useful tools and reports.</p></p>

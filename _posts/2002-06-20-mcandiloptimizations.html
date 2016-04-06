@@ -1,0 +1,25 @@
+---
+layout: post
+status: publish
+published: true
+title: MC++ and IL Optimizations
+author:
+  display_name: Tomas Restrepo
+  login: tomasr
+  email: tomas@winterdom.com
+  url: http://winterdom.com/
+author_login: tomasr
+author_email: tomas@winterdom.com
+author_url: http://winterdom.com/
+wordpress_id: 654
+wordpress_url: http://winterdom.com/2002/06/mcandiloptimizations
+date: '2002-06-20 03:14:12 +0000'
+date_gmt: '2002-06-20 03:14:12 +0000'
+categories:
+- ".NET"
+tags: []
+comments: []
+---
+<p><!--start_raw--><a href="http:&#47;&#47;www.cookcomputing.com&#47;blog&#47;archives&#47;000101.html#000101">Charles Cook</a> on IL optmizations performed by the Managed C++ compiler: <i>"I've not not seen any mention of this elsewhere. Maybe its just a rumour put about by the VC++ team :-)"</i></p>
+<p>Not at all, actually. The MC++ compiler does indeed run the generated code thorugh the backend optimizer, doing some optimizations no other ms managed compiler does yet. </p></p>
+<p>This has both an advantage and a disadvantage. The advantage, of course, is improved performance (altough I haven't seen any serious numbers on how better it is). The disadvantage is that it is one of the reasons (and an important one, at that) the MC++ compiler generates unverifiable code.</p><!--end_raw--></p>

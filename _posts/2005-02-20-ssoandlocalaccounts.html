@@ -1,0 +1,77 @@
+---
+layout: post
+status: publish
+published: true
+title: SSO and local accounts
+author:
+  display_name: Tomas Restrepo
+  login: tomasr
+  email: tomas@winterdom.com
+  url: http://winterdom.com/
+author_login: tomasr
+author_email: tomas@winterdom.com
+author_url: http://winterdom.com/
+wordpress_id: 557
+wordpress_url: http://winterdom.com/2005/02/ssoandlocalaccounts
+date: '2005-02-20 19:10:30 +0000'
+date_gmt: '2005-02-20 19:10:30 +0000'
+categories:
+- BizTalk
+tags: []
+comments: []
+---
+<p><!--start_raw-->The BizTalk Server 2004 documentation recommends that the Enterprise Single Sign-on service be used with domain accounts instead of local accounts. This is obviously the option that makes the most sense in an enterprise environment, particularly in a multi-box BizTalk configuration. However, using local accounts instead might be useful on a development or test environment, especially for those of us with a BizTalk dev environment on stand alone desktops, for example.</p>
+<p>Now, the BTS docs don't say flat out that SSO won't work with local accounts. In fact, one of the flags you can set when creating a new Affiliate Application especifies whether the application will support local accounts (SSO_FLAG_APP_ALLOW_LOCAL=0x00040000).</p></p>
+<p>Once you graps the generals of creating new affiliate applications and mappings when SSO is installed on a domain environment, things get easy. However, I've never been able to quite get it to work with local accounts. Creating the affiliate applications usually works, it's creating the mappings that I've never gotten to work (except once, and I still can't seem to figure out what it was that I got right that one time...). I won't discuss the command line management (ssomanage.exe) and client tools (ssoclient.exe) simply because they will give you all sorts of weird unrelated errors, like "There's not enough storage space to complete the operation", instead, let us discuss the SSO API as provided by the Microsoft.BizTalk.SSOClient.Interop.dll assembly.</p></p>
+<p>Creating a mapping programatically is actually easy. All you need to do is create an instance of ISSOMapping, fill in the required properties and call ISSOMapping::Create(). Then, you can set the credentials for the new mapping by using the SetExternalCredentialsMethod() of the ISSOMapper interface. Here's an example:</p></p>
+<pre><code>ISSOMapping mapping = new ISSOMapping();<br />
+mapping.ApplicationName = "MyApplication";<br />
+mapping.WindowsDomainName = "TheDomain";<br />
+mapping.WindowsUserName = "TheUser";<br />
+mapping.ExternalUserName = "The External User";<br />
+mapping.Create(0);<br />
+ISSOMapper mapper = new ISSOMapper();<br />
+string[] xp = { "The Password" };<br />
+mapper.SetExternalCredentials (<br />
+"MyApplication",<br />
+"The External User",<br />
+ref xp<br />
+);<br />
+</code></pre></p>
+<p>The key point here in using local accounts is in how we would specify the necessary value needed for the WindowsDomainName property of the ISSOMapping interface. Here are some things I've tried:</p></p>
+<ul>
+<li><i>Not setting it explicitly:</i> Doesn't work; it will trigger a "The parameter is incorrect" exception when creating the mapping.</li>
+<li><i>Assigning it to null or an empty string:</i> Doesn't work; it will trigger a "The parameter is incorrect" exception on set_WindowsDomainName.</li>
+<li><i>Assigning it to the machine name:</i> Doesn't work. This will return HRESULT 0xC0002A18 which means "The format of the account name is not valid. Domain accounts must include the domain name. Local accounts must not include a domain or computer name." Nice.</li>
+<li><i>Assigning it to ".":</i> Doesn't work. This will return HRESULT 0xC0002A22 which means "Te account name is not valid or does not exist. See the event log (on computer 'RADIANT') for more details.".</li><br />
+</ul></p>
+<p>The latter two choices are perhaps the most interesting ones, as they obviously seem to cause some processing to happen before they fail. This is made most evident by the fact that both will generate an entry into the machine's Security event log, with the following content:</p></p>
+<pre><code>Event Type:	Failure Audit<br />
+Event Source:	Security<br />
+Event Category:	Logon&#47;Logoff<br />
+Event ID:	537<br />
+Date:		2&#47;20&#47;2005<br />
+Time:		9:56:22 PM<br />
+User:		NT AUTHORITY\SYSTEM<br />
+Computer:	RADIANT<br />
+Description:<br />
+Logon Failure:<br />
+Reason:		An error occurred during logon<br />
+User Name:<br />
+Domain:<br />
+Logon Type:	3<br />
+Logon Process:	Authz<br />
+Authentication Package:	Kerberos<br />
+Workstation Name:	RADIANT<br />
+Status code:	0xC000005E<br />
+Substatus code:	0x0<br />
+Caller User Name:	BiztalkServices<br />
+Caller Domain:	RADIANT<br />
+Caller Logon ID:	(0x0,0x6BF76BC)<br />
+Caller Process ID:	2520<br />
+Transited Services:	-<br />
+Source Network Address:	-<br />
+Source Port:	-<br />
+</code></pre></p>
+<p>The key point here to notice about the error is the fact that in the error description for the failuer, the SSO system (or, actually, the process making the ISSOMapping::Create() call) tries to do a NETWORK logon, except the user name and domain are, apparently, blank, and the underlying LogonUser() call (which I presume it's what they are doing) seems to have returned error code 0xC000005E, which happens to be STATUS_NO_LOGON_SERVERS ("There are currently no logon servers available to service the logon request"). No clue why this happens, though.</p></p>
+<p>Has anyone found a way to get the SSO System to work with local accounts? And, if so, care to share what the secret is?</p><!--end_raw--></p>

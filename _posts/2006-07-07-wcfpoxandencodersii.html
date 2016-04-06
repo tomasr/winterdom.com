@@ -1,0 +1,29 @@
+---
+layout: post
+status: publish
+published: true
+title: WCF, POX and Encoders, II
+author:
+  display_name: Tomas Restrepo
+  login: tomasr
+  email: tomas@winterdom.com
+  url: http://winterdom.com/
+author_login: tomasr
+author_email: tomas@winterdom.com
+author_url: http://winterdom.com/
+wordpress_id: 428
+wordpress_url: http://winterdom.com/2006/07/wcfpoxandencodersii
+date: '2006-07-07 20:03:30 +0000'
+date_gmt: '2006-07-07 20:03:30 +0000'
+categories:
+- ".NET"
+- WCF
+- WinFX
+tags: []
+comments: []
+---
+<p><!--start_raw--><a href="http:&#47;&#47;hyperthink.net&#47;blog&#47;">Steve Maine</a> was kind enough to respond to <a href="http:&#47;&#47;www.winterdom.com&#47;weblog&#47;2006&#47;06&#47;30&#47;WCFPOXAndEncoders.aspx">my questions</a> on how the normal Text Encoder in WCF had been enabled to support POX style interactions in a little bit more detail. Steve provided a few more details over email, so I'm reposting here a part of what he mentioned, which I think its pretty interesting to understand the WCF model:<br><br><i><font face="Verdana">Here's how we map POX into our model:<br><br>First, ask youself why we have SOAP envelopes in the first place...it provides single encapsulation of a "message", which consists of 0-n headers plus a body. For cases where there are exactly 0 headers (and will always be 0 headers), then it's reasonable to look at the <soap:envelope>, <soap:header> and <soap:body> tags as being nothing more than cruft. In that specific case, they're not really contributing anything significant to the information model and in fact will never do so. Since the POX case (by definition) will never use SOAP headers because it fundamentally doesn't use SOAP on the wire, then we felt it was OK for the encoder to optimize those away because it's not a semantically significant transformation.<br><br>The way we ended up implementing POX support was to add a new MessageVersion -- MessageVersion.None, to signify the lack of a SOAP envelope. The TextEncoder is now smart enough to special-case this particular MessageVersion. On write, it just calls Message.WriteBodyContents() instead of Message.WriteMessage(). On read, it just uses the CreateMessage API's that take an XmlReader representing the message body.<br><br>The nice thing is that by adding a few new message versions, we were able to clean up the whole HttpMappingMode nonsense that used to live on the HTTP transport binding element. Instead of the HttpMappingMode enum, we have MessageVersion.Soap11 (which is just the combination of {EnvelopeVersion.Soap11, AddressingVersion.None}) - the TextEncoder is also kind enough to map the HTTP request URI into a phantom wsa:To header when it sees AddressingVersion.None which eliminates the need for HttpMappingMode at the transport layer.<br></font><br></i>
+<p><i><font face="Verdana"><span style="font-size: 12pt; font-family: "Times New Roman","serif";"></span></font></i></p><i><span style="font-size: 12pt; font-family: "Times New Roman","serif";"><br />
+<!--[if !supportLineBreakNewLine]--><br style=""><br />
+<!--[endif]--></span><br></i>
+<p></p><!--end_raw--></p>

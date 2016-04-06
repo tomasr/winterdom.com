@@ -1,0 +1,27 @@
+---
+layout: post
+status: publish
+published: true
+title: The need for ES
+author:
+  display_name: Tomas Restrepo
+  login: tomasr
+  email: tomas@winterdom.com
+  url: http://winterdom.com/
+author_login: tomasr
+author_email: tomas@winterdom.com
+author_url: http://winterdom.com/
+wordpress_id: 1030
+wordpress_url: http://winterdom.com/2002/11/theneedfores
+date: '2002-11-29 17:49:35 +0000'
+date_gmt: '2002-11-29 17:49:35 +0000'
+categories:
+- Enterprise Services
+tags: []
+comments: []
+---
+<p><!--start_raw-->I was writing a long reply to <a href="http:&#47;&#47;www.iunknown.com&#47;Weblog&#47;EnterpriseServices.html">John Lam's question</a> on the need for Enterprise Services, when I accidentaly pressed Alt-RightArrow on my keyboard. No way I'm gonna write all that again, so here's the core of what I wanted to say:</p>
+<p>I agree with John that .NET makes a lot of what COM+ offered unnecessary most of the time. However, there are still some pretty valuable services left in COM+; Distributed transactions (or rather, declarative transactions) are certainly the most important one, but Compensating Resource Managers and Queued Components are two other services I think can be quite useful.</p></p>
+<p>I, too, long for a more .NET-friendly way to take advantage of those services, though. Given the services offered by the .NET platform, such as thread pooling, and the fact that you can do away with the arcane threading models COM imposed on COM+, I think it would be conceivable to write versions of some of the COM+ services, driven by thread- and request- relative contexts, that would fit more naturally within .NET.</p></p>
+<p>OTOH, Clemens has gone and posted a wonderful <a href="http:&#47;&#47;radio.weblogs.com&#47;0108971&#47;2002&#47;11&#47;28.html#a42">discourse</a> on the merits of COM+&#47;EnterpriseServices [1]. Something he mentioned resonated within me: <i>"Enterprise Services&#47;COM+ (and J2EE application servers) provide you with such a predictable hosting environment for your Business Logic and Infrastructure Layer components."</i>. He's right, of course. But here's something to think about: Predictable? Yes. Controlled? Yes. The question is: <i>Controlled by who?</i></p></p>
+<p>[1] I've learned much from our recent discussions. Thank you!</p><!--end_raw--></p>

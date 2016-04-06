@@ -1,0 +1,28 @@
+---
+layout: post
+status: publish
+published: true
+title: WCF Messages Not Getting Closed
+author:
+  display_name: Tomas Restrepo
+  login: tomasr
+  email: tomas@winterdom.com
+  url: http://winterdom.com/
+author_login: tomasr
+author_email: tomas@winterdom.com
+author_url: http://winterdom.com/
+wordpress_id: 1324
+wordpress_url: http://winterdom.com/2010/06/wcf-messages-not-getting-closed
+date: '2010-06-30 13:56:00 +0000'
+date_gmt: '2010-06-30 13:56:00 +0000'
+categories:
+- WCF
+tags: []
+comments: []
+---
+<p>I spent some time yesterday evening tracking down an issue with a custom WCF transport channel. This particular channel would support the <a href="http:&#47;&#47;msdn.microsoft.com&#47;en-us&#47;library&#47;system.servicemodel.channels.iinputchannel.aspx">IInputChannel</a> channel shape, but with a twist: it would return a custom implementation of <a href="http:&#47;&#47;msdn.microsoft.com&#47;en-us&#47;library&#47;system.servicemodel.channels.message.aspx">System.ServiceModel.Channels.Message</a> instead of one of the built-in WCF implementations.</p>
+<p>There&rsquo;s nothing wrong with that and it was working just fine in most cases, until I ran into a few scenarios where the <a href="http:&#47;&#47;msdn.microsoft.com&#47;en-us&#47;library&#47;system.servicemodel.channels.message.onclose.aspx">OnClose()</a> method of my custom Message class wasn&rsquo;t being called at all.</p>
+<p>After some digging, I discovered that the specific messages this was happening to were not being processed normally by the ServiceHost infrastructure. In particular, they were not being dispatched because no method in the service contract matched the action in the messages, so instead the <a href="http:&#47;&#47;msdn.microsoft.com&#47;en-us&#47;library&#47;system.servicemodel.servicehostbase.unknownmessagereceived.aspx">UnknownMessageReceived</a> event in the ServiceHost instance was being raised.</p>
+<p>Our UnknownMessageReceived implementation wasn&rsquo;t closing messages explicitly, but that was easily corrected, so no problems, right? Wrong. Turns out, that it appears that in WCF 3.0&#47;5 (haven&rsquo;t checked 4.0 yet), if you do <em>not</em> have an event handler for UnknownMessageReceived, then the messages won&rsquo;t get closed either.</p>
+<p>This seems like a bad bug to me, because since Message implements IDisposable, there&rsquo;s obviously the expectation that it will hold resources that should be released as soon as possible, so not calling <code>Dispose()</code> or <code>Closed()</code> will leak resources and potentially cause trouble.</p>
+<p>Attaching an event handler to UnknownMessageReceived just isn&rsquo;t an option always, and even if it were, there&rsquo;s no reason why WCF itself shouldn&rsquo;t be guaranteeing that messages are closed as soon as they aren&rsquo;t needed.</p></p>

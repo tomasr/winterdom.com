@@ -1,0 +1,31 @@
+---
+layout: post
+status: publish
+published: true
+title: PowerShell Sessions
+author:
+  display_name: Tomas Restrepo
+  login: tomasr
+  email: tomas@winterdom.com
+  url: http://winterdom.com/
+author_login: tomasr
+author_email: tomas@winterdom.com
+author_url: http://winterdom.com/
+wordpress_id: 286
+wordpress_url: http://winterdom.com/2009/01/powershellsessions
+date: '2009-01-31 07:21:55 +0000'
+date_gmt: '2009-01-31 07:21:55 +0000'
+categories:
+- PowerShell
+tags: []
+comments: []
+---
+<p><!--start_raw-->
+<p>When I&rsquo;m doing development, I tend to open several PowerShell windows at the same time. For example: I will have one window on my code directory to use run git&#47;svn commands, another in my code generation or build directory to rebuild the code as necessary, another where I run commands while doing manual testing of what I&rsquo;m working on and so forth.</p>
+<p>Console2 makes this a lot nicer as I can open each PowerShell instance in a different tab, which makes it a lot easier to manage. The annoying part, however, comes when I need to switch Virtual Machines to temporarily work on other projects. </p>
+<p>For those I will also need several PowerShell windows in different places, and it&rsquo;s normal for me to switch 2 or 3 times a day between virtual machines. It&rsquo;s very inconvenient to have to manually recreate my PowerShell windows each time I&rsquo;m going to do something: Remembering the directory each window needs is not a problem, except for how long the paths are at times, but having to remember which commands I ran on each one can be very bothersome (particularly during testing).</p>
+<p>To work around this, I created a very simple PowerShell script to allow me to persist an existing PowerShell session and reload it later when I need to start working again. Here&rsquo;s the script:</p>
+<div class="codebg"><code><span class="Comment">#</span><br><span class="Comment"># Simple script to save and restore powershell sessions</span><br><span class="Comment"># Our concept of session is simple and only considers:</span><br><span class="Comment">#&nbsp;&nbsp; - history</span><br><span class="Comment">#&nbsp;&nbsp; - The current directory</span><br><span class="Comment">#</span><br><br><span class="Keyword">function</span>&nbsp;<span class="Function">script</span>:<span class="Statement">get-sessionfile</span>(<span class="Type">[string]</span>&nbsp;<span class="Identifier">$sessionName</span>) {<br>&nbsp;&nbsp; <span class="Keyword">return</span>&nbsp;<span class="String">"$([io.path]::GetTempPath())$sessionName"</span>;<br>}<br><br><span class="Keyword">function</span>&nbsp;<span class="Function">export-session</span> {<br>&nbsp;&nbsp; <span class="Keyword">param</span> (<span class="Type">[string]</span>&nbsp;<span class="Identifier">$sessionName</span> = <span class="String">"session-$(get-date -f yyyyMMddhh)"</span>)<br>&nbsp;&nbsp; <span class="Identifier">$file</span> = (<span class="Statement">get-sessionfile</span>&nbsp;<span class="Identifier">$sessionName</span>)<br>&nbsp;&nbsp; (pwd).Path > <span class="String">"$file-pwd.ps1session"</span><br>&nbsp;&nbsp; <span class="Statement">get-history</span> | <span class="Statement">export-csv</span>&nbsp;<span class="String">"$file-hist.ps1session"</span><br>&nbsp;&nbsp; <span class="String">"Session $sessionName saved"</span><br>}<br><br><span class="Keyword">function</span>&nbsp;<span class="Function">import-session</span>(<span class="Type">[string]</span>&nbsp;<span class="Identifier">$sessionName</span>) {<br>&nbsp;&nbsp; <span class="Identifier">$file</span> = (<span class="Statement">get-sessionfile</span>&nbsp;<span class="Identifier">$sessionName</span>)<br>&nbsp;&nbsp; <span class="Conditional">if</span> ( -<span class="Operator">not</span>&nbsp;<span class="Type">[io.file]</span>::Exists(<span class="String">"$file-pwd.ps1session"</span>) ) {<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span class="Statement">write-error</span>&nbsp;<span class="String">"Session file doesn't exist"</span><br>&nbsp;&nbsp; } <span class="Conditional">else</span> {<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; cd (gc <span class="String">"$file-pwd.ps1session"</span>)<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span class="Statement">import-csv</span>&nbsp;<span class="String">"$file-hist.ps1session"</span> | <span class="Statement">add-history</span><br>&nbsp;&nbsp; }<br>} </code></div>
+<p>As you can see, it&rsquo;s a trivial script. My concept of a session is very limited in scope, as it contains only the command history and the current directory, which are saved on two files on my temp directory. </p>
+<p>I could easily extend it to persist the entire default directory stack instead of just the current location, but avoiding having to switch directories all the time is the reason I keep multiple windows open at the same time.</p>
+<p>This is a rather low-tech solution to my needs, but it works rather well for me :-).</p><!--end_raw--></p>

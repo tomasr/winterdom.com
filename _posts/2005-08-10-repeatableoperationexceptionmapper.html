@@ -1,0 +1,24 @@
+---
+layout: post
+status: publish
+published: true
+title: RepeatableOperationExceptionMapper
+author:
+  display_name: Tomas Restrepo
+  login: tomasr
+  email: tomas@winterdom.com
+  url: http://winterdom.com/
+author_login: tomasr
+author_email: tomas@winterdom.com
+author_url: http://winterdom.com/
+wordpress_id: 171
+wordpress_url: http://winterdom.com/2005/08/repeatableoperationexceptionmapper
+date: '2005-08-10 19:58:07 +0000'
+date_gmt: '2005-08-10 19:58:07 +0000'
+categories:
+- ".NET"
+tags: []
+comments: []
+---
+<p><!--start_raw-->It just dawned on me (yes, I'm slow, I know) that the RepeatableOperationExceptionMapper class that Clemens presents <a href="http:&#47;&#47;friends.newtelligence.net&#47;clemensv&#47;PermaLink,guid,bafdbe41-0786-4a7f-a488-8ca447d612eb.aspx">here</a> is just the precise kind of thing that would work wonders as custom Exception Replacement Handler for a policy in the <a href="http:&#47;&#47;msdn.microsoft.com&#47;library&#47;en-us&#47;dnpag2&#47;html&#47;ehab.asp">Exception Handling Application Block</a> of the Enterprise Library. Go figure.</p>
+<p>It would be really cool to have similar translator replacements for common SQL and Oracle exception codes (say, replace a Unique Constraint Violation with a RowAlreadyExistsException)...</p><!--end_raw--></p>

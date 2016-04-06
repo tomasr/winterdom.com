@@ -1,0 +1,110 @@
+---
+layout: post
+status: publish
+published: true
+title: Make Exception Classes Serializable
+author:
+  display_name: Tomas Restrepo
+  login: tomasr
+  email: tomas@winterdom.com
+  url: http://winterdom.com/
+author_login: tomasr
+author_email: tomas@winterdom.com
+author_url: http://winterdom.com/
+wordpress_id: 791
+wordpress_url: http://winterdom.com/2007/01/makeexceptionclassesserializable
+date: '2007-01-16 05:52:23 +0000'
+date_gmt: '2007-01-16 05:52:23 +0000'
+categories:
+- ".NET"
+- Architecture
+tags: []
+comments:
+- id: 538
+  author: mnichols AT cei-az.com (Mike Nichols)
+  author_email: mnicholsATcei-az.comMikeNichols
+  author_url: http://blogs.chayachronicles.com/sonofnun
+  date: '2007-01-16 07:05:16 +0000'
+  date_gmt: '2007-01-16 07:05:16 +0000'
+  content: |
+    Thanks for this...I went over to my custom app exception and had forgotten to implement GetObjectData...
+- id: 539
+  author: Vineet Dewan
+  author_email: vin_dewan@rediffmail.com
+  author_url: ''
+  date: '2007-01-31 02:29:02 +0000'
+  date_gmt: '2007-01-31 02:29:02 +0000'
+  content: |
+    It would have been nice if you had also shown example of overriding GetObjectData by taking some objects as additional memebers in the custom exception class and also some additional properties.
+- id: 867
+  author: Arthur
+  author_email: famc_arny@mail.ru
+  author_url: ''
+  date: '2009-06-05 08:49:03 +0000'
+  date_gmt: '2009-06-05 08:49:03 +0000'
+  content: "Thank you very much!!!!!!!\r\nget regards fron Russia-)"
+- id: 1153
+  author: Greg Kendall
+  author_email: gkendall@varec.com
+  author_url: ''
+  date: '2009-10-06 13:32:54 +0000'
+  date_gmt: '2009-10-06 13:32:54 +0000'
+  content: The information is really appreciated.  Thanks for posting.  Cheers!
+- id: 1540
+  author: Ross
+  author_email: no@no.com
+  author_url: ''
+  date: '2010-07-21 23:05:52 +0000'
+  date_gmt: '2010-07-21 23:05:52 +0000'
+  content: This doesn't make much sense. Exception already implements ISerializable.
+- id: 1544
+  author: Tomas Restrepo
+  author_email: tomas@winterdom.com
+  author_url: http://winterdom.com/
+  date: '2010-07-24 14:08:24 +0000'
+  date_gmt: '2010-07-24 14:08:24 +0000'
+  content: "@Ross: That's  not enough; you still have to do some work to get it working
+    properly."
+- id: 1667
+  author: Jeff S
+  author_email: jeff.shergalis@gmail.com
+  author_url: ''
+  date: '2011-02-04 13:37:55 +0000'
+  date_gmt: '2011-02-04 13:37:55 +0000'
+  content: I wish the developers of the SharePoint API over at M$ had read this. In
+    working on creating a SharePoint integration for our product I came across weird
+    cases were exceptions I was trying to log through our custom logger were not being
+    logged. I added code to throw errors in the event log and low and behold found
+    that Microsoft.SharePoint.Client.ServerException is not marked as Serializable.
+    That is one that I found, I believe there are some other in the SharePoint API
+    as well. I even posted to MS forums, but all I got as a response was a suggestion
+    to create my own wrapper class to serialize it. Sure, I can do that, but why should
+    I have to, Exceptions should be serializable. I am trying to pass mine through
+    a WCF service.
+- id: 132974
+  author: Tohid Azizi
+  author_email: TohidAzizi@Hotmail.com
+  author_url: ''
+  date: '2014-06-24 21:37:06 +0000'
+  date_gmt: '2014-06-24 21:37:06 +0000'
+  content: "As a matter of fact, Exception class is serializable! \r\nException class
+    is decorated with \"SerializableAttribute\" and also inherits \"ISerializable\":\r\nhttp:&#47;&#47;msdn.microsoft.com&#47;en-us&#47;library&#47;system.exception.aspx\r\n\r\nThe
+    reason why it doesn't serialized sometime, has been explained here: \r\nhttp:&#47;&#47;stackoverflow.com&#47;a&#47;486487&#47;538387"
+---
+<p><!--start_raw-->
+<p>A while ago there was a big fuss about <a href="http:&#47;&#47;www.hanselman.com&#47;blog&#47;GoodExceptionManagementRulesOfThumb.aspx">correctly</a> <a href="http:&#47;&#47;codebetter.com&#47;blogs&#47;jeffrey.palermo&#47;archive&#47;2006&#47;08&#47;17&#47;148387.aspx">writing</a> and <a href="http:&#47;&#47;www.winterdom.com&#47;weblog&#47;PermaLink,guid,e9f4f177-ce66-4b1e-9144-c4a3ac5b94b2.aspx">using</a> exceptions. Here's one of my pet peeves that I forgot to mention at that time was this: Make your exception classes serializable!</p>
+<p>Honestly, I'm sick and tired of having to debug weird SerializationExceptions because an instance of a poorly written exception class crossed an AppDomain&nbsp;boundary. I could understand it if it was an exception class that really was impossible to serialize, but the reality is this is caused mainly by <em>lazyness on the developer's part</em>.</p>
+<p><strong>Tip #1:</strong> Exceptions are not serializable by default. If you create a custom exception class, it is <em>your</em> responsability to ensure it is serializable. </p>
+<p><strong>Tip #2:</strong> Marking an exception class with [Serializable] is not enough. System.Exception implements ISerializable, so it forces you to do so as well.<br> </p>
+<p>Here's what you should keep in mind when writing an exception class:</p>
+<ol>
+<li>Mark the exception type with the [Serializable] attribute.</li>
+<li>Add an empty&nbsp;protected serialization constructor that simply delegates to the base class:</li></ol>
+<p><font face="Lucida Console">protected MyException(SerializationInfo info, StreamingContext ctxt) : base(info, ctxt)</font></p>
+<p>For most exception classes, this will be enough, since&nbsp;most don't actually add new properties and simply rely on the message.</p>
+<p>However, if your custom exception class has custom properties, then it MUST override ISerializable.GetObjectData() (and don't forget to call the base one), and you MUST unpack those properties in your serialization constructor.</p>
+<p><strong>It's not&nbsp;just about remoting!</strong></p>
+<p>What many people seem to forget is that serialization happens in a lot of places without them knowing it. The underlying remoting and serialization mechanisms in .NET (and I don't mean remote object invokation) are the basis for all cross AppDomain calls, even when they are inside the same process boundary.</p>
+<p>More and more we see applications and environments where multiple AppDomains are the norm, rather than the exception: VSTO, MMC 3.0, BizTalk, ASP.NET and averything in between (including anything with COM interop in it). And this will grow in the future because using multiple AppDomains is the preffered way of hosting plugins safely and even applications will support extensibility in this fashion in the future.</p>
+<p>In each of those cases there's the possibility that your exception might cross an AppDomain boundary, so please make sure it does so gracefully. If you're a library writer (open source or commercial), be aware that the chance that a user might use your library in one of those contexts is always there, so make sure it is a good citizen.</p>
+<div class="wlWriterSmartContent" id="0767317B-992E-4b12-91E0-4F059A8CECA8:4139ad88-dde5-42bf-9321-2e49618f6b76" contenteditable="false" style="margin: 0px; padding: 0px; display: inline;">Technorati tags: <a href="http:&#47;&#47;technorati.com&#47;tags&#47;.NET" rel="tag">.NET</a>, <a href="http:&#47;&#47;technorati.com&#47;tags&#47;C#" rel="tag">C#</a>, <a href="http:&#47;&#47;technorati.com&#47;tags&#47;Serialization" rel="tag">Serialization</a>, <a href="http:&#47;&#47;technorati.com&#47;tags&#47;Architecture" rel="tag">Architecture</a></div><!--end_raw--></p>

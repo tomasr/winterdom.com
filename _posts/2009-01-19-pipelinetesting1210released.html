@@ -1,0 +1,167 @@
+---
+layout: post
+status: publish
+published: true
+title: PipelineTesting 1.2.1.0 Released
+author:
+  display_name: Tomas Restrepo
+  login: tomasr
+  email: tomas@winterdom.com
+  url: http://winterdom.com/
+author_login: tomasr
+author_email: tomas@winterdom.com
+author_url: http://winterdom.com/
+wordpress_id: 964
+wordpress_url: http://winterdom.com/2009/01/pipelinetesting1210released
+date: '2009-01-19 17:35:04 +0000'
+date_gmt: '2009-01-19 17:35:04 +0000'
+categories:
+- BizTalk
+tags: []
+comments:
+- id: 1330
+  author: Roman Gekhter
+  author_email: rgekhter@chart-tech.com
+  author_url: http://www.chart-tech.com
+  date: '2010-03-15 19:53:24 +0000'
+  date_gmt: '2010-03-15 19:53:24 +0000'
+  content: "Tomas, this is a fantastic tool.\r\nYou saved my team a ton of time (you
+    should charge for downloads :-) ).  I have a question though: my team has been
+    trying to automate processing of edi files(x12).  specifically 837 translation.
+    \ can you offer any help in that area?  Thanks."
+- id: 1332
+  author: Tomas Restrepo
+  author_email: tomas@winterdom.com
+  author_url: http://winterdom.com/
+  date: '2010-03-16 00:20:05 +0000'
+  date_gmt: '2010-03-16 00:20:05 +0000'
+  content: "@Roman: Thanks for the kind words, they are always appreciated :)\r\n\r\nWhat
+    exactly are you looking for in EDI processing? I'm afraid there are some limits
+    in what I can do there, mostly because the EDI components that BizTalk provides
+    have some nasty dependencies that usually stop them from running outside of the
+    messaging engine (I seem to recall they won't even run in pipelines executed inside
+    an orchestration)."
+- id: 1402
+  author: Adrian DeFazio
+  author_email: adefazio@pgwglass.com
+  author_url: ''
+  date: '2010-04-15 11:18:59 +0000'
+  date_gmt: '2010-04-15 11:18:59 +0000'
+  content: I'm trying to use your PipelineTesting 1.2 but I can't seem to instantiate
+    or call the DocLoader class (I do have a reference to the Winterdom.BizTalk.PipelineTesting
+    assembly).  Why can I not seem to call this class?
+- id: 1403
+  author: Tomas Restrepo
+  author_email: tomas@winterdom.com
+  author_url: http://winterdom.com/
+  date: '2010-04-15 12:13:25 +0000'
+  date_gmt: '2010-04-15 12:13:25 +0000'
+  content: "@Adrian: The DocLoader class used in the Unit Tests isn't part of the
+    library per-se, it's just a helper class in the unit tests project to extract
+    the sample input messages out of resources compiled into the test assembly.\r\n\r\nYou
+    can certainly grab the code for that and use it from Winterdom.BizTalk.PipelinelineTesting.Tests\\DocLoader.cs."
+- id: 1408
+  author: Adrian DeFazio
+  author_email: adefazio@pgwglass.com
+  author_url: ''
+  date: '2010-04-15 15:50:58 +0000'
+  date_gmt: '2010-04-15 15:50:58 +0000'
+  content: "Thanks Tomas...\r\nOne question, how can I get my test xml message into
+    the stream object without using your DocLoader class?"
+- id: 1409
+  author: Tomas Restrepo
+  author_email: tomas@winterdom.com
+  author_url: http://winterdom.com/
+  date: '2010-04-15 16:02:30 +0000'
+  date_gmt: '2010-04-15 16:02:30 +0000'
+  content: "@Adrian: Where is you test XML message? If it's a file, just use FileStream.
+    If it's content you have in a string or something, just write it to a MemoryStream.
+    Or just use MessageHelper.CreateFromString() instead."
+- id: 1410
+  author: Adrian DeFazio
+  author_email: adefazio@pgwglass.com
+  author_url: ''
+  date: '2010-04-15 20:03:47 +0000'
+  date_gmt: '2010-04-15 20:03:47 +0000'
+  content: thanks for the tips...I have it working.  Great tool by the way, I'm loving
+    it!
+- id: 1738
+  author: Art
+  author_email: mefisto4u@yahoo.com
+  author_url: ''
+  date: '2011-06-15 15:04:09 +0000'
+  date_gmt: '2011-06-15 15:04:09 +0000'
+  content: "Tomas, I use your libarary for almost all my BizTalk testing needs but
+    recently I run into a situation that puzzled me and I wanted to see if perhaps
+    you can help me. I created disassembler component, which in turn contains FFDasmComp.
+    Based on available variables I can pick a schema to go with FFDasmComp, say MyComp.MySchema.
+    Sample, which I'm including below errors out in the last statement basically saying
+    that can not find the document \"MyComp.MySchema\". This schema is deployed to
+    BizTalk but pipeline (hosting my disassembler component) is not. When I deploy
+    pipeline along with the schema, create my receive locations, send ports and drop
+    a test file then everything works as expected. Now, this is fine but kills my
+    productivity and can't really do any unit testing. Is there a way to have a cake
+    and eat it too?\r\n\r\npublic override void Disassemble(IPipelineContext pContext,
+    IBaseMessage pInMsg)\r\n{\r\n  var disassembler = new FFDasmComp();\r\n  \r\n
+    \ &#47;&#47; here is the code to figure out the schema to go with the FF\r\n  &#47;&#47;
+    and it works fine\r\n\r\n  &#47;&#47; this call also seems to be working fine\r\n
+    \ disassembler.DocumentSpecName = new SchemaWithNone(\"MyComp.MySchema, MySchema,
+    Version=1.0.0.0, Culture=neutral, PublicToken=34ca25f90e3c3dbv);\r\n\r\n  &#47;&#47;and
+    this call fails\r\n  disassembler.Disassemble(pContext, pInMsg)\r\n}"
+- id: 1750
+  author: Tomas Restrepo
+  author_email: tomas@winterdom.com
+  author_url: http://winterdom.com/
+  date: '2011-07-03 02:54:57 +0000'
+  date_gmt: '2011-07-03 02:54:57 +0000'
+  content: "@Art: Are you explicitly putting your document schemas into the context
+    before running the test?"
+- id: 4909
+  author: Bram
+  author_email: b.veldhoen@gmail.com
+  author_url: ''
+  date: '2012-12-14 14:35:49 +0000'
+  date_gmt: '2012-12-14 14:35:49 +0000'
+  content: "Hi Tomas,\r\n\r\nThis PipelineTesting library has saved my butt a couple
+    of times already! However, I'm running into an  issue right now concerning the
+    cleanup after pipeline execution. If you check the implementation of the Microsoft.XLANGs.Pipeline.XLANGPipelineManager,
+    you see that it executes the the ResourceTracker's DisposeAll method after execution
+    of the pipeline. I assume this behaviour is similar when the pipeline is executed
+    from a receive or send port, but that's beside the point.\r\n\r\nI didn't find
+    an easy way to execute the ResourceTracker's DisposeAll method from the pipelinetesting
+    library after the pipeline has finished executing (barring reflection into private
+    members). Do you know of one?\r\n\r\nFWIW, my suggestions to add this functionality:
+    Add a PipelineManager, or add IDisposable on the Pipeline base class (so we can
+    use using from the unit tests)?"
+- id: 4910
+  author: Bram
+  author_email: b.veldhoen@gmail.com
+  author_url: ''
+  date: '2012-12-14 15:13:48 +0000'
+  date_gmt: '2012-12-14 15:13:48 +0000'
+  content: "Tomas,\r\n\r\nI'm now using the following workaround, which, although
+    not optimal, is acceptable from our test code:\r\n\r\n            var fiPipelineContext
+    = typeof(BasePipelineWrapper).GetField(\"_pipelineContext\", BindingFlags.Instance
+    | BindingFlags.NonPublic);\r\n            var pipelineContext = fiPipelineContext.GetValue(pipeline)
+    as IPipelineContext;\r\n            var fiResourceTracker = pipelineContext.GetType().GetField(\"_resourceTracker\",
+    BindingFlags.Instance | BindingFlags.NonPublic);\r\n            var resourceTracker
+    = fiResourceTracker.GetValue(pipelineContext) as ResourceTracker;\r\n            resourceTracker.DisposeAll();"
+---
+<p><!--start_raw-->
+<p>Last week I spent some time working on a new minor release of my PipelineTesting library for BizTalk Server 2006&#47;R2. The new release is available in the usual places: <a href="http:&#47;&#47;winterdom.com&#47;dev&#47;bts&#47;PipelineTesting.zip">Binary and Source</a> Snapshot, and the <a href="http:&#47;&#47;github.com&#47;tomasr&#47;pipelinetesting&#47;">Source Repository</a> at GitHub.</p>
+<p>The new release includes some minor documentation updates, a couple of bug fixes and a new wrapper for doing basic testing of flat file and xml schemas that provides a somewhat equivalent functionality to that offered by the TestableSchema class offered in BizTalk 2009 I&rsquo;ve <a href="http:&#47;&#47;winterdom.com&#47;weblog&#47;2009&#47;01&#47;01&#47;BizTalk2009TestingFeatures.aspx">talked about</a> before.</p>
+<p>Here&rsquo;s the documentation and sample for the new functionality.</p><br />
+<h2>Testing Schemas</h2>
+<p>It is possible to target BizTalk schemas in your testing efforts using all versions of PipelineTesting if you don&rsquo;t mind doing a little bit of grunt work. This is possible for both flat file and xml schemas, and is done simply by instantiating a pipeline (either a compiled pipeline or by creating a new one from scratch) and then running your instance documents through it and checking the output.
+<p>This works particularly well for advanced scenarios involving envelopes or batching&#47;debatching, but it&rsquo;s overkill for the simple scenarios.
+<p>Beginning with PipelineTesting v1.2.1.0, there&rsquo;s a new feature for easy testing of schemas in those simple scenarios. Partially inspired by the new functionality offered in BizTalk Server 2009, the <code>SchemaTester<T></code> class allows you to parse&#47;assemble a document according to a single document schema with a single method call.
+<p>To use <code>SchemaTester<T></code>, simply provide the type of the BizTalk schema to use and call one of it&rsquo;s static methods. The options offered are:
+<ul>
+<li>ParseFF: Parses a flat file into an XML document
+<li>ParseXml: Parses an XML document
+<li>AssembleFF: Assembles an XML document into a new flat file
+<li>AssembleXml: Assembles an XML document</li></ul>
+<p>All method come with overloads that use streams or paths to files. Here&rsquo;s an example of how to use it based on one of the unit tests for this feature:</p>
+<div class="codebg"><code>Stream input = DocLoader.LoadStream(<span class="String">"CSV_FF_RecvInput.txt"</span>);<br>Stream output = SchemaTester<Schema3_FF>.ParseFF(input);<br><span class="Comment">&#47;&#47; Load resulting XML document</span><br>XmlDocument doc = <span class="Statement">new</span> XmlDocument();<br>doc.Load(output); </code></div>
+<p>If the document cannot be converted, an exception will be raised. Remember that you <strong>must</strong> consume the resulting stream (if using the stream-variants of the <code>SchemaTester<T></code> methods). You can then check the resulting exception to look into why the parsing&#47;assembling is failure.
+<p>To make it easier to deal with the different parsing exceptions, and how to extract meaningful information out of it, you can use the <code>ErrorHelper.GetErrorMessage()</code> helper method.</p><!--end_raw--></p>

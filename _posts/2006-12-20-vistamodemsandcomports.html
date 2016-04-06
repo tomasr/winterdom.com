@@ -1,0 +1,30 @@
+---
+layout: post
+status: publish
+published: true
+title: Vista, Modems and COM Ports
+author:
+  display_name: Tomas Restrepo
+  login: tomasr
+  email: tomas@winterdom.com
+  url: http://winterdom.com/
+author_login: tomasr
+author_email: tomas@winterdom.com
+author_url: http://winterdom.com/
+wordpress_id: 210
+wordpress_url: http://winterdom.com/2006/12/vistamodemsandcomports
+date: '2006-12-20 05:41:08 +0000'
+date_gmt: '2006-12-20 05:41:08 +0000'
+categories:
+- Vista
+tags: []
+comments: []
+---
+<p><!--start_raw-->
+<p>Last week I installed again my cellphone's PC drivers and software on my repaved Vista Laptop. I wasn't too confident it would work, but it was worth trying. The drivers installed right away without issues and Vista recognized the phone as an USB modem right away and configured it on the virtual COM4 port. </p>
+<p>The actual phone software - in this case the LG Mobile Agent - installed without issues as well, but didn't quite work. The problem was that after installation you need to go to the options to select the COM port the phone is configured as, but the combo box used to select it was just empty; no way to select it. For a few days I just left it at that as I had no time to mess around with it, and I had already tried the obvious, running it as administrator (elevated privileges) didn't work.</p>
+<p>Last night I took a look at it again and finally figured what's going on. The problem appears to be that Vista recognizes modems as [virtual] COM ports with all the options that implies (not only my phone, but the built-in modem in my laptop as well). However, it apparently doesn't list them when you just try to list the COM ports in the machine. So, it appears that LG's software tries looking for COM ports, not actually look for modems, and so, never found any; since my machine doesn't have any real COM ports on it.</p>
+<p>What gave me the clue was that fooling around I connected for the first time a USB GPS receiver I had laying around (one I had gotten with Streets and Trips 2006). Vista recognized it right away and downloaded the proper drivers for it. Once the drivers are installed, Vista simply recognizes the receiver as just one COM port (COM5 in this case), and what do you know, the LG software listed it in the configuration options!</p>
+<p>So what I did was configure the LG software to use COM5 (the GPS receiver), saved the settings, and then proceeded to find where the program stored its settings. Since this was not an application built for Vista, the OS <a href="http:&#47;&#47;www.hanselman.com&#47;blog&#47;VistasShowCompatibilityFilesAndTheScrumptiousWonderThatIsFileVirtualization.aspx">virtualized the file system</a> for it and the configuration ended up being saved in one Config.ini file stored under "C:\Users\<MyUser>\AppData\Local\VirtualStore\Program Files\LG mobile\LG Mobile Agent\".</p>
+<p>So I just opened the file in notepad, changed the Port option to point to COM4 (where my phone was configured), saved it, and opened LG Mobile Agent again and it worked! Granted, the LG software is fairly crappy and I rarely use it, but it was still satisfying to finally find what the issue was. Hopefully this might clue in other people to how to work around the problem with the software (and maybe with other software with similar issues).</p>
+<div class="wlWriterSmartContent" id="0767317B-992E-4b12-91E0-4F059A8CECA8:7c731fad-9cb7-400e-9443-4fa8a4b9f694" contenteditable="false" style="padding-right: 0px; display: inline; padding-left: 0px; padding-bottom: 0px; margin: 0px; padding-top: 0px">Technorati tags: <a href="http:&#47;&#47;technorati.com&#47;tags&#47;Vista" rel="tag">Vista</a>, <a href="http:&#47;&#47;technorati.com&#47;tags&#47;LG%20Mobile%20Agent" rel="tag">LG Mobile Agent</a></div><!--end_raw--></p>

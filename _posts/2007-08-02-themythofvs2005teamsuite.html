@@ -1,0 +1,32 @@
+---
+layout: post
+status: publish
+published: true
+title: The Myth of VS2005 Team Suite
+author:
+  display_name: Tomas Restrepo
+  login: tomasr
+  email: tomas@winterdom.com
+  url: http://winterdom.com/
+author_login: tomasr
+author_email: tomas@winterdom.com
+author_url: http://winterdom.com/
+wordpress_id: 795
+wordpress_url: http://winterdom.com/2007/08/themythofvs2005teamsuite
+date: '2007-08-02 16:27:31 +0000'
+date_gmt: '2007-08-02 16:27:31 +0000'
+categories:
+- ".NET"
+tags: []
+comments: []
+---
+<p><!--start_raw-->
+<p>From the "stupid installer pisses me off" department:</p>
+<p>Today I decided to try to install the <a href="http:&#47;&#47;www.microsoft.com&#47;downloads&#47;details.aspx?familyid=7DE00386-893D-4142-A778-992B69D482AD&amp;displaylang=en">Visual Studio 2005 Team Suite Database&nbsp;Professional Add-On</a> (got tired just typing that) on my Visual Studio Team Suite installation. I installed it without issues, and then proceeded to install SR1.</p>
+<p>Imagine my surprise when it asked if I wanted to upgrade the Database Professional TRIAL edition! It sounded fishy because I had not installed any trials, so went to the download page again to check if it was a trial and it didn't say so. However, far down the page it says:</p><br />
+<blockquote>
+<p>This add-on provides Visual Studio 2005 Team Suite users with the additional functionality provided by Visual Studio 2005 Team Edition for Database Professionals. Visual Studio 2005 Team Suite is required to use this add-on. If you do not currently own Visual Studio 2005 Team Suite Edition but would like to evaluate Visual Studio 2005 Team Edition for Database Professionals in a trial mode, you may do so by first installing the Visual Studio 2005 Team Suite Trial Edition and then installing this add-on which will function until the Team Suite trial period expires.</p></blockquote>
+<p>Do I have Team Suite installed? Hell yeah! So why does it says it installed in trial mode, then? The answer? Team Suite is, apparently, a figment of my imagination or something. After doing a lot of memory, here's what I think happened:</p>
+<p>When I&nbsp;recreated my development virtual machine, I proceeded to install Visual Studio 2005 Team Suite as always. However, during installation, I decided to uncheck the testing tools, based on the fact that I never use them (prefer NUnit myself) and that they would only slow me down. </p>
+<p>Well, apparently, just because I decided to not install one feature, that was&nbsp;enough for the Database Professional installer to decide that I do not have "Team Suite" installed. I'd argue that I installed from the Team Suite media with a Team Suite license, but apparently that's not enough for the stupid Installer. Now I have to go and uninstall it, install more crap on Visual Studio,&nbsp;reinstall SP1 and&nbsp;reinstall this. It&nbsp;better be worth it...&nbsp;</p>
+<div class="wlWriterSmartContent" id="0767317B-992E-4b12-91E0-4F059A8CECA8:fd186ed7-8222-4c42-88ed-a2322a78eb0f" contenteditable="false" style="padding-right: 0px; display: inline; padding-left: 0px; padding-bottom: 0px; margin: 0px; padding-top: 0px">Technorati tags: <a href="http:&#47;&#47;technorati.com&#47;tags&#47;Visual%20Studio" rel="tag">Visual Studio</a></div><!--end_raw--></p>

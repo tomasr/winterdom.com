@@ -1,0 +1,128 @@
+---
+layout: post
+status: publish
+published: true
+title: Some Comments on Visual Studio 2010 Beta 2
+author:
+  display_name: Tomas Restrepo
+  login: tomasr
+  email: tomas@winterdom.com
+  url: http://winterdom.com/
+author_login: tomasr
+author_email: tomas@winterdom.com
+author_url: http://winterdom.com/
+wordpress_id: 1304
+wordpress_url: http://winterdom.com/2009/10/some-comments-on-visual-studio-2010-beta-2
+date: '2009-10-27 03:29:39 +0000'
+date_gmt: '2009-10-27 03:29:39 +0000'
+categories:
+- Visual Studio
+tags: []
+comments:
+- id: 1178
+  author: Noah
+  author_email: noahric@microsoft.com
+  author_url: http://blogs.msdn.com/noahric
+  date: '2009-10-27 06:33:47 +0000'
+  date_gmt: '2009-10-27 06:33:47 +0000'
+  content: "A lot of people here certainly do care about remote desktop scenarios
+    :)  I know that WPF tests with both vmware and virtualPC pretty heavily (and made
+    lots of improvements in those and RDP scenarios since Beta 1), but I'm not sure
+    if they test with virtual box (I'm still checking with them on that).  Also, I
+    do know that there was a pretty big perf improvement for scrolling in the editor
+    around the outlining margin, but that didn't make it into beta 2.  You can see
+    how much that is affecting things by turning off outlining (e.g. for C# - Tools
+    -> Options -> Text Editor -> C# -> Advanced -> uncheck \"Enter outlining mode
+    when files open\").\r\n\r\nThe line number issue (looking bad at zoom) is a bug
+    fixed post Beta 2.\r\n\r\nThe exception handling stuff should get better post
+    Beta 2 as well - we've added in code in most places that call into extensions
+    to protect against exceptions being thrown (and stick information in the activity
+    log).\r\n\r\nI don't know how helpful that really is, but hopefully it is some
+    comfort that things should improve in the future."
+- id: 1179
+  author: Eddie
+  author_email: eddiegroves@gmail.com
+  author_url: ''
+  date: '2009-10-27 07:33:11 +0000'
+  date_gmt: '2009-10-27 07:33:11 +0000'
+  content: I can see performance being the biggest issue we're worried about come
+    March 2010. Cheers for the write up Tomas.
+- id: 1180
+  author: Tomas Restrepo
+  author_email: tomas@winterdom.com
+  author_url: http://winterdom.com/
+  date: '2009-10-27 12:52:36 +0000'
+  date_gmt: '2009-10-27 12:52:36 +0000'
+  content: '@Noah: It does help to know this stuff is being looked up. I didn''t mean
+    to sound too negative about it. I do like a lot of stuff in the new editor, but
+    performance is just a one of those "make or break" usability issues for me. It
+    just doesn''t matter how cool the IDE is if it''s painfully slow to use ;)'
+- id: 1181
+  author: Kevin Dente
+  author_email: kevind@denteworld.com
+  author_url: http://weblogs.asp.net/kdente
+  date: '2009-10-27 14:04:56 +0000'
+  date_gmt: '2009-10-27 14:04:56 +0000'
+  content: "Tomas,\r\nAny chance you're hitting the same issue on vbox that I hit
+    on VMWare with scrolling?\r\nhttp:&#47;&#47;weblogs.asp.net&#47;kdente&#47;archive&#47;2009&#47;10&#47;19&#47;visual-studio-2010-beta-2-editor-performance-fix-running-on-a-virtual-machine.aspx\r\n\r\nScrolling
+    got much faster after I made that change."
+- id: 1182
+  author: Arjan&#8217;s World &raquo; LINKBLOG for Oct 27, 2009
+  author_email: ''
+  author_url: http://www.arjansworld.com/2009/10/27/linkblog-for-oct-27-2009/
+  date: '2009-10-27 16:15:18 +0000'
+  date_gmt: '2009-10-27 16:15:18 +0000'
+  content: "[...] Some Comments on Visual Studio 2010 Beta 2 &#8211; Tomas Restropo
+    [...]"
+- id: 1183
+  author: Tomas Restrepo
+  author_email: tomas@winterdom.com
+  author_url: http://winterdom.com/
+  date: '2009-10-28 12:34:56 +0000'
+  date_gmt: '2009-10-28 12:34:56 +0000'
+  content: "@Kevin: I did make that change, but performance didn't change a bit for
+    me (unless I made the wrong change somehow)..."
+- id: 1184
+  author: 'New and Notable 385 : Sam Gentile''s Blog (if (DeveloperTask == Communication
+    &amp;&amp; OS == Windows)'
+  author_email: ''
+  author_url: http://samgentile.com/Web/new-and-notable/new-and-notable-385/
+  date: '2009-10-28 17:12:13 +0000'
+  date_gmt: '2009-10-28 17:12:13 +0000'
+  content: "[...] Some Comments on Visual Studio 2010 Beta 2 - My very good friend,
+    Tomas, takes an in-depth look at the latest, particuarly in the area of the Text
+    Editor, and comes up with a list of like&#47;dislike [...]"
+- id: 1314
+  author: shafqat ali
+  author_email: shafqat.ali@iengineering.com
+  author_url: http://pk.linkedin.com/pub/shafqat-ali/19/694/905
+  date: '2010-03-01 05:20:18 +0000'
+  date_gmt: '2010-03-01 05:20:18 +0000'
+  content: "i have problum with Workflows, there are two types of activites CODE and
+    Designer.\r\n\r\ni want to have Designer activity with code behind, since it is
+    auto generated and cnnot be changed , i want it to be editable."
+- id: 1315
+  author: shafqat ali
+  author_email: shafqat.ali@iengineering.com
+  author_url: http://pk.linkedin.com/pub/shafqat-ali/19/694/905
+  date: '2010-03-01 05:21:23 +0000'
+  date_gmt: '2010-03-01 05:21:23 +0000'
+  content: i am currently using beta 2,
+---
+<p>I&rsquo;ve been fooling around a bit with the new Beta 2 build of Visual Studio 2010, so I&rsquo;d thought I&rsquo;d share a few comments about my general experience with the IDE, focusing mostly on the code editor.</p><br />
+<h2>What I like</h2>
+<ul>
+<li>After fooling around with my Windows configuration, font rendering on beta 2 looks a bit better than it used to do in beta 1, which is great. It&rsquo;s now on par with VS2008, I&rsquo;d say (and zoomed text looks awesome). The only exception here is the rendering of line numbers, which is pretty bad, for whatever reason. </li>
+<li>One of the issues I had commented earlier about <a href="http:&#47;&#47;winterdom.com&#47;2009&#47;06&#47;vs2010-editor-and-explicit-background-colors">background color handling</a> in the editor seems to have been improved. Not sure how well it will work in practice, but the new behavior seems a lot better and more useful. Here&rsquo;s a quick look at how the same line looks like normally, with a breakpoint and as the current statement:
+<p><img style="border-right-width: 0px; display: inline; border-top-width: 0px; border-bottom-width: 0px; border-left-width: 0px" title="EditorBg" border="0" alt="EditorBg" src="http:&#47;&#47;winterdom.com&#47;wp-content&#47;uploads&#47;2009&#47;10&#47;EditorBg.png" width="592" height="107" &#47;></p>   </li>
+<li>You can now change the colors used when highlighting a collapsible region so that it doesn&rsquo;t screw up with your custom color scheme. I still find the feature fairly useless, though, but maybe it&rsquo;s just me. </li>
+<li>Easy horizontal splitting of code windows is back. Yay!
+<p><img style="border-right-width: 0px; display: inline; border-top-width: 0px; border-bottom-width: 0px; border-left-width: 0px" title="VSSplit" border="0" alt="VSSplit" src="http:&#47;&#47;winterdom.com&#47;wp-content&#47;uploads&#47;2009&#47;10&#47;VSSplit.png" width="116" height="117" &#47;> </p>   </li>
+<li>The IDE seems a bit more stable (beta 1 was pretty bad). I haven&rsquo;t had any bad crashes yet. If you&rsquo;re writing Visual Studio Extensions, though, be aware that VS handling of exceptions thrown by extensions (particularly editor-related ones) is still absolutely awful. It <em>will</em> crash, and it will do so badly. You might get a fairly useless dialog box before the crash, if you&rsquo;re lucky. </li>
+<li><a href="http:&#47;&#47;blogs.msdn.com&#47;visualstudio&#47;archive&#47;2009&#47;10&#47;26&#47;box-selection-and-multi-line-editing.aspx">Vertical Selection</a> is back. Sorely needed. The Insert-In-Vertical-Selection bit is useful, but I&rsquo;ve had that with ViEmu for years on previous VS versions. (By the way, there&rsquo;s a slight bug in this feature in Beta 2: if you want to insert text at the start of multiple lines, you need to block-select the first char, type in the new text and then fix the first chars of the lines that you overwrote. If you make instead an empty vertical selection first, insertion will go very wrong). </li>
+<li>The new C# signature help tooltips are pretty nice. They contain useful information, and they look pretty good. They are very much easier to read than the old VS2008 tooltips.      <br &#47;>      <br &#47;><a href="http:&#47;&#47;winterdom.com&#47;wp-content&#47;uploads&#47;2009&#47;10&#47;Tooltips.png"><img style="border-right-width: 0px; display: inline; border-top-width: 0px; border-bottom-width: 0px; border-left-width: 0px" title="Tooltips" border="0" alt="Tooltips" src="http:&#47;&#47;winterdom.com&#47;wp-content&#47;uploads&#47;2009&#47;10&#47;Tooltips_thumb.png" width="640" height="64" &#47;></a>&#160; <br &#47;>      <br &#47;>I do have one complain here, and it&rsquo;s the lack of consistency: These nice tooltips only appear if you use the Intellisense &ndash;> Parameter Info command (usually bound to Ctrl + Shift + Space). If you just hover the mouse over a method, you get a tooltip with the same info, but without all the nice formatting (looking very much like the VS2008 ones, just maybe in a different color).      <br &#47;>
+<p>       <br &#47;>But it goes a bit beyond that. For example, those uglier tooltips use fixed-with fonts for all the text. One more inconsistency is that the tooltips shown when a member is selected in the IntelliSense completion list dropdown have the almost the same contents as the other two cases, but this time rendered in a proportional font instead. At least be consistent about it in all places! It would be awesome if all of them used the really nice thing the new formatted tooltips do: render the description text was in a proportional font and leave the signature in a monospaced font.</p>   </li> </ul><br />
+<h2>What I don&rsquo;t like so much</h2>
+<ul>
+<li><em>Editor Performance:</em> When it comes to actually editing text, the editor is still not very fast. It&rsquo;s a bit better in some spots than beta 1, and in general redrawing of the screen is fairly good, though I still see a very, very slight delay when typing text fast.       <br &#47;>      <br &#47;>Part of the problem here is that I&rsquo;m running VS2010 on a Virtual Machine (and one running Win7 at that, which isn&rsquo;t exactly snappy). Without hardware acceleration, the WPF-based text editor doesn&rsquo;t quite perform as well as one would like. On the other hand, this is pretty much the standard setup for a lot of developers out there, so just ignoring this isn&rsquo;t really an option for lots of us (not sure if it&rsquo;s something MS cares about, though).       <br &#47;>      <br &#47;>The part where performance is pretty bad, in my specific experience, is scrolling: Right now, scrolling in the editor is absolutely awful. It is <em>very</em> slow, regardless of whether you are scrolling by simply moving around with the caret or using the scrollbar. Really hope this gets fixed.       <br &#47;>      <br &#47;>As an aside: I did try running VS2010 through RDP (terminal services). The experience was pretty much the same: It works reasonably OK as long as you have a large enough bandwidth between the two machines to enable all the graphics features (particularly ClearType, without which the editor is not as nice). Scrolling still sucks the big one over RDP. For more restricted connections, I&rsquo;m not sure yet usable the editor will be. </li>
+<li><em>Italics:</em> Still not there. Seriously screwed up that we&rsquo;ll have to wait another 3 years to get one stupid checkbox added to the Fonts &amp; Colors option dialog to enable italics fonts on our configurations. The text editor itself does fully support italics and they look <em>beautiful</em>; you just have to hack your way around it to enable them (or use extensions that forces part of the text to render as italics). Not a happy panda about this. </li> </ul></p>

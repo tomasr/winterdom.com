@@ -1,0 +1,64 @@
+---
+layout: post
+status: publish
+published: true
+title: Port VS2005 Color Schemes to VS2008
+author:
+  display_name: Tomas Restrepo
+  login: tomasr
+  email: tomas@winterdom.com
+  url: http://winterdom.com/
+author_login: tomasr
+author_email: tomas@winterdom.com
+author_url: http://winterdom.com/
+wordpress_id: 479
+wordpress_url: http://winterdom.com/2007/11/portvs2005colorschemestovs2008
+date: '2007-11-22 15:55:00 +0000'
+date_gmt: '2007-11-22 15:55:00 +0000'
+categories:
+- VS Color Scheme
+tags: []
+comments:
+- id: 340
+  author: Brad Wilson
+  author_email: dotnetguy@gmail.com
+  author_url: http://www.agileprogrammer.com/
+  date: '2007-11-24 16:09:07 +0000'
+  date_gmt: '2007-11-24 16:09:07 +0000'
+  content: |
+    Thanks for this! Now I have ported my 2005 colors to 2008 (<a href="http:&#47;&#47;www.agileprogrammer.com&#47;dotnetguy&#47;archive&#47;2006&#47;09&#47;07&#47;19030.aspx" rel="nofollow">available here</a>)! :)
+- id: 1340
+  author: Visual Studio Themes
+  author_email: ''
+  author_url: http://jamesgray.us/2010/03/28/visual-studio-themes/
+  date: '2010-03-28 07:00:34 +0000'
+  date_gmt: '2010-03-28 07:00:34 +0000'
+  content: "[...] for Visual Studio 2005. Fortunately for you, if you use Visual Studio
+    2008, Tomas Restrepo made an .xslt to convert the .vssettings file to be [...]"
+- id: 2071
+  author: Mallaboro
+  author_email: up618341@myport.ac.uk
+  author_url: http://anthonymallaboro.co.uk
+  date: '2012-03-10 07:16:35 +0000'
+  date_gmt: '2012-03-10 07:16:35 +0000'
+  content: 'please fix this download link. : 3'
+- id: 2072
+  author: Tomas Restrepo
+  author_email: tomas@winterdom.com
+  author_url: http://winterdom.com/
+  date: '2012-03-10 13:59:59 +0000'
+  date_gmt: '2012-03-10 13:59:59 +0000'
+  content: Link updated. Thanks!
+---
+<p><!--start_raw-->
+<p>Visual Studio 2008 (Orcas) handles some of the Font and Colors settings differently from VS2005. While Orcas can import .vssettings files generated its predecessor, there are a couple of problems:</p>
+<ol>
+<li>Custom colors for User Types and C# @"" strings don't get imported. This is because the name of the settings in the exported files changed between versions. For example, the setting for Delegates was named "User Types (Delegates)", but it is now called "User Types(Delegates)" (notice the missing space!). </li>
+<li>Visual Studio 2008 introduces a whole new set of settings for XAML. This seems like a pretty needless thing to me, because all but three of the new XAML settings have direct counterparts in the XML color settings (only those dealings with XAML markup extensions are really new). </li> </ol>
+<p>As I had spent quite a bit of time creating the several Visual Studio 2005 Color Schemes that I've made available here, I had no desire to spent a lot of time porting them and fixing the problems mentioned above.</p>
+<p>Instead, I spent half an hour creating a simple XSLT that you can run on a .vssettings file exported by VS2005 and generate a new one with the above problems fixed. For the XAML settings, the XSLT will copy the corresponding XML options and for the three new settings (XAML Markup Extension Class, XAML Markup Extension Parameter Name, and XAML Markup Extension Parameter Value) it gives them "reasonable" values from other options.</p>
+<p>Download <a href="http:&#47;&#47;winterdom.com&#47;binary&#47;PortVSSettings.xslt">PortVSSettings.xslt</a>.</p>
+<p><strong>Update:</strong> To run the XSLT without writing any code, you can open it up in Visual Studio and use the XML -> Debug XSLT option. Then, choose your .vssettings file as the input and you're done! (thanks to <a href="http:&#47;&#47;www.agileprogrammer.com&#47;dotnetguy&#47;">Brad Wilson</a> for reminding me about it!)</p>
+<p><strong>Note:</strong> The template will only likely work with fairly complete customizations. This is because of the way the Visual Studio Import&#47;Exports Settings tool works: It won't export any color options that have the "default" color. </p>
+<p>Because of this, if have customized Visual Studio but some of the colors the XSLT looks for are missing because you left in the default value, it will not do the trick.</p>
+<div class="wlWriterSmartContent" id="scid:0767317B-992E-4b12-91E0-4F059A8CECA8:3327178b-4de1-44da-90c8-44775b012518" style="padding-right: 0px; display: inline; padding-left: 0px; padding-bottom: 0px; margin: 0px; padding-top: 0px">Technorati tags: <a href="http:&#47;&#47;technorati.com&#47;tags&#47;Visual%20Studio%202008" rel="tag">Visual Studio 2008</a>, <a href="http:&#47;&#47;technorati.com&#47;tags&#47;Color%20Scheme" rel="tag">Color Scheme</a></div><!--end_raw--></p>

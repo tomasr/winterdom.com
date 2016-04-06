@@ -1,0 +1,28 @@
+---
+layout: post
+status: publish
+published: true
+title: VPC2004 and Redhat9
+author:
+  display_name: Tomas Restrepo
+  login: tomasr
+  email: tomas@winterdom.com
+  url: http://winterdom.com/
+author_login: tomasr
+author_email: tomas@winterdom.com
+author_url: http://winterdom.com/
+wordpress_id: 623
+wordpress_url: http://winterdom.com/2004/01/vpc2004andredhat9
+date: '2004-01-19 18:44:15 +0000'
+date_gmt: '2004-01-19 18:44:15 +0000'
+categories:
+- Tools
+tags: []
+comments: []
+---
+<p><!--start_raw-->Speaking of Virtual PC 2004, let me tell you about a bit of a snaffu I had when trying to install Redhat 9 on VPC this weekend.</p>
+<p>The initial installation went just fine. I was able to partition and format the drive, select the packages and install them with no problems at all. I even configured X as requested. Great!</p></p>
+<p>And then, I rebooted. Imagine my surprise when after the system booted up and went into runlevel 5, the screen when nuts into a 1600 x 800 resolution or something like that as soon as X started up! And I had no color! And it was completely unreadable! This made no sense at all, since I had just configured the system to run at 800x600!</p></p>
+<p>I checked XF86Config. All fine. I checked the docs; all seemed fine. Then I decided to rerun X setup, to see if I could fix it. Great, I couldn't, because on redhat, the only X configuration tool available runs under X itself, which of course, was completely screwed up.</p></p>
+<p>Took me a while to figure out that what I had to do to get the X configuration utility to run again was to simply delete my &#47;etc&#47;X11&#47;XF86Config file. Once I did that, I was able to run &#47;usr&#47;bin&#47;redhat-config-xfree86, which defaulted to a standard driver which worked correctly, so I was able to fiddle around with the configuration again.</p></p>
+<p>After a lot of restarting and changing modes and trying several settings with no avail, I finally discovered the problem: When the configuration tool probed the video card, it kept recognizing it as a S3 Trio64 card. However, when I looked on my WinXP virtual Machine I had installed earlier, it said "Trio32&#47;64". I have no clue what exactly the difference is, but once I configured the card as Trio32 in linux, X worked fine again!</p><!--end_raw--></p>

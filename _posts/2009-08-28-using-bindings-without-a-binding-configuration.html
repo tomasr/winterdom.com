@@ -1,0 +1,66 @@
+---
+layout: post
+status: publish
+published: true
+title: Using Bindings Without a Binding Configuration
+author:
+  display_name: Tomas Restrepo
+  login: tomasr
+  email: tomas@winterdom.com
+  url: http://winterdom.com/
+author_login: tomasr
+author_email: tomas@winterdom.com
+author_url: http://winterdom.com/
+wordpress_id: 1286
+wordpress_url: http://winterdom.com/2009/08/using-bindings-without-a-binding-configuration
+date: '2009-08-28 13:16:09 +0000'
+date_gmt: '2009-08-28 13:16:09 +0000'
+categories:
+- WCF
+tags: []
+comments:
+- id: 1106
+  author: Jesse Ezell
+  author_email: jezell@gmail.com
+  author_url: ''
+  date: '2009-08-28 16:24:18 +0000'
+  date_gmt: '2009-08-28 16:24:18 +0000'
+  content: LOL. Gotta love WCF config.
+- id: 1109
+  author: Christian Weyer
+  author_email: christian.weyer@thinktecture.com
+  author_url: http://blogs.thinktecture.com/cweyer
+  date: '2009-08-28 21:43:27 +0000'
+  date_gmt: '2009-08-28 21:43:27 +0000'
+  content: "Oh yeah! Ht this a lot of of times, bad :(\r\nFortunately this is fixed
+    (finally !?) in WCF 4.0..."
+- id: 1116
+  author: Scott Banwart&#8217;s Blog &raquo; Blog Archive &raquo; Distributed Weekly
+    13
+  author_email: ''
+  author_url: http://rogue-technology.com/blog/?p=529
+  date: '2009-09-04 13:44:17 +0000'
+  date_gmt: '2009-09-04 13:44:17 +0000'
+  content: "[...] Using Bindings Without a Binding Configuration [...]"
+---
+<p>A WCF question came up recently on StackOverflow about using a <a href="http:&#47;&#47;stackoverflow.com&#47;questions&#47;1333287&#47;making-a-custom-binding-configurable-over-app-config">binding for a custom transport through configuration</a> instead of code. My initial reply was that you needed all the right configuration classes associated with your binding so that you could register the right binding extensions for the usage.</p>
+<p>The question from there evolved into something more specific: Once I&rsquo;ve got my binding collection element created and registered as an extension, what if I want to use it on an endpoint by specifying only the <a href="http:&#47;&#47;msdn.microsoft.com&#47;en-us&#47;library&#47;system.servicemodel.configuration.serviceendpointelement.binding.aspx">binding</a> and not a <a href="http:&#47;&#47;msdn.microsoft.com&#47;en-us&#47;library&#47;system.servicemodel.configuration.serviceendpointelement.bindingconfiguration.aspx">bindingConfiguration</a> (like you can do with the standard bindings). In other words, do this:</p>
+<pre class="codebg"><code><span class="Function"><</span><span class="Function">system</span><span class="Comment">.</span><span class="Function">serviceModel</span><span class="Function">></span><br />
+   <span class="Function"><</span><span class="Function">extensions</span><span class="Function">></span><br />
+      <span class="Function"><</span><span class="Function">bindingExtensions</span><span class="Function">></span><br />
+         <span class="Function"><</span><span class="Function">add</span><span class="Function"> </span><span class="Type">name</span>=<span class="String">"myBinding"</span><br />
+<span class="Function">              </span><span class="Type">type</span>=<span class="String">"MyNamespace.MyBindingCollectionElement, MyBinding"</span><span class="Function"> &#47;></span><br />
+      <span class="Identifier"></bindingExtensions></span><br />
+   <span class="Identifier"></extensions></span><br />
+   <span class="Function"><</span><span class="Function">services</span><span class="Function">></span><br />
+      <span class="Function"><</span><span class="Function">service</span><span class="Function"> </span><span class="Type">name</span>=<span class="String">"server"</span><span class="Function">></span><br />
+         <span class="Function"><</span><span class="Function">endpoint</span><span class="Function"> </span><span class="Type">address</span>=<span class="String">"my:&#47;&#47;localhost:8484"</span><span class="Function"> </span><span class="Type">binding</span>=<span class="String">"myBinding"</span><span class="Function">></span><br />
+         <span class="Identifier"></endpoint></span><br />
+      <span class="Identifier"></service></span><br />
+   <span class="Identifier"></services></span><br />
+<span class="Identifier"></system</span><span class="Comment">.</span><span class="Identifier">serviceModel></span><br />
+</code></pre></p>
+<p>In theory this <i>should</i> just work, but it didn't for the original poster. I had a sample app set up for one of my custom WCF transport channels, and had tested it, so I knew something was amiss, but didn't notice it at first. That is, until the original poster uploaded a sample app and I could reproduce the problem.</p></p>
+<p>The solution was simple, but unexpected: It turns out that WCF won't recognize your custom binding name <em>unless</em> you've got a <code><bindings></code> section in your configuration file. Mind you, it doesn't need for you to actually add a configuration for your custom binding there at all, just that an empty bindings section exists. In other words, just adding this would fix the problem:</p></p>
+<pre class="codebg"><code><span class="Function"><</span><span class="Function">bindings</span><span class="Function">&#47;></span><br />
+</code></pre></p>

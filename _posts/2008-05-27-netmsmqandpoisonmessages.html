@@ -1,0 +1,42 @@
+---
+layout: post
+status: publish
+published: true
+title: Net.MSMQ and Poison Messages
+author:
+  display_name: Tomas Restrepo
+  login: tomasr
+  email: tomas@winterdom.com
+  url: http://winterdom.com/
+author_login: tomasr
+author_email: tomas@winterdom.com
+author_url: http://winterdom.com/
+wordpress_id: 178
+wordpress_url: http://winterdom.com/2008/05/netmsmqandpoisonmessages
+date: '2008-05-27 06:27:40 +0000'
+date_gmt: '2008-05-27 06:27:40 +0000'
+categories:
+- Vista
+- WCF
+tags: []
+comments: []
+---
+<p><!--start_raw-->
+<p>The Net.MSMQ Binding in Windows Communication Foundation has some built-in support for detecting and handling "Poison Messages". </p>
+<p>One of the most useful ways of handling Poison Messages in queuing systems is to get them out of the way so that following messages can still be processed (if you're not doing <a href="http:&#47;&#47;www.winterdom.com&#47;weblog&#47;2007&#47;02&#47;12&#47;PoisonMessagesAndOrderedProcessing.aspx">in-order processing</a>), but still keep the messages around so that they are not lost.</p>
+<p>Unfortunately, this behavior is only supported by WCF in MSMQ 4.0 with the use of a poison sub-queue, which is new in the Vista and WinServer2k8 versions of MSMQ. It's really a shame because, honestly, this could've been implemented on MSMQ 3.0 just by using a separate queue instead of sub-queues.</p>
+<p>Instead, we're stuck with the <a href="http:&#47;&#47;msdn.microsoft.com&#47;en-us&#47;library&#47;ms751472.aspx">PoisonErrorHandler sample</a> included in the SDK. The sample provides a way to mimic this behavior by introducing an <a href="http:&#47;&#47;msdn.microsoft.com&#47;en-us&#47;library&#47;system.servicemodel.dispatcher.ierrorhandler.aspx">IErrorHandler</a> implementation that detects the poison message and moves it to another queue. To be able to do this, you need to set the binding properties so that the ServiceHost listening to the queue faults when the poison message is detected. The error handler then moves the message to a new queue and starts a new service host instance to resume processing of following messages.</p>
+<p>The Sample itself isn't all that bad, but does provide insight into a rather significant feature left out of the way the Net.MSMQ Binding reports poison messages: All it provides the error handler with is the MSMQ <a href="http:&#47;&#47;msdn.microsoft.com&#47;en-us&#47;library&#47;system.messaging.message.lookupid.aspx">LookupId</a> of the poison message. Unfortunately, this LookupId is queue-specific and the exception does <em>not provide</em> information on which queue or at least which endpoint was the one that received the poison message, which is a <strong><em>huge</em></strong> gaping hole in this feature.</p>
+<p>Because of that the LookupId is useless without more information provided out-of-band [1]. The sample works around this limitation by adding an entry in the <appSettings&#47;> section of the app.config file with the path to the queue where messages are being received and the path to the queue to move poison messages to.</p>
+<p>This works OK, until you need a single service host listening on multiple endpoints, and then the sample won't really work anymore because you don't know which of the endpoints caused the error.</p><br />
+<h2>Working around the limitation</h2>
+<p>I spent some time recently playing around with WCF and ran into this same problem, so I tried to find a way of working around this limitation and still use the basic functionality the sample provided.</p>
+<p>I found one possible workaround, which seems to work so far in my limited tests. I'm not sure yet how well it will hold, as it seems to me there's always the possibility of some race conditions here, but let me illustrate at least the basic mechanics.</p>
+<p>First we keep the basic code of the PoisonErrorHandler class. However, instead of using appSettings to keep track of the queue we're listening to, we just try to find out dynamically which endpoint configured for the service is causing the error, and extract the path to the queue from there based on the URI of the endpoint address.</p>
+<p>To do this, in my implementation of <code>IErrorHandler.HandleError()</code> I grab the current <code>OperationContext</code>, reach out to the ServiceHost associated with it, and then iterate over the <code>ChannelDispatchers</code> attached to it. The one that's in the Faulted state is <em>very likely</em> the one that caused the <code>MsmqPoisonMessageException</code> in the first place.</p>
+<p>Code could be something like this:</p>
+<div class="codebg"><code><span class="StorageClass">private</span> String FindFaultedQueue() {       <br &#47;>&#160;&#160; ServiceHostBase host = OperationContext.Current.Host;       <br &#47;>&#160;&#160; Uri faultedQueue = <span class="Constant">null</span>;       <br &#47;>&#160;&#160; <span class="Comment">&#47;&#47; the queue that fired the exception will be the faulted one</span>       <br &#47;>&#160;&#160; <span class="Repeat">foreach</span> ( ChannelDispatcher chd <span class="Statement">in</span> host.ChannelDispatchers ) {       <br &#47;>&#160;&#160;&#160;&#160;&#160; <span class="Conditional">if</span> ( chd.State == CommunicationState.Faulted ) {       <br &#47;>&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160; faultedQueue = chd.Listener.Uri;       <br &#47;>&#160;&#160;&#160;&#160;&#160; }       <br &#47;>&#160;&#160; }       <br &#47;>&#160;&#160; <span class="Comment">&#47;&#47; translate URI into a regular MSMQ format name</span>&#160; <br &#47;>&#160;&#160; StringBuilder fn = <span class="Statement">new</span> StringBuilder(<span class="String">"FormatName:DIRECT=OS:"</span>);       <br &#47;>&#160;&#160; fn.Append(faultedQueue.Host).Append(<span class="String">"</span><span class="SpecialChar">\\</span><span class="String">"</span>);       <br &#47;>&#160;&#160; <span class="Type">string</span> path = faultedQueue.PathAndQuery;       <br &#47;>&#160;&#160; <span class="Conditional">if</span> ( path.StartsWith(<span class="String">"&#47;private&#47;"</span>) ) {       <br &#47;>&#160;&#160;&#160;&#160;&#160; fn.Append(<span class="String">"private$</span><span class="SpecialChar">\\</span><span class="String">"</span>);       <br &#47;>&#160;&#160;&#160;&#160;&#160; path = path.Substring(<span class="String">"&#47;private"</span>.Length);       <br &#47;>&#160;&#160; }       <br &#47;>&#160;&#160; path = path.Substring(<span class="Number">1</span>);       <br &#47;>&#160;&#160; fn.Append(path);       <br &#47;>&#160;&#160; <span class="Repeat">return</span> fn.ToString();       <br &#47;>} </code></div>
+<p>This lacks some error handling and a few other things, but it illustrates the point. Now that we have the FormatName of the queue where the poison message came from, we can try to move it to the poison message&#160; queue. We could handle this by convention: for queue Q1, the corresponding poison message queue could be Q1Poison. The rest of the sample is pretty much the same.</p>
+<p>I probably wouldn't use this in production, as it doesn't <em>feel</em> very reliable given the basic limitations imposed by the WCF implementation, but it was interesting to take a stab at. YMMV.</p>
+<p><strong>[1] </strong>I'll leave to you, dear reader, to wonder about the sense of providing a sample that so clearly points out such a giant hole in a product feature rather than actually fixing it. Oh wait, guess they <em>did</em> fix it by changing MSMQ for Vista and WinServer2k8.</p>
+<div class="wlWriterSmartContent" id="scid:0767317B-992E-4b12-91E0-4F059A8CECA8:d7ea3246-a3f0-4207-87e9-c2bea2b3a432" style="padding-right: 0px; display: inline; padding-left: 0px; padding-bottom: 0px; margin: 0px; padding-top: 0px">Technorati tags: <a href="http:&#47;&#47;technorati.com&#47;tags&#47;MSMQ" rel="tag">MSMQ</a>, <a href="http:&#47;&#47;technorati.com&#47;tags&#47;WCF" rel="tag">WCF</a>, <a href="http:&#47;&#47;technorati.com&#47;tags&#47;Vista" rel="tag">Vista</a>, <a href="http:&#47;&#47;technorati.com&#47;tags&#47;WinServer2k8" rel="tag">WinServer2k8</a></div><!--end_raw--></p>

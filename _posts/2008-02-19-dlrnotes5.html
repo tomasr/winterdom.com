@@ -1,0 +1,52 @@
+---
+layout: post
+status: publish
+published: true
+title: DLR Notes 5
+author:
+  display_name: Tomas Restrepo
+  login: tomasr
+  email: tomas@winterdom.com
+  url: http://winterdom.com/
+author_login: tomasr
+author_email: tomas@winterdom.com
+author_url: http://winterdom.com/
+wordpress_id: 155
+wordpress_url: http://winterdom.com/2008/02/dlrnotes5
+date: '2008-02-19 11:43:18 +0000'
+date_gmt: '2008-02-19 11:43:18 +0000'
+categories:
+- DLR
+tags: []
+comments:
+- id: 100
+  author: Ales Sturala
+  author_email: ''
+  author_url: http://www.unitedstatesof.net
+  date: '2008-02-27 15:45:01 +0000'
+  date_gmt: '2008-02-27 15:45:01 +0000'
+  content: |
+    Hi Tomas,
+    some progress with "convert" problem? I have the same problem, I expected that Ast.Convert() will use binder Converters, but it really doesn't. I found, that in method ParseSourceCode() you have access to Binder class so convert methods on Binder can be then called directly. Finally I am not sure what Ast.Convert and Ast.ConvertHepler are for, any idea?
+- id: 101
+  author: Tomas Restrepo
+  author_email: tomas@winterdom.com
+  author_url: http://www.winterdom.com/weblog/
+  date: '2008-02-27 17:32:11 +0000'
+  date_gmt: '2008-02-27 17:32:11 +0000'
+  content: |
+    @Ales: Think about Ast.Convert() and Ast.ConvertHelper() as "Ast.Cast()" and it will make more sense. Both are fine, which one you call is a matter of convenience. I haven't had the time to sit down and figure out my conversion problem explicitly, though; when I finally get down to it I'll blog my workaround.
+---
+<p><!--start_raw-->
+<p>Here's one interesting issue I ran into while trying a few things out: Conversions.</p>
+<p>Given the dynamic nature of the DLR and the languages implemented on top of it, and the statically typed nature of the CLR and most .NET languages, you need to be able to ensure that the right type conversions happen at the right places.</p>
+<p>This involves, among other things, ensuring that the right casts and boxing&#47;unboxing operations happen, as well as ensuring that language-specific conversions can be applied (such as, say, converting an arbitrary object to a CLR string through an explicit method call).</p>
+<p>The DLR does a bunch of these automatically in a number of places, like variable writes and assignments, call return values and so on. Most of these can be made to follow language-specific behaviors because the conversion expressions are generated through calls to your language ActionBinder implementation (like the RubyBinder class in the case of IronRuby).</p>
+<p>For example, many of these scenarios will generate calls to your ActionBinder.ConvertExpression() method. Here's one case I found where this does not happen, making it a bit more tedious:</p>
+<p>Today I was debugging some code because of an InvalidCastException getting thrown. Indeed, the problem was that I had a method call that required converting one of the parameters, and it was a set of types I had not tried before. In this case, the necessary conversion was language specific, so I added the rule into my ActionBinder.ConvertExpression() implementation and made sure as well that ActionBinder.CanConvertFrom() handled the case as well.</p>
+<p>But it was still not working. After a bit of debugging, I realized that in this particular case, the ActionBinder wasn't getting involved at all for the conversion! What was the deal?</p>
+<p>The issue turns out to be that the call was being done through one of my IDynamicObject implementations. In particular, this one handled a Call action by generating a rule target containing a call to the target delegate using the DLR"s Ast.ComplexCallHelper() method.</p>
+<p>The problem is that ComplexCallHelper() doesn't really deal with language-specific conversion needs at all. Instead, it relies on Ast.Convert() to convert the actual argument values to the types declared in the target method&#47;delegate signature.</p>
+<p>The problem with Ast.Convert() should be obvious by now: All Ast.Convert() and Ast.ConvertHelper() do is insert <em>an explicit Cast expression</em> into the code. </p>
+<p>This works great if all that is needed is a box&#47;unbox operation or an upcast&#47;downcast, but not enough in our case, so it is something to watch out for! I still haven't decided yet how to best work around the issue</p>
+<div class="wlWriterSmartContent" id="scid:0767317B-992E-4b12-91E0-4F059A8CECA8:e0d760cf-f667-4114-888a-9eb645599aed" style="padding-right: 0px; display: inline; padding-left: 0px; padding-bottom: 0px; margin: 0px; padding-top: 0px">Technorati tags: <a href="http:&#47;&#47;technorati.com&#47;tags&#47;Dynamic%20Language%20Runtime" rel="tag">Dynamic Language Runtime</a>, <a href="http:&#47;&#47;technorati.com&#47;tags&#47;.NETworking" rel="tag">.NETworking</a></div><!--end_raw--></p>

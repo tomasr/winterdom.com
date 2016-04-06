@@ -1,0 +1,25 @@
+---
+layout: post
+status: publish
+published: true
+title: SSOConfig
+author:
+  display_name: Tomas Restrepo
+  login: tomasr
+  email: tomas@winterdom.com
+  url: http://winterdom.com/
+author_login: tomasr
+author_email: tomas@winterdom.com
+author_url: http://winterdom.com/
+wordpress_id: 578
+wordpress_url: http://winterdom.com/2005/03/ssoconfig
+date: '2005-03-12 08:49:18 +0000'
+date_gmt: '2005-03-12 08:49:18 +0000'
+categories:
+- BizTalk
+tags: []
+comments: []
+---
+<p><!--start_raw-->Jon Flanders posted an <a href="http:&#47;&#47;staff.develop.com&#47;jfland&#47;PermaLink.aspx?guid=6e4b84db-d15f-45e9-b245-08b1eb6c4def%20%20">article</a> on using the SSO database as a configuration database for your own BizTalk applications. Great stuff, this is a great idea, and one that Microsoft should've made easier to realize given the fact that they already store all the port and handler configuration inside the SSO DB, anyway.</p>
+<p>I think this is very useful, and has lots of potential. For example, if the user's are not too technically savvy (yes, I've several systems administrators that don't qualify in that category ;)), one could do a simple Web dynamic UI to drive the configuration settings, or heck, even create custom InfoPath forms for each application's settings and use a WebService to update the configuration in the SSO database. Yes; lot's of potential here...</p></p>
+<p>Jon: Minor nitpick at the code: In the Helper ServicedComponent class, in the Enlist() method you take an ITransaction argument, and then proceed to ignore it and use ContextUtil.Transaction anyway ;)</p><!--end_raw--></p>

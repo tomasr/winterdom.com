@@ -1,0 +1,41 @@
+---
+layout: post
+status: publish
+published: true
+title: Automatic locale detection on Web applications
+author:
+  display_name: Tomas Restrepo
+  login: tomasr
+  email: tomas@winterdom.com
+  url: http://winterdom.com/
+author_login: tomasr
+author_email: tomas@winterdom.com
+author_url: http://winterdom.com/
+wordpress_id: 975
+wordpress_url: http://winterdom.com/2006/08/automaticlocaledetectiononwebapplications
+date: '2006-08-24 10:22:19 +0000'
+date_gmt: '2006-08-24 10:22:19 +0000'
+categories:
+- Development
+- ASP.NET
+tags: []
+comments:
+- id: 1321
+  author: Sergio D&iacute;az Nila
+  author_email: sergiodnila@gmail.com
+  author_url: ''
+  date: '2010-03-05 18:58:33 +0000'
+  date_gmt: '2010-03-05 18:58:33 +0000'
+  content: Hi. I'm  from M&eacute;xico &amp; i agree with you. I'ts so annoying when
+    webapps try tu guess everything specialy when is about locale stuff. But is also
+    annoying when they ask you every minor detail. When they ask you to register and
+    fill a huge form, just to follow a link.
+---
+<p><!--start_raw-->
+<p>Many web sites around will use techniques to try to discover automatically a user's preffered locale when he accesses the site for the first site, in order to provide the user with content in his native language, for example.</p>
+<p>There's nothing inherently wrong with this, but I don't personally like it. For example, one such site is the Microsoft Knowledge Base:&nbsp;Go&nbsp;directly to&nbsp;a KB article, and the site will&nbsp;present me with&nbsp;the article in spanish (most of the time a crappy automated translation that's useless, but that's besides the point). I can honestly sympathize with the intention of the site designers, but the end result is extremely annoying to me as a user.</p>
+<p>Here's the deal: While I am a native-spanish speaker, and I live in a country with spanish as the official language, I rarely want to get to the spanish version of a site like the MS KB. One of the reasons is simply personal preference, but most significant is the fact that there are many variations of spanish around the world, particularly when it gets to technical jargon. Here we tend to use the english words for a lot of things, even if there are spanish translations for them. Thus, when I get to, say, a spanish KB article, I have to do a lot of effort just to understand what it says because it uses a lot of terms I'm not familiar with. It's ironic, but it actually means it's easier for me to understand the english site than the spanish one!</p>
+<p>Because of things like this, I hate sites that try to guess where I am and provide the translated content. I much prefer sites to ask me&nbsp;if I want translated and locale-specific content and from where and then save my prefference, instead of blindingly trying to guess what I want. This is particularly true with poorly implemented sites such as the <a href="http:&#47;&#47;support.microsoft.com&#47;">MS PSS</a> site, which doesn't use consistent rules for presenting translated content (for example, for me right now the main site will show me english text while the KB articles will present in spanish; makes no sense).</p>
+<p>When we set out to create <a href="http:&#47;&#47;www.devdeo.com&#47;">our company site</a>, we needed to provide localized content in English and Spanish, and we explicitly decided to go with a different approach: Don't guess, let the user decide. You want the <a href="http:&#47;&#47;www.devdeo.com&#47;en&#47;default.aspx">english site</a>? fine. You want the <a href="http:&#47;&#47;www.devdeo.com&#47;es&#47;default.aspx">Spanish site</a>? Fine as well!</p>
+<p>Instead of saving cookies with your preference, we took advantage of URL rewriting and the localization facilities in ASP.NET 2.0 to provide what we consider a superior alternative: The english site is under&nbsp;the &#47;en&#47; relative path, while the spanish one is under the &#47;es&#47; site. Once you've selected the language you wanted, all links consistently keep you in that same language (the power of relative URLs). There's no need to mess with cookies, no need to fuss with query parameters or any other thing like that.</p>
+<p>An added benefit of this is that it is very easy to link to a page in a specific language you wanted, since the page URL in the browser clearly establishes which&nbsp;version of the site&nbsp;you're viewing, you can just copy &amp; paste directly!. Bookmarking it will work just as well.</p><!--end_raw--></p>

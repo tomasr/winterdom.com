@@ -1,0 +1,24 @@
+---
+layout: post
+status: publish
+published: true
+title: Executing a SQL script using ADO.NET
+author:
+  display_name: Tomas Restrepo
+  login: tomasr
+  email: tomas@winterdom.com
+  url: http://winterdom.com/
+author_login: tomasr
+author_email: tomas@winterdom.com
+author_url: http://winterdom.com/
+wordpress_id: 672
+wordpress_url: http://winterdom.com/2005/04/executingasqlscriptusingadonet
+date: '2005-04-11 17:22:20 +0000'
+date_gmt: '2005-04-11 17:22:20 +0000'
+categories:
+- ".NET"
+tags: []
+comments: []
+---
+<p><!--start_raw-->Matt Berther posts <a href="http:&#47;&#47;www.mattberther.com&#47;2005&#47;04&#47;000619.html">here</a> on how to execute SQL Server scripts using ADO.NET, which has its own set of tricks because of the GO-delimiters.</p>
+<p>This reminded me that I implemented precisely this feature, though in a different way, for the original SqlTask in <a href="http:&#47;&#47;www.sf.net&#47;projects&#47;nantcontrib">NAntContrib</a> for NAnt. Several people have modified the original code since, but you can probably still see traces of the original code here and there. It was a little bit more general purpose, though, since it allowed configurable statement delimiters, including both regular expression-based ones and a few other thingies.</p><!--end_raw--></p>

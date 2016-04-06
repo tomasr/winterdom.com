@@ -1,0 +1,79 @@
+---
+layout: post
+status: publish
+published: true
+title: File Adapter And Partial Stream Reads
+author:
+  display_name: Tomas Restrepo
+  login: tomasr
+  email: tomas@winterdom.com
+  url: http://winterdom.com/
+author_login: tomasr
+author_email: tomas@winterdom.com
+author_url: http://winterdom.com/
+wordpress_id: 1018
+wordpress_url: http://winterdom.com/2006/09/fileadapterandpartialstreamreads
+date: '2006-09-15 19:35:00 +0000'
+date_gmt: '2006-09-15 19:35:00 +0000'
+categories:
+- BizTalk
+tags: []
+comments: []
+---
+<p><!--start_raw-->
+<p>I've been playing for the last couple of days with BizTalk Server 2006, building&nbsp;a custom encoder pipeline component. One of the things I've been trying to do is finding a way to do all encoding operations in a streaming fashion, by building a pass-through stream implementation that only reads and encodes small portions of the message as they are read by the outbound adapter.</p>
+<p>One of the options I've been experimenting with was to do partial reads and writes on an intermediate memory stream: Instead of reading and encoding the entire body part of the message in a single pass in memory, and then returning that from the encoder component, I only read from the original stream as much as the adapter asks me for on the Stream.Read() implementation, encode and write than into the intermediate memory stream, and then read back from it and return it to the adapter.</p>
+<p>I realize it sounds a little&nbsp;convoluted, but it's the easiest way to do it with the library I'm using to do the encoding. One of the reasons why this works fairly well is that the encoding process does some compression, and so, it will be the case that whatever I read and encode from the original stream will be smaller than what originally asked for. For example, if someone tried to read 64KB from my custom encoding stream, I might return just a couple of KB even if there's further data in the original stream. Granted, it is not the most efficient implementation, but it ensures I use little&nbsp;memory during the encoding operations.</p>
+<p>Note: This is not a problem in the .NET Stream API; if you're reading from a stream you must be prepared to deal with partial reads. A partial read does <em>not</em> mean that you've read the end of the stream nor that a problem was encountered.</p>
+<p>Now, I know this works, as I unit tested the encoding stream and component in isolation (using my <a href="http:&#47;&#47;www.winterdom.com&#47;weblog&#47;2006&#47;04&#47;27&#47;PipelineTestingLibraryPart1.aspx">PipelineTesting</a> library). However, when I went to try my custom pipeline component in a real messaging scenario with the File adapter, it failed, and miserably: The BizTalk host would pretty much crash (after a huge spike of 100% processor usage) with the following error: "The parameter is incorrent". Humm, not much useful.</p>
+<p>At this point I took out the debugger and attached to BTSNTSvc.exe to try and repro the error. I was able to track my custom pipeline component getting called, and see BizTalk read off my custom stream. At this point I noticed weird things.</p>
+<p>The first thing I noticed was that the file adapter (or is it the BizTalk messaging engine itself?) uses very small buffers to read of the message streams. Indeed, it only reads it in 4KB chunks. That seems rather small to me, particularly considering the fact that the FILE adapter is an unmanaged adapter and so each Read() call into the stream will cause&nbsp;unmanaged<->managed transitions which are costly. I would've expected it to at least use buffers of 64KB, but maybe there's a good reason for that.</p>
+<p>That by itself was not too much of an issue; my component was perfectly capable of dealing with that and indeed I had unit tests using both 4KB and 64KB buffers (though I believe it is the cause of the poor performance and hight CPU usage I noticed). The real problem was that my stream would almost always do a partial read, and the adapter seemed unable to cope for that, as it started asking for weird buffer sizes on consecutive Read() calls.</p>
+<p>Let's see a small table that explains how it called each time (this was on a run with a 5MB file):</p><br />
+<table style="background-color: rgb(191, 191, 191);" cellpadding="1" width="80%">
+<tbody>
+<tr style="background-color: rgb(242, 242, 242);">
+<td align="center"><b>Iteration</b></td>
+<td align="center"><b>Buffer Size</b></td>
+<td align="center"><b>Offset</b></td>
+<td align="center"><b>Count</b></td>
+<td align="center"><b>Bytes Read</b></td></tr><br />
+<tr style="background-color: rgb(255, 255, 255);">
+<td align="center">1</td>
+<td align="center">4096</td>
+<td align="center">0</td>
+<td align="center">4096</td>
+<td align="center">38</td></tr><br />
+<tr style="background-color: rgb(255, 255, 255);">
+<td align="center">2</td>
+<td align="center">4096</td>
+<td align="center">0</td>
+<td align="center">4058</td>
+<td align="center">383</td></tr><br />
+<tr style="background-color: rgb(255, 255, 255);">
+<td align="center">3</td>
+<td align="center">4096</td>
+<td align="center">0</td>
+<td align="center">3674</td>
+<td align="center">47</td></tr><br />
+<tr style="background-color: rgb(255, 255, 255);">
+<td align="center">4</td>
+<td align="center">4096</td>
+<td align="center">0</td>
+<td align="center">3628</td>
+<td align="center">50</td></tr><br />
+<tr style="background-color: rgb(255, 255, 255);">
+<td align="center">5</td>
+<td align="center">4096</td>
+<td align="center">0</td>
+<td align="center">3578</td>
+<td align="center">50</td></tr><br />
+<tr style="background-color: rgb(255, 255, 255);">
+<td align="center">6</td>
+<td align="center">4096</td>
+<td align="center">0</td>
+<td align="center">3528</td>
+<td align="center">50</td></tr></tbody></table>
+<p>As you can probably guess by now, what seems to be happening is that if the stream does a partial read, then the next time around the adapter asks for a read of (buffer.Size-bytesRead)&nbsp;length (or close enough). Eventually, that length reaches zero if the stream hasn't been totally consumed, which in this case causes an exception as it is an invalid parameter value. I'm not sure if this is a bug in the file adapter, or if it's simply a side-effect of the way the managed<->unmanaged code interaction happens at the messaging engine, but I though it was something worth looking at more closely.</p>
+<p>I'm planning on working around this by doing a some extra things to try as much as possible to do full reads and avoid the partial ones (as the ones I'm doing now are obviously innefficient, but that's caused partly because the input file is highly compressible). Hopefully that should make this a non-issue.</p></p>
+<p><span class="TagSite">Technorati:</span> <a class="tag" href="http:&#47;&#47;technorati.com&#47;tag&#47;BizTalk" rel="tag">BizTalk</a><br><!-- StartInsertedTags: BizTalk :EndInsertedTags --></p><!--end_raw--></p>

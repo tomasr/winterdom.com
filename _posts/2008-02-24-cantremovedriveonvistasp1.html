@@ -1,0 +1,30 @@
+---
+layout: post
+status: publish
+published: true
+title: Can't Remove Drive on Vista SP1
+author:
+  display_name: Tomas Restrepo
+  login: tomasr
+  email: tomas@winterdom.com
+  url: http://winterdom.com/
+author_login: tomasr
+author_email: tomas@winterdom.com
+author_url: http://winterdom.com/
+wordpress_id: 824
+wordpress_url: http://winterdom.com/2008/02/cantremovedriveonvistasp1
+date: '2008-02-24 11:42:13 +0000'
+date_gmt: '2008-02-24 11:42:13 +0000'
+categories:
+- Vista
+tags: []
+comments: []
+---
+<p><!--start_raw-->
+<p>I haven't noticed many issues with Vista SP1, despite some stuff I've read around; though overall haven't really noticed any significant performance difference besides file operations using Windows Explorer.</p>
+<p>That said, I've noticed one nasty issue: I use an external USB drive that has a bunch of virtual machines, my music and other stuff. I'm usually very careful and always use the "Safely Remove Hardware" icon in the system tray to remove the drive before disconnecting it from the computer or turning it off.</p>
+<p>However, ever since installing SP1, this operation fails about 50% of the time, saying the volume is in use and cannot be removed, even though there are no applications open that could be using the drive at all.</p>
+<p>The past few times it's happened, I've fired up <a href="http:&#47;&#47;technet.microsoft.com&#47;en-us&#47;sysinternals&#47;bb896653.aspx">Process Explorer</a> to try and locate what is holding on to the drive, only to find that the only process that has file handles opened in the drive is the "System" pseudo-process:</p>
+<p><img style="border-right: 0px; border-top: 0px; border-left: 0px; border-bottom: 0px" height="270" alt="EjectDrive" src="http:&#47;&#47;www.winterdom.com&#47;weblog&#47;content&#47;binary&#47;WindowsLiveWriter&#47;CantRemoveDriveonVistaSP1_CDD1&#47;EjectDrive_3.png" width="508" border="0" &#47;> </p>
+<p>No idea which driver is holding on to the handles, but based on the file names, I might guess it has something to do with the Kernel transaction manager and NTFS transactions. Why those handles are being kept there, I have no idea; but once this happens, those don't get released, meaning I have to shut down the drive improperly. Not good.</p>
+<div class="wlWriterSmartContent" id="scid:0767317B-992E-4b12-91E0-4F059A8CECA8:8c7a6f7f-ce36-4ef5-9b43-d4fe52913000" style="padding-right: 0px; display: inline; padding-left: 0px; padding-bottom: 0px; margin: 0px; padding-top: 0px">Technorati tags: <a href="http:&#47;&#47;technorati.com&#47;tags&#47;Windows%20Vista" rel="tag">Windows Vista</a></div><!--end_raw--></p>

@@ -1,0 +1,39 @@
+---
+layout: post
+status: publish
+published: true
+title: Troubleshooting Internal SOAP Processing Failures
+author:
+  display_name: Tomas Restrepo
+  login: tomasr
+  email: tomas@winterdom.com
+  url: http://winterdom.com/
+author_login: tomasr
+author_email: tomas@winterdom.com
+author_url: http://winterdom.com/
+wordpress_id: 788
+wordpress_url: http://winterdom.com/2006/08/troubleshootinginternalsoapprocessingfailures
+date: '2006-08-30 10:58:23 +0000'
+date_gmt: '2006-08-30 10:58:23 +0000'
+categories:
+- BizTalk
+tags: []
+comments:
+- id: 534
+  author: Richard
+  author_email: ''
+  author_url: http://blogs.msdn.com/richardbpi
+  date: '2006-08-30 20:11:10 +0000'
+  date_gmt: '2006-08-30 20:11:10 +0000'
+  content: |
+    Good additions to the post.  Thanks man.
+---
+<p><!--start_raw-->
+<p><a href="http:&#47;&#47;blogs.msdn.com&#47;richardbpi&#47;">Richard Seroter</a> has a few <a href="http:&#47;&#47;blogs.msdn.com&#47;richardbpi&#47;archive&#47;2006&#47;08&#47;30&#47;731783.aspx">good recommendations</a> here on how to diagnose the confusing "Internal SOAP Processing Failure" message you get when a call to a WebService exposed from BizTalk fails. As he mentions, it can be quite confusing and&nbsp;sometimes quite hard to get&nbsp;to&nbsp;the root of the cause if you're not familiar with the system.</p>
+<p>Other recommendations I'd add to Richard's list would include:</p>
+<ul>
+<li>Make sure the URL specified in the receive location matches the one where the service is actually deployed. An simple typo here can make your life miserable.</li>
+<li>Make sure the receive location is enabled (it never hurts to mention it :-))</li>
+<li>If the service is request&#47;response, make sure the orchestration is not taking too long to send the response message back and is not causing the service to fail with a timeout. </li>
+<li>Make sure that you haven't done any changes to the schemas used by the orchestration and didn't run the Web Service Publishing wizard again to generate the WebService and the associated messaging. I've seen plenty of people having their exposed Web Service failed because of a schema change that causes the incoming message not to trigger the right subscription, or have it cause the orchestration to fail when it tries to access a missing field.</li></ul>
+<p>Besides this, I always recommend developers that any orchestration that is going to be exposed as a Web Service should have extremely strong error handling built-in, hopefully to ensure it always returns a response message (either a real response or a failure message). Otherwise, an unhandled exception will cause the orchestration instance to be suspended which will cause the Web Service to timeout.</p><!--end_raw--></p>

@@ -1,0 +1,52 @@
+---
+layout: post
+status: publish
+published: true
+title: BtsCatalogExplorer.SaveChangesWithTransaction()
+author:
+  display_name: Tomas Restrepo
+  login: tomasr
+  email: tomas@winterdom.com
+  url: http://winterdom.com/
+author_login: tomasr
+author_email: tomas@winterdom.com
+author_url: http://winterdom.com/
+wordpress_id: 289
+wordpress_url: http://winterdom.com/2004/10/btscatalogexplorersavechangeswithtransaction
+date: '2004-10-21 18:31:37 +0000'
+date_gmt: '2004-10-21 18:31:37 +0000'
+categories:
+- BizTalk
+tags: []
+comments: []
+---
+<p><!--start_raw-->The BtsCatalogExplorer class (the core part of the BizTalk Explorer Object Model) has an interesting looking SaveChangesWithTransaction() method that complements the regular SaveChanges(). What was not completely apparent to me was what this method expected as an argument.</p>
+<p>Digging around some, I could see that SaveChangesWithTransaction() expects as its argument a DTC transaction, in the form of an object implementing System.EnterpriseServices.ITransaction. You could get an instance of it in several ways: using the DTC API directly, taking an existing  transaction in a transactional ServicedComponent or using SWC, for example.</p></p>
+<p>Things get a little bit more interesting underneath. If you don't pass a transaction object (or use SaveChanges() instead, which just calls SaveChangesWithTransaction() with a null argument), the ExplorerOM will ask the DTC for a new transaction (by using the internal BtsCatalogExplorer.GetDtcTransaction() method), and uses that transaction for all the work. The actual saving of settings is donde inside the internal OnSaveChanges() method.</p></p>
+<p>What is really curious, though, is how  deals with the case in which an existing distributed transaction in the object context (as might be the case if you're calling it from a ServicedComponent): It basically just opens up the database connection with "Enlist=false" and then just calls SqlConnection.EnlistDistributedTransaction() using the transaction passed in as an argumentor the newly created one. This is done, presumable, to ensure the code works in cases where the object context is transaction and when it isn't.</p></p>
+<p>While it should work, it seems like a somewhat convoluted way of doing it. A far more cleaner way, I think, would've to simply disallow calling SaveChangesWithTransaction() within a COM+ transactional scope, and force the caller to use SaveChanges() instead. In SaveChanges, it would've been easy to just use ContextUtil.IsInTransaction to see if a distributed transaction was in place, and use that, or otherwise create a new one. It would've involved a few more slight refactorings, but looks to me simpler ;). Basically I'm thinking it could've been something like this:</p></p>
+<pre><code>   public void SaveChanges()<br />
+{<br />
+ITransaction transaction = null;<br />
+if ( ContextUtil.IsInTransaction ) {<br />
+transaction = (ITransaction)ContextUtil.Transaction;<br />
+} else {<br />
+transaction = GetDtcTransaction();<br />
+}<br />
+OnSaveChanges(transaction);<br />
+DoCommonWorkAfterSave();<br />
+}<br />
+public void SaveChangesWithTransaction(object transaction)<br />
+{<br />
+if ( ContextUtil.IsInTransaction )<br />
+throw new InvalidOperationException("Can't use Transaction here");<br />
+&#47;&#47; check transaction is indeed ITransaction implementation<br />
+ITransaction tx = transaction as ITransaction;<br />
+&#47;&#47; ...<br />
+OnSaveChanges(tx);<br />
+DoCommonWorkAfterSave();<br />
+}<br />
+</code></pre></p>
+<p>This isn't exactly like the original code, which opens up the possibility of executing the save in one transaction that is different from the one that the current obejct context holds, although I can't quite understand why you'd want to do this (the caller could still do this with slightly more work in the other form).</p></p>
+<p>BTW: The BizTalk Documentation seems to refer to a class called BtsTransactionManager inside the Microsoft.BizTalk.ExplorerOM assembly. However, as far as I can see, said class doesn't exist (at least in the ExplorerOM or anywhere I could find).</p></p>
+<p>Anyway, now you know how it works and what to pass to SaveChangesWithTransaction() ;)</p><!--end_raw--></p>

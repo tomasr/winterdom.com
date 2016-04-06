@@ -1,0 +1,52 @@
+---
+layout: post
+status: publish
+published: true
+title: WF Designer caching invalid XOML?
+author:
+  display_name: Tomas Restrepo
+  login: tomasr
+  email: tomas@winterdom.com
+  url: http://winterdom.com/
+author_login: tomasr
+author_email: tomas@winterdom.com
+author_url: http://winterdom.com/
+wordpress_id: 57
+wordpress_url: http://winterdom.com/2006/08/wfdesignercachinginvalidxoml
+date: '2006-08-25 07:01:48 +0000'
+date_gmt: '2006-08-25 07:01:48 +0000'
+categories:
+- ".NET"
+- WinFX
+- Workflow
+tags: []
+comments: []
+---
+<p><!--start_raw--><P>While <A href="http:&#47;&#47;www.winterdom.com&#47;weblog&#47;2006&#47;08&#47;19&#47;MsmqActivitiesUpdated.aspx"><FONT color=#52b3cb>updating</FONT></A> my <A href="http:&#47;&#47;www.winterdom.com&#47;weblog&#47;2006&#47;03&#47;03&#47;MSMQWorkflowActivitiesV1.aspx"><FONT color=#d99694>MSMQ Activities</FONT></A> for Windows Workflow Foundation, I ran into a strange issue with the WF designer when working with XOML-based workflows.</P><br />
+<P>The problem I was trying to solve was something like the following: The MsmqReceiveActivity had an attached dependency property called Label, as well as&nbsp;a regular .NET property around it. In code based workflows, that worked just fine. However, when designing XOML based workflows, it appeared to worked fine as well, but as soon as you closed the designer and tried opening the workflow again you'd get an error saying that the activity class needed to implement static GetLabel() and SetLabel() accessors. This was funky because the activity actually had those!</P><br />
+<P>Looking at the generated XOML code, it was doing something like this:</P></p>
+<div class='codebg'><code><span class="Function"><</span><span class="Tag">ns0</span><span class="Comment">:</span><span class="Function">MsmqReceiveActivity</span><br &#47;><br />
+<span class="Function">&nbsp;</span><span class="Type">x</span><span class="Comment">:</span><span class="Type">Name</span>=<span class="String">"ReceiveMessage"</span><br &#47;><br />
+<span class="Function">&nbsp;</span><span class="Type">Queue</span>=<span class="String">"{ActivityBind SampleWorkflow2,Path=QUEUE}"</span><br &#47;><br />
+<span class="Function">&nbsp;</span><span class="Type">ns0</span><span class="Comment">:</span><span class="Type">MsmqReceiveActivity</span><span class="Comment">.</span><span class="Type">Label</span>=<span class="String">"{ActivityBind SampleWorkflow2,Path=_labelReceived}"</span><br &#47;><br />
+<span class="Function">&nbsp;</span><span class="Type">MessageType</span>=<span class="String">"{x:Type TestApp.Customer}"</span><br &#47;><br />
+<span class="Function">&nbsp;</span><span class="Type">Label</span>=<span class="String">"{x:Null}"</span><span class="Function">></span><br &#47;><br />
+&nbsp;&nbsp; <span class="Function"><</span><span class="Tag">ns0</span><span class="Comment">:</span><span class="Function">MsmqReceiveActivity</span><span class="Comment">.</span><span class="Function">MessageReceived</span><span class="Function">></span><br &#47;><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="Function"><</span><span class="Function">ActivityBind</span><span class="Function">&nbsp;</span><span class="Type">Name</span>=<span class="String">"SampleWorkflow2"</span><span class="Function">&nbsp;</span><span class="Type">Path</span>=<span class="String">"_customerReceived"</span><span class="Function">&nbsp;&#47;></span><br &#47;><br />
+&nbsp;&nbsp; <span class="Identifier"></</span><span class="Tag">ns0</span><span class="Comment">:</span><span class="Identifier">MsmqReceiveActivity</span><span class="Comment">.</span><span class="Identifier">MessageReceived></span><br &#47;><br />
+<span class="Identifier"></</span><span class="Tag">ns0</span><span class="Comment">:</span><span class="Identifier">MsmqReceiveActivity></span><br />
+</code></div><br />
+<P>Looking closely I finally discovered the issue: The problem was that the Label property was getting serialized twice! One was the attached dependency property itself (with the ActivityBind), the other was the normal .NET property! Knowing that, it was easy to fix, by just telling the designer not to serialize the regular .NET property:</P></p>
+<div class='codebg'><code>[SRDescription(<span class="String">"Recv_Label"</span>)]<br &#47;><br />
+[Category(<span class="String">"Activity"</span>)]<br &#47;><br />
+[ValidationOption(ValidationOption.Optional)]<br &#47;><br />
+[DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]<br &#47;><br />
+<span class="StorageClass">public</span>&nbsp;<span class="Type">string</span>&nbsp;Label<br &#47;><br />
+{<br &#47;><br />
+&nbsp;&nbsp; <span class="Statement">get</span>&nbsp;{ <span class="Repeat">return</span>&nbsp;(<span class="Type">string</span>)<span class="Statement">base</span>.GetValue(LabelProperty); }<br &#47;><br />
+&nbsp;&nbsp; <span class="Statement">set</span>&nbsp;{ <span class="Statement">base</span>.SetValue(LabelProperty, <span class="Statement">value</span>); }<br &#47;><br />
+}<br />
+</code></div><br />
+<P>Testing all of this is when I realized that everytime my activity serialized incorrectly in the XOML designer, and I caused the designer error when opening again, the designer would get "stuck" with the invalid XOML apparently getting it cached somewhere. Even if I manually went into the .xoml file and deleted the entire invalid block of code (completely removing the MsmqReceiveActivity instance), as soon as I opened the file again it would use the original, invalid XOML code. I actually had to close and restart Visual Studio to be able to fix the code.</P><br />
+<P>So, if this happens to you, restarting Visual Studio seems to do the trick. That said, I do wonder whether this "caching" going on was intentional or if it's a problem with the designer...</P><br />
+<!--end_raw--></p>

@@ -1,0 +1,123 @@
+---
+layout: post
+status: publish
+published: true
+title: BizTalk Server 2009 MSBuild Tasks
+author:
+  display_name: Tomas Restrepo
+  login: tomasr
+  email: tomas@winterdom.com
+  url: http://winterdom.com/
+author_login: tomasr
+author_email: tomas@winterdom.com
+author_url: http://winterdom.com/
+wordpress_id: 418
+wordpress_url: http://winterdom.com/2008/12/biztalkserver2009msbuildtasks
+date: '2008-12-26 04:48:44 +0000'
+date_gmt: '2008-12-26 04:48:44 +0000'
+categories:
+- BizTalk
+tags: []
+comments:
+- id: 300
+  author: Mikael
+  author_email: wmmihaa@hotmail.com
+  author_url: ''
+  date: '2009-01-06 13:41:57 +0000'
+  date_gmt: '2009-01-06 13:41:57 +0000'
+  content: |
+    Hi Thomas,
+    You you know if it's possible to deploy usign msbuild or tfsbuild?
+    &#47;&#47;Mikael
+- id: 301
+  author: tomasr
+  author_email: tomas@winterdom.com
+  author_url: http://winterdom.com/weblog/
+  date: '2009-01-06 18:17:53 +0000'
+  date_gmt: '2009-01-06 18:17:53 +0000'
+  content: |
+    Mikael: As far as I know, there are no built-in msbuild tasks for deployment, though at least you can now do automated builds using TFS or other CI tools a lot easier. For deployments, you should still be able to use btstask&#47;btsdeploy.
+- id: 921
+  author: Moez
+  author_email: moeztounsi@hotmail.co.uk
+  author_url: http://codudriver.blogspot.com/
+  date: '2009-06-18 19:39:36 +0000'
+  date_gmt: '2009-06-18 19:39:36 +0000'
+  content: "Hello please can you send me your BizTalkC.targets mine is empty and I
+    can't open BTS project.\r\n\r\n\r\nThanks in advance\r\nmy mail is:moeztounsi@hotmail.co.uk"
+- id: 1601
+  author: Deploying BizTalk Applications with&nbsp;MSBuild | A Technical Perspective
+  author_email: ''
+  author_url: http://maximelabelle.wordpress.com/2009/11/19/deploying-biztalk-applications-with-msbuild/
+  date: '2010-10-28 07:02:43 +0000'
+  date_gmt: '2010-10-28 07:02:43 +0000'
+  content: "[...] designed for customizing complex build processes. But, even though
+    .btproj project files have been promoted to first-class MSBuild citizen, starting
+    from BizTalk Server 2009, there is only so much Microsoft can automate for us.
+    BizTalk [...]"
+- id: 1628
+  author: Greg
+  author_email: greg.forsythe@gmail.com
+  author_url: ''
+  date: '2010-12-02 21:57:59 +0000'
+  date_gmt: '2010-12-02 21:57:59 +0000'
+  content: "You can add C# source files to your BizTalk project, create a .cs file
+    and use Add Existing.\r\nThis builds successfully, BUT unfortunately you cannot
+    use any of the code within the same assembly. The BtsCompiler is unable to reference
+    code in a c# file within the same project, so the compile stops before the orchestration
+    c# file is produced :("
+- id: 74254
+  author: Preserving BizTalk deployment settings in TFS Source Control | Sandro Pereira
+    BizTalk Blog
+  author_email: ''
+  author_url: http://sandroaspbiztalkblog.wordpress.com/2014/02/12/preserving-biztalk-deployment-settings-in-tfs-source-control/
+  date: '2014-02-12 21:53:56 +0000'
+  date_gmt: '2014-02-12 21:53:56 +0000'
+  content: "[&#8230;] BizTalk Server 2009 MSBuild Tasks [&#8230;]"
+---
+<p><!--start_raw-->
+<p>I&rsquo;ve been looking around the new project system introduced in the BizTalk Server 2009 beta. As you might have heard before, it&rsquo;s now based on MSBuild. This is an extremely welcome change from the obscure compilation model in previous BizTalk versions that caused so much frustration.</p>
+<p>BizTalk Projects now look much like regular C# projects (they even have the same icon in solution explorer) but they can contain BizTalk artifacts like schemas, orchestrations, maps and pipelines.</p>
+<p>Opening up the <code>.btproj</code> file reveals some of the differences and custom MSBuild tasks used by the new BizTalk project system. Two things are initially important to mark an MSBuild file as a BizTalk project.</p>
+<p>The first one is the <ProjectTypeGuids&#47;> value:</p>
+<div class="codebg"><code><span class="Function"><</span><span class="Function">ProjectTypeGuids</span><span class="Function">></span>{EF7E3281-CD33-11D4-8326-00C04FA0CE8D};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}<span class="Identifier"></ProjectTypeGuids></span> </code></div>
+<p>This means:</p>
+<ul>
+<li><em><code>{EF7E3281-CD33-11D4-8326-00C04FA0CE8D}</code></em>: This represents the BizTalk project factory, and tells VS where to find the item templates for BizTalk artifacts and so on.
+<li><em><code>{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</code></em>: This represents the C# project system.</li></ul>
+<p>So, in fact, a BizTalk Project <em>is</em> a C# project. Right now you can&rsquo;t add C# artifacts to the project without editing the <code>.btproj</code> file by hand, but one can hope this will be supported in upcoming builds.</p>
+<p>The second part important to making a <code>.btproj</code> is importing the BizTalk MSBuild tasks, which is accomplished by this line:</p>
+<div class="codebg"><code><span class="Function"><</span><span class="Function">Import</span><span class="Function">&nbsp;</span><span class="Type">Project</span>=<span class="String">"$(MSBuildExtensionsPath)\Microsoft\BizTalk\BizTalkC.targets"</span><span class="Function"> &#47;></span> </code></div>
+<p>If we look at the BizTalkC.targets file, we can see that the BizTalk MSBuild tasks are implemented in the Microsoft.VisualStudio.BizTalkProject.BuildTasks assembly, which you'll find in your 'Microsoft BizTalk Server 2009\Developer Tools' folder.</p><br />
+<h2>Global Project Properties</h2>
+<p>There are several properties that will get set in the project files depending on your project settings that are BizTalk-specific:</p>
+<ul>
+<li><em><code><BpelCompliance&#47;></code></em>: This is a Boolean (true, false) property that indicates if the generated assembly should be marked as BPEL compliant (I think).
+<li><em><code><EnableUnitTesting&#47;></code></em>: Corresponds to the Enable Unit Testing option in the Deployment tab of the project settings dialog, and controls whether the <a href="http:&#47;&#47;msdn.microsoft.com&#47;en-us&#47;library&#47;dd257907.aspx">unit testing features</a> for pipelines, schemas and maps are enabled. </li></ul>
+<p>Other settings are per-user settings and stored in the .btproj.user file:</p>
+<ul>
+<li><em><code><Server&#47;></code></em>: The name of the SQL Server instance that has the BizTalk databases for deployment.
+<li><em><code><ConfigurationDatabase&#47;></code></em>: The name of the BizTalkMgmt database.
+<li><em><code><ApplicationName&#47;></code></em>: The name of the BizTalk application you want to deploy to.
+<li><em><code><Redeploy&#47;></code></em>: Boolean property that indicates if you want to allow redeployments from within Visual Studio.
+<li><em><code><RestartHostInstance&#47;></code></em>: If true, the BizTalk hosts will be restarted after each deployment.
+<li><em><code><Register&#47;></code></em>: If true, the generated assembly will be registered in the Global Assembly Cache (GAC).</li></ul><br />
+<h2>Per-File Project Properties</h2>
+<p>The per-user project file (.btproj.user) can also include a bunch of item-specific properties, which are visible when you select a file in Solution Explorer and open the Properties window. </p>
+<p>In this category you&rsquo;ll find properties for setting paths for map input and output files for testing&#47;debugging as well as paths for input and output files for testing schemas.</p>
+<p>Here&rsquo;s an example:</p>
+<div class="codebg"><code><span class="Function"><</span><span class="Function">File</span><span class="Function">&nbsp;</span><span class="Type">Path</span>=<span class="String">"E:\Projects\BizTalk\PipelineTesting\SampleSchemas\Map1.btm"</span><span class="Function">></span><br>&nbsp;&nbsp; <span class="Function"><</span><span class="Function">ValidateTestMapInput</span><span class="Function">></span>True<span class="Identifier"></ValidateTestMapInput></span><br>&nbsp;&nbsp; <span class="Function"><</span><span class="Function">ValidateTestMapOutput</span><span class="Function">></span>True<span class="Identifier"></ValidateTestMapOutput></span><br>&nbsp;&nbsp; <span class="Function"><</span><span class="Function">TestMapInputInstanceFilename</span><span class="Function">></span><span class="Identifier"></TestMapInputInstanceFilename></span><br>&nbsp;&nbsp; <span class="Function"><</span><span class="Function">TestMapOutputInstanceFilename</span><span class="Function">></span><span class="Identifier"></TestMapOutputInstanceFilename></span><br>&nbsp;&nbsp; <span class="Function"><</span><span class="Function">TestMapSourceType</span><span class="Function">></span>0<span class="Identifier"></TestMapSourceType></span><br>&nbsp;&nbsp; <span class="Function"><</span><span class="Function">TestMapTargetType</span><span class="Function">></span>0<span class="Identifier"></TestMapTargetType></span><br>&nbsp;&nbsp; <span class="Function"><</span><span class="Function">EditorOutputInstanceFilename</span><span class="Function">></span><span class="Identifier"></EditorOutputInstanceFilename></span><br>&nbsp;&nbsp; <span class="Function"><</span><span class="Function">EditorInputInstanceFilename</span><span class="Function">></span><span class="Identifier"></EditorInputInstanceFilename></span><br>&nbsp;&nbsp; <span class="Function"><</span><span class="Function">GenerateInstanceOutputType</span><span class="Function">></span>0<span class="Identifier"></GenerateInstanceOutputType></span><br>&nbsp;&nbsp; <span class="Function"><</span><span class="Function">ValidateInstanceInputType</span><span class="Function">></span>0<span class="Identifier"></ValidateInstanceInputType></span><br>&nbsp;&nbsp; <span class="Function"><</span><span class="Function">PropertySchemaFileName</span><span class="Function">></span>PropertySchema.xsd<span class="Identifier"></PropertySchemaFileName></span><br>&nbsp;&nbsp; <span class="Function"><</span><span class="Function">AutoRefreshSchema</span><span class="Function">></span>0<span class="Identifier"></AutoRefreshSchema></span><br><span class="Identifier"></File></span><br><span class="Function"><</span><span class="Function">File</span><span class="Function">&nbsp;</span><span class="Type">Path</span>=<span class="String">"E:\Projects\BizTalk\PipelineTesting\SampleSchemas\NoNS.xsd"</span><span class="Function">></span><br>&nbsp;&nbsp; <span class="Function"><</span><span class="Function">ValidateTestMapInput</span><span class="Function">></span>True<span class="Identifier"></ValidateTestMapInput></span><br>&nbsp;&nbsp; <span class="Function"><</span><span class="Function">ValidateTestMapOutput</span><span class="Function">></span>True<span class="Identifier"></ValidateTestMapOutput></span><br>&nbsp;&nbsp; <span class="Function"><</span><span class="Function">TestMapInputInstanceFilename</span><span class="Function">></span><span class="Identifier"></TestMapInputInstanceFilename></span><br>&nbsp;&nbsp; <span class="Function"><</span><span class="Function">TestMapOutputInstanceFilename</span><span class="Function">></span><span class="Identifier"></TestMapOutputInstanceFilename></span<br />
+><br>&nbsp;&nbsp; <span class="Function"><</span><span class="Function">TestMapSourceType</span><span class="Function">></span>0<span class="Identifier"></TestMapSourceType></span><br>&nbsp;&nbsp; <span class="Function"><</span><span class="Function">TestMapTargetType</span><span class="Function">></span>0<span class="Identifier"></TestMapTargetType></span><br>&nbsp;&nbsp; <span class="Function"><</span><span class="Function">EditorOutputInstanceFilename</span><span class="Function">></span><span class="Identifier"></EditorOutputInstanceFilename></span><br>&nbsp;&nbsp; <span class="Function"><</span><span class="Function">EditorInputInstanceFilename</span><span class="Function">></span><span class="Identifier"></EditorInputInstanceFilename></span><br>&nbsp;&nbsp; <span class="Function"><</span><span class="Function">GenerateInstanceOutputType</span><span class="Function">></span>0<span class="Identifier"></GenerateInstanceOutputType></span><br>&nbsp;&nbsp; <span class="Function"><</span><span class="Function">ValidateInstanceInputType</span><span class="Function">></span>0<span class="Identifier"></ValidateInstanceInputType></span><br>&nbsp;&nbsp; <span class="Function"><</span><span class="Function">PropertySchemaFileName</span><span class="Function">></span>PropertySchema.xsd<span class="Identifier"></PropertySchemaFileName></span><br>&nbsp;&nbsp; <span class="Function"><</span><span class="Function">AutoRefreshSchema</span><span class="Function">></span>0<span class="Identifier"></AutoRefreshSchema></span><br><span class="Identifier"></File></span> </code></div><br />
+<h2>Building Pipelines</h2>
+<p>To build a pipeline, you can use the PipelineCompilerTask:</p>
+<div class="codebg"><code><span class="Function"><</span><span class="Function">ItemGroup</span><span class="Function">></span><br>&nbsp;&nbsp; <span class="Function"><</span><span class="Function">Pipeline</span><span class="Function">&nbsp;</span><span class="Type">Include</span>=<span class="String">"CSV_FF_RecvPipeline.btp"</span><span class="Function">></span><br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span class="Function"><</span><span class="Function">Namespace</span><span class="Function">></span>SampleSchemas<span class="Identifier"></Namespace></span><br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span class="Function"><</span><span class="Function">TypeName</span><span class="Function">></span>CSV_FF_RecvPipeline<span class="Identifier"></TypeName></span><br>&nbsp;&nbsp; <span class="Identifier"></Pipeline></span><br><span class="Identifier"></ItemGroup></span> </code></div><br />
+<h2>Building Schemas</h2>
+<p>BizTalk Schemas can be compiled using the new SchemaCompiler task:</p>
+<div class="codebg"><code><span class="Function"><</span><span class="Function">ItemGroup</span><span class="Function">></span><br>&nbsp;&nbsp; <span class="Function"><</span><span class="Function">Schema</span><span class="Function">&nbsp;</span><span class="Type">Include</span>=<span class="String">"Schema1_NPP.xsd"</span><span class="Function">></span><br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span class="Function"><</span><span class="Function">Namespace</span><span class="Function">></span>SampleSchemas<span class="Identifier"></Namespace></span><br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span class="Function"><</span><span class="Function">TypeName</span><span class="Function">></span>Schema1_NPP<span class="Identifier"></TypeName></span><br>&nbsp;&nbsp; <span class="Identifier"></Schema></span><br><span class="Identifier"></ItemGroup></span> </code></div><br />
+<h2>Building Maps</h2>
+<p>BizTalk Maps can be compiled using the new MapperCompiler task:</p>
+<div class="codebg"><code><span class="Function"><</span><span class="Function">ItemGroup</span><span class="Function">></span><br>&nbsp;&nbsp; <span class="Function"><</span><span class="Function">Map</span><span class="Function">&nbsp;</span><span class="Type">Include</span>=<span class="String">"Map1.btm"</span><span class="Function">></span><br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span class="Function"><</span><span class="Function">TypeName</span><span class="Function">></span>Map1<span class="Identifier"></TypeName></span><br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span class="Function"><</span><span class="Function">Namespace</span><span class="Function">></span>SampleSchemas<span class="Identifier"></Namespace></span><br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span class="Function"><</span><span class="Function">SubType</span><span class="Function">></span>Task<span class="Identifier"></SubType></span><br>&nbsp;&nbsp; <span class="Identifier"></Map></span><br><span class="Identifier"></ItemGroup></span> </code></div>
+<p>I'm not sure yet what the <code><Subtype&#47;></code> element does.</p><br />
+<h2>Building Orchestrations</h2>
+<p>BizTalk Orchestrations can be built with the new XLangTask:</p>
+<div class="codebg"><code><span class="Function"><</span><span class="Function">ItemGroup</span><span class="Function">></span><br>&nbsp;&nbsp; <span class="Function"><</span><span class="Function">XLang</span><span class="Function">&nbsp;</span><span class="Type">Include</span>=<span class="String">"BizTalk Orchestration1.odx"</span><span class="Function">></span><br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span class="Function"><</span><span class="Function">TypeName</span><span class="Function">></span>BizTalk_Orchestration1<span class="Identifier"></TypeName></span><br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span class="Function"><</span><span class="Function">Namespace</span><span class="Function">></span>SampleSchemas<span class="Identifier"></Namespace></span><br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span class="Function"><</span><span class="Function">SubType</span><span class="Function">></span>Task<span class="Identifier"></SubType></span><br>&nbsp;&nbsp; <span class="Identifier"></XLang></span><br><span class="Identifier"></ItemGroup></span><br><span class="Function"><</span><span class="Function">ItemGroup</span><span class="Function">></span> </code></div><!--end_raw--></p>

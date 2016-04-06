@@ -1,0 +1,25 @@
+---
+layout: post
+status: publish
+published: true
+title: ServicedComponents and Exceptions
+author:
+  display_name: Tomas Restrepo
+  login: tomasr
+  email: tomas@winterdom.com
+  url: http://winterdom.com/
+author_login: tomasr
+author_email: tomas@winterdom.com
+author_url: http://winterdom.com/
+wordpress_id: 652
+wordpress_url: http://winterdom.com/2003/02/servicedcomponentsandexceptions
+date: '2003-02-16 16:17:24 +0000'
+date_gmt: '2003-02-16 16:17:24 +0000'
+categories:
+- Enterprise Services
+tags: []
+comments: []
+---
+<p><!--start_raw--><a href="http:&#47;&#47;www.morty.info&#47;blog&#47;current.aspx">Morten</a> wonders about <a href="http:&#47;&#47;morty.info&#47;blog&#47;2003&#47;2.aspx#section-77856c10-15be-47f1-b5fa-2552341c338c">Enterprise Services and Exceptions</a>. This is a topic that interests me greatly, and one I've had mixed success with.</p>
+<p>For all I can see, having an <code>object</code> somewhere on your method signature (either as an argument or return type) ensures the custom exception is marshaled back to the client. It seems this needs to be of type <code>object</code>, too, because replacing it by some other reference type (like <code>string</code>), doesn't work, and you get back <code>ApplicationException</code> again.</p></p>
+<p>But, alas, I'm not sure if this is just a side-effect, or this is indeed the real reason, which I highly doubt. Same appears to happen with the .NET framework v1.1, btw, at least insofar as I can see. Clues, anyone?</p><!--end_raw--></p>

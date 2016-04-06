@@ -1,0 +1,36 @@
+---
+layout: post
+status: publish
+published: true
+title: Writing a WCF Transport Channel, Part 2
+author:
+  display_name: Tomas Restrepo
+  login: tomasr
+  email: tomas@winterdom.com
+  url: http://winterdom.com/
+author_login: tomasr
+author_email: tomas@winterdom.com
+author_url: http://winterdom.com/
+wordpress_id: 844
+wordpress_url: http://winterdom.com/2007/02/writingawcftransportchannelpart2
+date: '2007-02-19 05:52:01 +0000'
+date_gmt: '2007-02-19 05:52:01 +0000'
+categories:
+- WCF
+- WinFX
+tags: []
+comments: []
+---
+<p><!--start_raw-->
+<p>The first thing I asked myself when I started writing my custom Windows Communication Framework transport channel was: What exactly do I need to implement? The information on what classes you need to write and what interfaces you need to implement is out there in the documentation and elsewhere (as I pointed out in my <a href="http:&#47;&#47;www.winterdom.com&#47;weblog&#47;2007&#47;02&#47;14&#47;WritingAWCFTransportChannelPart1.aspx">previous entry</a>). </p>
+<p>However, it still took a bit of time for it to "click" for me. To make it easier to remember, here's a small figure I created outlining what I think are the key concepts in the transport channel model:</p>
+<p><img height="487" src="http:&#47;&#47;www.winterdom.com&#47;weblog&#47;content&#47;binary&#47;WindowsLiveWriter&#47;WritingaWCFTransportChannelPart2_76E0&#47;WCFChannelModel.png" width="644"> </p>
+<p>I think the figure is pretty self explanatory, but let's add a few comments anyway:</p>
+<ul>
+<li>The "Configuration Binding Element" is purely a configuration-level entity. That is, it's purpose is to be used in the XML configuration files (or programatically) to configure the transport-part of the binding you'll be using. As such, it's main purpose is to gather some required configuration options and create the transport binding element. <br>Confused by the naming of all the element classes? You're not the only one. I think the whole binding element + configuration element part of WCF was horribly named making it unnecessarily confusing. </li>
+<li>The transport binding element will usually derive from the <a href="http:&#47;&#47;msdn2.microsoft.com&#47;en-us&#47;library&#47;system.servicemodel.channels.transportbindingelement.aspx">TransportBindingElement</a> class (or one of its subclasses). One of its primary purposes is to create the <em>Channel Managers </em>for your transport, which are the Channel Factory (<a href="http:&#47;&#47;msdn2.microsoft.com&#47;en-us&#47;library&#47;ms405876.aspx">IChannelFactory</a> implementation) and the Channel Listener (<a href="http:&#47;&#47;msdn2.microsoft.com&#47;en-us&#47;library&#47;ms405876.aspx">IChannelListener</a>&nbsp;implementation).<br>Your Channel Factory will typically inherit from <a href="http:&#47;&#47;msdn2.microsoft.com&#47;en-us&#47;library&#47;ms405827.aspx">ChannelFactoryBase<T></a><t><t> and your Channel Listener from <a href="http:&#47;&#47;msdn2.microsoft.com&#47;en-us&#47;library&#47;ms405838.aspx">ChannelListenerBase<T></a><t>.</li>
+<li>&nbsp;The actual channels are created from the two&nbsp;channel manager&nbsp;classes. What I mean by "Primarily Send" and "Primarily Receive" is this:</li>
+<ul>
+<li>Primarily Send channels start by "establishing a connection" to the remote endpoint. In that send, they are proactively opened by the client. These are somewhat analogous to Send-side Adapters in BizTalk Server. This does not mean however, that they only send data, as they can be two way (request&#47;response) channels or even full duplex channels.</li>
+<li>Primarily Receive channels usually start because a connection was accepted from a remote endoint. These are somewhat analogous to Receive-side adapters in BizTalk Server. Again, they can be two way (reply&#47;response) channels or even full duplex channels.</li></ul></ul>
+<div class="wlWriterSmartContent" id="0767317B-992E-4b12-91E0-4F059A8CECA8:3a2ff56b-1e82-4caf-877b-aba842fe8c33" contenteditable="false" style="padding-right: 0px; display: inline; padding-left: 0px; padding-bottom: 0px; margin: 0px; padding-top: 0px">Technorati tags: <a href="http:&#47;&#47;technorati.com&#47;tags&#47;Windows%20Communication%20Foundation" rel="tag">Windows Communication Foundation</a>, <a href="http:&#47;&#47;technorati.com&#47;tags&#47;WCF%20Extensibility" rel="tag">WCF Extensibility</a>, <a href="http:&#47;&#47;technorati.com&#47;tags&#47;Channels" rel="tag">Channels</a></div><!--end_raw--></p>

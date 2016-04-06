@@ -1,0 +1,77 @@
+---
+layout: post
+status: publish
+published: true
+title: XLANGPart.RetrieveAs()
+author:
+  display_name: Tomas Restrepo
+  login: tomasr
+  email: tomas@winterdom.com
+  url: http://winterdom.com/
+author_login: tomasr
+author_email: tomas@winterdom.com
+author_url: http://winterdom.com/
+wordpress_id: 270
+wordpress_url: http://winterdom.com/2004/10/xlangpartretrieveas
+date: '2004-10-16 07:16:48 +0000'
+date_gmt: '2004-10-16 07:16:48 +0000'
+categories:
+- BizTalk
+tags: []
+comments:
+- id: 197
+  author: Swati Shah
+  author_email: shah.swati@gmail.com
+  author_url: ''
+  date: '2007-04-21 15:29:45 +0000'
+  date_gmt: '2007-04-21 15:29:45 +0000'
+  content: |
+    So did Biz2006 change this implementation? If you have am email attachment and you want to go thru message parts to change bytes this could be only posisble way except in pipeline component.
+- id: 198
+  author: phoenix
+  author_email: ''
+  author_url: ''
+  date: '2007-05-17 20:02:16 +0000'
+  date_gmt: '2007-05-17 20:02:16 +0000'
+  content: |
+    I wonder which of serializer1.Deserialize and XLANsGPart.RetrieveAs is a more efficient way to get class instance. Some test data will be appreciated.
+    Thanks.
+---
+<p><!--start_raw-->Darren Jefford posted last month an entry called <a href="http:&#47;&#47;blogs.msdn.com&#47;darrenj&#47;archive&#47;2004&#47;09&#47;29&#47;235719.aspx">"Calling a .NET Assembly from Orchestration with Schema Types"</a> on his weblog, where he outlined how to call .NET components that manipulated messages from BizTalk Server orchestrations. It's a really nice entry, well worth reading.</p>
+<p>One particular thing that Darren said, and that I had already noticed, was that you could convert a BizTalk message instance into a .NET strongly typed class using XLANsGPart.RetrieveAs(). Darren's entry got me thinking, though, as to whether this was efficiently implemented.</p></p>
+<p>Let's start with a little basics: BizTalk represents a message in an orchestration as an instance of the XLANGMessage class (well, actually a subclass of it, since XLANGMessage is abstract). Each message is built from a set of message parts (in other words, XLANGMessage possibly represents a multipart message type); you can get at each part by using the indexer, which returns instances of types derived from the abstract XLANGPart class. XLANGPart is the one that defines the useful RetrieveAs() method.</p></p>
+<p>Now, on an orchestration, when using a component that handles instances of XLANGPart, you'll likely get an instace of the concrete Microsoft.XLANGs.Core.XSDPart class, which itself inherits from an abstract class called Microsoft.XLANGs.Core.Part class.</p></p>
+<p>It is this Part class that actually contains the implementation of the RetrieveAs() method, by simply forwarding it to an instance of a ValueToken class, which itself simply forwards it to Value.RetrieveAs(). The latter is a simple method, defined as:</p></p>
+<pre><code><br />
+public object RetrieveAs(Type t)<br />
+{<br />
+if ((t == typeof(XmlDocument)) || (t == typeof(XmlNode)))<br />
+{<br />
+return this.GetXmlDocument();<br />
+}<br />
+if (t == typeof(XmlReader))<br />
+{<br />
+return this.GetXmlReader();<br />
+}<br />
+if (t == typeof(Stream))<br />
+{<br />
+string text1 = null;<br />
+return this.GetStream(ref text1, false);<br />
+}<br />
+return this.GetObject(t);<br />
+}<br />
+</code></pre></p>
+<p>The part that interests us is the last call, which calls Value.GetObject(). Now, from here on, things go quite a bit around till we get to the part where we are interested, which is where the Message content is deserialized into a .NET class. This gets done inside the ObjectFromStreamReader() in the Microsoft.XLANGs.RuntimeTypes.XmlHelpers class, which is pretty simple:</p></p>
+<pre><code><br />
+public static object ObjectFromStreamReader(StreamReader sr, Type t)<br />
+{<br />
+XmlSerializer serializer1 = new XmlSerializer(t);<br />
+object obj1 = serializer1.Deserialize(sr);<br />
+return XmlHelpers._check(obj1, t);<br />
+}<br />
+</code></pre></p>
+<p>Quite what one would expect, right? Well, the problem is, this is highly inefficient. As many of you by now noticed, this code is not optimal because it doesn't reuse XmlSerializer instances for a given type. So each time the conversion needs to be made, a new instance of the XmlSerializer gets created, which in turns goes ahead and generates new code for the deserialization, compiles it, and loads the generated assembly into memory.</p></p>
+<p>This is bad, not only because it is a very expensive operation, but also because it leaks memory (since the generated assemblies cannot be unloaded from memory until the entire AppDomain is unloaded).</p></p>
+<p>What BizTalk should be doing is caching the XmlSerializer instances it creates for a given time, like, for example, the ASP.NET framework does for webservices or how WSE does (look at the XmlSerializerCache implementation).</p></p>
+<p>Until that is done, creating XML serializable classes in BizTalk trhough XLANGPart.RetrieveAs() is a very expensive proposition. Well, to be fair, they do implement one particular optimization, and that is that if the object has been created for a given message instance, it can be reused without having to go through the serializer again, but that's a fairly small optimization compared to the underlying problem. </p><br />
+<!--end_raw--></p>

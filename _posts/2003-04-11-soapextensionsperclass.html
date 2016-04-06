@@ -1,0 +1,25 @@
+---
+layout: post
+status: publish
+published: true
+title: SoapExtensions per class
+author:
+  display_name: Tomas Restrepo
+  login: tomasr
+  email: tomas@winterdom.com
+  url: http://winterdom.com/
+author_login: tomasr
+author_email: tomas@winterdom.com
+author_url: http://winterdom.com/
+wordpress_id: 826
+wordpress_url: http://winterdom.com/2003/04/soapextensionsperclass
+date: '2003-04-11 20:05:05 +0000'
+date_gmt: '2003-04-11 20:05:05 +0000'
+categories:
+- Web Services
+tags: []
+comments: []
+---
+<p><!--start_raw-->Someone was asking today in the ASP.NET newsgroups if there was an easy way to apply a SoapExtension to a complete WebService-derived class, instead of applying his custom SoapExtensionAttribute-derived attribute class to each and every WebMethod.</p>
+<p>I looked and, afaics, there isn't one [1], since it seems the runtime won't look at the class for soap extension attributes, just at the individual WebMethods. It's a shame, really. It sounded like a good suggestion to me to add support for that, and would be consisten with how other attribute-based features work in the asp.net web services runtime (one example would be SoapDocumentMethodAttribute and SoapDocumentServiceAttribute)</p></p>
+<p>[1] One could instead register the extension web.config, but that somehow doesn't seem as clean :)</p><!--end_raw--></p>

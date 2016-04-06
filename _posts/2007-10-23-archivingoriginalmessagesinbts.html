@@ -1,0 +1,33 @@
+---
+layout: post
+status: publish
+published: true
+title: Archiving Original Messages in BTS
+author:
+  display_name: Tomas Restrepo
+  login: tomasr
+  email: tomas@winterdom.com
+  url: http://winterdom.com/
+author_login: tomasr
+author_email: tomas@winterdom.com
+author_url: http://winterdom.com/
+wordpress_id: 307
+wordpress_url: http://winterdom.com/2007/10/archivingoriginalmessagesinbts
+date: '2007-10-23 08:39:06 +0000'
+date_gmt: '2007-10-23 08:39:06 +0000'
+categories:
+- BizTalk
+tags: []
+comments: []
+---
+<p><!--start_raw-->
+<p>Siva Ram asks in a comment on a previous post:</p>
+<p>"How to Archive&#47;(copy to another location) the Source file as it is , Before the biztalk picks up the file?"</p>
+<p>I think what he's really asking is how he could archive an exact copy of the original incoming message (possibly for regulatory compliance, auditing, or simply to provide easier tracing of problems). This is a common question, and the truth is there are several ways to approach this in BizTalk server. </p>
+<p>Here are some options:</p>
+<p><strong>Double Hop:</strong> A fairly simple option is to do a double hop when processing the incoming message. Instead of parsing and processing the message right away, receive it through a pass-thru pipeline (so the message isn't changed) and route it using filters to two FILE send ports. One of them points to your archive location, while the other points to a temporary folder, from which you pick up the message again using the FILE adapter to do the real processing.</p>
+<p>This is a rather simple way to implement this, but it can be pretty inefficient. It's particularly bad if messages are large because it involves several round-trips to the message box.</p>
+<p><strong>Use BizTalk Tracking:</strong> For some scenarios, it is enough to just enable message tracking in your receive location, making sure to select the option to track the message <em>before</em> it goes through the pipeline. Messages will then be saved in your DTA database, from which you can query and retrieve them using HAT or WMI. </p>
+<p><strong>Use a pipeline component:</strong> Using a custom decoding pipeline component that writes the message out as it is read by the receive pipeline is another good option. It is a bit more complex to implement, but it can be very efficient if implemented properly. Jeff Lynch has a <a href="http:&#47;&#47;codebetter.com&#47;blogs&#47;jeff.lynch&#47;archive&#47;2006&#47;04&#47;08&#47;142537.aspx">simple Archive component</a> you can use to start, though be aware his version will not work if you're dealing with adapters that use non-seekable streams to hold message content. My own old <a href="http:&#47;&#47;www.winterdom.com&#47;weblog&#47;2005&#47;06&#47;07&#47;BizTalk2004TracerPipelineComponent.aspx">Tracer pipeline component</a> might also be a place to start with this.</p>
+<p>I hope this gives you an idea of how to start fulfilling your requirement!</p>
+<div class="wlWriterSmartContent" id="scid:0767317B-992E-4b12-91E0-4F059A8CECA8:a3433393-de9d-465b-9709-fd7581a9b83c" style="padding-right: 0px; display: inline; padding-left: 0px; padding-bottom: 0px; margin: 0px; padding-top: 0px">Technorati tags: <a href="http:&#47;&#47;technorati.com&#47;tags&#47;BizTalk%20Server" rel="tag">BizTalk Server</a></div><!--end_raw--></p>

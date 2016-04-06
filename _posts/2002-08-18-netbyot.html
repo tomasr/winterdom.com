@@ -1,0 +1,62 @@
+---
+layout: post
+status: publish
+published: true
+title: ".NET & BYOT"
+author:
+  display_name: Tomas Restrepo
+  login: tomasr
+  email: tomas@winterdom.com
+  url: http://winterdom.com/
+author_login: tomasr
+author_email: tomas@winterdom.com
+author_url: http://winterdom.com/
+wordpress_id: 882
+wordpress_url: http://winterdom.com/2002/08/netbyot
+date: '2002-08-18 11:25:51 +0000'
+date_gmt: '2002-08-18 11:25:51 +0000'
+categories:
+- Enterprise Services
+tags: []
+comments: []
+---
+<p><!--start_raw-->I've been fooling around with .NET, Remoting and the <a href="http:&#47;&#47;search.microsoft.com&#47;gomsuri.asp?n=3&amp;c=rp_Results&amp;siteid=us&#47;dev&amp;target=http:&#47;&#47;msdn.microsoft.com&#47;library&#47;en-us&#47;cossdk&#47;htm&#47;pgservices_transactions_5pi7.asp">BYOT</a> service offered by COM+. The result is this simple <a href="http:&#47;&#47;www.winterdom.com&#47;dev&#47;dotnet&#47;TxExp.zip">application</a>.</p>
+<p>To build the files, just fire up cmd.exe, switch to the directory you unzipped the file to, and do <code>nmake all</code>. This will compile all files and install two COM+ applications on your machine: TxRoot and TxInterior.</p></p>
+<p>The application is actually pretty simple: It has two executables. The first one, TxRootCaller, creates a COM+ object (TxRoot) in a library application inside a declarative transaction (it is marked Transaction Required). TxRoot underneaths gets the TIP transaction URL, and calls via .NET Remoting using SOAP into the other application, passing it the transaction URL. On the other hand, we have TxInteriorHost.exe, which simply exposes a simple shim object using .NET remoting. When that object is called, it uses BYOT to instantiate a second COM+ object (TxInterior) marked as Transaction Supported inside the distributed transaction.</p></p>
+<p>The result of running both client and server looks like this:</p></p>
+<pre><code>E:\Projects\Com+\TxExp>bin\TxRootCaller.exe<br />
+Starting...<br />
+++ TxRootObject::DoYourWork()<br />
+ContextID: 623f99b5-2bb7-426b-8967-5c4c55c62ecf<br />
+TransactionID: cccdde96-e2f1-4f5c-b7a0-e738542247c3<br />
+Transaction URL: tip:&#47;&#47;radiant.EPM.NET.CO&#47;?OleTx-cccdde96-e2f1-4f5c-b7a0-e738542247c3<br />
+-- TxRootObject::DoYourWork()<br />
+E:\Projects\Com+\TxExp>bin\txInteriorHost.exe<br />
+Starting...<br />
+++ RemoteFacade::DoYourWorkWithTx()<br />
+++ TxInteriorObject::DoYourWork()<br />
+ContextID: 7201e837-96dd-4794-9aa9-12f41af4257b<br />
+TransactionID: cccdde96-e2f1-4f5c-b7a0-e738542247c3<br />
+-- TxInteriorObject::DoYourWork()<br />
+-- RemoteFacade::DoYourWorkWithTx()<br />
+</code></pre></p>
+<p>Obviously, this is a very contrived example, but I thought it was pretty cool :)</p></p>
+<p>Unfortunately, the sample as it is doesn't actually run on Win2k, not even with SP3; instead, TxInteriorHost just magically disappears, leaving a message like this one on the Application Event Log:</p></p>
+<pre><code>Event Type:	Error<br />
+Event Source:	COM+<br />
+Event Category:	Executive<br />
+Event ID:	4230<br />
+Date:		8&#47;18&#47;2002<br />
+Time:		12:20:48 PM<br />
+User:		N&#47;A<br />
+Computer:	CMEDINA<br />
+Description:<br />
+COM+ Internal Error. Please contact Microsoft Product Support Services<br />
+to report this error. Assertion Failure:<br />
+g_pDispManDriver != NULL<br />
+Process Name: TxInteriorHost.exe<br />
+The serious nature of this error has caused the process to terminate.<br />
+COM+ Services Internals Information:<br />
+File: .\txstream.cpp, Line: 899<br />
+</code></pre></p>
+<p>The sample runs just fine on XP, though. I have a guess as to what the problem is, but it is a <i>very</i> uneducated guess, as this is the first time I fiddle around with BYOT. I'd love it if someone could point out any other information on it!</p><!--end_raw--></p>

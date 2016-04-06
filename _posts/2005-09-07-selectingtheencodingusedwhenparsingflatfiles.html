@@ -1,0 +1,31 @@
+---
+layout: post
+status: publish
+published: true
+title: Selecting the Encoding used when Parsing Flat Files
+author:
+  display_name: Tomas Restrepo
+  login: tomasr
+  email: tomas@winterdom.com
+  url: http://winterdom.com/
+author_login: tomasr
+author_email: tomas@winterdom.com
+author_url: http://winterdom.com/
+wordpress_id: 198
+wordpress_url: http://winterdom.com/2005/09/selectingtheencodingusedwhenparsingflatfiles
+date: '2005-09-07 17:07:42 +0000'
+date_gmt: '2005-09-07 17:07:42 +0000'
+categories:
+- BizTalk
+tags: []
+comments: []
+---
+<p><!--start_raw-->In BizTalk Server 2004, when you add the Flat File Disassembler component to a receive pipeline, there is no apparent way to tell the disassembler what the encoding of the incoming files will be.</p>
+<p>This is not very obvious but, as it turns out, there is a way to do this by changing the input document schema itself. The trick is setting the <b>Codepage</b> property of the <Schema> node, which appears once you enable the Flat File Extensions on the schema editor.</p></p>
+<p>According to the <a href="http:&#47;&#47;msdn.microsoft.com&#47;library&#47;en-us&#47;sdk&#47;htm&#47;ebiz_prog_edit_krgf.asp?frame=true">BizTalk documentation</a>, the following algorithm is used to determine encoding when reading the document:</p></p>
+<ol>
+<li>If the "Charset" in the body part is set, use it.</li>
+<li>Otherwise, if the envelope (or document) schema specifies a code page, use it.</li>
+<li>Otherwise, if a byte order mark is present, use it.</li>
+<li>Otherwise, assume UTF-8.</li><br />
+</ol><!--end_raw--></p>

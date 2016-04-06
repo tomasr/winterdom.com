@@ -1,0 +1,31 @@
+---
+layout: post
+status: publish
+published: true
+title: Two Types of Service Architects?
+author:
+  display_name: Tomas Restrepo
+  login: tomasr
+  email: tomas@winterdom.com
+  url: http://winterdom.com/
+author_login: tomasr
+author_email: tomas@winterdom.com
+author_url: http://winterdom.com/
+wordpress_id: 51
+wordpress_url: http://winterdom.com/2006/11/twotypesofservicearchitects
+date: '2006-11-01 18:16:16 +0000'
+date_gmt: '2006-11-01 18:16:16 +0000'
+categories:
+- Architecture
+tags: []
+comments: []
+---
+<p><!--start_raw-->
+<p>Harry Pierson posted a <a href="http:&#47;&#47;devhawk.net&#47;2006&#47;11&#47;01&#47;The+Two+Types+Of+Service+Architects.aspx">response</a> to a comment I said in a <a href="http:&#47;&#47;www.winterdom.com&#47;weblog&#47;2006&#47;10&#47;29&#47;WCFAndDuplexChannels.aspx">previous entry</a> about SQL Server Service Broker. Lots of interesting stuff to consider, but let me address some of the points Harry made right away.</p>
+<p>First of all, it seems Harry made quite a bit of assumptions about what I meant from a very short sentence :-). Let me be clear to say that I never stated that SSBS <em>only</em> supports code completely in the database. I said that's what I considered a <em>good match</em> for SSBS applications. This is obviously just an opinion, and Harry can feel free to disagree.</p>
+<p>Also, I never mentioned the DTC in any of my comments and for the record, I don't have any issues with&nbsp;using the DTC (and in fact have used it extensively and very successfully in several solutions). I also don't get the whole "purely database driven" rant from Harry. In my case, I used the term "database driven" to mean something very specific: A case where most of the work is&nbsp;basically database code to manipulate data, instead of&nbsp;complex business logic. Perhaps Harry understood it as "accesses a database", which I would agree 99% of applications out there do, but that's a different thing to me.</p>
+<p>What I don't get is the whole "Two types of service architects" question. To me, there's really no question here. There are scenarios that call for request&#47;response services, scenarios that call for one-way asynchronous services and scenarios that call for two-way asynchronous services. A good architect will choose the right style for the right scenario. &Iacute; do wish Harry would clarify exactly what he means by "long running service", as the term seems rather disconnected to me.</p>
+<p>I'm going to venture here that what Harry calls "Long running services" are really just a specific case of "Long running processes". Certainly SSBS poses some very interesting infrastructure for writing those, but, to a certain degree I personally feel that for many tasks it is too low level (just like pure MSMQ is for many tasks). If you really are writing long running, asinchronous&nbsp;processes, then having a queuing mechanism is just part of the equation; there are far many other issues to be considered. And, frankly, as a developer writing business solutions, I'd much rather have someone put that infrastructure in place for me rather than having to do so myself (even though doing so is rather fun). Both WF and BizTalk put a lot of that other infrastructure in place for you (each with their ups and downs), btw.</p>
+<p>But, maybe I'm just an idiot and don't see it, so feel free to hit me with the enlightment stick some more if you think so :-)</p>
+<div class="wlWriterSmartContent" id="d7bf807d-7bb0-458a-811f-90c51817d5c2:62e4b866-310d-4919-9395-25a0fe4e4e68" contenteditable="false" style="padding-right: 0px; display: inline; padding-left: 0px; padding-bottom: 0px; margin: 0px; padding-top: 0px">
+<p><span class="TagSite">Technorati:</span> <a href="http:&#47;&#47;technorati.com&#47;tag&#47;Architecture" rel="tag" class="tag">Architecture</a>, <a href="http:&#47;&#47;technorati.com&#47;tag&#47;Service" rel="tag" class="tag">Service</a>, <a href="http:&#47;&#47;technorati.com&#47;tag&#47;SOA" rel="tag" class="tag">SOA</a>, <a href="http:&#47;&#47;technorati.com&#47;tag&#47;SSBS" rel="tag" class="tag">SSBS</a><br &#47;><!-- StartInsertedTags: Architecture, Service, SOA, SSBS :EndInsertedTags --></p></div><!--end_raw--></p>

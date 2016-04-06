@@ -1,0 +1,60 @@
+---
+layout: post
+status: publish
+published: true
+title: Regions and Readability
+author:
+  display_name: Tomas Restrepo
+  login: tomasr
+  email: tomas@winterdom.com
+  url: http://winterdom.com/
+author_login: tomasr
+author_email: tomas@winterdom.com
+author_url: http://winterdom.com/
+wordpress_id: 229
+wordpress_url: http://winterdom.com/2007/07/regionsandreadability
+date: '2007-07-30 06:40:46 +0000'
+date_gmt: '2007-07-30 06:40:46 +0000'
+categories:
+- ".NET"
+- Tools
+tags: []
+comments:
+- id: 171
+  author: Dave
+  author_email: laribee@gmail.com
+  author_url: http://laribee.com/blog/
+  date: '2007-07-30 06:48:02 +0000'
+  date_gmt: '2007-07-30 06:48:02 +0000'
+  content: |
+    These are good reasons, I'd say. I'd say in the case of "Lots a Related Methods" I often extract a role interface. In which case the grouping interface implementation heuristic comes into place. I also agree that when you've got a class with lots of role interfaces regions <i>can</i> help express intent.
+- id: 172
+  author: Tomas Restrepo
+  author_email: tomas@winterdom.com
+  author_url: http://www.winterdom.com/weblog/
+  date: '2007-07-30 07:15:19 +0000'
+  date_gmt: '2007-07-30 07:15:19 +0000'
+  content: |
+    @David: Absolutely agree about extracting a role interface; I do practice it a number of times, but others I'm stuck with the design the base class library came with :)
+    (Though, interestingly enough, the data reader case almost matches this, as most of the accessors are in IDataRecord, from which IDataReader inherits).
+---
+<p><!--start_raw-->
+<p><a href="http:&#47;&#47;laribee.com&#47;blog&#47;">David Laribee</a> wrote a few days ago about why <a href="http:&#47;&#47;laribee.com&#47;blog&#47;2007&#47;07&#47;22&#47;why-regions-are-fugly&#47;">he dislikes</a> the #region construct in code. Interesting comments, and made me reflect a bit on how I use regions myself. In general, I don't agree with David that using regions is evil <em>per-se</em>. but I do agree they are often overused. In particular, I find the practice of forcing a specific set of regions on each and every code base to be a significant hindrance to readability. </p>
+<p>The truth is that small classes don't usually need regions at all. However, I still find them very convenient for classes with a lot of members, even if they are short 1 or 2 liners. What I noticed, however, is that I don't have a hard and fast rule about how I apply regions. Instead I sort of vary my use of them according to the needs of the code I'm working on. </p>
+<p>Here are some of the things I keep in mind when applying regions:</p>
+<p><strong>Lots of properties</strong></p>
+<p>If a class has a lot of properties (common, for example, in some business entities or DTOs), then I do like to wrap properties in it's own region. This is because a lot of cases properties are created once, but not so often modified after wards, and the other thing is that property declarations in C# do <em>take up a lot of space</em> because of the syntax used. </p>
+<p><a href="http:&#47;&#47;weblogs.asp.net&#47;scottgu&#47;archive&#47;2007&#47;03&#47;08&#47;new-c-orcas-language-features-automatic-properties-object-initializers-and-collection-initializers.aspx">Automatic properties</a> in C# will be nice, but from a syntax perspective, they don't really help as much as one would like. It was unfortunate the C# team decided to go for that syntax instead of the <a href="http:&#47;&#47;weblogs.asp.net&#47;cnagel&#47;archive&#47;2004&#47;12&#47;17&#47;323549.aspx">really nice one</a> used by C++&#47;CLI...</p>
+<p><strong>Multiple Interfaces Implemented</strong></p>
+<p>If a class implements multiple interfaces, each one having more than a couple of methods, I do tend to wrap each one into its own region. If it's only a single interface, or something simple like IDisposable, I don't bother with it.</p>
+<p><strong>Lots of Related Methods</strong></p>
+<p>Sometimes you have to implement a lot of simple, related methods in a class. We all wish classes had few members and were small and simple, but sometimes you have to do otherwise (this is usually forced when complying with an externally defined interface). </p>
+<p>For example, in a lot of cases I've had to deal with there are a lot of simple GetXXX() accessor methods that need to be implemented (e.g. GetInt16(), GetInt32() and so on). Each one usually won't have more than 1 or 2 lines of code in it, but when put together, they take a sizable chunk of space, and if there are other, more significant methods in the class, I like to get the accessors out of the way so I can concentrate on the rest (the important stuff). Regions help out nicely in this case.</p>
+<p><strong>Related Test Methods</strong></p>
+<p>A case similar to the above one happens in Unit Testing classes: Sometimes you have several test methods that are closely related to one another, so I like to group them together. Here are a couple of examples:</p>
+<ul>
+<li>I once worked in a code base that, although fairly simple, had tons of methods in a single class: a combination of type-specific Read&#47;Write methods. For each type, I usually had to write four or five test methods to test all possible corner cases, so that meant a hole lot of methods involved. I grouped test methods by type (i.e. "Int32 tests") inside the fixture.</li>
+<li>I'm currently working on an ADO.NET provider, and writing&#47;testing my IDataReader implementation. The IDataReader class has tons of methods (of the accessor variety mentioned before), which, means lots of test methods in my test fixture. Again I use regions to group certain related tests methods together to make it easier to read and maintain.</li></ul>
+<p>There might be a couple of more cases I base my regions on, but I think these cover the basics. I think, in general, these rules give me a set of regions that are far more useful and that really make the code easier to read and maintain than the rigid Using&#47;Fields&#47;Properties&#47;Public Methods&#47;Private Methods stuff a lot of people use; but that's just my opinion :-).</p>
+<p>Coincidentally, like David, I use search a lot to go around (though in my case I use '&#47;' for searching and not Ctrl-I), and the other thing I've found is that tend to very rarely use the class&#47;member code navigation drop downs in the Visual Studio Editor. I do use them sometimes, but usually when I'm&nbsp;just getting into&nbsp;a foreign code base I'm not familiar with.</p>
+<div class="wlWriterSmartContent" id="0767317B-992E-4b12-91E0-4F059A8CECA8:16c35d59-4b59-46ba-9298-ad8fc98a9add" contenteditable="false" style="padding-right: 0px; display: inline; padding-left: 0px; padding-bottom: 0px; margin: 0px; padding-top: 0px">Technorati tags: <a href="http:&#47;&#47;technorati.com&#47;tags&#47;Visual%20Studio" rel="tag">Visual Studio</a>, <a href="http:&#47;&#47;technorati.com&#47;tags&#47;C#" rel="tag">C#</a>, <a href="http:&#47;&#47;technorati.com&#47;tags&#47;.NET" rel="tag">.NET</a></div><!--end_raw--></p>

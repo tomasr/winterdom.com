@@ -1,0 +1,162 @@
+---
+layout: post
+status: publish
+published: true
+title: Simple WF designer customizations
+author:
+  display_name: Tomas Restrepo
+  login: tomasr
+  email: tomas@winterdom.com
+  url: http://winterdom.com/
+author_login: tomasr
+author_email: tomas@winterdom.com
+author_url: http://winterdom.com/
+wordpress_id: 886
+wordpress_url: http://winterdom.com/2006/03/simplewfdesignercustomizations
+date: '2006-03-11 13:19:33 +0000'
+date_gmt: '2006-03-11 13:19:33 +0000'
+categories:
+- WinFX
+- Workflow
+tags: []
+comments: []
+---
+<p><!--start_raw-->
+<p>You can do a lot of customizations on how the Windows Workflow Foundation designer will present your custom activities to the user with relatively minor work. For example, you can change the default text that gets shown on the activity (instead of the default which is the activity name), change the icon that is associated with the activity or change the size or internal alignment of text and icon. </p></p>
+<p>You can do all of this without needing to step in and handle the painting of your activity in the designer yourself, which makes it quite a bit simpler. To do this, you'll want to create a custom ActivityDesigner-derived class and set or override its methods and properties as necessary. The most interesting properties here to manipulate are:</p></p>
+<ol>
+<li>Image: Contains the bitmap that is shown as part of your activity of your designer<br />
+</li>
+<li>Text: contains the text that is displayed in the activity designer. By default, this will be the name given in the designer to the activity inside the workflow.<br />
+</li>
+<li>Size: Defines the size that your activity will have in the designer.<br />
+</li>
+<li>ImageRectangle, TextRectangle: These especify the rectangle where the image and text will be drawn at inside your activities. One thing to keep in mind when changing these is that they are specified in absolute coordinates inside the activity designer, not as relative to your activity's position in it. This means you'll want to calculate them based on the rectangle specified by the Bounds property of your activity designer.</li></ol></p>
+<p>You'll also probably want to implement your own ActivityDesignerThem-derived class and override there the colors and formats used by the workflow designer to paint your activity, such as what gradient colors or back color you want to use, what text color and so on. </p></p>
+<p><img src="http:&#47;&#47;www.winterdom.com&#47;weblog&#47;content&#47;binary&#47;ConsoleActivity1.png" border="0"></p></p>
+<p>Here's an example of a trivial activity whose designer draws it as a rounded square, with a larger icon on top and the text of the bottom:</p></p>
+<div class='codebg'><code><span class="Comment">&#47;&#47;</span><br &#47;><br />
+<span class="Comment">&#47;&#47; ConsoleActivity.cs</span><br &#47;><br />
+<span class="Comment">&#47;&#47;</span><br &#47;><br />
+<span class="Comment">&#47;&#47; Author:</span><br &#47;><br />
+<span class="Comment">&#47;&#47;&nbsp;&nbsp;&nbsp;&nbsp;Tomas Restrepo (tomasr@mvps.org)</span><br &#47;><br />
+<span class="Comment">&#47;&#47;</span><br &#47;><br />
+<br &#47;><br />
+<span class="Statement">using</span>&nbsp;System;<br &#47;><br />
+<span class="Statement">using</span>&nbsp;System.ComponentModel;<br &#47;><br />
+<span class="Statement">using</span>&nbsp;System.ComponentModel.Design;<br &#47;><br />
+<span class="Statement">using</span>&nbsp;System.Drawing;<br &#47;><br />
+<span class="Statement">using</span>&nbsp;System.Drawing.Drawing2D;<br &#47;><br />
+<span class="Statement">using</span>&nbsp;System.Workflow;<br &#47;><br />
+<span class="Statement">using</span>&nbsp;System.Workflow.Activities;<br &#47;><br />
+<span class="Statement">using</span>&nbsp;System.Workflow.ComponentModel;<br &#47;><br />
+<span class="Statement">using</span>&nbsp;System.Workflow.ComponentModel.Design;<br &#47;><br />
+<br &#47;><br />
+<br &#47;><br />
+<span class="StorageClass">namespace</span>&nbsp;CustomDesignerShapeDemo<br &#47;><br />
+{<br &#47;><br />
+&nbsp;&nbsp; [Designer(<span class="Statement">typeof</span>(ConsoleActivityDesigner), <span class="Statement">typeof</span>(IDesigner))]<br &#47;><br />
+&nbsp;&nbsp; <span class="StorageClass">public</span>&nbsp;<span class="StorageClass">class</span>&nbsp;ConsoleActivity : Activity<br &#47;><br />
+&nbsp;&nbsp; {<br &#47;><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="StorageClass">public</span>&nbsp;<span class="StorageClass">static</span>&nbsp;<span class="StorageClass">readonly</span>&nbsp;DependencyProperty TextProperty =<br &#47;><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; DependencyProperty.Register(<span class="String">"Text"</span>, <span class="Statement">typeof</span>(<span class="Type">string</span>), <span class="Statement">typeof</span>(ConsoleActivity));<br &#47;><br />
+<br &#47;><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="Comment">&#47;&#47;&#47;</span><span class="Comment">&nbsp;</span><span class="Function"><</span><span class="Statement">summary</span><span class="Function">></span><br &#47;><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="Comment">&#47;&#47;&#47;</span><span class="Comment">&nbsp;Text to write to the console</span><br &#47;><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="Comment">&#47;&#47;&#47;</span><span class="Comment">&nbsp;</span><span class="Identifier"></</span><span class="Statement">summary</span><span class="Identifier">></span><br &#47;><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="StorageClass">public</span>&nbsp;<span class="Type">string</span>&nbsp;Text<br &#47;><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{<br &#47;><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span class="Statement">get</span>&nbsp;{ <span class="Repeat">return</span>&nbsp;(<span class="Type">string</span>)<span class="Statement">base</span>.GetValue(TextProperty); }<br &#47;><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span class="Statement">set</span>&nbsp;{ <span class="Statement">base</span>.SetValue(TextProperty, <span class="Statement">value</span>); }<br &#47;><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<br &#47;><br />
+<br &#47;><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="StorageClass">protected</span>&nbsp;<span class="StorageClass">override</span>&nbsp;ActivityExecutionStatus Execute(ActivityExecutionContext executionContext)<br &#47;><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{<br &#47;><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Console.WriteLine(Text);<br &#47;><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span class="Repeat">return</span>&nbsp;ActivityExecutionStatus.Closed;<br &#47;><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<br &#47;><br />
+&nbsp;&nbsp; } <span class="Comment">&#47;&#47; class ConsoleActivity</span><br &#47;><br />
+<br &#47;><br />
+<br &#47;><br />
+&nbsp;&nbsp; <span class="Comment">&#47;&#47;&#47;</span><span class="Comment">&nbsp;</span><span class="Function"><</span><span class="Statement">summary</span><span class="Function">></span><br &#47;><br />
+&nbsp;&nbsp; <span class="Comment">&#47;&#47;&#47;</span><span class="Comment">&nbsp;Customize the activity's appearance on the designer</span><br &#47;><br />
+&nbsp;&nbsp; <span class="Comment">&#47;&#47;&#47;</span><span class="Comment">&nbsp;</span><span class="Identifier"></</span><span class="Statement">summary</span><span class="Identifier">></span><br &#47;><br />
+&nbsp;&nbsp; [ActivityDesignerTheme(<span class="Statement">typeof</span>(ConsoleActivityDesignerTheme))]<br &#47;><br />
+&nbsp;&nbsp; <span class="StorageClass">public</span>&nbsp;<span class="StorageClass">class</span>&nbsp;ConsoleActivityDesigner : ActivityDesigner<br &#47;><br />
+&nbsp;&nbsp; {<br &#47;><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="StorageClass">readonly</span>&nbsp;<span class="StorageClass">static</span>&nbsp;Size BaseSize = <span class="Statement">new</span>&nbsp;Size(<span class="Number">96</span>, <span class="Number">96</span>);<br &#47;><br />
+<br &#47;><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="StorageClass">protected</span>&nbsp;<span class="StorageClass">override</span>&nbsp;Rectangle ImageRectangle<br &#47;><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{<br &#47;><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span class="Statement">get</span>&nbsp;{ <span class="Repeat">return</span>&nbsp;CalcImageRectangle(); }<br &#47;><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<br &#47;><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="StorageClass">protected</span>&nbsp;<span class="StorageClass">override</span>&nbsp;Rectangle TextRectangle<br &#47;><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{<br &#47;><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span class="Statement">get</span>&nbsp;{ <span class="Repeat">return</span>&nbsp;CalcTextRectangle(); }<br &#47;><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<br &#47;><br />
+<br &#47;><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="StorageClass">protected</span>&nbsp;<span class="StorageClass">override</span>&nbsp;<span class="Type">void</span>&nbsp;Initialize(Activity activity)<br &#47;><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{<br &#47;><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span class="Statement">base</span>.Initialize(activity);<br &#47;><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Bitmap bmp = Properties.Resources.CommandLine1;<br &#47;><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; bmp.MakeTransparent();<br &#47;><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Image = bmp;<br &#47;><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<br &#47;><br />
+<br &#47;><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="StorageClass">protected</span>&nbsp;<span class="StorageClass">override</span>&nbsp;Size OnLayoutSize(ActivityDesignerLayoutEventArgs e)<br &#47;><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{<br &#47;><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span class="Statement">base</span>.OnLayoutSize(e);<br &#47;><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span class="Repeat">return</span>&nbsp;BaseSize;<br &#47;><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<br &#47;><br />
+<br &#47;><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="StorageClass">private</span>&nbsp;Rectangle CalcImageRectangle()<br &#47;><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{<br &#47;><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Rectangle bounds = Bounds;<br &#47;><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Size sz = <span class="Statement">new</span>&nbsp;Size(<span class="Number">48</span>, <span class="Number">48</span>);<br &#47;><br />
+<br &#47;><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Rectangle rcImg = <span class="Statement">new</span>&nbsp;Rectangle();<br &#47;><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; rcImg.X = bounds.Left + ((bounds.Width - sz.Width) &#47; <span class="Number">2</span>);<br &#47;><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; rcImg.Y = bounds.Top + <span class="Number">4</span>;<br &#47;><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; rcImg.Size = sz;<br &#47;><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span class="Repeat">return</span>&nbsp;rcImg;<br &#47;><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<br &#47;><br />
+<br &#47;><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="StorageClass">private</span>&nbsp;Rectangle CalcTextRectangle()<br &#47;><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{<br &#47;><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Rectangle bounds = Bounds;<br &#47;><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Rectangle imgRect = ImageRectangle;<br &#47;><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Size sz = Image.Size;<br &#47;><br />
+<br &#47;><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span class="Repeat">return</span>&nbsp;<span class="Statement">new</span>&nbsp;Rectangle(bounds.Left + <span class="Number">2</span>, imgRect.Bottom,<br &#47;><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;bounds.Width-<span class="Number">4</span>, bounds.Height - imgRect.Height - <span class="Number">1</span>);<br &#47;><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<br &#47;><br />
+<br &#47;><br />
+&nbsp;&nbsp; } <span class="Comment">&#47;&#47; class ConsoleActivityDesigner</span><br &#47;><br />
+<br &#47;><br />
+&nbsp;&nbsp; <span class="StorageClass">public</span>&nbsp;<span class="StorageClass">class</span>&nbsp;ConsoleActivityDesignerTheme : ActivityDesignerTheme<br &#47;><br />
+&nbsp;&nbsp; {<br &#47;><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="StorageClass">public</span>&nbsp;ConsoleActivityDesignerTheme(WorkflowTheme theme)<br &#47;><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; : <span class="Statement">base</span>(theme)<br &#47;><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{<br &#47;><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<br &#47;><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="StorageClass">public</span>&nbsp;<span class="StorageClass">override</span>&nbsp;<span class="Type">void</span>&nbsp;Initialize()<br &#47;><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{<br &#47;><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span class="Statement">base</span>.Initialize();<br &#47;><br />
+<br &#47;><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; BorderColor = Color.FromArgb(<span class="Number">251</span>, <span class="Number">129</span>, <span class="Number">6</span>);<br &#47;><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; BorderStyle = DashStyle.Solid;<br &#47;><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; BackColorStart = Color.FromArgb(<span class="Number">255</span>, <span class="Number">128</span>, <span class="Number">0</span>);<br &#47;><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; BackColorEnd = Color.FromArgb(<span class="Number">255</span>, <span class="Number">236</span>, <span class="Number">217</span>);<br &#47;><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; BackgroundStyle = LinearGradientMode.ForwardDiagonal;<br &#47;><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ForeColor = Color.Black;<br &#47;><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<br &#47;><br />
+&nbsp;&nbsp; } <span class="Comment">&#47;&#47; class ConsoleActivityDesignerTheme</span><br &#47;><br />
+} <span class="Comment">&#47;&#47; namespace CustomDesignerShapeDemo</span><br />
+</code></div></p>
+<p>Unfortunately, one thing I think you cannot do here is specify the alignment for the text in the activity (it always gets drawn left-aligned), so if you need to change this you might to draw your activity yourself. You can do this by overriding the OnPaint() method in your activity Designer:</p></p>
+<div class='codebg'><code><span class="StorageClass">protected</span>&nbsp;<span class="StorageClass">override</span>&nbsp;<span class="Type">void</span>&nbsp;OnPaint(ActivityDesignerPaintEventArgs e)<br &#47;><br />
+{<br &#47;><br />
+&nbsp;&nbsp; <span class="Comment">&#47;&#47; ...</span><br &#47;><br />
+}<br />
+</code></div></p>
+<p>Have fun!</p><!--end_raw--></p>

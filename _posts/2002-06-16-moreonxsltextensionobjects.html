@@ -1,0 +1,27 @@
+---
+layout: post
+status: publish
+published: true
+title: More on XSLT Extension Objects
+author:
+  display_name: Tomas Restrepo
+  login: tomasr
+  email: tomas@winterdom.com
+  url: http://winterdom.com/
+author_login: tomasr
+author_email: tomas@winterdom.com
+author_url: http://winterdom.com/
+wordpress_id: 635
+wordpress_url: http://winterdom.com/2002/06/moreonxsltextensionobjects
+date: '2002-06-16 18:05:36 +0000'
+date_gmt: '2002-06-16 18:05:36 +0000'
+categories:
+- XML
+tags: []
+comments: []
+---
+<p><!--start_raw--><a href="http:&#47;&#47;radio.weblogs.com&#47;0104813&#47;2002&#47;06&#47;16.html#a50">Drew</a>: Regarding <code>ResetableIterator</code>, I'd certainly call it a flaw. It kind of defeats the purpose of having those nice abstract classes and interfaces in the first place.</p>
+<p>As for returning <code>XPathNodeIterator</code> instances from your extension functions, I had already tried it, and as you say, it sure works. My real problem with this is that the limitation described above makes it awfully hard to solve some problems.</p></p>
+<p>Here's an example of what I wanted to do: I wanted to filter a node set based on a value. For example I wanted to be able to do something like this on my XSLT:</p></p>
+<p>Now, in FilterNodeSet(), I wanted to be able to take a node-set as the first argument (thus an instance of <code>XPathNodeIterator</code>), and filter it based on the criteria specified on the second argument. Based on the code above, I would've wanted FilterNodeSet() to return a node-set containing &#47;root&#47;element instances, filtered by the @parent attribute (iow, select only one element for each possible value of @parent). </p></p>
+<p>So, the idea I wanted to try was to have FilterNodeSet() build an instance of a custom <code>XPathNodeIterator</code>-derived class that wrapped the original node-set and simply skipped over those nodes I wasn't interested on. Keep in mind this was mostly done as an exercise, to see what I could do with the .NET XSLT support, so it might not look like much ;)</p><!--end_raw--></p>

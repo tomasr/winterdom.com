@@ -1,0 +1,286 @@
+---
+layout: post
+status: publish
+published: true
+title: PipelineTesting 1.1 Released
+author:
+  display_name: Tomas Restrepo
+  login: tomasr
+  email: tomas@winterdom.com
+  url: http://winterdom.com/
+author_login: tomasr
+author_email: tomas@winterdom.com
+author_url: http://winterdom.com/
+wordpress_id: 627
+wordpress_url: http://winterdom.com/2007/08/pipelinetesting11released
+date: '2007-08-08 19:43:40 +0000'
+date_gmt: '2007-08-08 19:43:40 +0000'
+categories:
+- BizTalk
+tags: []
+comments:
+- id: 420
+  author: chris restall
+  author_email: crestall@amphire.com
+  author_url: ''
+  date: '2007-08-09 15:07:07 +0000'
+  date_gmt: '2007-08-09 15:07:07 +0000'
+  content: |
+    Hi Tomas,
+    Really great testing utility.  I plan to use it extensively.  I did run into a small bug though.  I am trying ot unit test a simple XML disassembler component and am using basically the following code to create my message:
+    MessageHelper.CreateFromString("<root><order></order></root>")
+    Everything works well except in my disassembler code, I use an XmlTextReader() to do some work on the incoming message.  It fails loading the message as the IBaseMessage Arrives like this:
+    < r o o t > < o r d e r > < &#47; o r d e r > < &#47; r o o t >
+    This appears to be due to the CreateFromString method using Unicode to get the byte content.  I remedied this by adding an overload that allows for specifying the encoding to use on message creation.
+    CreateFromString(string body, Encoding encoding)
+    In the integration tests, I can simply add the appropriate decoder component to the pipeline and avoid having to worry about the encoding.
+    Again, Thanks for a really useful utility
+- id: 421
+  author: Tomas Restrepo
+  author_email: tomas@winterdom.com
+  author_url: http://www.winterdom.com/weblog/
+  date: '2007-08-09 15:16:55 +0000'
+  date_gmt: '2007-08-09 15:16:55 +0000'
+  content: |
+    Chris,
+    First of all, thanks for the kind words; it's great to know of other people using it. If you have other improvement requests do let me know!
+    As for your specific issue; yes, it is correct to say that I'm forcing UTF-16 encoding when creating a message from a string; and to be honest, it was intentional. The class does the right thing, actually and also sets the Charset property of the Body Part according to the spec; and that's why it works perfectly with the standard disassemblers.
+    If you're writing a custom disassembler, then you should *definitely* be using the Charset property to find out what the encoding of the message is (if it's not present, use a sensible default like UTF-8).
+- id: 422
+  author: Richard
+  author_email: rseroter@hotmail.com
+  author_url: http://seroter.wordpress.com
+  date: '2007-08-23 10:16:35 +0000'
+  date_gmt: '2007-08-23 10:16:35 +0000'
+  content: |
+    I spent 45 minutes trying to the out-of-the-box pipeline test components working for and got nowhere.  Downloaded YOUR bits, and accurately tested my pipeline in about 10 minutes.  You my friend, are the hero of the day.
+- id: 423
+  author: Tomas Restrepo
+  author_email: tomas@winterdom.com
+  author_url: http://www.winterdom.com/weblog/
+  date: '2007-08-23 14:11:48 +0000'
+  date_gmt: '2007-08-23 14:11:48 +0000'
+  content: |
+    Thanks for the kind words, Richard; glad it was useful :) Do let me know if you run into any issues or have any feature requests.
+- id: 1302
+  author: 'Unit Testing a BizTalk Solution: Part I &laquo; Whiteboard Works'
+  author_email: ''
+  author_url: http://whiteboardworks.com/?p=26
+  date: '2010-02-02 03:39:19 +0000'
+  date_gmt: '2010-02-02 03:39:19 +0000'
+  content: "[...] and executed. That&rsquo;s exactly where Winterdom Pipeline Testing
+    Framework enters in scene; see (Restrepo, 2007) for more details. Winterdom Pipeline
+    Testing Framework will provide support to execute pipelines as [...]"
+- id: 1518
+  author: Suneet
+  author_email: suneetmohan@gmail.com
+  author_url: http://www.suneet.net
+  date: '2010-07-02 10:38:00 +0000'
+  date_gmt: '2010-07-02 10:38:00 +0000'
+  content: "Good stuff... quite productive, I was about to write something like this
+    but then found out its already there.\r\nCheers."
+- id: 1522
+  author: Burt R.
+  author_email: burtr@derio.com
+  author_url: ''
+  date: '2010-07-06 18:18:49 +0000'
+  date_gmt: '2010-07-06 18:18:49 +0000'
+  content: I can't seem to test a pipeline "without" disaseembly. Is there a way to
+    test without needing to specify a docspec?
+- id: 1523
+  author: Tomas Restrepo
+  author_email: tomas@winterdom.com
+  author_url: http://winterdom.com/
+  date: '2010-07-06 22:27:37 +0000'
+  date_gmt: '2010-07-06 22:27:37 +0000'
+  content: "@Burt: You only need a docspec if your pipeline contains an assembler&#47;disassembler
+    component.\r\n\r\nWhat's your specific scenario?"
+- id: 1560
+  author: eliassal
+  author_email: salam.elias@free.fr
+  author_url: ''
+  date: '2010-09-07 15:40:13 +0000'
+  date_gmt: '2010-09-07 15:40:13 +0000'
+  content: "Very useful tool Tomas, thanks for making it available for the community.
+    I am running into a strange issue, whenever I run a test, I get \"Not executed
+    \", Failed to queue .......c\\myproject\\bin\\debug\\winterdom.Biztalk.PipelineTesting.dll\"
+    is not trusted in spite of the fact that I did a CASPOL explicitly on the directory
+    and the assembly. I went to assembly property, unblocked it, then statred to get
+    the same message for pipelinecomponents.dll\r\nMaybe it does not work with VS
+    2008 and BTS 2009"
+- id: 1561
+  author: Tomas Restrepo
+  author_email: tomas@winterdom.com
+  author_url: http://winterdom.com/
+  date: '2010-09-07 15:55:56 +0000'
+  date_gmt: '2010-09-07 15:55:56 +0000'
+  content: "@eliasal: What are you using for testing? The VS Unit Testing support?
+    I don't have much experience with it (I hate it with a passion) so not sure what
+    could be happening there...  Sounds like you're in the right track, just you'd
+    likely need to add permissions for a few of the Biztalk assemblies, I guess..."
+- id: 1562
+  author: eliassal
+  author_email: salam.elias@free.fr
+  author_url: ''
+  date: '2010-09-07 16:20:14 +0000'
+  date_gmt: '2010-09-07 16:20:14 +0000'
+  content: I closed and re-opened, everything went OK
+- id: 2809
+  author: Ram
+  author_email: rammohan555@gmail.com
+  author_url: ''
+  date: '2012-07-24 10:37:52 +0000'
+  date_gmt: '2012-07-24 10:37:52 +0000'
+  content: "Hi Tomas,\r\n\r\nit's awesome tool. i downloaded the code and i setup
+    it but the receivepipeline with flat file is failing to create the pipeline however
+    we are passing the type. The error i can see in nunit is as below.\r\n\r\nWinterdom.BizTalk.PipelineTesting.Tests.ReceivePipelineTests.CanExecutePipelineWithFlatFile:\r\nSystem.InvalidOperationException
+    : Type must specify a Receive Pipeline\r\n\r\ni had a look into the code and fould
+    that it's failting the at the below code line written in pipelinefactory.cs file.\r\n\r\n
+    if ( !type.IsSubclassOf(typeof(ReceivePipeline)) )\r\n            throw new InvalidOperationException(\"Type
+    must specify a Receive Pipeline\");\r\n\r\nI am not sure why it's failing. Can
+    you please look in it?\r\n\r\nRegards,\r\nRam."
+- id: 2814
+  author: Ram
+  author_email: rammohan555@gmail.com
+  author_url: ''
+  date: '2012-07-25 05:41:25 +0000'
+  date_gmt: '2012-07-25 05:41:25 +0000'
+  content: "Hi,\r\n\r\nis there any possibility to use the biztalk custom pipelines
+    in C# applications to convert the flat file into an xml?\r\ni tried with pipeline
+    testing tool to get the xml from flat file but i can only see the messagecollection.
+    Can you advice me how to get the actual content of the message?\r\n\r\nThanks!!!"
+- id: 2823
+  author: Tomas Restrepo
+  author_email: tomas@winterdom.com
+  author_url: http://winterdom.com/
+  date: '2012-07-27 12:18:57 +0000'
+  date_gmt: '2012-07-27 12:18:57 +0000'
+  content: "@Ram: What biztalk version are you building &#47; using with?\r\n\r\nAs
+    for using the pipelines through this, I guess you could, but not sure bts licensing
+    would support it.\r\n\r\nChecking the actual content is easy, just read the stream
+    of the body part of the resulting message...."
+- id: 17729
+  author: BizTalk useful tools | Software Architecture &#47; .NET technologies &#47;
+    Agile Methodologies &#47; HTML5 &#47; jQuery &#47; and random stuff.
+  author_email: ''
+  author_url: http://gaetansavoie.wordpress.com/2013/07/22/biztalk-useful-tools/
+  date: '2013-07-22 11:55:20 +0000'
+  date_gmt: '2013-07-22 11:55:20 +0000'
+  content: "[...] http:&#47;&#47;winterdom.com&#47;2007&#47;08&#47;pipelinetesting11released
+    [...]"
+- id: 63963
+  author: Rob Bowman
+  author_email: rob@biztalkers.com
+  author_url: ''
+  date: '2014-01-23 11:08:55 +0000'
+  date_gmt: '2014-01-23 11:08:55 +0000'
+  content: "Hi Tomas, First, thanks for creating such a great library. I find it far
+    more flexible that the Microsoft library released with BTS2009.\r\n\r\nI'm trying
+    to parse a flat file message for which I have a header and body schema.  How do
+    I create a FFDisassembler object with both a header spec and body spec?"
+- id: 63969
+  author: Rob Bowman
+  author_email: rob@biztalkers.com
+  author_url: ''
+  date: '2014-01-23 11:37:53 +0000'
+  date_gmt: '2014-01-23 11:37:53 +0000'
+  content: 'I posted my question here: http:&#47;&#47;stackoverflow.com&#47;questions&#47;21307352&#47;winterdom-biztalk-pipeline-test'
+- id: 65454
+  author: Tomas Restrepo
+  author_email: tomas@winterdom.com
+  author_url: http://winterdom.com/
+  date: '2014-01-24 21:05:50 +0000'
+  date_gmt: '2014-01-24 21:05:50 +0000'
+  content: "@Rob: I haven't touched the library in a lot of time, but if you look
+    here: https:&#47;&#47;github.com&#47;tomasr&#47;pipelinetesting&#47;blob&#47;master&#47;Winterdom.BizTalk.PipelineTesting&#47;Simple&#47;FFDisassembler.cs\r\n\r\nYou
+    will see there that the FFDisassembler object also has WithHeaderSpec() and WithTrailerSpec()
+    methods you can use to specify the header and trailer schemas if necessary."
+---
+<p><!--start_raw-->
+<p>I'm please to announce the release of Version 1.1 of my PipelineTesting library for BizTalk Server 2006. PipelineTesting&nbsp;can be used with your favorite unit testing framework to create automated, repeatable&nbsp;tests for the following BizTalk artifacts:</p>
+<ul>
+<li>Custom Pipeline Components</li>
+<li>Custom Pipelines</li>
+<li>XML and Flat File Schemas</li></ul>
+<p>Version 1.1 adds the following features:</p>
+<ul>
+<li>Improved XML documentation (it actually builds the XML documents without warnings!)</li>
+<li>Bug fixes</li>
+<li>A new, streamlined and more intuitive API, which also includes wrappers for easy configuration of standard XML and Flat File assembler and disassembler components. The original API is still available, for backwards compatibility.</li></ul>
+<p>As usual, the library can be downloaded <a href="http:&#47;&#47;www.winterdom.com&#47;dev&#47;bts&#47;PipelineTesting.zip">here</a>. The package includes all source code for the library itself and its unit tests, and&nbsp;a pre-compiled binary and XML doc comments file. </p>
+<p><strong>Using the library</strong></p>
+<p>To use the library, you need to reference the following assemblies:</p>
+<ul>
+<li>Winterdom.BizTalk.PipelineTesting.dll</li>
+<li>Microsoft.BizTalk.Pipeline.dll</li>
+<li>Microsoft.BizTalk.Pipeline.Components.dll</li></ul>
+<p>You will need to include the following namespaces:</p></p>
+<div class='codebg'><code><br />
+<span class="Statement">using</span>&nbsp;Winterdom.BizTalk.PipelineTesting;<br &#47;><br />
+<span class="Statement">using</span>&nbsp;Winterdom.BizTalk.PipelineTesting.Simple;<br />
+</code></div></p>
+<h2>Introduction to the API</strong></h2></p>
+<p>I won't cover all the API, however, let me introduce the basic mechanics of how the library can be used.</p></p>
+<p>The general way in which the library is used is:</p></p>
+<ol>
+<li>Create a send or receive pipeline. Pipelines are represented in the API as instances of either the ReceivePipelineWrapper or SendPipelineWrapper classes. <br>PipelineTesting provides ways to create an instance of a pre-compiled BizTalk pipeline (including the built-in pipelines in BizTalk), or creating an empty pipeline.</li>
+<li>Configure the pipeline, by adding any components you require (if needed) in the proper stages of the pipeline, as well as providing it with any document specifications (schemas) that will be required by assembler or disassembler components in the pipelines. <br>This allows the library to run completely independent of your BizTalk configuration, so you don't even need to deploy your stuff to the server before taking advantage of the library; providing a very quick feedback cycle!</li>
+<li>Create input messages to provide to the library. You can create messages with any shape or characteristics that BizTalk allows, such as multi-part messages, adding context properties and so on.</li>
+<li>Execute the pipeline: Just pass in the input messages and validate the resulting messages!</li></ol>
+<p><strong>Example: A simple XML Send Pipeline</strong></p></p>
+<p>The following example shows how to create a standard XMLTransmit pipeline, provide a schema to use and execute the pipeline with an input message:</p></p>
+<div class='codebg'><code><br />
+<span class="Type">string</span>&nbsp;msgBody = <span class="String">"..."</span>;<br &#47;><br />
+SendPipelineWrapper pipeline = Pipelines.Xml.Send()<br &#47;><br />
+&nbsp;&nbsp; .WithSpec<Schema1_NPP>();<br &#47;><br />
+<br &#47;><br />
+IBaseMessage output = pipeline.Execute(<br &#47;><br />
+&nbsp;&nbsp; MessageHelper.CreateFromString(msgBody)<br &#47;><br />
+);<br />
+</code></div></p>
+<h2>Example: Batching messages in a Send Pipeline</h2></p>
+<p>Here's a more interesting test for a send pipeline. This one will create an empty Send pipeline, add a standard XML Assembler component to it, configured with an Envelope and a Document schema and then feed multiple input messages to be assembled into a single one, encoded with S&#47;MIME:</p></p>
+<div class='codebg'><code><br />
+XmlAssembler xml = Assembler.Xml()<br &#47;><br />
+&nbsp;&nbsp; .WithDocumentSpec<SimpleBody>()<br &#47;><br />
+&nbsp;&nbsp; .WithEnvelopeSpec<SimpleEnv>();<br &#47;><br />
+SendPipelineWrapper pipeline = Pipelines.Send()<br &#47;><br />
+&nbsp;&nbsp; .WithAssembler(xml)<br &#47;><br />
+&nbsp;&nbsp; .WithEncoder(<span class="Statement">new</span>&nbsp;MIME_SMIME_Encoder());<br &#47;><br />
+<br &#47;><br />
+<span class="Comment">&#47;&#47; Create the input message to pass through the pipeline</span><br &#47;><br />
+<span class="Type">string</span>&nbsp;body = <br &#47;><br />
+&nbsp;&nbsp; <span class="String">"<o:Body xmlns:o='<a href="http:&#47;&#47;SampleSchemas.SimpleBody">http:&#47;&#47;SampleSchemas.SimpleBody</a>'>"</span><br &#47;><br />
+&nbsp;+ <span class="String">"this is a body</o:Body>"</span>;<br &#47;><br />
+<span class="Comment">&#47;&#47; Execute the pipeline, and check the output</span><br &#47;><br />
+<span class="Comment">&#47;&#47; we get a single message batched with all the </span><br &#47;><br />
+<span class="Comment">&#47;&#47; messages grouped into the envelope's body</span><br &#47;><br />
+IBaseMessage outputMessage = pipeline.Execute(<br &#47;><br />
+&nbsp;&nbsp; MessageHelper.CreateFromString(body),<br &#47;><br />
+&nbsp;&nbsp; MessageHelper.CreateFromString(body),<br &#47;><br />
+&nbsp;&nbsp; MessageHelper.CreateFromString(body)<br &#47;><br />
+&nbsp;&nbsp; );<br &#47;><br />
+Assert.IsNotNull(outputMessage);<br />
+</code></div></p>
+<p>Notice that, in this example, we didn't explicitly add the schemas to the pipeline itself; that's because when they are configured on the XML assembler, the pipeline picks it up automatically.</p></p>
+<h2>Example: Parse a flat file</h2></p>
+<p>In this example, I'll create a new receive pipeline and add a Flat File disassembler to it to parse a flat file from a BizTalk schema:</p></p>
+<div class='codebg'><code><br />
+FFDisassembler ff = Disassembler.FlatFile()<br &#47;><br />
+&nbsp;&nbsp; .WithDocumentSpec<Schema3_FF>();<br &#47;><br />
+ReceivePipelineWrapper pipeline = Pipelines.Receive()<br &#47;><br />
+&nbsp;&nbsp; .WithDisassembler(ff);<br &#47;><br />
+<br &#47;><br />
+IBaseMessage input = MessageHelper.CreateFromStream(<br &#47;><br />
+&nbsp;&nbsp; DocLoader.LoadStream(<span class="String">"CSV_FF_RecvInput.txt"</span>)<br &#47;><br />
+&nbsp;&nbsp; );<br &#47;><br />
+<br &#47;><br />
+MessageCollection output = pipeline.Execute(input);<br &#47;><br />
+<br &#47;><br />
+Assert.AreEqual(<span class="Number">1</span>, output.Count);<br />
+</code></div></p>
+<h2>Conclusion</h2></p>
+<p>This brief introduction should give you an idea of the capabilities of the PipelineTesting library. As you can see, the new API is&nbsp;fairly&nbsp;intuitive and simple to use and everyone should be able to use it with minimal effort. </p></p>
+<p>If you have any questions, comments or run into a bug, do let me know; I'll do my best to answer and fix any issues!</p></p>
+<div class="wlWriterSmartContent" id="0767317B-992E-4b12-91E0-4F059A8CECA8:3591d6aa-c7b6-4d34-9835-a171a95a582b" style="margin: 0px; padding: 0px; display: inline;" contenteditable="false">Technorati tags: <a href="http:&#47;&#47;technorati.com&#47;tags&#47;BizTalk" rel="tag">BizTalk</a>, <a href="http:&#47;&#47;technorati.com&#47;tags&#47;Testing" rel="tag">Testing</a></div><br />
+<!--end_raw--></p>

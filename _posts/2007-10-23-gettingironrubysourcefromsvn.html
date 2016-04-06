@@ -1,0 +1,38 @@
+---
+layout: post
+status: publish
+published: true
+title: Getting IronRuby Source from SVN
+author:
+  display_name: Tomas Restrepo
+  login: tomasr
+  email: tomas@winterdom.com
+  url: http://winterdom.com/
+author_login: tomasr
+author_email: tomas@winterdom.com
+author_url: http://winterdom.com/
+wordpress_id: 449
+wordpress_url: http://winterdom.com/2007/10/gettingironrubysourcefromsvn
+date: '2007-10-23 11:27:44 +0000'
+date_gmt: '2007-10-23 11:27:44 +0000'
+categories:
+- ".NET"
+tags: []
+comments:
+- id: 315
+  author: John Lam
+  author_email: jflam@microsoft.com
+  author_url: http://www.iunknown.com
+  date: '2007-10-23 20:15:16 +0000'
+  date_gmt: '2007-10-23 20:15:16 +0000'
+  content: |
+    Hi Tomas,
+    Yes - everything should be fine now. It was a crazy casing issue that was fixed by making my Rakefile sync script do case-insensitive path comparisons.
+    -John
+---
+<p><!--start_raw-->
+<p>Anyone else having trouble getting the <a href="http:&#47;&#47;www.ironruby.net&#47;">IronRuby</a> source from SVN? Checkout&#47;update fails on my machine with the error:</p>
+<p><font color="#ff0000">svn: Failed to add directory 'trunk\src\ironruby\Compiler\Ast': object of the same name already exists</font> </p>
+<p>Any ideas?</p>
+<p><b>Update:</b> Yep, repository got <a href="http:&#47;&#47;rubyforge.org&#47;pipermail&#47;ironruby-core&#47;2007-October&#47;000295.html">screwed up</a>. Looks like it is fixed now, but I had to delete the entire tree and do an "svn co ..." again.<br></p>
+<div class="wlWriterSmartContent" id="scid:0767317B-992E-4b12-91E0-4F059A8CECA8:089a4ed4-f085-4acb-b800-0bf8e0be7518" style="margin: 0px; padding: 0px; display: inline;">Technorati tags: <a href="http:&#47;&#47;technorati.com&#47;tags&#47;IronRuby" rel="tag">IronRuby</a></div><!--end_raw--></p>

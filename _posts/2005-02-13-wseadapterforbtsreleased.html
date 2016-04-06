@@ -1,0 +1,60 @@
+---
+layout: post
+status: publish
+published: true
+title: WSE Adapter for BTS Released
+author:
+  display_name: Tomas Restrepo
+  login: tomasr
+  email: tomas@winterdom.com
+  url: http://winterdom.com/
+author_login: tomasr
+author_email: tomas@winterdom.com
+author_url: http://winterdom.com/
+wordpress_id: 519
+wordpress_url: http://winterdom.com/2005/02/wseadapterforbtsreleased
+date: '2005-02-13 06:32:37 +0000'
+date_gmt: '2005-02-13 06:32:37 +0000'
+categories:
+- BizTalk
+tags: []
+comments: []
+---
+<p><!--start_raw-->A few days ago the <a href="http:&#47;&#47;www.microsoft.com&#47;biztalk&#47;evaluation&#47;adapter&#47;adapters&#47;WSE.asp">WSE Adapter</a> for BizTalk Server 2004 was <a href="http:&#47;&#47;www.microsoft.com&#47;downloads&#47;details.aspx?FamilyId=BA643360-E9DC-4FC5-8D60-8E6C5ECA7861&amp;displaylang=en">released</a>. How cool is this? Two great technologies strung together! Sweet.</p>
+<p>While on the topic, one thing I noticed during the beta (which I haven't yet checked to see if it was fixed or not) was that the adapter used the Event Log to report errors during send and receive. This is good.</p></p>
+<p>The bad part is that it might just try to create the event source at runtime<br />
+the first time, instead of only doing it during the adapter installation.<br />
+This has one unfortunate side effect. Usually, the users we'll be using for<br />
+running biztalk application will not have many privileges (and indeed should<br />
+not have administrative privileges on the machine).</p></p>
+<p>Because of this, if the WSE adapter tries to register the event source, it<br />
+will fail because it does not have the necessary permissions. What's worse,<br />
+is that the returned error will hide the real error thats being logged, and<br />
+instead we'll get an error such as this:</p></p>
+<pre><code><br />
+Unhandled Exception: System.Web.Services.Protocols.SoapHeaderException:<br />
+System.Web.Services.Protocols.SoapHeaderException: Server unavailable, please try<br />
+later<br />
+---> System.Security.SecurityException: Requested registry access is not allowed.<br />
+at Microsoft.Win32.RegistryKey.OpenSubKey(String name, Boolean writable)<br />
+at System.Diagnostics.EventLog.CreateEventSource(String source, String logName, String machineName, Boolean useMutex)<br />
+at System.Diagnostics.EventLog.WriteEntry(String message, EventLogEntryType type, Int32 eventID, Int16 category, Byte[] rawData)<br />
+at System.Diagnostics.EventLog.WriteEntry(String source, String message, EventLogEntryType type, Int32 eventID, Int16 category, Byte[] rawData)<br />
+at System.Diagnostics.EventLog.WriteEntry(String source, String message, EventLogEntryType type, Int32 eventID, Int16 category)<br />
+at System.Diagnostics.EventLog.WriteEntry(String source, String message, EventLogEntryType type, Int32 eventID)<br />
+at System.Diagnostics.EventLog.WriteEntry(String source, String message, EventLogEntryType type)<br />
+at Microsoft.BizTalk.Adapter.WseReceiver.WseReceiver.Invoke(SoapEnvelope request, String methodName, String bodyTypeAssemblyQualifiedName, Boolean oneWay, Boolean isSsoEnabled, Object cookie)<br />
+at WseProcess.WseProcess_OrderProcess_OrderProcessSecurePort.FindOrder(SoapEnvelope request) in<br />
+D:\Inetpub\wwwroot\WseProcess_Proxy\WseProcess_OrderProcess_OrderProcessSecurePort.cs:line 34<br />
+--- End of inner exception stack trace ---<br />
+at<br />
+System.Web.Services.Protocols.SoapHttpClientProtocol.ReadResponse(SoapClientMessage message, WebResponse response, Stream responseStream, Boolean asyncCal l)<br />
+at System.Web.Services.Protocols.SoapHttpClientProtocol.Invoke(String methodName, Object[] parameters)<br />
+at WseServiceClient.WseProcess.WseProcess_OrderProcess_OrderProcessSecurePort Wse.FindOrder(Int32 OrderId)<br />
+in c:\testprojects\wsesectest\wseserviceclient\web references\wseprocess\reference.cs:line 40<br />
+at WseServiceClient.Class1.Main(String[] args) in c:\testprojects\wsesectest\wseserviceclient\class1.cs:line 34<br />
+</code></pre></p>
+<p>This was not very good, really. I'd much rather have the WSE Adapter<br />
+installer register the event source during installation so that we can<br />
+continue running our biztalk applications in non-priviledged accounts.<br />
+Hope this was changed :) </p><!--end_raw--></p>

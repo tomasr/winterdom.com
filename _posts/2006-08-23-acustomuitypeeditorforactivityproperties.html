@@ -1,0 +1,228 @@
+---
+layout: post
+status: publish
+published: true
+title: A Custom UITypeEditor for Activity Properties
+author:
+  display_name: Tomas Restrepo
+  login: tomasr
+  email: tomas@winterdom.com
+  url: http://winterdom.com/
+author_login: tomasr
+author_email: tomas@winterdom.com
+author_url: http://winterdom.com/
+wordpress_id: 44
+wordpress_url: http://winterdom.com/2006/08/acustomuitypeeditorforactivityproperties
+date: '2006-08-23 08:03:58 +0000'
+date_gmt: '2006-08-23 08:03:58 +0000'
+categories:
+- ".NET"
+- WinFX
+- Workflow
+tags: []
+comments:
+- id: 1186
+  author: kenny james
+  author_email: Cdunga98@yahoo.com
+  author_url: ''
+  date: '2009-10-29 22:27:32 +0000'
+  date_gmt: '2009-10-29 22:27:32 +0000'
+  content: "I try this but it doesn't work. I created a separate class library, compiled
+    it to .NET assembly (Dll file) then reference it in windows Form application.
+    The program runs without error, the dialog does not show. \r\n\r\nPlease can you
+    explain it again."
+- id: 1187
+  author: kenny james
+  author_email: Cdunga98@yahoo.com
+  author_url: ''
+  date: '2009-10-29 22:32:58 +0000'
+  date_gmt: '2009-10-29 22:32:58 +0000'
+  content: "Again, i converted it to VB.NET. May be because i used Overloads instead
+    of overrides. Vb wont let me overrides it GetEditStyle and EditValue then i switched
+    it to overloads method\r\n\r\nCan you comment on that please\r\n\r\nkenny"
+- id: 1219
+  author: aks
+  author_email: akochurov@list.ru
+  author_url: ''
+  date: '2009-11-12 13:54:26 +0000'
+  date_gmt: '2009-11-12 13:54:26 +0000'
+  content: "Thank's a lot! \r\nIt works :)"
+- id: 1244
+  author: Custom editors for Windows workflow activity properties &laquo; Hendrik
+    Swanepoel&#8217;s Blog
+  author_email: ''
+  author_url: http://hendrikswan.wordpress.com/2009/11/26/custom-editors-for-windows-workflow-activity-properties/
+  date: '2009-11-26 06:51:10 +0000'
+  date_gmt: '2009-11-26 06:51:10 +0000'
+  content: "[...] I remembered that I&#8217;ve done it several times, but hey 2.5
+    years is a looong time in which to forget stuff like this.. Luckily I found a
+    real nice example on how to do this in this post by Tomas Restrepo: http:&#47;&#47;winterdom.com&#47;2006&#47;08&#47;acustomuitypeeditorforactivityproperties&#47;comment-page-1.
+    [...]"
+- id: 1266
+  author: Joao Livio
+  author_email: jlivio@mvps.org
+  author_url: ''
+  date: '2010-01-19 16:30:16 +0000'
+  date_gmt: '2010-01-19 16:30:16 +0000'
+  content: "Good Solution!\r\nThanks\r\n\r\n'VB.NET Code\r\n\r\nImports System\r\nImports
+    System.ComponentModel\r\nImports System.Drawing.Design\r\nImports System.IO\r\nImports
+    System.Windows.Forms\r\nImports System.Windows.Forms.Design\r\n\r\nPublic Class
+    SelectorTypeFileDialog\r\n    Public Class FileSelectorTypeEditor\r\n        Inherits
+    UITypeEditor\r\n\r\n        Public Overloads Overrides Function GetEditStyle(ByVal
+    context As ITypeDescriptorContext) As UITypeEditorEditStyle\r\n            If
+    context Is Nothing OrElse context.Instance Is Nothing Then\r\n                Return
+    MyBase.GetEditStyle(context)\r\n            End If\r\n            Return UITypeEditorEditStyle.Modal\r\n
+    \       End Function\r\n\r\n        Public Overloads Overrides Function EditValue(ByVal
+    context As ITypeDescriptorContext, ByVal provider As IServiceProvider, ByVal value
+    As Object) As Object\r\n            Dim editorService As IWindowsFormsEditorService\r\n\r\n
+    \           If context Is Nothing OrElse context.Instance Is Nothing OrElse provider
+    Is Nothing Then\r\n                Return value\r\n            End If\r\n\r\n
+    \           Try\r\n                ' get the editor service, just like in windows
+    forms\r\n                editorService = DirectCast(provider.GetService(GetType(IWindowsFormsEditorService)),
+    IWindowsFormsEditorService)\r\n\r\n                Dim dlg As New OpenFileDialog()\r\n
+    \               dlg.Filter = \"All Files (*.*)|*.*\"\r\n                dlg.CheckFileExists
+    = True\r\n\r\n                Dim filename As String = DirectCast(value, String)\r\n
+    \               If Not File.Exists(filename) Then\r\n                    filename
+    = Nothing\r\n                End If\r\n                dlg.FileName = filename\r\n\r\n
+    \               Using dlg\r\n                    Dim res As DialogResult = dlg.ShowDialog()\r\n
+    \                   If res = DialogResult.OK Then\r\n                        filename
+    = dlg.FileName\r\n                    End If\r\n                End Using\r\n\r\n
+    \               Return filename\r\n            Finally\r\n                editorService
+    = Nothing\r\n            End Try\r\n        End Function\r\n    End Class\r\nEnd
+    Class"
+- id: 1623
+  author: mapnho
+  author_email: thuanbenam@yahoo.com
+  author_url: ''
+  date: '2010-11-29 04:12:34 +0000'
+  date_gmt: '2010-11-29 04:12:34 +0000'
+  content: Thanks a lot.
+- id: 1776
+  author: Lindsay Bradford
+  author_email: lindsay.w.bradford@gmail.com
+  author_url: http://lindsaybradford.wordpress.com/
+  date: '2011-08-25 00:59:55 +0000'
+  date_gmt: '2011-08-25 00:59:55 +0000'
+  content: "It strikes me that this is is a re-implementation of the  .NET-supplied
+    class FileNameEditor.\r\n\r\nThe base class does exactly the same thing, and it
+    has an \"InitializeDialog\" hook to allow programmers to do their own extensions,
+    like this:\r\n\r\n----\r\n\r\nPublic Class ExecutableFileNameEditor\r\n    Inherits
+    System.Windows.Forms.Design.FileNameEditor\r\n\r\n    Protected Overrides Sub
+    InitializeDialog(ByVal openFileDialog As OpenFileDialog)\r\n        openFileDialog.Title
+    = \"Select Executable File\"\r\n        openFileDialog.Filter = \"Executable Files
+    (*.exe)|*.exe\"\r\n    End Sub\r\nEnd Class"
+- id: 1822
+  author: blueasa
+  author_email: blueasa@naver.com
+  author_url: ''
+  date: '2011-10-27 09:01:07 +0000'
+  date_gmt: '2011-10-27 09:01:07 +0000'
+  content: thx a lot!!
+- id: 1876
+  author: Dhaneshvar
+  author_email: dhaneshvar@kouba.at
+  author_url: ''
+  date: '2012-01-18 20:20:03 +0000'
+  date_gmt: '2012-01-18 20:20:03 +0000'
+  content: "With .NET 4.0 there is a build in for this:\r\nSystem.Windows.Forms.Design.FileNameEditor"
+- id: 44876
+  author: Başar
+  author_email: turgutbasar@gmail.com
+  author_url: ''
+  date: '2013-12-19 14:06:00 +0000'
+  date_gmt: '2013-12-19 14:06:00 +0000'
+  content: I used your code and just want to thank you. Good job.
+- id: 473743
+  author: Allan
+  author_email: allan.poblete@gmail.com
+  author_url: ''
+  date: '2015-03-17 02:45:17 +0000'
+  date_gmt: '2015-03-17 02:45:17 +0000'
+  content: Hello. Somehow I can't get any sample online to work. I'm using VS2013
+    .NET 4.5 and I just can't make any UITypeEditor work. Any idea? Thanks.
+---
+<p><!--start_raw--><P>As with many other technologies, the design time experience in Windows Workflow Foundation uses many of the same extensibility mechanisms found in other designers (such as the Windows Forms designer). One of those is the hability to provide custom type editors for properties by creating an UITypeEditor-derived class and then associating it with the property via the [Editor] attribute.</P><br />
+<P>Here's a sample UITypeEditor that will present an OpenFileDialog to choose a file name as the property value:</P></p>
+<div class='codebg'><code><span class="Comment">&#47;&#47;</span><br &#47;><br />
+<span class="Comment">&#47;&#47; FileSelectorTypeEditor.cs</span><br &#47;><br />
+<span class="Comment">&#47;&#47;</span><br &#47;><br />
+<span class="Comment">&#47;&#47; Author:</span><br &#47;><br />
+<span class="Comment">&#47;&#47;&nbsp;&nbsp;&nbsp;&nbsp;Tomas Restrepo (tomasr@mvps.org)</span><br &#47;><br />
+<span class="Comment">&#47;&#47;</span><br &#47;><br />
+<br &#47;><br />
+<span class="Statement">using</span>&nbsp;System;<br &#47;><br />
+<span class="Statement">using</span>&nbsp;System.Collections.Generic;<br &#47;><br />
+<span class="Statement">using</span>&nbsp;System.ComponentModel;<br &#47;><br />
+<span class="Statement">using</span>&nbsp;System.ComponentModel.Design;<br &#47;><br />
+<span class="Statement">using</span>&nbsp;System.Drawing;<br &#47;><br />
+<span class="Statement">using</span>&nbsp;System.Drawing.Design;<br &#47;><br />
+<span class="Statement">using</span>&nbsp;System.IO;<br &#47;><br />
+<span class="Statement">using</span>&nbsp;System.Text;<br &#47;><br />
+<span class="Statement">using</span>&nbsp;System.Windows.Forms;<br &#47;><br />
+<span class="Statement">using</span>&nbsp;System.Windows.Forms.Design;<br &#47;><br />
+<br &#47;><br />
+<span class="StorageClass">namespace</span>&nbsp;Winterdom.Design.TypeEditors<br &#47;><br />
+{<br &#47;><br />
+&nbsp;&nbsp; <span class="Comment">&#47;&#47;&#47;</span><span class="Comment">&nbsp;</span><span class="Function"><</span><span class="Statement">summary</span><span class="Function">></span><br &#47;><br />
+&nbsp;&nbsp; <span class="Comment">&#47;&#47;&#47;</span><span class="Comment">&nbsp;Customer UITypeEditor that pops up a</span><br &#47;><br />
+&nbsp;&nbsp; <span class="Comment">&#47;&#47;&#47;</span><span class="Comment">&nbsp;file selector dialog</span><br &#47;><br />
+&nbsp;&nbsp; <span class="Comment">&#47;&#47;&#47;</span><span class="Comment">&nbsp;</span><span class="Identifier"></</span><span class="Statement">summary</span><span class="Identifier">></span><br &#47;><br />
+&nbsp;&nbsp; <span class="StorageClass">public</span>&nbsp;<span class="StorageClass">class</span>&nbsp;FileSelectorTypeEditor : UITypeEditor<br &#47;><br />
+&nbsp;&nbsp; {<br &#47;><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="StorageClass">public</span>&nbsp;<span class="StorageClass">override</span>&nbsp;UITypeEditorEditStyle GetEditStyle(ITypeDescriptorContext context)<br &#47;><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{<br &#47;><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span class="Conditional">if</span>&nbsp;( context == <span class="Constant">null</span>&nbsp;|| context.Instance == <span class="Constant">null</span>&nbsp;)<br &#47;><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="Repeat">return</span>&nbsp;<span class="Statement">base</span>.GetEditStyle(context);<br &#47;><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span class="Repeat">return</span>&nbsp;UITypeEditorEditStyle.Modal;<br &#47;><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<br &#47;><br />
+<br &#47;><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="StorageClass">public</span>&nbsp;<span class="StorageClass">override</span>&nbsp;<span class="Type">object</span>&nbsp;EditValue(ITypeDescriptorContext context, IServiceProvider provider, <span class="Type">object</span>&nbsp;<span class="Statement">value</span>)<br &#47;><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{<br &#47;><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; IWindowsFormsEditorService editorService;<br &#47;><br />
+<br &#47;><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span class="Conditional">if</span>&nbsp;( context == <span class="Constant">null</span>&nbsp;|| context.Instance == <span class="Constant">null</span>&nbsp;|| provider == <span class="Constant">null</span>&nbsp;)<br &#47;><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="Repeat">return</span>&nbsp;<span class="Statement">value</span>;<br &#47;><br />
+<br &#47;><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span class="Exception">try</span><br &#47;><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br &#47;><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="Comment">&#47;&#47; get the editor service, just like in windows forms</span><br &#47;><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;editorService = (IWindowsFormsEditorService)<br &#47;><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; provider.GetService(<span class="Statement">typeof</span>(IWindowsFormsEditorService));<br &#47;><br />
+<br &#47;><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;OpenFileDialog dlg = <span class="Statement">new</span>&nbsp;OpenFileDialog();<br &#47;><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;dlg.Filter = <span class="String">"All Files (*.*)|*.*"</span>;<br &#47;><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;dlg.CheckFileExists = <span class="Constant">true</span>;<br &#47;><br />
+<br &#47;><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="Type">string</span>&nbsp;filename = (<span class="Type">string</span>)<span class="Statement">value</span>;<br &#47;><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="Conditional">if</span>&nbsp;( !File.Exists(filename) )<br &#47;><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; filename = <span class="Constant">null</span>;<br &#47;><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;dlg.FileName = filename;<br &#47;><br />
+<br &#47;><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="Statement">using</span>&nbsp;( dlg )<br &#47;><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{<br &#47;><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; DialogResult res = dlg.ShowDialog();<br &#47;><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span class="Conditional">if</span>&nbsp;( res == DialogResult.OK )<br &#47;><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br &#47;><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;filename = dlg.FileName;<br &#47;><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<br &#47;><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<br &#47;><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="Repeat">return</span>&nbsp;filename;<br &#47;><br />
+<br &#47;><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; } <span class="Exception">finally</span><br &#47;><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br &#47;><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;editorService = <span class="Constant">null</span>;<br &#47;><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<br &#47;><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<br &#47;><br />
+&nbsp;&nbsp; } <span class="Comment">&#47;&#47; class FileSelectorTypeEditor</span><br &#47;><br />
+<br &#47;><br />
+} <span class="Comment">&#47;&#47; namespace Winterdom.Design.TypeEditors</span><br />
+</code></div><br />
+<P>You can then easily associate it with a property like this:</P></p>
+<div class='codebg'><code>[Editor(<span class="Statement">typeof</span>(FileSelectorTypeEditor), <span class="Statement">typeof</span>(UITypeEditor))]<br &#47;><br />
+<span class="StorageClass">public</span>&nbsp;<span class="Type">string</span>&nbsp;Filename<br &#47;><br />
+{<br &#47;><br />
+&nbsp;&nbsp; <span class="Statement">get</span>&nbsp;{ <span class="Repeat">return</span>&nbsp;_filename; }<br &#47;><br />
+&nbsp;&nbsp; <span class="Statement">set</span>&nbsp;{ _filename = <span class="Statement">value</span>; }<br &#47;><br />
+}<br />
+</code></div><br />
+<P>One thing to watch out for, though, is that at least with the July CTP of WinFX, WF will completely ignore your custom UITypeEditor if it is defined in the same assembly as the activity using it. Don't know why, but make sure you define it in a separate assembly you reference, and it should work OK.</P><!--end_raw--></p>

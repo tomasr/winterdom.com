@@ -1,0 +1,59 @@
+---
+layout: post
+status: publish
+published: true
+title: The other side of the bridge
+author:
+  display_name: Tomas Restrepo
+  login: tomasr
+  email: tomas@winterdom.com
+  url: http://winterdom.com/
+author_login: tomasr
+author_email: tomas@winterdom.com
+author_url: http://winterdom.com/
+wordpress_id: 158
+wordpress_url: http://winterdom.com/2008/07/theothersideofthebridge
+date: '2008-07-28 21:15:56 +0000'
+date_gmt: '2008-07-28 21:15:56 +0000'
+categories:
+- Architecture
+tags: []
+comments: []
+---
+<p><!--start_raw-->
+<p><a title="06May07-110308 by tomas.restrepo, on Flickr" href="http:&#47;&#47;www.flickr.com&#47;photos&#47;tomasr&#47;2712914262&#47;"><img height="375" alt="06May07-110308" src="http:&#47;&#47;farm4.static.flickr.com&#47;3225&#47;2712914262_0194e45306.jpg" width="500" &#47;></a></p>
+<p>Some readers of this blog might have noticed that my posting frequency has been somewhat reduced during the past few months. Some of this is the result of working on several different projects, some of which isn't stuff I can talk about much.</p>
+<p>Besides my usual .NET&#47;BizTalk work, I've been increasingly spending time working on some Java stuff as well. I would say that I probably spend my time 50&#47;50 between both technologies nowadays. There are good and bad things about this, but that's a topic for a different post.</p>
+<p>One of the interesting things I've worked on lately on the Java side has been&#160; implementing custom Binding Components based on the <a href="http:&#47;&#47;jcp.org&#47;aboutJava&#47;communityprocess&#47;final&#47;jsr208&#47;index.html">Java Business Integration</a> (JBI) specification. JBI isn't a new technology; it's been around for a while, but until now I had not had the opportunity of working with it. </p>
+<p>Mostly, I've been working with Sun's <a href="https:&#47;&#47;open-esb.dev.java.net&#47;">OpenESB</a>, which is actually not that bad, though I've also used JBoss&#47;ServiceMix a bit.</p>
+<p>It took me a little while to fully grok the core of the JBI model. There are many similarities in the concepts it uses to other messaging technologies, but the terminology used can be somewhat different, which can be confusing sometimes. In case you're not familiar with JBI, it defines two different kinds of components developers might wish to implement:</p>
+<ul>
+<li>Service Engines, which are just components that do some processing and send and&#47;or receive messages. </li>
+<li>Binding Components, which are mostly transport-level adapters. These are the equivalent components in JBI to BizTalk adapters and WCF's transport channels. </li> </ul>
+<p>I'm not going to do a comprehensive comparison of JBI to BizTalk or WCF, but did want to make a few observations about some aspects that I found interesting.</p><br />
+<h2>Abstraction</h2>
+<p>The JBI spec is a fairly low-level specification. Much of the spec is really concerned with how components interact with the JBI server and how class loading and deployment work, as opposed to defining a more higher-level messaging model.</p>
+<p>Actually, maybe I should say that the JBI spec doesn't really define abstraction layers. It's all a single layer that addresses a number of different concerns. </p>
+<p>Most of the JBI messaging model is really defined to match the WSDL model, and there are advantages and disadvantages to this. On the plus side, the WSDL model is generic enough to be useful in a broad set of scenarios, and it is fairly well known. It also makes a lot of sense considering the terminology used throughout the spec (once you get familiar with it).</p>
+<p>On the bad side, it means that components also have to get intimate knowledge of the WSDL contract model and this forces some compromises I personally don't quite agree with.</p>
+<p>For example, in WCF and BizTalk, if I'm writing a transport-level adapter&#47;channel, I <em>may</em> need to be intimately aware of the contract definition being used by the client&#47;server. But it's not really necessary most of the time, particularly when you're working with network-level transports. Mostly, you care about the Message Exchange Pattern (MEP) that the contract demands.</p>
+<p>In JBI, however, you have to understand the entire contract. This might be fine for Service Engines, but it can be rather inconvenient for Binding Components, as now you have to figure out out how to map contract operations to your transport, and even how to marshal data back and forth based on the contract definition.</p><br />
+<h2>Configuration</h2>
+<p>This leads me to my second gripe about JBI: <em>Configuration</em>.</p>
+<p>Endpoint configuration in JBI is done through a combination of two things:</p>
+<ul>
+<li>The WSDL that defines the contract you'll want to receive or send messages to (extended with your binding component specific port&#47;binding&#47;operation configuration data) </li>
+<li>The deployment descriptors which tell your component if you want to receive or send messages for the corresponding WSDL file. </li> </ul>
+<p><img style="border-right: 0px; border-top: 0px; border-left: 0px; border-bottom: 0px" height="94" alt="wsdl" src="http:&#47;&#47;www.winterdom.com&#47;weblog&#47;content&#47;binary&#47;WindowsLiveWriter&#47;Theothersideofthebridge_119E3&#47;wsdl_3.png" width="604" border="0" &#47;> </p>
+<p>In reality, WSDL permeates the entire JBI development experience, including how messages are represented internally between the JBI runtime and binding components &#47; service engines.</p>
+<p>A huge downside of this, though is that the code needs to "understand" the contracts being used, so parsing the WSDL files and extracting your component's configuration data is your responsibility. Libraries like <a href="http:&#47;&#47;sourceforge.net&#47;projects&#47;wsdl4j">WSDL4J</a> help, but it can still be a drag.</p>
+<p>What does really irk me a bit about JBI though is not that you have to manually craft WSDL files (not that it's a lot of fun). It's that the JBI spec doesn't address the design time aspect of JBI components at all besides, you guessed it, manually crafting WSDL files and deployment descriptors.</p>
+<p>So if you're creating JBI components and want a decent design time experience, then you need to target each different server&#47;tooling specifically. For example, for OpenESB you'd craft a custom NetBeans module, while for another tool you'd do something different. It's just not nice.</p>
+<p>What's worse is that some servers decided this model wasn't good enough either and added their own configuration models for components and contracts. For example, while <a href="http:&#47;&#47;servicemix.apache.org&#47;">ServiceMix</a> supports the stuff mandated by the JBI spec, it also supports an alternative XML-based configuration syntax. While it's more compact, it's hard to argue it really is a significant improvement.</p><br />
+<h2>Encoding</h2>
+<p>This is one aspect where I thought the JBI spec really blew it. As I said above, the JBI spec uses an XML representation for messages internally, that matches the WSDL message definition (parts and all). </p>
+<p>There's no layering here that allows binding components to worry about sending and receiving messages without really caring about message contents. They <em>have</em> to care about the message contents and how to map that to however that message was defined in the contract WDSL definition. This might mean looking at which parts are defined and how to break the message down to them, or how to decode complex XSD types defined in the contract.</p>
+<p>Instead of being delegated explicitly in the spec to separate components, it's all the responsibility of the binding components themselves. The obvious benefit of having this layered would've been more reusability of said encoding&#47;decoding components, particularly if a minimum set of encoders were mandated by the spec. </p>
+<p>Just to take one example: basic XML encoding&#47;decoding is such a basic part of the system, that it's just really odd each component writer gets to redo it from scratch."</p>
+<p>I think this is one aspect that BizTalk in particular gets very right. WCF does keep encoding&#47;decoding an explicitly separate task, even if transport channels are responsible for using the encoders directly, but it is still a much better solution than what JBI came up with.</p>
+<div class="wlWriterSmartContent" id="scid:0767317B-992E-4b12-91E0-4F059A8CECA8:93c74eb6-9765-47c8-8a2f-99cb1c867f47" style="padding-right: 0px; display: inline; padding-left: 0px; padding-bottom: 0px; margin: 0px; padding-top: 0px">Technorati tags: <a href="http:&#47;&#47;technorati.com&#47;tags&#47;JBI" rel="tag">JBI</a>, <a href="http:&#47;&#47;technorati.com&#47;tags&#47;Java" rel="tag">Java</a></div><!--end_raw--></p>

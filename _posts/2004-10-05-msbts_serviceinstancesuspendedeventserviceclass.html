@@ -1,0 +1,33 @@
+---
+layout: post
+status: publish
+published: true
+title: MSBTS_ServiceInstanceSuspendedEvent.ServiceClass
+author:
+  display_name: Tomas Restrepo
+  login: tomasr
+  email: tomas@winterdom.com
+  url: http://winterdom.com/
+author_login: tomasr
+author_email: tomas@winterdom.com
+author_url: http://winterdom.com/
+wordpress_id: 209
+wordpress_url: http://winterdom.com/2004/10/msbts_serviceinstancesuspendedeventserviceclass
+date: '2004-10-05 03:09:10 +0000'
+date_gmt: '2004-10-05 03:09:10 +0000'
+categories:
+- BizTalk
+tags: []
+comments:
+- id: 1663
+  author: me.programmer
+  author_email: spysucker@yahoo.com
+  author_url: ''
+  date: '2011-01-27 13:06:32 +0000'
+  date_gmt: '2011-01-27 13:06:32 +0000'
+  content: have you got the answer on this. would you mind share it
+---
+<p><!--start_raw-->Looking for ways to deal with suspended messages in BizTalk Server 2004, I turned to the WMI interfaces. One of the ones I'm trying out is MSBTS_ServiceInstanceSuspendedEvent. It certainly works for me, except for one little thing I'm not sure about...</p>
+<p>What does it mean when the ServiceClass property has the value 0? The documented values are just 1 (Orchestration), 2 (Tracking), 4 (Messaging), 8 (MSMQT), 16 (Other), Isolated Adapter (32), Routing Failure Report (64); so, what does this 0 mean?</p></p>
+<p>Now, I know exactly what's triggering the event (since I'm explicitly creating the condition): A message delivered to a FILE receive location and no matching subscriptions for the message. Any clues?</p></p>
+<p>While I'm at it, I might as well ask this: Why doesn't this particular situation also raise a MSBTS_MessageInstanceSuspendedEvent?</p><!--end_raw--></p>

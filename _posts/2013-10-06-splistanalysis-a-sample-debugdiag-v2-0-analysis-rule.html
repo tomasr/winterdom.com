@@ -1,0 +1,107 @@
+---
+layout: post
+status: publish
+published: true
+title: 'SPListAnalysis: A sample DebugDiag v2.0 Analysis Rule'
+author:
+  display_name: Tomas Restrepo
+  login: tomasr
+  email: tomas@winterdom.com
+  url: http://winterdom.com/
+author_login: tomasr
+author_email: tomas@winterdom.com
+author_url: http://winterdom.com/
+wordpress_id: 1370
+wordpress_url: http://winterdom.com/?p=1370
+date: '2013-10-06 20:25:39 +0000'
+date_gmt: '2013-10-06 20:25:39 +0000'
+categories:
+- Tools
+tags: []
+comments:
+- id: 27134
+  author: 'The Morning Brew - Chris Alcock &raquo; The Morning Brew #1457'
+  author_email: ''
+  author_url: http://blog.cwa.me.uk/2013/10/07/the-morning-brew-1457/
+  date: '2013-10-07 07:54:31 +0000'
+  date_gmt: '2013-10-07 07:54:31 +0000'
+  content: "[&#8230;] SPListAnalysis: A sample DebugDiag v2.0 Analysis Rule - Tomas
+    Restrepo takes a look at the creation of custom analysis rules for the newly released
+    DebugDiag 2.0, discussing a sample rule code sample. [&#8230;]"
+---
+<p><a href='http:&#47;&#47;blogs.msdn.com&#47;b&#47;debugdiag&#47;archive&#47;2013&#47;10&#47;03&#47;debugdiag-2-0-is-now-rtw.aspx'>DebugDiag</a> is a tool for collecting and<br />
+analyzing memory dumps. Version 2.0 was just<br />
+released and makes it extremely easy to write your own custom analysis rules using any language<br />
+that target the CLR.</p>
+<p><b>SPListAnalysis</b> is a sample analysis rule I implemented to show the basic steps involved in the process.<br />
+The rule does the following:</p></p>
+<ul>
+<li>Iterates over all threads found in the process dumps to identify any threads that are<br />
+      querying an SPList object (or causing it to load the items contained therein).</li></p>
+<li>Identifies the <a href='http:&#47;&#47;msdn.microsoft.com&#47;en-us&#47;library&#47;sharepoint&#47;ms426449.aspx'>CAML</a><br />
+      query associated with the operation.</li></p>
+<li>Generates a warning if the query contains more than 10 fields, loads all the fields in the list,<br />
+      or if the query fails to specify a RowFilter.</li></p>
+<li>Prints the stack traces and query details for each matching thread.</li><br />
+</ul></p>
+<p>The code for this sample can be found <a href='https:&#47;&#47;github.com&#47;tomasr&#47;DebugDiagAnalysisRules'>here.</a></p></p>
+<p>This particular sample if very simple, consisting of a single class called <code>SPListAnalysis</code>,<br />
+which implements the <code>IHangDumpRule</code> interface to process one dump at a time. It also implements the<br />
+<code>IAnalysisRuleMetadata</code> interface to define the category and description for this analysis.</p></p>
+<p>[caption id="attachment_1371" align="alignnone" width="755"]<a href="http:&#47;&#47;winterdom.com&#47;wp-content&#47;uploads&#47;2013&#47;10&#47;splistanalysis.png"><img src="http:&#47;&#47;winterdom.com&#47;wp-content&#47;uploads&#47;2013&#47;10&#47;splistanalysis.png" alt="DebugDiag Analysis" width="755" height="363" class="size-full wp-image-1373" &#47;></a> DebugDiag Analysis[&#47;caption]</p>
+<p>The basis for the analysis is looking at all threads that contain a significant function in the<br />
+call stack, and then looking for a matching object in the stack frames (similar to doing a <code>!DumpStackObjects</code>)<br />
+command):</p></p>
+<pre class="codebg"><code><span class="StorageClass">private</span> <span class="Type">void</span> RunSPListAnalysis<span class="level16c">(</span>NetDbgObj debugger<span class="level16c">)</span><br />
+<span class="level16c">{</span><br />
+  <span class="Comment">&#47;&#47; initialize report</span><br />
+  <span class="Repeat">foreach</span> <span class="level15c">(</span> var thread <span class="Statement">in</span> debugger.Threads <span class="level15c">)</span><br />
+  <span class="level15c">{</span><br />
+    AnalyzeThread<span class="level14c">(</span>thread<span class="level14c">)</span>;<br />
+  <span class="level15c">}</span><br />
+  <span class="Comment">&#47;&#47; report findings</span><br />
+<span class="level16c">}</span></p>
+<p><span class="StorageClass">private</span> <span class="Type">void</span> AnalyzeThread<span class="level16c">(</span>NetDbgThread thread<span class="level16c">)</span><br />
+<span class="level16c">{</span><br />
+  <span class="Comment">&#47;&#47; ...</span><br />
+  <span class="Conditional">if</span> <span class="level15c">(</span> ContainsFrame<span class="level14c">(</span>thread, SPLIST_FILL_FRAME<span class="level14c">)</span> <span class="level15c">)</span><br />
+  <span class="level15c">{</span><br />
+    <span class="Comment">&#47;&#47;...</span><br />
+    dynamic obj = thread.FindFirstStackObject<span class="level14c">(</span><span class="String">"Microsoft.SharePoint.SPListItemCollection"</span><span class="level14c">)</span>;<br />
+    <span class="Conditional">if</span> <span class="level14c">(</span> obj != <span class="Constant">null</span> <span class="level14c">)</span><br />
+    <span class="level14c">{</span><br />
+      String viewXml = <span class="level13c">(</span><span class="Type">string</span><span class="level13c">)</span>obj.m_Query.m_strViewXml;<br />
+      <span class="Comment">&#47;&#47;...</span><br />
+      XDocument doc = XDocument.Parse<span class="level13c">(</span>viewXml<span class="level13c">)</span>;<br />
+      AnalyzeViewXml<span class="level13c">(</span>thread, doc<span class="level13c">)</span>;<br />
+      <span class="Comment">&#47;&#47;...</span><br />
+    <span class="level14c">}</span><br />
+    PrintThreadStack<span class="level14c">(</span>thread<span class="level14c">)</span>;<br />
+  <span class="level15c">}</span><br />
+<span class="level16c">}</span><br />
+</code></pre></p>
+<p>Reporting the results is mostly a matter of generating HTML. However, we can also generate<br />
+warnings that are included at the top of the report, allowing us to quickly alert the user<br />
+that something of interest was found in the dump:</p></p>
+<pre class="codebg"><code><span class="StorageClass">private</span> <span class="Type">void</span> ReportThreadsWithLargeSPQueries<span class="level16c">()</span><br />
+<span class="level16c">{</span><br />
+  <span class="Conditional">if</span> <span class="level15c">(</span> threadsWithLargeSPQueries.Count > <span class="Number">0</span> <span class="level15c">)</span><br />
+  <span class="level15c">{</span><br />
+    StringBuilder sb = <span class="Statement">new</span> StringBuilder<span class="level14c">()</span>;<br />
+    sb.Append<span class="level14c">(</span><span class="String">"The following threads appear to be executing SPList queries requesting many fields."</span><span class="level14c">)</span>;<br />
+    sb.Append<span class="level14c">(</span><span class="String">"<br&#47;>
+<ul>"</span><span class="level14c">)</span>;<br />
+    <span class="Repeat">foreach</span> <span class="level14c">(</span> <span class="Type">int</span> threadId <span class="Statement">in</span> threadsWithLargeSPQueries.Keys <span class="level14c">)</span><br />
+    <span class="level14c">{</span><br />
+      sb.AppendFormat<span class="level13c">(</span><span class="String">"
+<li><a href='#thread{0}'>{0}</a> ({1} fields)</li>"</span>,<br />
+          threadId, threadsWithLargeSPQueries<span class="level12c">[</span>threadId<span class="level12c">]</span><span class="level13c">)</span>;<br />
+    <span class="level14c">}</span><br />
+    sb.Append<span class="level14c">(</span><span class="String">"</ul>"</span><span class="level14c">)</span>;<br />
+    <span class="Statement">this</span>.manager.ReportWarning<span class="level14c">(</span>sb.ToString<span class="level13c">()</span>, <span class="String">""</span><span class="level14c">)</span>;<br />
+  <span class="level15c">}</span><br />
+<span class="level16c">}</span><br />
+</code></pre></p>
+<p>The resulting report will look like this:</p></p>
+<p>[caption id="attachment_1372" align="alignnone" width="691"]<a href="http:&#47;&#47;winterdom.com&#47;wp-content&#47;uploads&#47;2013&#47;10&#47;ddwarnings.png"><img src="http:&#47;&#47;winterdom.com&#47;wp-content&#47;uploads&#47;2013&#47;10&#47;ddwarnings.png" alt="DebugDiag Warnings" width="691" height="249" class="size-full wp-image-1372" &#47;></a> DebugDiag Warnings[&#47;caption]</p>
+<p>Enjoy!</p></p>

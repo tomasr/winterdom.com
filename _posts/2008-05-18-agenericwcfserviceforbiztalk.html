@@ -1,0 +1,152 @@
+---
+layout: post
+status: publish
+published: true
+title: A Generic WCF Service for BizTalk
+author:
+  display_name: Tomas Restrepo
+  login: tomasr
+  email: tomas@winterdom.com
+  url: http://winterdom.com/
+author_login: tomasr
+author_email: tomas@winterdom.com
+author_url: http://winterdom.com/
+wordpress_id: 907
+wordpress_url: http://winterdom.com/2008/05/agenericwcfserviceforbiztalk
+date: '2008-05-18 19:14:12 +0000'
+date_gmt: '2008-05-18 19:14:12 +0000'
+categories:
+- BizTalk
+- WCF
+tags: []
+comments:
+- id: 629
+  author: Joel
+  author_email: joel.dudgeon@sympatico.ca
+  author_url: ''
+  date: '2008-05-21 07:52:31 +0000'
+  date_gmt: '2008-05-21 07:52:31 +0000'
+  content: |
+    With regards to WSDL, you can expose it by adding and configuring the serviceMetadata section in the BT receive location's Behavior tab and then setting the externalMetadataLocation property.  The only minor challenge with that is any changes that you make to your messages (i.e. schemas) need to be reflected in the WSDL.  Still, it is a small price to pay for simplicity. :)
+    We've found that replicating a generic service and exposing a WSDL document is so much more efficient and less frustrating than using the BT WCF publishing wizard.
+- id: 630
+  author: Tomas Restrepo
+  author_email: tomas@winterdom.com
+  author_url: http://www.winterdom.com/weblog/
+  date: '2008-05-21 15:58:20 +0000'
+  date_gmt: '2008-05-21 15:58:20 +0000'
+  content: |
+    Joel: Yes, I'm aware of externalMetadataLocation, but totally forgot about it; thanks for bringing it up.
+    Actually, I don't have to worry in this case about the WSDL and the schemas getting out of sync because both are part of a standard control by a third party. So this is really kind of the scenario where this shines!
+- id: 631
+  author: Reddy
+  author_email: reddy.code@gmail.com
+  author_url: ''
+  date: '2008-06-17 11:56:08 +0000'
+  date_gmt: '2008-06-17 11:56:08 +0000'
+  content: |
+    HI ,
+    Can you please send me the code for above snippet or any webcast related to the above scenario.
+    Thanks
+    reddy
+- id: 632
+  author: Tomas Restrepo
+  author_email: tomas@winterdom.com
+  author_url: http://www.winterdom.com/weblog/
+  date: '2008-06-17 11:59:00 +0000'
+  date_gmt: '2008-06-17 11:59:00 +0000'
+  content: |
+    @reddy: There's really no extra code; those two snippets are really all it takes to enable a WCF receive location for BizTalk. Is there anything specifically you're looking for?
+- id: 1194
+  author: Yonathan Masovich
+  author_email: yonathan.masovich@gmail.com
+  author_url: ''
+  date: '2009-10-31 20:30:10 +0000'
+  date_gmt: '2009-10-31 20:30:10 +0000'
+  content: "Hi Tomas,\r\n\r\nI\"m trying to migrate from some scenario which works
+    for ASMX - to WCF:\r\n\r\nIm publishing two schemas, one request and the other
+    - response, as a web service. After I run the wizard, Im changing the generated
+    code in *.cs file of web application - to responde immidiately, and not to wait
+    while some BTS application will respond for the request. Since after running WCF
+    publishiung wizard there's no any code, just binding and seralization schema,
+    how can I interfere into my request-response flow? Have any idea?"
+- id: 1195
+  author: Tomas Restrepo
+  author_email: tomas@winterdom.com
+  author_url: http://winterdom.com/
+  date: '2009-11-02 02:30:04 +0000'
+  date_gmt: '2009-11-02 02:30:04 +0000'
+  content: "@Yonathan: I don't think you'll be able to do exactly the same. To be
+    honest, the way you're currently doing it is a bit of a hack. The \"right\" (if
+    not necessarily the most efficient way to do it) would be to have the called orchestration
+    send a response message right away and then continue on it's merry way.\r\n\r\nI'm
+    curious, though as to what kind of response you could've generated on your asmx
+    hack that wasn't a default \"done\" response (and if so, why you didn't just go
+    with a one-way service in the first place)"
+- id: 1205
+  author: Yonathan Masovich
+  author_email: yonathan.masovich@gmail.com
+  author_url: ''
+  date: '2009-11-05 20:48:57 +0000'
+  date_gmt: '2009-11-05 20:48:57 +0000'
+  content: "Hi Tomas,\r\n\r\nThanx for reply.\r\n\r\nWhat you are saying about using
+    orchestration as a responser - it is truly the correct way, but it is still another
+    piece of code to maintain.\r\nThe \"hack\" is just returning \"Succeess\" or \"Failure
+    with description\" immidiately after the message was put (or not ☺ )  to the message
+    box.\r\nAnyway, finally we did use one-way WCF with custom binding. \r\n\r\nThough,
+    now there's another issue with sertificate definitions - it looks like Receive
+    Location's definition doesn't keep definition for extension called \"context\".
+    After I choose to use Sign only incoming message - and if I export receive location
+    *.config, the line called  stays empty. Even more than that: when I add to *.config
+    desired definition manually -  and import that configuration, and immidiately
+    export configuration back - the definition is cleared.\r\n\r\nHere http:&#47;&#47;social.msdn.microsoft.com&#47;forums&#47;en-US&#47;biztalkr2adapters&#47;thread&#47;46e9345c-cb50-44ce-9084-807b9b3c1c58&#47;
+    \  I see the exact problem, with slight difference - that instead of generated
+    client - I have published schemas as WCF - therefore I have no code to add attribute
+    to.\r\n\r\nPossibly the solution to my problem will be writing some little WCF-Proxy,
+    which will \"pass\" to Biztalk non-encrypted message, and the client from other
+    side will contact with that proxy, and not actually Biztalk itself."
+- id: 1580
+  author: Dolly
+  author_email: dollyborkar@gmail.com
+  author_url: ''
+  date: '2010-09-29 12:42:31 +0000'
+  date_gmt: '2010-09-29 12:42:31 +0000'
+  content: "i want to receive the untyped message (i.e. System.Xml.XmlDocument) from
+    WCF service. what needs to be done in this case.\r\nyour help will be higly appreciated"
+- id: 1581
+  author: Tomas Restrepo
+  author_email: tomas@winterdom.com
+  author_url: http://winterdom.com/
+  date: '2010-09-29 13:49:01 +0000'
+  date_gmt: '2010-09-29 13:49:01 +0000'
+  content: "@Dolly: You wouldn't need to change anything in the .SVC or config file
+    at all... it would really be a matter of setting up your orchestration to take
+    an arbitrary document as input (XmlDocument) and making sure it is bound to the
+    WCF receive port."
+- id: 2215
+  author: BizTalk Generic WCF Service exceptions &laquo; .NET Treasure Box
+  author_email: ''
+  author_url: http://robboxman.wordpress.com/2010/04/09/biztalk-generic-wcf-service-exceptions/
+  date: '2012-03-29 11:14:42 +0000'
+  date_gmt: '2012-03-29 11:14:42 +0000'
+  content: "[...] BizTalk WCF adapter provides a very nice feature for implementing
+    a Generic WCF Service that eats any SOAP message it receives. However when trying
+    to test this with Altova XMLSpy I [...]"
+---
+<p><!--start_raw-->
+<p>I've been playing lately with a few WCF features as well as with the WCF Adapter in BizTalk Server 2006 R2. As part of that I had a need to set up a receive location using one of the WCF HTTP-based bindings.</p>
+<p>Normally, this isn't a big deal; you can easily use the BizTalk WCF Service Publishing Wizard to create the receive location and IIS service application for an orchestration or from a set of BizTalk schemas.</p>
+<p>However, this time I did not want to go that way. What I really wanted was just a simple receive location that would simply receive messages and submit them over to BizTalk without tying the receive location to a specific service definition. As far as I could see, the Service Publishing Wizard didn't really have an option for this, but I was confident it could be made to work.</p>
+<p>To be honest, I did have a set of schemas I wanted to work with and even a bunch of predefined WSDL files. However, for many reasons (including the sheer complexity of the schemas and WSDL files involved) I didn't want to get that involved in my initial BizTalk message receiver and processor. </p>
+<p>Fortunately, turns out that doing what I wanted was fairly easy stuff. In fact, it was so easy that was able to leverage an existing service I had previously created. I basically just copied the .SVC file (and renamed it) alongside the web.config file. I explicitly ignored all the stuff that normally gets generated under the App_Data directory.</p>
+<p>I then manually created a matching receive location in BizTalk using the WCF-BasicHTTP adapter, and this worked right away perfectly for my needs!</p>
+<p>Just in case you've never looked at what a WCF HTTP receive location generated files look like, it's actually fairly simple stuff. The SVC file contains just a single directive as expected:</p>
+<div class="codebg"><code><strong></strong><span class="Function"><%@ ServiceHost Language=</span><span class="String">"c#"</span><span class="Function"> Factory=</span><span class="String">"Microsoft.BizTalk.Adapter.Wcf.Runtime.BasicHttpWebServiceHostFactory, Microsoft.BizTalk.Adapter.Wcf.Runtime, Version=3.0.1.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35"</span><span class="Function"> %></span> </code></div>
+<p>You can see here that it references the WCF-BasicHTTP adapter. If you wanted to use, say, the WCF-WSHttp Adapter, then you'd use <code>Microsoft.BizTalk.Adapter.Wcf.Runtime.WSHttpWebServiceHostFactory</code> class instead.</p>
+<p>The config file is pretty much the default config file generated by the Service Publishing Wizard as well:</p>
+<div class="codebg"><code><span class="Comment"><?</span><span class="Type">xml</span><span class="Type">&#160;</span><span class="Type">version</span>=<span class="String">"1.0"</span><span class="Type">&#160;</span><span class="Type">encoding</span>=<span class="String">"utf-8"</span><span class="Comment">?></span>      <br &#47;><span class="Function"><</span><span class="Function">configuration</span><span class="Function">&#160;</span><span class="Type">xmlns</span>=<span class="String">"<a href="http:&#47;&#47;schemas.microsoft.com&#47;.NetConfiguration&#47;v2.0">http:&#47;&#47;schemas.microsoft.com&#47;.NetConfiguration&#47;v2.0</a>"</span><span class="Function">></span>      <br &#47;>&#160;&#160; <span class="Function"><</span><span class="Function">configSections</span><span class="Function">></span>      <br &#47;>&#160;&#160;&#160;&#160;&#160; <span class="Function"><</span><span class="Function">section</span><span class="Function">&#160;</span>      <br &#47;><span class="Function">&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160; </span><span class="Type">name</span>=<span class="String">"bizTalkSettings"</span><span class="Function">&#160;</span>      <br &#47;><span class="Function">&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160; </span><span class="Type">type</span>=<span class="String">"Microsoft.BizTalk.Adapter.Wcf.Runtime.BizTalkConfigurationSection, </span>      <br &#47;><span class="String">&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160; Microsoft.BizTalk.Adapter.Wcf.Runtime, Version=3.0.1.0, </span>      <br &#47;><span class="String">&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160; Culture=neutral, PublicKeyToken=31bf3856ad364e35"</span><span class="Function"> &#47;></span>      <br &#47;>&#160;&#160; <span class="Identifier"></configSections></span>      <br &#47;>&#160;&#160; <span class="Function"><</span><span class="Function">bizTalkSettings</span><span class="Function">></span>      <br &#47;>&#160;&#160;&#160;&#160;&#160; <span class="Function"><</span><span class="Function">mexServiceHostFactory</span><span class="Function">&#160;</span><span class="Type">debug</span>=<span class="String">"false"</span><span class="Function">></span>      <br &#47;>&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160; <span class="Function"><</span><span class="Function">receiveLocationMappings</span><span class="Function">></span>      <br &#47;>&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160; <span class="Comment"><!</span><span class="Comment">--add markupFileName="*.svc" </span>      <br &#47;><span class="Comment">&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160; receiveLocationName="?" </span>      <br &#47;><span class="Comment">&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160; publicBaseAddress="protocol:&#47;&#47;host[:port]" &#47;--</span><span class="Comment">></span>      <br &#47;>&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160; <span class="Identifier"></receiveLocationMappings></span>      <br &#47;>&#160;&#160;&#160;&#160;&#160; <span class="Identifier"></mexServiceHostFactory></span>      <br &#47;>&#160;&#160;&#160;&#160;&#160; <span class="Function"><</span><span class="Function">webServiceHostFactory</span><span class="Function">&#160;</span><span class="Type">debug</span>=<span class="String">"false"</span><span class="Function"> &#47;></span>      <br &#47;>&#160;&#160;&#160;&#160;&#160; <span class="Function"><</span><span class="Function">isolatedReceiver</span><span class="Function">&#160;</span><span class="Type">disable</span>=<span class="String">"false"</span><span class="Function"> &#47;></span>      <br &#47;>&#160;&#160;&#160;&#160;&#160; <span class="Function"><</span><span class="Function">btsWsdlExporter</span><span class="Function">&#160;</span><span class="Type">disable</span>=<span class="String">"false"</span><span class="Function"> &#47;></span>      <br &#47;>&#160;&#160; <span class="Identifier"></bizTalkSettings></span>      <br &#47;>&#160;&#160; <span class="Function"><</span><span class="Function">appSettings</span><span class="Function"> &#47;></span>      <br &#47;>&#160;&#160; <span class="Function"><</span><span class="Function">connectionStrings</span><span class="Function"> &#47;></span>      <br &#47;>&#160;&#160; <span class="Function"><</span><span class="Function">system</span><span class="Comment">.</span><span class="Function">web</span><span class="Function">></span>      <br &#47;>&#160;&#160;&#160;&#160;&#160; <span class="Function"><</span><span class="Function">compilation</span><span class="Function">&#160;</span><span class="Type">defaultLanguage</span>=<span class="String">"c#"</span><span class="Function">&#160;</span><span class="Type">debug</span>=<span class="String">"false"</span><span class="Function">></span>      <br &#47;>&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160; <span class="Function"><</span><span class="Function">assemblies</span><span class="Function">></span>      <br &#47;>&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160; <span class="Function"><</span><span class="Function">add</span><span class="Function">&#160;</span><span class="Type">assembly</span>=<span class="String">"mscorlib, version=2.0.0.0, culture=neutral, </span>      <br &#47;><span class="String">&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#1<br />
+60;&#160;&#160;&#160;&#160; publickeytoken=b77a5c561934e089"</span><span class="Function"> &#47;></span>      <br &#47;>&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160; <span class="Function"><</span><span class="Function">add</span><span class="Function">&#160;</span><span class="Type">assembly</span>=<span class="String">"Microsoft.BizTalk.Adapter.Wcf.Common, Version=3.0.1.0, </span>      <br &#47;><span class="String">&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160; Culture=neutral, PublicKeyToken=31bf3856ad364e35"</span><span class="Function"> &#47;></span>      <br &#47;>&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160; <span class="Function"><</span><span class="Function">add</span><span class="Function">&#160;</span><span class="Type">assembly</span>=<span class="String">"Microsoft.BizTalk.Adapter.Wcf.Runtime, Version=3.0.1.0, </span>      <br &#47;><span class="String">&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160; Culture=neutral, PublicKeyToken=31bf3856ad364e35"</span><span class="Function"> &#47;></span>      <br &#47;>&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160; <span class="Identifier"></assemblies></span>      <br &#47;>&#160;&#160;&#160;&#160;&#160; <span class="Identifier"></compilation></span>      <br &#47;>&#160;&#160;&#160;&#160;&#160; <span class="Function"><</span><span class="Function">authentication</span><span class="Function">&#160;</span><span class="Type">mode</span>=<span class="String">"Windows"</span><span class="Function"> &#47;></span>      <br &#47;>&#160;&#160; <span class="Identifier"></system</span><span class="Comment">.</span><span class="Identifier">web></span>      <br &#47;>&#160;&#160; <span class="Function"><</span><span class="Function">system</span><span class="Comment">.</span><span class="Function">serviceModel</span><span class="Function">></span>      <br &#47;>&#160;&#160;&#160;&#160;&#160; <span class="Function"><</span><span class="Function">behaviors</span><span class="Function">></span>      <br &#47;>&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160; <span class="Function"><</span><span class="Function">serviceBehaviors</span><span class="Function">></span>      <br &#47;>&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160; <span class="Function"><</span><span class="Function">behavior</span><span class="Function">&#160;</span><span class="Type">name</span>=<span class="String">"ServiceBehaviorConfiguration"</span><span class="Function">></span>      <br &#47;>&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160; <span class="Function"><</span><span class="Function">serviceDebug</span><span class="Function">&#160;</span>      <br &#47;><span class="Function">&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160; </span><span class="Type">httpHelpPageEnabled</span>=<span class="String">"true"</span><span class="Function">&#160;</span>      <br &#47;><span class="Function">&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160; </span><span class="Type">httpsHelpPageEnabled</span>=<span class="String">"false"</span><span class="Function">&#160;</span>      <br &#47;><span class="Function">&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160; </span><span class="Type">includeExceptionDetailInFaults</span>=<span class="String">"false"</span><span class="Function"> &#47;></span>      <br &#47;>&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160; <span class="Function"><</span><span class="Function">serviceMetadata</span><span class="Function">&#160;</span>      <br &#47;><span class="Function">&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160; </span><span class="Type">httpGetEnabled</span>=<span class="String">"false"</span><span class="Function">&#160;</span>      <br &#47;><span class="Function">&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160; </span><span class="Type">httpsGetEnabled</span>=<span class="String">"false"</span><span class="Function"> &#47;></span>      <br &#47;>&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160; <span class="Identifier"></behavior></span>      <br &#47;>&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160; <span class="Identifier"></serviceBehaviors></span>      <br &#47;>&#160;&#160;&#160;&#160;&#160; <span class="Identifier"></behaviors></span>      <br &#47;>&#160;&#160;&#160;&#160;&#160; <span class="Function"><</span><span class="Function">services</span><span class="Function">></span>      <br &#47;>&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160; <span class="Function"><</span><span class="Function">service</span><span class="Function">&#160;</span>      <br &#47;><span class="Function">&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160; </span><span class="Type">name</span>=<span class="String">"Microsoft.BizTalk.Adapter.Wcf.Runtime.BizTalkServiceInstance"</span><span class="Function">&#160;</span>      <br &#47;><span class="Function">&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160; </span><span class="Type">behaviorConfiguration</span>=<span class="String">"ServiceBehaviorConfiguration"</span><span class="Function">></span>      <br &#47;>&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160; <span class="Comment"><!</span><span class="Comment">--<endpoint </span>      <br &#47;><span class="Comment">&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160; name="HttpMexEndpoint" </span>      <br &#47;><span class="Comment">&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160; address="mex" </span>      <br &#47;><span class="Comment">&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160; binding="mexHttpBinding" </span>      <br &#47;><span class="Comment">&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160; bindingConfiguration="" </span>      <br &#47;><span class="Comment">&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160; contract="IMetadataExchange" &#47;>--</span><span class="Comment">></span>      <br &#47;>&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160; <span class="Comment"><!</span><span class="Comment">--<endpoint </span>      <br &#47;><span class="Comment">&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160; name="HttpsMexEndpoint" </span>      <br &#47;><span class="Comment">&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160; address="mex" </span>      <br &#47;><span class="Comment">&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160; binding="mexHttpsBinding" </span>      <br &#47;><span class="Comment">&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160; bindingConfiguration="" </span>      <br &#47;><span class="Comment">&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160; contract="IMetadataExchange" &#47;>--</span><span class="Comment">></span>      <br &#47;>&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160; <span class="Identifier"></service></span>      <br &#47;>&#160;&#160;&#160;&#160;&#160; <span class="Identifier"></services></span>      <br &#47;>&#160;&#160; <span class="Identifier"></system</span><span class="Comment">.</span><span class="Identifier">serviceModel></span>      <br &#47;><span class="Identifier"></configuration></span> </code></div>
+<p>It's extremely nice to see how the WCF adapter in BizTalk leverages a bunch of my favorite features in WCF to make this a lot simpler (compared to, say, the whole bunch of code that neede<br />
+d to be generated for the original SOAP adapter).</p>
+<p>I should mention though, that part of what made it so easy was that my needs were pretty simple: I wanted a simple two-way (request&#47;response) port, and needed no metadata (WSDL) publishing at all (as I said, I already had working WSDL files I could provide to consumers of the service).&#160; Making it one-way wouldn't have been a problem though; as the WCF adapter handles it very gracefully as well.</p>
+<div class="wlWriterSmartContent" id="scid:0767317B-992E-4b12-91E0-4F059A8CECA8:7918c07e-8b51-4b39-a214-ec9eb9be6317" style="padding-right: 0px; display: inline; padding-left: 0px; padding-bottom: 0px; margin: 0px; padding-top: 0px">Technorati tags: <a href="http:&#47;&#47;technorati.com&#47;tags&#47;WCF" rel="tag">WCF</a>, <a href="http:&#47;&#47;technorati.com&#47;tags&#47;BizTalk%202006%20R2" rel="tag">BizTalk 2006 R2</a></div><!--end_raw--></p>

@@ -1,0 +1,49 @@
+---
+layout: post
+status: publish
+published: true
+title: Failed Message Routing and Message Suspension
+author:
+  display_name: Tomas Restrepo
+  login: tomasr
+  email: tomas@winterdom.com
+  url: http://winterdom.com/
+author_login: tomasr
+author_email: tomas@winterdom.com
+author_url: http://winterdom.com/
+wordpress_id: 1032
+wordpress_url: http://winterdom.com/2007/07/failedmessageroutingandmessagesuspension
+date: '2007-07-03 18:52:12 +0000'
+date_gmt: '2007-07-03 18:52:12 +0000'
+categories:
+- BizTalk
+tags: []
+comments:
+- id: 727
+  author: Adam
+  author_email: ala@ala.com
+  author_url: ''
+  date: '2007-07-04 15:53:51 +0000'
+  date_gmt: '2007-07-04 15:53:51 +0000'
+  content: |
+    I am in process of debugging a bizatalk adapter. It works as a send port. I activate it by putting a file into a file receive location. When it fails the file I put into a directory of receive location adapter dissapears but it does not get transmitted because of a bug in the send adapter. Now when I restart host instance biztalk invokes send adapter with that failed message.
+    As I have very little knowledge about biztalk I have a problem to find a trace of this failed&#47;suspended messages. Can you point me where can I see them using biztalk control panel or where there they are stored in bitalk database in sql server? Also how to delete them ?
+- id: 728
+  author: Tomas Restrepo
+  author_email: tomas@winterdom.com
+  author_url: http://www.winterdom.com/weblog/
+  date: '2007-07-04 17:14:04 +0000'
+  date_gmt: '2007-07-04 17:14:04 +0000'
+  content: |
+    Adam,
+    You can find suspended or pending messages through the BizTalk Administration Console (in 2006) or through HAT, in 2004.
+---
+<p><!--start_raw-->
+<p>A long while ago, while BizTalk 2006 was in beta, I <a href="http:&#47;&#47;www.winterdom.com&#47;weblog&#47;2005&#47;07&#47;19&#47;FailedMessageRouting.aspx">mentioned</a> a couple of things about the Failed Message Routing feature and how it related to adapters. Turns out I was a bit off the mark, and wanted to leave this here in case I ever need this information again :-).</p>
+<p>A couple of weeks ago I spent some good time troubleshooting an adapter, and was able to understand a bit better the relationship between this feature and an adapter's behavior. Indeed, as I&nbsp;initially stated,&nbsp;failed message routing depends on the ability&nbsp;to suspend messages that fail the submission process.</p>
+<p>What can make this a bit confusing is that the BizTalk Messaging Engine can decide to suspend messages on its own without adapter intervention. In cases where this happens, failed message routing will still work, even if the receiving adapter doesn't actually support suspending messages in an explicit way.</p>
+<p>For example, under some configurations, when an XML&nbsp;message fails processing in the pipeline because the XML Disassembler component rejects it, the Messaging Engine will suspend the incoming message on its own [1]. When this happen, the adapter will receive an status code in the batch results with the value BTS_S_EPM_MESSAGE_SUSPENDED (0xc00001). </p>
+<p>What's interesting about this value is that it is a <em>success</em>&nbsp;status code; so, from the adapter perspective, it looks as if the message submit operation completed without errors. It can, however, be a little confusing if you're not aware of this behavior.</p>
+<p>Other than this scenarios, if you want to fully support failed message routing with your adapters, you still need to fully implement suspending messages (through <a href="https:&#47;&#47;msdn2.microsoft.com&#47;en-us&#47;library&#47;microsoft.biztalk.transportproxy.interop.ibttransportbatch.movetosuspendq.aspx">IBTTransportBatch.MoveToSuspendQ()</a>).&nbsp;</p>
+<p><strong>[1]</strong> Unexpectedly enough, I haven't seen this behavior with the Flat File disassembler.</p>
+<div class="wlWriterSmartContent" id="0767317B-992E-4b12-91E0-4F059A8CECA8:88ca54d6-3b45-4b6e-b77c-375bca7bdb33" contenteditable="false" style="padding-right: 0px; display: inline; padding-left: 0px; padding-bottom: 0px; margin: 0px; padding-top: 0px">Technorati tags: <a href="http:&#47;&#47;technorati.com&#47;tags&#47;BizTalk%20Server" rel="tag">BizTalk Server</a>, <a href="http:&#47;&#47;technorati.com&#47;tags&#47;BizTalk%20Adapters" rel="tag">BizTalk Adapters</a></div><!--end_raw--></p>

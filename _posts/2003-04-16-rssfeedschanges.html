@@ -1,0 +1,43 @@
+---
+layout: post
+status: publish
+published: true
+title: RSS feeds changes
+author:
+  display_name: Tomas Restrepo
+  login: tomasr
+  email: tomas@winterdom.com
+  url: http://winterdom.com/
+author_login: tomasr
+author_email: tomas@winterdom.com
+author_url: http://winterdom.com/
+wordpress_id: 880
+wordpress_url: http://winterdom.com/2003/04/rssfeedschanges
+date: '2003-04-16 19:23:15 +0000'
+date_gmt: '2003-04-16 19:23:15 +0000'
+categories:
+- Blogging
+tags: []
+comments:
+- id: 601
+  author: Sanjay
+  author_email: sanjay@sastools.com
+  author_url: http://sastools.com/b2/
+  date: '2003-04-21 03:20:03 +0000'
+  date_gmt: '2003-04-21 03:20:03 +0000'
+  content: |
+    <p>You need to fix up your href's before including them within xhtml+body. Just click on your link above to the rss.xml file and you'll see IE's xml parser complain about missing semicolons. Of course what is happening is that an url like<br &#47;>
+    http:||example.com&#47;t.html?q1=123&q2=456 is invalid xml ... </p>
+    <p>& indicates the start of a html-entity and so the above has to be escaped out and coverted into<br &#47;>
+    http:||example.com&#47;t.html?q1=123&amp;amp;q2=456</p>
+- id: 602
+  author: Tomas Restrepo
+  author_email: tomasr@mvps.org
+  author_url: http://www.winterdom.com/weblog
+  date: '2003-04-21 04:56:36 +0000'
+  date_gmt: '2003-04-21 04:56:36 +0000'
+  content: |
+    <p>Thanks for the heads up. It's fixed now.</p>
+    <p>I'm just glad I have an aggregator that has no problems dealing with that :)</p>
+---
+<p><!--start_raw-->I've updated my main <a href="http:&#47;&#47;www.winterdom.com&#47;weblog&#47;rss.xml">RSS 2.0 feed</a> to use XHTML+body instead of content:encoded. I've also added a new a RSS 2.0 feed for the <a href="http:&#47;&#47;www.winterdom.com&#47;weblog&#47;comments.xml">last 20 comments</a> on the weblog (this one doesn't use XHTML+body because I can't control whether reades post valid XHTML).<!--end_raw--></p>

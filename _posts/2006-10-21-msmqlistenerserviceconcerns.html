@@ -1,0 +1,42 @@
+---
+layout: post
+status: publish
+published: true
+title: MsmqListenerService Concerns
+author:
+  display_name: Tomas Restrepo
+  login: tomasr
+  email: tomas@winterdom.com
+  url: http://winterdom.com/
+author_login: tomasr
+author_email: tomas@winterdom.com
+author_url: http://winterdom.com/
+wordpress_id: 845
+wordpress_url: http://winterdom.com/2006/10/msmqlistenerserviceconcerns
+date: '2006-10-21 06:55:53 +0000'
+date_gmt: '2006-10-21 06:55:53 +0000'
+categories:
+- BizTalk
+- WinFX
+- Workflow
+tags: []
+comments: []
+---
+<p><!--start_raw-->
+<p><a href="http:&#47;&#47;www.masteringbiztalk.com&#47;blogs&#47;jon&#47;">Jon Flanders</a> posted a comment on my <a href="http:&#47;&#47;www.winterdom.com&#47;weblog&#47;2006&#47;10&#47;20&#47;MsmqActivitiesV11Released.aspx">post yesterday</a> about the changes in the new release of my MsmqActivities sample regarding the new subscription persistence functionality. I was going to respond on another comment, but I think this might be important enough to warrant its own post. Here's Jon comment:</p><br />
+<blockquote>
+<p><em><font color="#808080">I am still concerned about your approach (essentially another persistence service to take care of). Especially in light of:</font></em></p>
+<p><em><font color="#808080">a) How will this work in a mulit-host instance environment</font></em>
+<p><em><font color="#808080">b) How will it stay consistent with the state of the workflow itself (what if your service gets out of sync with the current state of the workflow).</font></em>
+<p><em><font color="#808080">Which is why I would prefer some system that used the metadata of the activity instance itself - I would lean toward SqlPersistenceService.GetAllWorkflows - which would allow you to get the activity metadata without having to load it into memory. OTOH - this is only on the OOB persistence service.</font></em></p></blockquote>
+<p>Let me just start by mentioning that I actually share Jon's concern about this approach [1]. It <em>is</em> another persistence service to take care of and that brings up a number of issues and potentiall problems with it.
+<p>Regarding point (a) Jon brings above, the answer is: it won't work well,&nbsp;for very obvious reasons. The primary one is actually related to how MSMQ itself works, and that's a significant limitation right there. If you have multiple hosts trying to listen to the same queue, then things won't really work very well. And, because of this, using this in a "load-balancing" scenario with multiple servers hosting the same workflows really wouldn't work at all as expected.
+<p>Regarding point (b), yes, that's actually my biggest fear. Hopefully, it is not something that would happen too often (at least that's what I think from my tests, I could be wrong) but it is definitely a possibility.
+<p>I'm going to be frank about this and say that right from the start I didn't want to have to implement something like this; it just feels wrong. I looked for other options but I just didn't see anything obvious that would work and at least workaround the underlying issue.
+<p>My MsmqActivities have been a wonderful tool for me to understand a lot of concepts of WF. It's obvious that in many ways they are "toys", but precisely because of the requirements they impose they make, IMHO,&nbsp;a good sample to understand&nbsp;a lot&nbsp;of the implications of writing a full-fledged custom event activity that doesn't use the built-in services (i.e. HandleExternalEvent).
+<p>Jon proposes a good idea, and that's trying to avoid having to do the external persistance of subscriptions in the first place and instead trying to rely on getting the necessary information to recreate the subscriptions from the workflow instances stored&nbsp;by the workflow persistence service. I'll explore this option further, but I do have my reservations if that information will be enough to get all information needed to recreate the subscriptions (including recognizing in which scenarios an activity is found that would have the subscription active or not). Thinking a little bit further, it brings a good question to the table:&nbsp;Will the instance state stored by the workflow persistence service be enough to satisfy all kinds of activities depending on external services?
+<p>A few days ago Jon made an excellent observation: That these kind of issues are solved in a very elegant manner by the BizTalk Message Box design, and I fully agree with this. The Pub&#47;Sub engine in BizTalk, together with the comprehensive concept of Application and Isolated Hosts gives a lot of power to BizTalk and makes a really strong and powerful foundation for solving this kinds of problems. This is because it provides a clear way to decouple the workflows (i.e. the orchestrations in the current incarnation) from the external services feeding data and events to them (receive ports and locations), while at the same time providing a unified storage mechanism to keep track of the state of all of them.
+<p>This is why I'm so looking forward to when WF and BizTalk get integrated; as it will&nbsp;should make&nbsp;possible to have the best of both worlds together.
+<p><strong>[1]</strong> I was going to mention some of this on my original post, but I totally forgot, sorry!</p>
+<div class="wlWriterSmartContent" id="d7bf807d-7bb0-458a-811f-90c51817d5c2:90d2eea2-eeda-45e8-87f5-e06149b3df21" contenteditable="false" style="padding-right: 0px; display: inline; padding-left: 0px; padding-bottom: 0px; margin: 0px; padding-top: 0px">
+<p><span class="TagSite">Technorati:</span> <a href="http:&#47;&#47;technorati.com&#47;tag&#47;Windows+Workflow+Foundation" rel="tag" class="tag">Windows Workflow Foundation</a>, <a href="http:&#47;&#47;technorati.com&#47;tag&#47;WF" rel="tag" class="tag">WF</a>, <a href="http:&#47;&#47;technorati.com&#47;tag&#47;MSMQ" rel="tag" class="tag">MSMQ</a>, <a href="http:&#47;&#47;technorati.com&#47;tag&#47;BizTalk" rel="tag" class="tag">BizTalk</a><br &#47;><!-- StartInsertedTags: Windows Workflow Foundation, WF, MSMQ, BizTalk :EndInsertedTags --></p></div></p><!--end_raw--></p>

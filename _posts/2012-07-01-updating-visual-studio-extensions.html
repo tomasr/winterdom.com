@@ -1,0 +1,74 @@
+---
+layout: post
+status: publish
+published: true
+title: Updating Visual Studio Extensions
+author:
+  display_name: Tomas Restrepo
+  login: tomasr
+  email: tomas@winterdom.com
+  url: http://winterdom.com/
+author_login: tomasr
+author_email: tomas@winterdom.com
+author_url: http://winterdom.com/
+wordpress_id: 1347
+wordpress_url: http://winterdom.com/2012/07/updating-visual-studio-extensions
+date: '2012-07-01 16:50:38 +0000'
+date_gmt: '2012-07-01 16:50:38 +0000'
+categories:
+- Visual Studio
+tags: []
+comments:
+- id: 4781
+  author: Jonny
+  author_email: jgarrett303@gmail.com
+  author_url: ''
+  date: '2012-12-11 00:52:28 +0000'
+  date_gmt: '2012-12-11 00:52:28 +0000'
+  content: Good job on this extension, was missing it in vs2012 until I found followed
+    the information link in 2010 to find this. It be a whole lot handier if the extension
+    was on the visual studio gallery. If I hadn't gotten the VS2010 one before and
+    was only using 2012 I'd probably never know this even existed. BTW It doesnt look
+    like betterXml was updated in Github if the modification time stamps are anything
+    to go by, last commit was 3 years ago.
+- id: 4872
+  author: Tomas Restrepo
+  author_email: tomas@winterdom.com
+  author_url: http://winterdom.com/
+  date: '2012-12-13 12:36:04 +0000'
+  date_gmt: '2012-12-13 12:36:04 +0000'
+  content: "@Jonny: Sorry about that, I fixed the github issue; seems I had accidentally
+    forgot to push my changes."
+---
+<p>I spent some time this week researching what would be needed to update some of my Visual Studio 2010 extensions to support Visual Studio 2012. I&rsquo;ve now managed to do so, and would like to share what I found in case anyone else finds it useful.</p>
+<p><b>Warning:</b> This post was written and tested with the Visual Studio 2012 release candidate and I have no clue how well it will work on the final release. I'll update it or post again once it comes out if needed.</p>
+<p>The first thing to try was, of course, to take the existing code, migrate it into a VS2012 project, and update all references to Visual Studio assemblies. That worked, as far as building goes, but the extensions would still not work. It is not that they would cause any errors; they just didn&rsquo;t do anything.</p>
+<p>In this particular case, I focused on two of my extensions: <a href="http:&#47;&#47;winterdom.com&#47;2009&#47;10&#47;updating-vs2010-extensions-for-beta-2">KeywordClassifier</a> and <a href="http:&#47;&#47;winterdom.com&#47;2010&#47;05&#47;betterxml">BetterXml</a>. Both of them rely on the same mechanism, which was layering an <code>ITagger<ClassificationTag></code> on top of the tags produced by the original provider. This was done through the use of an <code>ITagAggregator<ClassificationTag></code>.</p>
+<p>After a bit of debugging, I discovered the reason the original code was no longer working was because the <code>ITagAggregator<ClassificationTag></code> instance returned by Visual Studio would simply return an empty list when <code>GetTags()</code> was called.</p>
+<p>With some experimentation, I realized that while asking for an <code>ITagAggregator<ClassificationTag></code> no longer worked, asking for an <code>ITagAggregator<<i>IClassificationTag</i>></code> (that is, use the interface instead of the specific type) would indeed work. Plus, the same code would work just as well in VS2010!</p>
+<pre class="codebg"><code><span class="Repeat">return</span> <span class="Statement">new</span> KeywordTagger<span class="level16c">(</span><br />
+  ClassificationRegistry,<br />
+  Aggregator.CreateTagAggregator<IClassificationTag><span class="level15c">(</span>buffer<span class="level15c">)</span><br />
+<span class="level16c">)</span> <span class="Statement">as</span> ITagger<T>;<br />
+</code></pre></p>
+<p>I was still not terribly thrilled about having to keep separate branches of the extensions with different project files and manifests to support both Visual Studio versions, so I started digging a bit more to see what other options there were. After a bunch of tests, I came up with something that works and allows me to keep a single VSIX file that works across both versions:</p></p>
+<ul>
+<li>Modify the extension manifest to make it installable under VS2012. I did this modifying the <code><SupportedProducts></code> tag in the .vsixmanifest file to add an entry for VS2012, like this:
+<pre class="codebg"><code><span class="Function"><</span><span class="Function">VisualStudio</span><span class="Function"> </span><span class="Type">Version</span>=<span class="String">"11.0"</span><span class="Function">></span><br />
+  <span class="Function"><</span><span class="Function">Edition</span><span class="Function">></span>Ultimate<span class="Identifier"></Edition></span><br />
+  <span class="Function"><</span><span class="Function">Edition</span><span class="Function">></span>Premium<span class="Identifier"></Edition></span><br />
+  <span class="Function"><</span><span class="Function">Edition</span><span class="Function">></span>Pro<span class="Identifier"></Edition></span><br />
+  <span class="Function"><</span><span class="Function">Edition</span><span class="Function">></span>IntegratedShell<span class="Identifier"></Edition></span><br />
+  <span class="Function"><</span><span class="Function">Edition</span><span class="Function">></span>VST_All<span class="Identifier"></Edition></span><br />
+<span class="Identifier"></VisualStudio></span><br />
+</code></pre><br />
+Now, I do not know if these are the correct edition strings, though, but they work with the VS2012 release candidate ultimate edition that is in MSDN. If anyone knows what the right strings should be, let me know and I'll fix it. </li></p>
+<li>I changed the MaxVersion attribute of the SupportedFrameworkRuntimeEdition tag to specify .NET 4.5. I don't know if that is needed (or useful), but probably wouldn't hurt :)
+<pre class="codebg"><code><span class="Function"><</span><span class="Function">SupportedFrameworkRuntimeEdition</span><span class="Function"> </span><span class="Type">MinVersion</span>=<span class="String">"4.0"</span><span class="Function"> </span><span class="Type">MaxVersion</span>=<span class="String">"4.5"</span><span class="Function"> &#47;></span><br />
+</code></pre><br />
+  </li></p>
+<li>Build the extension and package using VS2010, without changing the existing (and VS2010-specific) assembly references. </li><br />
+</ul></p>
+<p>After trying this, the two extensions would load and run just fine in both VS2010 and VS2012, even if just one of them had been installed. I guess that VS2012 might be doing some assembly redirection when the extension is loaded, to ensure references are loaded correctly despite the fact that they have changed versions for 2012.</p></p>
+<p>I've updated the code of <a href="https:&#47;&#47;github.com&#47;tomasr&#47;KeywordClassifier">KeywordClassifier</a> and <a href="https:&#47;&#47;github.com&#47;tomasr&#47;BetterXml">BetterXml</a> on GitHub with the necessary changes. A big 'Thank you!' goes out to Oren Novotny for the help.</p></p>
+<p>On the plus side, I discovered that my <a href="http:&#47;&#47;winterdom.com&#47;2010&#47;02&#47;fix-for-xaml-highlighting-in-vs2010">XAML Classifier Fix</a> extension is no longer needed in Visual Studio 2012, now that the team introduced an explicit <code>XAML Text</code> classification.</p></p>

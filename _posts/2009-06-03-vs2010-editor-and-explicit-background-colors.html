@@ -1,0 +1,52 @@
+---
+layout: post
+status: publish
+published: true
+title: VS2010 Editor And Explicit Background Colors
+author:
+  display_name: Tomas Restrepo
+  login: tomasr
+  email: tomas@winterdom.com
+  url: http://winterdom.com/
+author_login: tomasr
+author_email: tomas@winterdom.com
+author_url: http://winterdom.com/
+wordpress_id: 1262
+wordpress_url: http://winterdom.com/2009/06/vs2010-editor-and-explicit-background-colors
+date: '2009-06-03 02:42:11 +0000'
+date_gmt: '2009-06-03 02:42:11 +0000'
+categories:
+- Visual Studio
+tags: []
+comments:
+- id: 889
+  author: Oleg Tkachenko
+  author_email: oleg@tkachenko.com
+  author_url: http://www.tkachenko.com/blog
+  date: '2009-06-12 04:38:03 +0000'
+  date_gmt: '2009-06-12 04:38:03 +0000'
+  content: I think that's definitely a bug. Please file it via https:&#47;&#47;connect.microsoft.com&#47;VisualStudio&#47;content&#47;content.aspx?ContentID=12362
+- id: 1177
+  author: Winterdom &raquo; Blog Archive &raquo; Some Comments on Visual Studio 2010
+    Beta 2
+  author_email: ''
+  author_url: http://winterdom.com/2009/10/some-comments-on-visual-studio-2010-beta-2
+  date: '2009-10-27 03:30:48 +0000'
+  date_gmt: '2009-10-27 03:30:48 +0000'
+  content: "[...] of the issues I had commented earlier about background color handling
+    in the editor seems to have been improved. Not sure how well it will work in practice,
+    but the new [...]"
+---
+<p>In general terms, I&rsquo;m liking the Visual Studio 2010 beta 1 experience quite a bit; there are lots of goodies in there. The Text Editor shows a lot of promise, though it&rsquo;s still a bit on the buggy side :).</p>
+<p>I&rsquo;ve noticed something that&rsquo;s nagging me a bit, and that&rsquo;s full line highlights when you&rsquo;ve got elements that have an explicit background set. In my current VS2010 color scheme, I&rsquo;ve got strings set up so that they will be rendered with a dark green background, different from the almost black, default background color:</p>
+<p>&#160;<img style="border-bottom: 0px; border-left: 0px; display: inline; border-top: 0px; border-right: 0px" title="vs10_bg_1" border="0" alt="vs10_bg_1" src="http:&#47;&#47;winterdom.com&#47;wp-content&#47;uploads&#47;2009&#47;06&#47;vs10-bg-1.png" width="474" height="74" &#47;> </p>
+<p></p>
+<p>If I put a breakpoint on that line, the line will be marked with the usual (default) crimson background. But here&rsquo;s what happens with the string:</p>
+<p><img style="border-bottom: 0px; border-left: 0px; display: inline; border-top: 0px; border-right: 0px" title="vs10_bg_2" border="0" alt="vs10_bg_2" src="http:&#47;&#47;winterdom.com&#47;wp-content&#47;uploads&#47;2009&#47;06&#47;vs10-bg-2.png" width="476" height="74" &#47;> </p>
+<p>So now the string background is preserved, but the foreground color is set to white. It&rsquo;s readable (by happy change), but it might also blind you.</p>
+<p>Now let&rsquo;s try debugging and see what happens when that line is the current statement:</p>
+<p><a href="http:&#47;&#47;winterdom.com&#47;wp-content&#47;uploads&#47;2009&#47;06&#47;vs10-bg-3.png"><img style="border-bottom: 0px; border-left: 0px; display: inline; border-top: 0px; border-right: 0px" title="vs10_bg_3" border="0" alt="vs10_bg_3" src="http:&#47;&#47;winterdom.com&#47;wp-content&#47;uploads&#47;2009&#47;06&#47;vs10-bg-3-thumb.png" width="488" height="75" &#47;></a> </p>
+<p></p>
+<p>Again, the background color is preserved, but now text is black and completely unreadable.</p>
+<p>Now, I don&rsquo;t know if this can be considered a bug or a feature. In general, the VS2010 editor does a much better job of dealing with syntax coloring, and I love that text selection is now semi-translucent and keeps syntax highlighting visible. It&rsquo;s a simple thing, but it makes the editor much nicer to use.</p>
+<p>Given the issues exhibited above, what I really wished happened is that both kinds of line highlighting were handled exactly like text selection: Make the marker a semi-translucent background and don&rsquo;t force the foreground text color. It&rsquo;s bound to be rather ugly.</p></p>

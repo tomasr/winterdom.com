@@ -1,0 +1,42 @@
+---
+layout: post
+status: publish
+published: true
+title: Quality Without a Name
+author:
+  display_name: Tomas Restrepo
+  login: tomasr
+  email: tomas@winterdom.com
+  url: http://winterdom.com/
+author_login: tomasr
+author_email: tomas@winterdom.com
+author_url: http://winterdom.com/
+wordpress_id: 988
+wordpress_url: http://winterdom.com/2006/04/qualitywithoutaname
+date: '2006-04-09 11:00:43 +0000'
+date_gmt: '2006-04-09 11:00:43 +0000'
+categories:
+- Development
+- Architecture
+tags: []
+comments: []
+---
+<p><!--start_raw-->Sam commented <a href="http:&#47;&#47;codebetter.com&#47;blogs&#47;sam.gentile&#47;archive&#47;2006&#47;04&#47;08&#47;142523.aspx">here</a> on James Shore's <a href="http:&#47;&#47;www.jamesshore.com&#47;Articles&#47;Quality-With-a-Name.html">Quality With a Name</a> article. I found this quite an interesting observation on what constitues good software design, and I tend to agree with a lot of what's being said here. I'll admit to being a fan of QWAN, as Sam calls it, as it is one subjective measure of software quality. Cleanliness and beauty have a <a href="http:&#47;&#47;www.paulgraham.com&#47;taste.html">very significant appeal</a> when it comes to design and code, and I for one value it in a very specific sense: It's not necessarily a good measure, but it definitely serves its purpose as a warning tool: If things stop being pleasing and -  to a degree - aesthetically pleasing, something is probably wrong. If things don't fit, something is wrong. If it hurts, something is wrong. You get the drift.</p>
+<p>James comes up with the following definition, though: <i>"A good software design minimizes the time required to create, modify, and maintain the software while achieving acceptable run-time performance."</i>. I agree with the basic premise; but I believe something is missing here.</p></p>
+<p>If we want to make progress and make quality more "concrete" and objective, then we need to be able to measure it, hopefully in an easy way. Problem is, I believe James definition doesn't quite fit the bill, though it presents a starting point for getting there. </p></p>
+<p>There are two basic issues I have with this definition:</p></p>
+<ol>
+<li>Quality is defined here mostly in regards to change. This makes sense from the basic premise that it is change that causes us the most pain, and the fact that we change code all the time. It ticks me of a little here, though, than then we define quality in a dynamic fashion (good in a way) but completely ignore the static side. Can we not apply a quality metric to an existing piece of code&#47;design without changing it? Does it not have a quality just by its existence? (ok, a little phylosofical, I agree).
+<p>More over, based on this definition, and James' attempts at measuring quality based on estimates, real effort and degree of change, it means we can only assert quality of an existing design in a <i>post hoc</i> way, after the fact. Several problems derive from this fact, in my humble opinion:</p></p>
+<ul>
+<li>An input to James equation is an estimate. To estimate we need to know the quality level of the existing design. Otherwise, estimates would not take into account the complexity of the change (which definitely depends on the existing code quality). At best, it means we have a circular, recursive definition.</li>
+<li>It basically ignores the <i>qualities</i> of the initial design you're starting with before you change it. Consider this: If the code has good quality (it is easy to change), then your initial estimate for doing a modification to the design will be smaller (i.e. more affected by the business complexity of the change than by the difficulty of modifying the existing code). On the other hand, if the code had good quality, your estimate will be larger (you expect a lot of work to fight&#47;fix the existing design). I don't see James' equations taking into account this little fact that the estimates are absolutely dependent on the quality of the initial code you work with.</li><br />
+</ul><br />
+</li></p>
+<li>I find one more thing lacking from this quality defintion: it seems to me that it ignores context. On my experience, change is a very context-dependent thing, and it's one reason why measuring how easy to change some design is is hard.
+<p>Consider for example some code you wrote initially for calculating a payment plan for a loan based on the loan's terms and so on. You think you did a good design, and worked to make the code easier to change: You design the system so that you could configure the equations used to calculate the ammount to pay for each of the loan payments based on a set of terms, and this works great for a year, as the users adjust how it is calculated to make it more accurate or whatever. Here, you have a great history, with quality being pretty good (change was easy).</p></p>
+<p>Then comes a user and requests that, you know, we have this new loan product where each payment needs to be calculated on a different set of terms. You evaluate the change and discover that there's no way you can just fiddle around with your existing code and configuration mechanism to support it, and more work is needed to either do heavy changes to the engine or write an alternative engine altogether. Now, based on the quality measure we have, the code is suddently "low-quality". Well, it cannot be both good and bad quality, can it?</p></p>
+<p>This is exactly what I mean when I say that change is context-dependent. To create a good design, given time and other constraints, you make some assumptions about what possible changes can appear over time, and you approach your design so that changes along those assumptions are made easy. If it turns out that your initial assumption doesn't hold anymore, does that really make the design be of a lesser-quality? I'm not sure. In the example above it certainly seemed pretty high quality to start with, and only looked bad once you changed directions heavily.</p></p>
+<p>What I mean by this is that it seems to me like measuring quality based solely on how easy to change an existing design is completely ignores the fact that when designing you try sometimes to optimize for some kinds of changes. It's almost required to do so unless you have infinite time to write the code in the first place. In other words, when considering quality based on "ease of change" of code, don't we need to ask ourselves "Change to do what?"<br></p></li></ol>
+<p>That all said, I agree 100% with the universal design truths James presents. They just resonate with me.</p><br />
+<!--end_raw--></p>

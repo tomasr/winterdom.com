@@ -1,0 +1,27 @@
+---
+layout: post
+status: publish
+published: true
+title: Other .NET FX tools
+author:
+  display_name: Tomas Restrepo
+  login: tomasr
+  email: tomas@winterdom.com
+  url: http://winterdom.com/
+author_login: tomasr
+author_email: tomas@winterdom.com
+author_url: http://winterdom.com/
+wordpress_id: 968
+wordpress_url: http://winterdom.com/2002/10/othernetfxtools
+date: '2002-10-19 19:58:51 +0000'
+date_gmt: '2002-10-19 19:58:51 +0000'
+categories:
+- ".NET"
+tags: []
+comments: []
+---
+<p><!--start_raw-->I've continued my exploration of the .NET Framework tools. Today, the time came for SoapSuds.exe and MgmtClassGen.exe.</p>
+<p>The first one is interesting, because SoapSuds.exe is simply a driver around a couple of classes called <code>SoapSudsCode</code> and <code>SoapSudsArgs</code>. Now, that by itself isn't anything out of the ordinary. What is interesting, though, is that both of these classes are <i>not</i> defined inside SoapSuds.exe or the .NET framework libraries, but instead in a little known assembly called, you guessed it, SoapSudsCode.dll.</p></p>
+<p>So what? Well, I found prety intriguing the fact that this assembly is <i>not</i> installed anywhere on the filesystem but the GAC. Yep. Nowhere else. Now, I'm not quire sure why they went through all this trouble. Truth is, there's not much magic going on inside SoapSudsCode either; it's basically a large driver around the <code>MetaData</code> class in the <code>System.Runtime.Remoting.MetadataServices.MetaData</code> namespace.</p></p>
+<p>MgmtClassGen.exe is actually a lot simpler. The entire application consists essentially of some code to parse the arguments and a call to the <code>GetStronglyTypedClassCode()</code> method of the <code>System.Management.ManagementClass</code> class.</p></p>
+<p>All of this outlines one of my favourite things in .NET: Quite a few bunch of the development tools we use daily are nothing more than simple wrappers around functionality already provided in the base class libraries. It's just so rich! And it's all functionality you could take advantage of if you were to build your own tools!</p><!--end_raw--></p>

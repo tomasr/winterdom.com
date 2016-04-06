@@ -1,0 +1,30 @@
+---
+layout: post
+status: publish
+published: true
+title: PowerShell's Resolve-Path
+author:
+  display_name: Tomas Restrepo
+  login: tomasr
+  email: tomas@winterdom.com
+  url: http://winterdom.com/
+author_login: tomasr
+author_email: tomas@winterdom.com
+author_url: http://winterdom.com/
+wordpress_id: 451
+wordpress_url: http://winterdom.com/2008/01/powershellsresolvepath
+date: '2008-01-31 15:58:27 +0000'
+date_gmt: '2008-01-31 15:58:27 +0000'
+categories:
+- PowerShell
+tags: []
+comments: []
+---
+<p><!--start_raw-->
+<p>One of the commands I've found more useful in PowerShell is the resolve-path command, which <em>"interprets the wildcard characters in a path and displays the items and containers at the location specified by the path, such as the files and folders or registry keys and subkeys. The names appear just as they are represented in the drive, including capitalization"</em>.</p>
+<p>It's the first part of the description states what I found to be most useful about it. Here's an example: I keep a Tools folder around in my E:\ drive which contains a large and assorted set of tools and executables I use everyday. Everything in this folder is stuff I can simply copy over to another machine and it will work right away, meaning that I don't need to care about installing or synchronizing any of them when I switch machines.</p>
+<p>This folder also includes a few open source tools, like NUnit, NAnt or Subversion, which are updated every once in a while. I don't care about keeping multiple version of them around, but I do care about knowing which version I have in my system so that I can easily check if updates are available. For example, I might keep SVN in "$Tools\svn-win32-1.4.2\".</p>
+<p>The last thing I want, however, is to have to keep updating my profile and other scripts where I use SVN so that the path matches the folder I have it installed with. With PowerShell, however, I can simply do stuff like this:</p>
+<div>append-path (<font color="#2b91af">resolve-path</font>&#160;<font color="#800000">"$TOOLS\svn-*\bin"</font>)     <br &#47;>append-path (<font color="#2b91af">resolve-path</font>&#160;<font color="#800000">"$TOOLS\nant-*"</font>)</div>
+<p>Here, I'm simply adding these folders to my path. If I download a new version of the tools, I can simply install it in it's own named folder (with the version number) and delete the old one, and my scripts (and my PATH!) will still be valid thanks to Resolve-Path. Sweet!</p>
+<div class="wlWriterSmartContent" id="scid:0767317B-992E-4b12-91E0-4F059A8CECA8:479154a4-0302-4eec-9fe1-08ee9e533752" style="padding-right: 0px; display: inline; padding-left: 0px; padding-bottom: 0px; margin: 0px; padding-top: 0px">Technorati tags: <a href="http:&#47;&#47;technorati.com&#47;tags&#47;PowerShell" rel="tag">PowerShell</a></div><!--end_raw--></p>

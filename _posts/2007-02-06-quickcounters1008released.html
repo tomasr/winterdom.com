@@ -1,0 +1,59 @@
+---
+layout: post
+status: publish
+published: true
+title: QuickCounters 1.0.0.8 Released
+author:
+  display_name: Tomas Restrepo
+  login: tomasr
+  email: tomas@winterdom.com
+  url: http://winterdom.com/
+author_login: tomasr
+author_email: tomas@winterdom.com
+author_url: http://winterdom.com/
+wordpress_id: 21
+wordpress_url: http://winterdom.com/2007/02/quickcounters1008released
+date: '2007-02-06 04:39:57 +0000'
+date_gmt: '2007-02-06 04:39:57 +0000'
+categories:
+- QuickCounters
+- WCF
+tags: []
+comments: []
+---
+<p><!--start_raw-->
+<p>As <a href="http:&#47;&#47;www.traceofthought.net&#47;">Scott Colestock</a> <a href="http:&#47;&#47;www.traceofthought.net&#47;PermaLink,guid,f0f391ca-ddad-4ef1-8bed-a6e3ee59e48e.aspx">announced</a> last week, a new release of <a href="http:&#47;&#47;www.codeplex.com&#47;quickcounters">QuickCounters</a> was put up for download on the project's CodePlex site. This release includes the following new features for WCF instrumentation:</p>
+<ul>
+<li>Instrumentation of WCF client-side proxies: This part is done by&nbsp;configuring the InstrumentedClientBehavior as an endpoint behavior at the client side. It can be done either through code or through the configuration file. Here's an example of configuring it through code:</li></ul>
+<pre class="csharpcode">ClientProxy client = <span class="kwrd">new</span> ClientProxy(<span class="kwrd">new</span> BasicHttpBinding(), SVC_URI);<br />
+<span class="rem">&#47;&#47; apply behavior</span><br />
+client.Endpoint.Behaviors.Add(<span class="kwrd">new</span> InstrumentedClientBehavior(<span class="str">"TestClient"</span>));<br />
+</pre></p>
+<style type="text&#47;css">.csharpcode, .csharpcode pre<br />
+{<br />
+font-size: small;<br />
+color: black;<br />
+font-family: consolas, "Courier New", courier, monospace;<br />
+background-color: #ffffff;<br />
+&#47;*white-space: pre;*&#47;<br />
+}<br />
+.csharpcode pre { margin: 0em; }<br />
+.csharpcode .rem { color: #008000; }<br />
+.csharpcode .kwrd { color: #0000ff; }<br />
+.csharpcode .str { color: #006080; }<br />
+.csharpcode .op { color: #0000c0; }<br />
+.csharpcode .preproc { color: #cc6633; }<br />
+.csharpcode .asp { background-color: #ffff00; }<br />
+.csharpcode .html { color: #800000; }<br />
+.csharpcode .attr { color: #ff0000; }<br />
+.csharpcode .alt<br />
+{<br />
+background-color: #f4f4f4;<br />
+width: 100%;<br />
+margin: 0em;<br />
+}<br />
+.csharpcode .lnum { color: #606060; }<br />
+</style></p>
+<ul>
+<li>Instrumenting unmatched message handlers in WCF services. I've <a href="http:&#47;&#47;www.winterdom.com&#47;weblog&#47;2006&#47;12&#47;19&#47;InstrumentingUnmatchedMessageHandlers.aspx">spoken a bit</a> about this in the past.</li></ul>
+<div class="wlWriterSmartContent" id="0767317B-992E-4b12-91E0-4F059A8CECA8:2b0a57a3-c41c-4717-846f-8d2c1362ee25" contenteditable="false" style="padding-right: 0px; display: inline; padding-left: 0px; padding-bottom: 0px; margin: 0px; padding-top: 0px">Technorati tags: <a href="http:&#47;&#47;technorati.com&#47;tags&#47;QuickCounters" rel="tag">QuickCounters</a>, <a href="http:&#47;&#47;technorati.com&#47;tags&#47;Windows%20Communication%20Foundation" rel="tag">Windows Communication Foundation</a></div><!--end_raw--></p>

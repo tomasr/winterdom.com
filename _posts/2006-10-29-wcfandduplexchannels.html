@@ -1,0 +1,47 @@
+---
+layout: post
+status: publish
+published: true
+title: WCF and Duplex Channels
+author:
+  display_name: Tomas Restrepo
+  login: tomasr
+  email: tomas@winterdom.com
+  url: http://winterdom.com/
+author_login: tomasr
+author_email: tomas@winterdom.com
+author_url: http://winterdom.com/
+wordpress_id: 243
+wordpress_url: http://winterdom.com/2006/10/wcfandduplexchannels
+date: '2006-10-29 06:21:06 +0000'
+date_gmt: '2006-10-29 06:21:06 +0000'
+categories:
+- Architecture
+- WCF
+- WinFX
+- Web Services
+tags: []
+comments:
+- id: 180
+  author: Klaus Aschenbrenner
+  author_email: Klaus.Aschenbrenner@csharp.at
+  author_url: http://www.csharp.at
+  date: '2006-12-08 11:12:56 +0000'
+  date_gmt: '2006-12-08 11:12:56 +0000'
+  content: |
+    Hi Thomas!
+    One remark to Service Broker: with the external activation mechanism in Service Broker you are also able to execute external applications when a new Service Broker message arrives. So your business logic stuff isn't directly bound to the database - you can do whatever you want when a new message arrives.
+    Klaus Aschenbrenner
+    www.csharp.at
+    http:&#47;&#47;www.sqljunkies.com&#47;weblog&#47;klaus.aschenbrenner
+    Upcoming book: "Pro SQL 2005 Service Broker"
+---
+<p><!--start_raw-->
+<p>Lot's of discussions on the support in Windows Communication Foundation for duplex channels and long running tasks: </p>
+<ul>
+<li><a href="http:&#47;&#47;mtaulty.com&#47;CommunityServer&#47;blogs&#47;mike_taultys_blog&#47;">Mike Taulty</a> talks about <a href="http:&#47;&#47;mtaulty.com&#47;CommunityServer&#47;blogs&#47;mike_taultys_blog&#47;archive&#47;2006&#47;10&#47;26&#47;8937.aspx">trying to implement</a> a composite duplex MSMQ binding for WCF, which would be a really interesting scenario to consider because of the MSMQ qualities, and the limitations he's hitting on the WCF model. </li>
+<li><a href="http:&#47;&#47;blogs.thinktecture.com&#47;cweyer&#47;">Christian Weyer</a> chimes in with <a href="http:&#47;&#47;blogs.thinktecture.com&#47;cweyer&#47;archive&#47;2006&#47;10&#47;27&#47;414731.aspx">some comments</a> on the same topic and offers some possible workarounds he and <a href="http:&#47;&#47;blogs.thinktecture.com&#47;buddhike&#47;">Buddhike</a> have been exploring at thinktecture.</li>
+<li><a href="http:&#47;&#47;devhawk.net&#47;">Harry Pierson</a> asks how well <a href="http:&#47;&#47;devhawk.net&#47;2006&#47;10&#47;29&#47;Is+WCF+QuotStraightforwardquot+For+Long+Running+Tasks.aspx">WCF supports long running tasks</a>. He suggests that WCF does not support them very well, and says that's one reason he likes SQL Server Service Broker so much. I'd say SSSB is a good match&nbsp;only as long as the long running tasks you're going to be executing are purely database driven and can be executed completely within the database. Sure, this is an "expanded universe" with the CLR support in SQL Server 2005, but even so it makes me nervous at times :-). <br>You could also consider using a custom service with MSMQ or something like BizTalk Server for this if you had long running processes that were not completely tied to the DB (or a single DB for that matter).</li></ul>
+<p>Lots of good content to think about and explore!</p>
+<div class="wlWriterSmartContent" id="d7bf807d-7bb0-458a-811f-90c51817d5c2:b6789cf6-3f1d-437b-9658-611d9dc3d8bb" contenteditable="false" style="padding-right: 0px; display: inline; padding-left: 0px; padding-bottom: 0px; margin: 0px; padding-top: 0px">
+<p><span class="TagSite">Technorati:</span> <a href="http:&#47;&#47;technorati.com&#47;tag&#47;Windows+Communication+Foundation" rel="tag" class="tag">Windows Communication Foundation</a>, <a href="http:&#47;&#47;technorati.com&#47;tag&#47;WCF" rel="tag" class="tag">WCF</a>, <a href="http:&#47;&#47;technorati.com&#47;tag&#47;Web+Services.+Architecture" rel="tag" class="tag">Web Services. Architecture</a><br &#47;><!-- StartInsertedTags: Windows Communication Foundation, WCF, Web Services. Architecture :EndInsertedTags --></p></div><!--end_raw--></p>

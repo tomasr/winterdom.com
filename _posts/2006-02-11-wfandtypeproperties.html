@@ -1,0 +1,41 @@
+---
+layout: post
+status: publish
+published: true
+title: WF and Type properties
+author:
+  display_name: Tomas Restrepo
+  login: tomasr
+  email: tomas@winterdom.com
+  url: http://winterdom.com/
+author_login: tomasr
+author_email: tomas@winterdom.com
+author_url: http://winterdom.com/
+wordpress_id: 862
+wordpress_url: http://winterdom.com/2006/02/wfandtypeproperties
+date: '2006-02-11 10:48:02 +0000'
+date_gmt: '2006-02-11 10:48:02 +0000'
+categories:
+- WinFX
+- Workflow
+tags: []
+comments: []
+---
+<p><!--start_raw-->
+<p>When creating a new custom activity for <a href="http:&#47;&#47;www.windowsworkflow.net&#47;">Windows Workflow Foundation</a>, you might want to define a property on your activity of type System.Type. An example of a property that does this would be the InterfaceType property of the HandleExternalEventActivity. <br><br>Of course, you'd like it to be so that you could use the very nice Type selection dialog that the HandleExternalEvent Activity has, instead of just having the user type the fully qualified name of the type, which is very error prone (not to mention very user unfriendly). Fortunately, there is a way to do this, at least with beta 2 of WF, by using the TypeBrowserEditor class defined in System.Workflow.ComponentModel.Design as the UITypeEditor for your Type property. Here's an example:</p></p>
+<p class="MsoNormal" style="margin: 0in 0in 0pt; line-height: normal;"><span style="font-size: 10pt; color: gray; font-family: Consolas;">&#47;&#47;&#47;</span><span style="font-size: 10pt; color: green; font-family: Consolas;"> </span><span style="font-size: 10pt; color: gray; font-family: Consolas;"><br />
+<summary><o:p></o:p></span></p></p>
+<p class="MsoNormal" style="margin: 0in 0in 0pt; line-height: normal;"><span style="font-size: 10pt; color: gray; font-family: Consolas;">&#47;&#47;&#47;</span><span style="font-size: 10pt; color: green; font-family: Consolas;"> Type of the message object to expect<o:p></o:p></span></p></p>
+<p class="MsoNormal" style="margin: 0in 0in 0pt; line-height: normal;"><span style="font-size: 10pt; color: gray; font-family: Consolas;">&#47;&#47;&#47;</span><span style="font-size: 10pt; color: green; font-family: Consolas;"> </span><span style="font-size: 10pt; color: gray; font-family: Consolas;"></summary><o:p></o:p></span></p></p>
+<p class="MsoNormal" style="margin: 0in 0in 0pt; line-height: normal;"><span style="font-size: 10pt; font-family: Consolas;"><font color="#000000">[</font><span style="color: teal;">DefaultValue</span><font color="#000000">(</font><span style="color: blue;">typeof</span><font color="#000000">(</font><span style="color: blue;">string</span><font color="#000000">))]<o:p></o:p></font></span></p></p>
+<p class="MsoNormal" style="margin: 0in 0in 0pt; line-height: normal;"><span style="font-size: 10pt; font-family: Consolas;"><font color="#000000">[</font><span style="color: teal;">Description</span><font color="#000000">(</font><span style="color: maroon;">"Type of the message object to expect"</span><font color="#000000">)]<o:p></o:p></font></span></p></p>
+<p class="MsoNormal" style="margin: 0in 0in 0pt; line-height: normal;"><span style="font-size: 10pt; font-family: Consolas;"><font color="#000000">[</font><span style="color: teal;">Category</span><font color="#000000">(</font><span style="color: maroon;">"Activity"</span><font color="#000000">)]<o:p></o:p></font></span></p></p>
+<p class="MsoNormal" style="margin: 0in 0in 0pt; line-height: normal;"><span style="font-size: 10pt; font-family: Consolas;"><font color="#000000">[</font><span style="color: teal;">Editor</span><font color="#000000">(</font><span style="color: blue;">typeof</span><font color="#000000">(System</font><span style="color: blue;">.</span><font color="#000000">Workflow</font><span style="color: blue;">.</span><font color="#000000">ComponentModel</font><span style="color: blue;">.</span><font color="#000000">Design</font><span style="color: blue;">.</span><span style="color: teal;">TypeBrowserEditor</span><font color="#000000">), <o:p></o:p></font></span></p></p>
+<p class="MsoNormal" style="margin: 0in 0in 0pt; line-height: normal;"><span style="font-size: 10pt; font-family: Consolas;"><span style=""><font color="#000000">&nbsp;&nbsp; </font></span><span style="color: blue;">typeof</span><font color="#000000">(System</font><span style="color: blue;">.</span><font color="#000000">Drawing</font><span style="color: blue;">.</span><font color="#000000">Design</font><span style="color: blue;">.</span><span style="color: teal;">UITypeEditor</span><font color="#000000">))]<o:p></o:p></font></span></p></p>
+<p class="MsoNormal" style="margin: 0in 0in 0pt; line-height: normal;"><span style="font-size: 10pt; font-family: Consolas;"><font color="#000000">[</font><span style="color: teal;">ValidationOption</span><font color="#000000">(</font><span style="color: teal;">ValidationOption</span><span style="color: blue;">.</span><font color="#000000">Required)]<o:p></o:p></font></span></p></p>
+<p class="MsoNormal" style="margin: 0in 0in 0pt; line-height: normal;"><span style="font-size: 10pt; color: blue; font-family: Consolas;">public</span><span style="font-size: 10pt; font-family: Consolas;"><font color="#000000"> </font><span style="color: teal;">Type</span><font color="#000000"> MessageType<o:p></o:p></font></span></p></p>
+<p class="MsoNormal" style="margin: 0in 0in 0pt; line-height: normal;"><span style="font-size: 10pt; font-family: Consolas;"><font color="#000000">{<o:p></o:p></font></span></p></p>
+<p class="MsoNormal" style="margin: 0in 0in 0pt; line-height: normal;"><span style="font-size: 10pt; font-family: Consolas;"><span style=""><font color="#000000">&nbsp;&nbsp; </font></span><span style="color: blue;">get</span><font color="#000000"> { </font><span style="color: blue;">return</span><font color="#000000"> _messageType; }<o:p></o:p></font></span></p></p>
+<p class="MsoNormal" style="margin: 0in 0in 0pt; line-height: normal;"><span style="font-size: 10pt; font-family: Consolas;"><span style=""><font color="#000000">&nbsp;&nbsp; </font></span><span style="color: blue;">set</span><font color="#000000"> { _messageType </font><span style="color: blue;">=</span><font color="#000000"> </font><span style="color: blue;">value</span><font color="#000000">; }<o:p></o:p></font></span></p></p>
+<p class="MsoNormal" style="margin: 0in 0in 0pt; line-height: normal;"><span style="font-size: 10pt; font-family: Consolas;"><font color="#000000">}<o:p></o:p></font></span></p></p>
+<p>&nbsp;</p><!--end_raw--></p>

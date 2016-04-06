@@ -1,0 +1,33 @@
+---
+layout: post
+status: publish
+published: true
+title: PipelineTesting v1.2.0.0 Released
+author:
+  display_name: Tomas Restrepo
+  login: tomasr
+  email: tomas@winterdom.com
+  url: http://winterdom.com/
+author_login: tomasr
+author_email: tomas@winterdom.com
+author_url: http://winterdom.com/
+wordpress_id: 772
+wordpress_url: http://winterdom.com/2008/09/pipelinetestingv1200released
+date: '2008-09-24 06:58:23 +0000'
+date_gmt: '2008-09-24 06:58:23 +0000'
+categories:
+- BizTalk
+tags: []
+comments: []
+---
+<p><!--start_raw-->
+<p>I&rsquo;m happy to announce a new release of my PipelineTesting library! </p>
+<p>PipelineTesting is used alongside your favorite Unit Testing tool to make it easier to create and test custom pipeline components, pipelines and schemas for BizTalk Server 2006 using Test-Driven Development, or simply to have a set of regression tests to detect bugs arising from code changes.</p>
+<p>These are the most important new features introduced in this version:</p>
+<ol>
+<li><a href="http:&#47;&#47;github.com&#47;tomasr&#47;pipelinetesting&#47;wikis&#47;per-instance-pipeline-configuration">Per-Instance Pipeline Configuration</a>: You can now load an XML file with modified settings into a pipeline instance. This relies on the same XML format used by the BizTalk 2006 Administration Console.
+<li><a href="http:&#47;&#47;github.com&#47;tomasr&#47;pipelinetesting&#47;wikis&#47;accessing-components">Accessible Components</a>: A new <code>GetComponent()</code> method gives you access to the individual components within the pipeline. This makes it easy to load an existing compiled pipeline and then manually tweak the component options through code before executing it.
+<li><a href="http:&#47;&#47;github.com&#47;tomasr&#47;pipelinetesting&#47;wikis&#47;loading-saved-messages">Loading Saved Messages</a>: Allows you to recreate an entire <code>IBaseMessage</code> object from the set of files exported by the BizTalk Admin Console or HAT by calling <code>MessageHelper.LoadMessage()</code> and providing the path to the exported <code><msg>_context.xml</code> file.</li></ol>
+<p>The best news, however, is that I&rsquo;ve been working on putting together existing PipelineTesting documentation I had previously written in different blog posts, along with documentation on this new features into a single, consolidated location. I give you the <a href="http:&#47;&#47;github.com&#47;tomasr&#47;pipelinetesting&#47;wikis">PipelineTesting Wiki</a>! </p>
+<p>This should make it easier for people to get started using the library.</p>
+<p>Yu will find a snapshot of the code and a pre-built binary in the <a href="http:&#47;&#47;media.winterdom.com&#47;dev&#47;bts&#47;PipelineTesting.zip">usual location</a>, and always current source code in the <a href="http:&#47;&#47;github.com&#47;tomasr&#47;pipelinetesting&#47;">GitHub repo</a>.</p><!--end_raw--></p>

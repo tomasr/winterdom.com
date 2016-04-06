@@ -1,0 +1,70 @@
+---
+layout: post
+status: publish
+published: true
+title: Custom Controls in WPF
+author:
+  display_name: Tomas Restrepo
+  login: tomasr
+  email: tomas@winterdom.com
+  url: http://winterdom.com/
+author_login: tomasr
+author_email: tomas@winterdom.com
+author_url: http://winterdom.com/
+wordpress_id: 191
+wordpress_url: http://winterdom.com/2006/04/customcontrolsinwpf
+date: '2006-04-25 21:53:03 +0000'
+date_gmt: '2006-04-25 21:53:03 +0000'
+categories:
+- ".NET"
+- WinFX
+- WPF
+tags: []
+comments:
+- id: 145
+  author: Robin Davies
+  author_email: ''
+  author_url: ''
+  date: '2006-06-02 09:03:47 +0000'
+  date_gmt: '2006-06-02 09:03:47 +0000'
+  content: |
+    You raise an interesting point. I think it will be many years before the core paradigms of application development in WPF really stabilize. But I think the question of who owns presentation rendering in the immediate future is clear: it's not us programmers.
+    Coming to the table with an extensive HTML background, I *get* the styles and templates. I really do. The key to understanding templates is, I think, that you have to understand that nobody's going to hand-code templates from scratch. And I think you need to understand great divide between the roles of graphic designers and programmers that's expected in WPF.
+    The template system is intended to be skinning system. We as programmers are supposed to implement relatively presentationless XAML. Sure. We own details of how things lay out in the window; and the behaviours of elements in the UI. But it is graphics designers who will own the actual presentation, and the actual authoring of the skins.
+    So how do templates get built? Using Microsoft Expression, of course. That's the tool that allows designers to skin the application without writing code. Reallistically, I think designers will use XAML templates much the same that CSS stylesheets are used, although XAML templates are far more powerful. Just like in HTML, designers will flip back and forth between the rendered and raw XAML to produce great looking templates. (Just like in HTML, I think designers will need to be XAML-literate, and able to dig in wiht a text editor where neccessary).
+    Again, coming from an HTML background, I think the presentationless authoring of functional XAML as a separate activity from the skinning process is a great idea. Programmers produce crappy looking UIs. I don't know if you've seen the BBC demo from Mix '06 (part of Bill's keynote). There ain't no way that mere mortal programmers are going to produce UIs that look that good.
+    That being said, sure, there are times when you need to get down and dirty and actually render content. But the secret in that case is to provide a rich set of presentation controls to our designers (foreground&#47;background colors, fonts, at a minimum, maybe even wholescale elements that are rendered using complex graphics that have been built by a designer, and plugged in via XAML templates.
+---
+<p><!--start_raw-->
+<p>While reading <a href="http:&#47;&#47;www.sellsbrothers.com&#47;">Chris Sell</a>'s and <a href="http:&#47;&#47;www.interact-sw.co.uk&#47;iangblog&#47;">Ian Griffith</a>'s <a href="http:&#47;&#47;www.amazon.com&#47;gp&#47;product&#47;0596101139">Programming Windows<br />
+Presentation Foundation</a> book, I ran across the following tidbit on chapter 9<br />
+on custom controls: <em>"One of the main reasons for writing custom controls in<br />
+older user interface technologies is to modify the appereance of a control, but<br />
+as we've seen in earlier chapters, the content model and templates mean this is<br />
+often unnecessary."</em></p></p>
+<p>From what little I've experienced of WPF, the whole templating mechanism<br />
+seems extremely powerful, particularly given the content model for UI Elements<br />
+and the layout mechanism. Certainly, very impressive things can be achieved this<br />
+way. That said, it does seem the whole templating mechanism can be just as<br />
+easily abused (just like everything else in every other technology). So, where<br />
+does the line get drawn between templating and creating new custom controls?<br />
+Obviously, the second option takes more work (or so it seems to me, at this<br />
+time), while the first can be more convenient. </p></p>
+<p>Thing is, in my experience working with other smart-client technologies<br />
+(WinForms, MFC, Win32), I found myself creating custom controls not just because<br />
+it was the only possibility to affect behavior or custom draw a control (it<br />
+isn't), but because it really helped make the code more modular and mantainable<br />
+and make it self-contained (which helps reusability a lot, by the way). So, when<br />
+I look at the templating mechanism in WPF, I find myself thinking that, while<br />
+very cool and powerful, it&nbsp;could easily turn into a mantainance nightmare.<br />
+In other words, I find myself asking "How is this different from, say, handling<br />
+the Paint event for a child control in a Windows Forms and doing custom drawing<br />
+there?" (from a code estructure point of view). At least from my little<br />
+knowledge of WPF, I'd&nbsp;dread hundreds-of-lines&nbsp;XAML files with tens of<br />
+templates and resources, just as much as I'd dread the corresponding windows<br />
+forms code with hundreds of lines of embedded presentation, drawing and business<br />
+logic.</p></p>
+<p>I've been pondering about this for a while, and would love to hear the<br />
+opinion of those of you that have been doing real-world WPF applications out<br />
+there on the topic of reusability, templates and custom controls on WPF. Please,<br />
+please convince me I'm wrong ;-)</p><!--end_raw--></p>

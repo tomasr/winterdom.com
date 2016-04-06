@@ -1,0 +1,27 @@
+---
+layout: post
+status: publish
+published: true
+title: OleDbDataReader::RecordsAffected
+author:
+  display_name: Tomas Restrepo
+  login: tomasr
+  email: tomas@winterdom.com
+  url: http://winterdom.com/
+author_login: tomasr
+author_email: tomas@winterdom.com
+author_url: http://winterdom.com/
+wordpress_id: 614
+wordpress_url: http://winterdom.com/2002/06/oledbdatareaderrecordsaffected
+date: '2002-06-15 08:34:52 +0000'
+date_gmt: '2002-06-15 08:34:52 +0000'
+categories:
+- ".NET"
+tags: []
+comments: []
+---
+<p><!--start_raw-->I've been fooling around with execution of SQL Statement Batches using ADO.NET, using both the SqlClient and OleDb.NET client this week. In doing so, I ran into a slightlt misleading statement in the documentation for <code>OleDbDataReader::RecordsAffected</code> property. It says:</p>
+<p><quote><i><br />
+"The RecordsAffected property is not set until all rows are read and you close the OleDbDataReader."<br />
+</i></quote></p></p>
+<p>This isn't exactly true. As I found out, it is indeed set incrementaly as you iterate through the returned result sets (using <code>OleDbDataReader::NextResult()</code>). So, what happens is that you can read it midway and get partial information, or wait until you've gotten as far as the last result set returned or the reader is closed. Either way, it's not exactly as the documentation states, which can be confusing (or even dangerous, for all I know).</p><!--end_raw--></p>
