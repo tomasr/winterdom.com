@@ -1,0 +1,39 @@
+# visit https://github.com/mojombo/jekyll/wiki/Configuration for more settings
+
+paginate: 10 # pagination based on number of posts
+paginate_path: "page:num"
+exclude: ["README.md"] # files to exclude
+highlighter: pygments
+markdown: kramdown
+disqus: winterdom
+title: Winterdom
+
+defaults:
+  -
+    scope:
+      path: "" # empty string for all files
+    values:
+      title: Winterdom
+
+description: by d&#230;mons be driven - a site by Tomas Restrepo
+author:
+  name: Tomas Restrepo
+  email: tomas@winterdom.com.com
+  github: tomasr
+  twitter: tomasrestrepo
+  description: by d&aelig;mons be driven - a site by Tomas Restrepo
+  bio: Software developer located in Colombia. Sr. PFE at Microsoft.
+  500px: tomasr
+  email_md5: d2cb495ec8c6975874403030a4865a33
+
+rss_path: feed.xml
+categories_path: categories.html
+tags_path: tags.html
+
+# set it as url of an image
+# sidebar_background_image: https://www.dropbox.com/s/g9h23zrycedxtk5/sky.png?raw=1
+
+BASE_PATH:
+
+gems:
+  - jekyll-paginate
