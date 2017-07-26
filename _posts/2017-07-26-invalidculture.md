@@ -33,13 +33,13 @@ Looking at the stack trace for the exception, I noticed that it would go through
 so I fired up ILSpy and went hunting for the `System.Windows.Input.InputLanguageSource` class, located in `PresentationCore.dll`,
 and found this:
 
-```C#
+```c#
 internal InputLanguageSource(InputLanguageManager inputlanguagemanager)
 {
-	this._inputlanguagemanager = inputlanguagemanager;
-	this._langid = (short)NativeMethods.IntPtrToInt32(SafeNativeMethods.GetKeyboardLayout(0));
-	this._dispatcherThreadId = SafeNativeMethods.GetCurrentThreadId();
-	this._inputlanguagemanager.RegisterInputLanguageSource(this);
+    this._inputlanguagemanager = inputlanguagemanager;
+    this._langid = (short)NativeMethods.IntPtrToInt32(SafeNativeMethods.GetKeyboardLayout(0));
+    this._dispatcherThreadId = SafeNativeMethods.GetCurrentThreadId();
+    this._inputlanguagemanager.RegisterInputLanguageSource(this);
 }
 ```
 
