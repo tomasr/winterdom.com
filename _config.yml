@@ -8,6 +8,11 @@ markdown: kramdown
 disqus: winterdom
 title: Winterdom
 
+
+kramdown:
+  input: GFM
+  syntax_highlighter: rouge
+
 defaults:
   -
     scope:
