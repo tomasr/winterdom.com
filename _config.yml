@@ -7,6 +7,7 @@ highlighter: rouge
 markdown: kramdown
 disqus: winterdom
 title: Winterdom
+appinsights: 5c71acfc-a0b1-4d32-b4ce-5743db57a775
 
 
 kramdown:
