@@ -1,14 +1,13 @@
 ---
 layout: post
-categories:
-- Troubleshooting
-- Visual Studio
-- Azure
+category: VisualStudio
 title: Service Fabric Streaming Trace Viewer
 tags:
 - Azure
 - ServiceFabric
 - VisualStudio
+- Troubleshooting
+- Debugging
 ---
 One of my features I find the most useful in the Service Fabric SDK tools for Visual Studio is
 the __Streaming Trace Viewer__ window in Visual Studio. This is used to provide a streaming
