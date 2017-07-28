@@ -1,0 +1,6 @@
+---
+layout: none
+permalink: .htaccess
+---
+RewriteEngine On
+RewriteRule ^/(.*)/(\d\d\d\d)/(.*) /$2/$3
