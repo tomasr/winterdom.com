@@ -8,6 +8,7 @@ tags:
 - VisualStudio
 - Troubleshooting
 - Debugging
+comments: []
 ---
 One of my features I find the most useful in the Service Fabric SDK tools for Visual Studio is
 the __Streaming Trace Viewer__ window in Visual Studio. This is used to provide a streaming

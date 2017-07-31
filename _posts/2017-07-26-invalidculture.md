@@ -2,6 +2,7 @@
 layout: post
 category: Troubleshooting
 title: Culture is not supported
+comments: []
 ---
 Today I was helping a customer troubleshoot an issue with a tool that is WPF based.
 What was happening was a bit surprising to me, and something I haven't seen all that clearly documented,

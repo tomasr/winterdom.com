@@ -2,6 +2,7 @@
 layout: post
 category: Blogging
 title: Moved to Jekyll
+comments: []
 ---
 
 I've updated my site, moving away from Wordpress. Instead it is now a static site build with [Jekyll](https://jekyllrb.com).

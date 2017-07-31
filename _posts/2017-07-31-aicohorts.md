@@ -6,6 +6,7 @@ tags:
 - Viasfora
 - Azure
 - ApplicationInsights
+comments: []
 ---
 A while ago I added some basic telemetry to [Viasfora](http://viasfora.com/)
 based on Azure [Application Insights](https://azure.microsoft.com/en-us/services/application-insights/).

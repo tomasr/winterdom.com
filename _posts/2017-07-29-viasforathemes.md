@@ -6,6 +6,7 @@ tags:
 - Viasfora
 - VisualStudio
 - VSIX
+comments: []
 ---
 With the release of [Viasfora](http://viasfora.com/) v3.6 in the following days,
 there are two new features coming up:
