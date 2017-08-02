@@ -31,8 +31,8 @@ Once you've exported your settings to a `.vssettings` file, download the [PowerS
 * Open a new PowerShell console
 * Execute the script like this:
 
-```powershell
-.\Convert-ViasforaTheme.ps1 -VSSettings <path_to_vssettings_file> -ThemeFile <path_to_new_theme_file>
+```ps1
+.\Convert-ViasforaTheme.ps1 -VSSettings "path_to_vssettings_file" -ThemeFile "path_to_new_theme_file"
 ```
 
 The result will be a JSON file that you can then import into Viasfora from the `Tools` -> `Options` ->
