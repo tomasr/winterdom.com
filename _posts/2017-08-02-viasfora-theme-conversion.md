@@ -8,7 +8,7 @@ tags:
 - VSIX
 comments: []
 ---
-A few days ago, I wrote about [Themes coming to Viasfora]({% post_url 2017-017-29-viasforathemes %}) in v3.6.
+A few days ago, I wrote about [Themes coming to Viasfora]({% post_url 2017-07-29-viasforathemes %}) in v3.6.
 One of the issues that some users will face is that I had to make a breaking change to fix something I
 was unhappy about for a long time: The classification names used by Viasfora were very inconsistent.
 
