@@ -51,6 +51,9 @@ If the command succeeds, we should see something like this:
 }
 ```
 
+You can also use the [Azure CLI](https://docs.microsoft.com/en-us/cli/azure/install-azure-cli)
+command `az eventgrid topic-type list` on version `2.0.14` or later.
+
 Knowing what event publishes exists is only half the story, though. We also want to
 know what type of events a publisher supports. These are called __Event Types__ in
 Event Grid, and we can query those as well.
@@ -81,6 +84,8 @@ If the command succeeds, we should see an output similar to the following:
   ]
 }
 ```
+
+The equivalent Azure CLI command would be `az eventgrid topic-type list-event-types --name Microsoft.Resources.ResourceGroups`.
 
 Now let's see how we can subscribe to events published by the Azure fabric.
 
@@ -193,6 +198,19 @@ created in the previous step:
 
 ```sh
 armclient put /subscriptions/<subscription_id>/providers/Microsoft.EventGrid/eventSubscriptions/<name>?api-version=2017-06-15-preview @<file>
+```
+
+## Listing Event Subscriptions
+
+Another useful thing to know is how to manage existing Event Grid event subscriptions.
+
+We can easily list all event subscriptions created on an Azure subscription using 
+the two commands:
+
+```sh
+armclient get /subscriptions/<subscription_id>/providers/Microsoft.EventGrid/eventSubscriptions?api-version=2017-06-15-preview
+
+az eventgrid event-subscription list
 ```
 
 ## Conclusion
