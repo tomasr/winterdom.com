@@ -77,7 +77,7 @@ $certString = [Convert]::ToBase64String($cert.GetRawCertData())
 New-AzureRmADServicePrincipal -DisplayName $principalName `
                               -CertValue $certString `
                               -EndDate $cert.NotAfter.AddDays(-1)
-``` 
+```
 
 The script assumes you've already signed in to your Azure Subscription using
 `Login-AzureRMAccount`. Let's try executing the script:
