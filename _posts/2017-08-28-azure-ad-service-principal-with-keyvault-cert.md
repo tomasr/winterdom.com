@@ -16,7 +16,10 @@ it might be better to use an X509 certificate as an alternative. You still need 
 find a way to keep the certificate secure, though.
 
 That's where Azure [Key Vault](https://docs.microsoft.com/en-us/azure/key-vault/key-vault-whatis)
-comes in, allowing you to store the authentication certificate in a secure manner.
+comes in, allowing you to store the authentication certificate in a secure manner. An
+application could then obtain the certificate from Key Vault as needed, or if it's
+running in Azure, there might be ways to provision the certificate automatically
+so that we don't need to copy stuff around.
 
 You could obtain a certificate from any valid certification authority and store it
 safely in Key Vault. However, Key Vault can also generate self-signed certificates,
