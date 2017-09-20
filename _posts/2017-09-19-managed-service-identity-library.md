@@ -25,8 +25,8 @@ The public surface of the library is fairly simple, and it is easy to use for th
 When used on App Service, it is very straightforward to use: It will automatically pick up the 
 `MSI_ENDPOINT` and `MSI_SECRET` environment variables and get the token for the resource you specify.
 
-> While testing, noticed that the `MSI_ENDPOINT` variable pointed to http://127.0.0.1:<port>/MSI/token/,
-> where the `<port>` seems to be dynamically assigned for each app.
+> While testing, noticed that the `MSI_ENDPOINT` variable pointed to `http://127.0.0.1:[port]/MSI/token/`,
+> where the `[port]` seems to be dynamically assigned for each app.
 
 One interesting question that came up was how to support developing and debugging the application
 on your local dev workstation when using this library, and it is supported. The basis of this is that
