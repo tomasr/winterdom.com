@@ -1,0 +1,131 @@
+---
+layout: page
+status: publish
+published: true
+title: The internal WND structure
+author:
+  display_name: Tomas Restrepo
+  login: tomasr
+  email: tomas@winterdom.com
+  url: http://winterdom.com/
+author_login: tomasr
+author_email: tomas@winterdom.com
+author_url: http://winterdom.com/
+wordpress_id: 1165
+wordpress_url: http://winterdom.com/?page_id=1165
+date: '2009-04-29 01:02:12 +0000'
+date_gmt: '2009-04-29 01:02:12 +0000'
+categories:
+- Uncategorized
+tags: []
+comments: []
+---
+<p>From user mode programs, one always<br />
+identifies a window by it's handle, and HWND instance. The Win32 api provides a vast number<br />
+of API's that allow you to get and set various properties of a given window, and<br />
+that is quite sufficient. </p><br />
+<P>However, it's interesting to see how the system maintains this<br />
+information internally. It turns out that the internal structure kept by windows<br />
+NT for each window contains a number of interesting things, and it's even more<br />
+interesting to see how NT manipulates it internally.</P><br />
+<P>For the sake of this article, I'll refer to this internal<br />
+structure maintained by NT as the WND structure. The WND structure has a layout<br />
+similar to this:</P></p>
+<pre class="codes"><code><br />
+<FONT color=#cc9900>&#47;&#47;</FONT><br />
+<FONT color=#cc9900>&#47;&#47; internal window class representations</FONT><br />
+<FONT color=#cc9900>&#47;&#47;</FONT><br />
+<FONT color=#0000ff>typedef</FONT> <FONT color=#0000ff>struct</FONT> CLASSINFO<br />
+<FONT color=#0000ff>{</FONT><br />
+    DWORD       unk1<FONT color=#0000ff>;</FONT><br />
+    ATOM        atomWindowType<FONT color=#0000ff>;</FONT><br />
+    WORD        unk2<FONT color=#0000ff>;</FONT><br />
+    DWORD       unk3<FONT color=#0000ff>;</FONT><br />
+    DWORD       unk4<FONT color=#0000ff>;</FONT><br />
+    DWORD       unk5<FONT color=#0000ff>;</FONT><br />
+    DWORD       unk6<FONT color=#0000ff>;</FONT><br />
+    DWORD       unk7<FONT color=#0000ff>;</FONT><br />
+    DWORD       unk8<FONT color=#0000ff>;</FONT><br />
+    CLASSINFO<FONT color=#0000ff>*</FONT>  pSelf<FONT color=#0000ff>;</FONT><br />
+    DWORD       unk10<FONT color=#0000ff>;</FONT><br />
+    DWORD       unk11<FONT color=#0000ff>;</FONT><br />
+    DWORD       dwStyle<FONT color=#0000ff>;</FONT><br />
+    DWORD       unk13<FONT color=#0000ff>;</FONT><br />
+    DWORD       unk14<FONT color=#0000ff>;</FONT><br />
+    DWORD       dwClassBytes<FONT color=#0000ff>;</FONT><br />
+    HINSTANCE   hInstance<FONT color=#0000ff>;</FONT><br />
+<FONT color=#0000ff>}</FONT> CLASSINFO<FONT color=#0000ff>,</FONT> <FONT color=#0000ff>*</FONT>PCLASSINFO<FONT color=#0000ff>;</FONT><br />
+<FONT color=#0000ff>struct</FONT> WNDMENU<FONT color=#0000ff>;</FONT></p>
+<p><FONT color=#cc9900>&#47;&#47; </FONT><br />
+<FONT color=#cc9900>&#47;&#47; possible flag values for dwFlags</FONT><br />
+<FONT color=#cc9900>&#47;&#47;</FONT><br />
+<FONT color=#6699cc>#define WF_ACTIVECAPTION  </FONT><FONT color=#0000ff>(</FONT><FONT color=#8080cc>0x00000040</FONT><FONT color=#0000ff>)</FONT><br />
+<FONT color=#6699cc>#define WF_ANSI           </FONT><FONT color=#0000ff>(</FONT><FONT color=#8080cc>0x00080000</FONT><FONT color=#0000ff>)</FONT></p>
+<p><FONT color=#cc9900>&#47;&#47; </FONT><br />
+<FONT color=#cc9900>&#47;&#47; All pointers that appear in this struct point to memory</FONT><br />
+<FONT color=#cc9900>&#47;&#47; above the 2GB limit, deep into System Address Space.</FONT><br />
+<FONT color=#cc9900>&#47;&#47; However, like the WND structures themselves, all of the</FONT><br />
+<FONT color=#cc9900>&#47;&#47; data pointed to by them can be found in the Process</FONT><br />
+<FONT color=#cc9900>&#47;&#47; address space by substracting from them the same amount</FONT><br />
+<FONT color=#cc9900>&#47;&#47; we use to find this WND*</FONT><br />
+<FONT color=#cc9900>&#47;&#47;</FONT><br />
+<FONT color=#0000ff>typedef</FONT> <FONT color=#0000ff>struct</FONT> WND <FONT color=#0000ff>{</FONT><br />
+      HWND        hWnd<FONT color=#0000ff>;</FONT><br />
+      ULONG       unk1<FONT color=#0000ff>;</FONT><br />
+      ULONG       unk2<FONT color=#0000ff>;</FONT><br />
+      ULONG       unk3<FONT color=#0000ff>;</FONT><br />
+      WND<FONT color=#0000ff>*</FONT>        pSelf<FONT color=#0000ff>;</FONT>         <FONT color=#cc9900>&#47;&#47; pointer to self </FONT><br />
+      DWORD       dwFlags<FONT color=#0000ff>;</FONT><br />
+      ULONG       unk6<FONT color=#0000ff>;</FONT><br />
+      DWORD       dwStyleEx<FONT color=#0000ff>;</FONT><br />
+      DWORD       dwStyle<FONT color=#0000ff>;</FONT><br />
+      HINSTANCE   hInstance<FONT color=#0000ff>;</FONT><br />
+      ULONG       unk10<FONT color=#0000ff>;</FONT><br />
+      WND<FONT color=#0000ff>*</FONT>        pNextWnd<FONT color=#0000ff>;</FONT>      <FONT color=#cc9900>&#47;&#47; pointer to "next" window </FONT><br />
+      WND<FONT color=#0000ff>*</FONT>        pParentWnd<FONT color=#0000ff>;</FONT>    <FONT color=#cc9900>&#47;&#47; pointer to parent wnd. For top-level, this points to the desktop</FONT><br />
+      WND<FONT color=#0000ff>*</FONT>        pFirstChild<FONT color=#0000ff>;</FONT>   <FONT color=#cc9900>&#47;&#47; pointer to first child window </FONT><br />
+      WND<FONT color=#0000ff>*</FONT>        pOwnerWnd<FONT color=#0000ff>;</FONT>     <FONT color=#cc9900>&#47;&#47; pointer to owner window </FONT><br />
+      RECT        rcWnd<FONT color=#0000ff>;</FONT>         <FONT color=#cc9900>&#47;&#47; in screen coordinates</FONT><br />
+      RECT        rcClient<FONT color=#0000ff>;</FONT>      <FONT color=#cc9900>&#47;&#47; in screen coordinates</FONT><br />
+      WNDPROC<FONT color=#0000ff>*</FONT>    pWndProc<FONT color=#0000ff>;</FONT>      <FONT color=#cc9900>&#47;&#47; for system classes, this can be > 2GB</FONT><br />
+      CLASSINFO<FONT color=#0000ff>*</FONT>  pWndClass<FONT color=#0000ff>;</FONT>     <FONT color=#cc9900>&#47;&#47; pointer to internal window class ???</FONT><br />
+      ULONG       unk25<FONT color=#0000ff>;</FONT><br />
+      ULONG       unk26<FONT color=#0000ff>;</FONT><br />
+      ULONG       unk27<FONT color=#0000ff>;</FONT><br />
+      ULONG       unk28<FONT color=#0000ff>;</FONT><br />
+      <FONT color=#0000ff>union</FONT> <FONT color=#0000ff>{</FONT><br />
+         DWORD       dwWndID<FONT color=#0000ff>;</FONT>    <FONT color=#cc9900>&#47;&#47; control ID (lower 16-bits)</FONT><br />
+         WNDMENU<FONT color=#0000ff>*</FONT>    pMenu<FONT color=#0000ff>;</FONT>      <FONT color=#cc9900>&#47;&#47; pointer to internal menu representation</FONT><br />
+      <FONT color=#0000ff>}</FONT> id<FONT color=#0000ff>;</FONT><br />
+      ULONG       unk30<FONT color=#0000ff>;</FONT><br />
+      ULONG       unk31<FONT color=#0000ff>;</FONT><br />
+      ULONG       unk32<FONT color=#0000ff>;</FONT><br />
+      WCHAR<FONT color=#0000ff>*</FONT>      pText<FONT color=#0000ff>;</FONT>         <FONT color=#cc9900>&#47;&#47; pointer to window caption</FONT><br />
+      DWORD       dwWndBytes<FONT color=#0000ff>;</FONT>    <FONT color=#cc9900>&#47;&#47; number of window bytes reserved in wlWndExtra</FONT><br />
+      ULONG       unk35<FONT color=#0000ff>;</FONT>         <FONT color=#cc9900>&#47;&#47; for top level windows, this is pSelf again....???</FONT><br />
+      ULONG       unk36<FONT color=#0000ff>;</FONT><br />
+      ULONG       wlUserData<FONT color=#0000ff>;</FONT><br />
+      ULONG       wlWndExtra<FONT color=#0000ff>[</FONT><FONT color=#8080cc>1</FONT><FONT color=#0000ff>];</FONT><br />
+<FONT color=#0000ff>}</FONT> WND<FONT color=#0000ff>,</FONT> <FONT color=#0000ff>*</FONT>PWND<FONT color=#0000ff>;</FONT><br />
+</pre></CODE><br />
+<P>   Matt Pietrek touched briefly the WND structure<br />
+in his November 199? "Under the Hood" Column in MSJ, but didn't give<br />
+out too much detail of the structure itself. However, he did<br />
+something perhaps more interesting:&nbsp;he told us how to the system retrieves a pointer to this<br />
+structure when needed.</P><br />
+<P>As it turns out, the internal data of the windows is kept by the<br />
+kernel mode components of the Win32 subsystem, which helps protect the internal<br />
+data from wrecked user mode components. However, the kernel maps this memory<br />
+area to a read-only shared memory section maintained by USER32.DLL in the user<br />
+mode accesible address space of each process. This allows many APIs to avoid<br />
+switching into kernel mode to retrieve data, like <code>GetWindowRect()</code>, which helps<br />
+improve windowing performance.</P><br />
+<P>Inside USER32.DLL, the API's retrieve a WND* from an HWND by<br />
+calling the <code>@ValidateHwnd()</code> function or one of its variants (like<br />
+<code>@ValidateHwndNoRip()</code>), which in turn, rely on <code>@HMValidateHandle()</code>.<br />
+ Unfortunately, you can't call this undocumented function from your own apps, since it isn't exported by USER32.DLL.</P><br />
+<P>Getting the pointer yourself is not hard with the help from a<br />
+little assembly code, but it requires that you know where USER32.DLL keeps the<br />
+window list in it's shared memory section (pointed to by <code>_gSharedInfo</code>).&nbsp;You can calculate the<br />
+offset into this list from the HWND by&nbsp;extracting the lower&nbsp;2 bytes<br />
+out of the&nbsp;HWND and multiplying it by 12.<br><br>&nbsp;</P></p>

@@ -1,0 +1,140 @@
+---
+layout: page
+status: publish
+published: true
+title: Authentication the SSPI way
+author:
+  display_name: Tomas Restrepo
+  login: tomasr
+  email: tomas@winterdom.com
+  url: http://winterdom.com/
+author_login: tomasr
+author_email: tomas@winterdom.com
+author_url: http://winterdom.com/
+wordpress_id: 1153
+wordpress_url: http://winterdom.com/?page_id=1153
+date: '2009-04-29 00:55:00 +0000'
+date_gmt: '2009-04-29 00:55:00 +0000'
+categories:
+- Uncategorized
+tags: []
+comments:
+- id: 2907
+  author: Amir
+  author_email: s.amir.alavi@hotmail.com
+  author_url: ''
+  date: '2012-08-14 21:16:48 +0000'
+  date_gmt: '2012-08-14 21:16:48 +0000'
+  content: "This is great. I'm glad that you have done this, because I have been searching
+    for a way to carry out a simple authentication (just pass&#47;fail) with a kerberos
+    5 username and password against a kerberos kdc.\r\n\r\nI'm new to .NET, and I
+    was able to do this in Java using the JAAS library. Could you provide some guidance
+    as to how to do this with kerberos as opposed to NTLM?\r\n\r\nMy specific problem
+    involves a client who wants to authenticate the users of his program against a
+    university's kerberos5 kdc (on a different domain). How do you configure SSPI
+    to authenticate against a specific kdc?"
+- id: 3359
+  author: Rifat
+  author_email: rifat_3n@yahoo.com
+  author_url: ''
+  date: '2012-10-24 03:42:01 +0000'
+  date_gmt: '2012-10-24 03:42:01 +0000'
+  content: "Hi Amir,\r\nI am trying exactly to do something like that. But, I am failing
+    to find out supporting documents&#47;helps. Can you help me ?"
+---
+<p>Many people ask frequently on the Microsoft Newsgroups how can<br />
+they verify that a username and password match against the SAM. Well, on NT, at<br />
+least, it turns out there are two different methods you can use:</p></p>
+<ol>
+<li>
+<p><b>LogonUser()</b>: It's easy to use, and gives you an<br />
+   access token you can use for impersonation later, but unfortunately,<br />
+   requires that the caller holds the SeTcb privilege, which poses a great<br />
+   security risk. The usual workaround is to create an authentication server<br />
+   that runs as a service under the SYSTEM account and does the real work of<br />
+   calling <b>LogonUser().</b></li></p>
+<li>
+<p><b>SSPI:</b> This is the <i>Security Service Provider<br />
+      Interface,</i> which provides a set of APIs you can use to authenticate a<br />
+   user, and acquire credentials for it. The problem with using SSPI is that is<br />
+   complicated, and some aspects of it are not that well documented. To make<br />
+   matter worse, the SSPI samples on the KB and Platform SDK leave a lot to be<br />
+   desired. The nice thing about SSPI, on the other hand, is that it's<br />
+   transport-neutral, as you are responsible for transmitting the packets<br />
+   between client and server (which might be in the same process). Also, some<br />
+   providers support message encription.</li><br />
+</ol></p>
+<p>So, how can you use <b>SSPI</b>, in a single process, to<br />
+authenticate a given username and password? Here it is step by step:</p>
+<ol>
+<li> Load security.dll and get a pointer to the function table.
+<li> Say you want to use the NTLM package (which is the most common), so you call<br />
+   <code>QuerySecurityPackageInfo()</code> to obtain a <code>SecPkgInfo</code> pointer<br />
+   (don't forget to release it later using <code>FreeContextBuffer()</code>).</p>
+<li> Now, think of your app as having two sides in the authentication process:<br />
+   a client and a server. For the server, you'll need to call<br />
+   <code>AcquireCredentialsHandle()</code> once. For the client, you need to do that,<br />
+   too,<br />
+   with a minor change: since you want to get credentials for a different user,<br />
+   you need to fill in a <code>SEC_WINNT_AUTH_IDENTITY</code> struct and pass a pointer to<br />
+   it to <code>AcquireCredentialsHandle()</code> as the 5th parameter. Keep in mind that you<br />
+   should keep the struct around until your done.</p>
+<li> Start the client&#47;server conversation by successive calls to<br />
+   <code>InitializeSecurityContext</code> (for the client side) followed by<br />
+   <code>AcceptSecurityContext</code> (for the server side), passing the<br />
+   output buffer of one as the input buffer to the other. Note that on the first call to ISC() you'll pass NULL<br />
+   as the input buffer.</p>
+<li> Finally, keep doing that until the client gets a return value of <code>SEC_E_OK</code><br />
+   (assuming the auth went ok). It's important that you watch the client side,<br />
+   because when <code>AcceptSecurityContext()</code> returns SEC_E_OK, you still have to<br />
+   pass the client the buffer returned, so you're not really done yet.</p>
+<li> Impersonate: A call to <code>ImpersonateSecurityContext()</code> will cause you to<br />
+   impersonate the security context of the user you just authenticated. Keep in<br />
+   mind that you call this function with the Server's context handle, not the<br />
+   client's. After that, you can go back to the original security context with<br />
+   a call to<code>RevertSecurityContext()</code>.<br />
+</ol></p>
+<p>One important thing to notice while you are calling <code>InitializeSecurityContext()</code><br />
+and <code>AcceptSecurityContext()</code> is that one of those returns <code>SEC_I_COMPLETE_NEEDED</code><br />
+or <code>SEC_I_COMPLETE_AND_CONTINUE</code>, you need to call CompleteAuthToken().</p></p>
+<p>If you are using SSPI in server&#47;client applications, you should be aware of what I<br />
+consider a rather annoying problem with SSPI: The SSPI client is not notified of the<br />
+authentication results, and rather always returns <code>SEC_E_OK</code> (unless another<br />
+error pops up) in the last round, even if the server later denies the logon request. This means<br />
+you need to make your server trap the return of the last call to <code>AcceptSecurityContext()</code><br />
+and explicitly tell your client if the logon request was accepted or not.</p></p>
+<p>I've built a C++ library that greatly simplifies the use of SSPI, while<br />
+keeping it transport-independent, giving the programmer control of the buffers.<br />
+Included in the package are:</p></p>
+<ol>
+<li>Library Source Code
+<li>Precompiled static libs for release ansi and unicode,<br />
+   but you can build the debug versions from the source code </p>
+<li>A simple test app
+<li>Some documentation, although it's quite outdated, so don't trust it too much :)<br />
+</ol></p>
+<p>Minor Comment: The library is very much oriented toward creating<br />
+authentication services built on top of NTLM or Kerb, so currently you won't be<br />
+able to (easily) support things like SCHANNEL. That's one of my goals for the<br />
+next version, but I really haven't had the time to sit down and start version<br />
+2.0</p></p>
+<p>Get the file here: <a href="&#47;files&#47;wsspi.zip">wsspi.zip</a></p></p>
+<p><b>Update:</b> WSSPI V2.0 development is pretty far ahead, so you should see it in a<br />
+couple of weeks. Currently, I'm testing the library implementation, and adding SCHANNEL support<br />
+to it. Here's some of the things you can expect:</p>
+<ul>
+<li>Correction of some bugs in the older library.
+<li>More support for NTLM&#47;Kerb and SCHANNEL providers, plus generic support for any<br />
+   provider.</p>
+<li>Increased Flexibility (capital F!) plus easier extensibility.
+<li>Added support for the rest of the SSPI api, like <code>EncryptMessage()</code> and<br />
+   <code>MakeSignature()</code></p>
+<li>Automatic Client notification of authentication result.<br />
+</ul></p>
+<p><b>Update</b> 08&#47;01&#47;2001: There are finally two updates to WSSPI. The first one is courtesy of<br />
+Jim Johnson, which added support to the basic WSSPI 1.0 for message signing and verification. You can<br />
+get this version <a href="&#47;files&#47;wsspi_updated.zip">here</a>. <br><br />
+Since I've been meaning to finish WSSPI 2.0 for so long, and have not posted anything, I decided to<br />
+post what's already built in case someone finds it useful. Note that this is a complete rewrite, from<br />
+scratch of WSSPI, called WSSPI 2.1, but it is unfinished. Mostly, the Kerberos support is broken.<br />
+You can get the file <a href="&#47;files&#47;wsspi21.zip">here</a></p>

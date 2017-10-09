@@ -1,0 +1,52 @@
+---
+layout: page
+status: publish
+published: true
+title: Handling Keystrokes on a MFC Dialog
+author:
+  display_name: Tomas Restrepo
+  login: tomasr
+  email: tomas@winterdom.com
+  url: http://winterdom.com/
+author_login: tomasr
+author_email: tomas@winterdom.com
+author_url: http://winterdom.com/
+wordpress_id: 1113
+wordpress_url: http://winterdom.com/?page_id=1113
+date: '2009-04-28 02:35:33 +0000'
+date_gmt: '2009-04-28 02:35:33 +0000'
+categories:
+- Uncategorized
+tags: []
+comments: []
+---
+<p>This is an easy topic that seems to stump most MFC newbies. Imagine this:<br />
+You build a Dialog for your MFC application, all works great, until you need to keep track<br />
+of keystrokes on your dialog. Having experience doing the same on your View (Mainframe) classes,<br />
+you add a WM_KEYDOWN handler, confident that it will do it's job.</p></p>
+<p>Soon you discover that it doesn't work, and after quick examination,<br />
+you know it will never work. Why? Simply because the Dialog window (the parent of all controls<br />
+on the dialog) never has the input focus. Focus is always on the hands of one of the child windows<br />
+or controls.</p></p>
+<p>What to do? The answer is easier than you think: Take advantage of a<br />
+CWnd (from which CDialog is derived) virtual method: <code>PreTranslateMessage()</code>.<br />
+By overriding <code>PreTranslateMessage()</code> on your CDialog derived class, you can<br />
+easily peek on messages sent to your window <i>before</i> they are delegated to your child<br />
+windows.</p></p>
+<p>Knowing this, all you have to do is write a piece of code like this:</p>
+<pre class="codes"><code><br />
+BOOL CMyDialog::PreTranslateMessage<FONT color=#0000ff>(</FONT>MSG<FONT color=#0000ff>*</FONT> pMsg<FONT color=#0000ff>)</FONT><br />
+<FONT color=#0000ff>{</FONT><br />
+   <FONT color=#cc9900>&#47;&#47; TODO: Add your specialized code here and&#47;or call the base class</FONT><br />
+   <FONT color=#0000ff>if</FONT> <FONT color=#0000ff>(</FONT>pMsg<FONT color=#0000ff>-&amp;</FONT>gt<FONT color=#0000ff>;</FONT>message <FONT color=#0000ff>==</FONT> WM_KEYDOWN<FONT color=#0000ff>)</FONT><br />
+   <FONT color=#0000ff>{</FONT><br />
+      <FONT color=#cc9900>&#47;&#47; Do your thing here</FONT><br />
+      <FONT color=#cc9900>&#47;&#47; Remember not to return without calling CDialog::PreTranslateMessage()</FONT><br />
+      <FONT color=#cc9900>&#47;&#47; Unless you really know the consequences</FONT><br />
+   <FONT color=#0000ff>}</FONT><br />
+   <FONT color=#0000ff>return</FONT> CDialog::PreTranslateMessage<FONT color=#0000ff>(</FONT>pMsg<FONT color=#0000ff>);</FONT><br />
+<FONT color=#0000ff>}</FONT><br />
+</code></pre></p>
+<p>A you can see, <code>PreTranslateMessage()</code> is a powerful<br />
+method, and much more useful than just getting keystrokes. I'm sure you'll put it<br />
+to good use.</p></p>

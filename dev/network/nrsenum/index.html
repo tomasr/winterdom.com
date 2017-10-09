@@ -1,0 +1,28 @@
+---
+layout: page
+status: publish
+published: true
+title: 'SAMPLE: Enumerating Network Resources'
+author:
+  display_name: Tomas Restrepo
+  login: tomasr
+  email: tomas@winterdom.com
+  url: http://winterdom.com/
+author_login: tomasr
+author_email: tomas@winterdom.com
+author_url: http://winterdom.com/
+wordpress_id: 1124
+wordpress_url: http://winterdom.com/?page_id=1124
+date: '2009-04-28 02:43:49 +0000'
+date_gmt: '2009-04-28 02:43:49 +0000'
+categories:
+- Uncategorized
+tags: []
+comments: []
+---
+<p>This is a sample program to demonstrate how to enumerate resources on the<br />
+network, using the WNetOpenEnum() Win32 API function. The program is short, and almost self explanatory, but there are a couple of things worth mentioning.</p></p>
+<p>When using <code>WNetResourceEnum()</code>, you should allocate a buffer to receive the data, 16K is a typical value used, and then call <code>WNetResourceEnum()</code> as many times are needed to get all the info. Also notice, that the function only gets resources one level deep. To go deeper, you have to recursively call <code>WNetOpenEnum()</code> for each container, passing to it the NETRESOURCE structure you get from <code>WNetResourceEnum()</code></p></p>
+<p>One more thing: because the sample is written in a recursive way, it could cause a stack overflow when run on a large network. Without anything further, here's the code:<br><br />
+<a href="&#47;nrsenum.c">nrsenum.c</a></p>
+<p><b>Update: May 12 - 2000</b>: Thanks to Stefan Kuhr for pointing out to me a little bug that would cause a buffer overrun on large networks. It's now corrected. Thanks Stephan!</p></p>

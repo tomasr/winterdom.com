@@ -1,0 +1,54 @@
+---
+layout: page
+status: publish
+published: true
+title: Additional NAnt Tasks
+author:
+  display_name: Tomas Restrepo
+  login: tomasr
+  email: tomas@winterdom.com
+  url: http://winterdom.com/
+author_login: tomasr
+author_email: tomas@winterdom.com
+author_url: http://winterdom.com/
+wordpress_id: 1099
+wordpress_url: http://winterdom.com/?page_id=1099
+date: '2009-04-28 02:19:59 +0000'
+date_gmt: '2009-04-28 02:19:59 +0000'
+categories:
+- Uncategorized
+tags: []
+comments: []
+---
+<p align="left">This is a set of <a href="http:&#47;&#47;nant.sourceforge.net&#47;">NAnt</a> Tasks that<br />
+you can use for your own buildscripts. This is a very early version (0.1.2.0),<br />
+so there's not much yet. Here's what you'll find here:</p></p>
+<ul>
+<li>
+   <b>Checksum</b>: This is a basic port of Ant's original Checksum task. For now,<br />
+   it only allows you to calculate a checksum value for a set of files.</li></p>
+<li>
+   <b>Concat</b>: This one allows you to concatenate a set of input files. Again,<br />
+   it's a basic port of Ant's Concat task.</li></p>
+<li>
+   <b>MailEx</b>: This one is a modified version of NAnt's original Mail task,<br />
+   which uses filesets instead of attributes to especify attachments.</li></p>
+<li>
+   <b>MgmtClassGen</b>: This one allows you to execute mgmtclassgen.exe from your<br />
+   NAnt scripts to generate typed WMI classes.</li></p>
+<li>
+   <b>NUnitReport</b>: This is a NAnt&#47;NUnit version of Ant's JUnitReport task. It<br />
+   allows you to generate an HTML report of your NUnit test results. You can see<br />
+   an example of such a report <a href="&#47;files&#47;NUnitReport.html">here</a>.</li></p>
+<li>
+   <b>Record</b>: This is a preliminary version of Ant's Record task, which allows<br />
+   you to record parts of your build's output (log) to a file. It's very useful<br />
+   when combined with NUnitReport to generate full-blown reports of your daily<br />
+   builds that you can send via e-mail.</li><br />
+</ul></p>
+<p>I hope to keep improving these tasks and adding new ones in the following<br />
+weeks.</p></p>
+<p><b>Note:</b> You'll need the absolute latest NAnt code to run these tasks<br />
+effectively, as getting them to work correctly required fixing a few bugs in<br />
+NAnt itself. Be sure to grab the latest snapshot directly out of NAnt's CVS.</p></p>
+<p>Grab the code <a href="&#47;files&#47;BuildTasks.zip">here</a></p></p>

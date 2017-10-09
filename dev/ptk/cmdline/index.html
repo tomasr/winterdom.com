@@ -1,0 +1,74 @@
+---
+layout: page
+status: publish
+published: true
+title: Getting the Command line for any process on NT
+author:
+  display_name: Tomas Restrepo
+  login: tomasr
+  email: tomas@winterdom.com
+  url: http://winterdom.com/
+author_login: tomasr
+author_email: tomas@winterdom.com
+author_url: http://winterdom.com/
+wordpress_id: 1134
+wordpress_url: http://winterdom.com/?page_id=1134
+date: '2009-04-28 02:54:37 +0000'
+date_gmt: '2009-04-28 02:54:37 +0000'
+categories:
+- Uncategorized
+tags: []
+comments: []
+---
+<p>On this article I will briefly discuss how to get the command<br />
+line with which a process was started. The technique I'll describe will allow<br />
+you to actually find out the command line for <i>any</i> process, not just the<br />
+one your code is running in. It's a fairly common question, so here's the<br />
+answer:
+<p>As it turns out, some process specific data is stored by<br />
+NT at address 0x00020498 for any given process. The format of this data goes<br />
+something like this:</p>
+<p>1. The directory from which the application was loaded.<br><br />
+2. The current directory (represented by a single dot ".").<br><br />
+3. %SystemRoot%\System32. (usually C:\WinNT\System32")<br><br />
+4. %SystemRoot%\System. (usually C:\WinNT\System)<br><br />
+5. Just %SystemRoot%. (usually C:\WinNT)<br><br />
+6. The contents of the PATH environment variable, with one minor adjustment:<br />
+before it goes the startup dir of the parent process, but <i>only</i> when that<br />
+directory is not included in the PATH already.</p></p>
+<p>Here I have to say that all this was found by experimentation<br />
+and fooling around with the debugger. I also thank Slava&nbsp; M. Usov, who was<br />
+really the one who figured out that the data format until here was very similar<br />
+to what the CreateProcess() documentation state is the directory search<br />
+sequence.</p></p>
+<p>Just after this goes the command line path, followed by the full<br />
+command line, which is the part that actually interests us. Finally, the<br />
+executable name appears one more time (<i>might</i>, or <i>might not </i>have<br />
+the path included), followed by the Window Station and Desktop the process is<br />
+running on. In some cases, the window station and desktop might <i>not</i><br />
+appear, if the process is not attached to one.</p></p>
+<p>Worth noting: The full data block is in Unicode (which is<br />
+logical), so the sample app is written completely in Unicode. Also, the<br />
+technique I used works on NT4 and up. To try the sample app, just compile it,<br />
+and run it like this: <code>cmdline.exe
+<pid> </code>where <b>pid </b>is<br />
+the process id of the process you wan to get the command line for.</p></p>
+<p>Get the code <a href="&#47;files&#47;cmdline.c">here</a>, and look it over,<br />
+there are some important notes along with the code.</p></p>
+<p>Finally, some advice: As you've probably noticed, this technique<br />
+relies on undocumented layouts of the process environment block, which is<br />
+subject to change at any time. If you want a really bullet-proof method (at<br />
+least for Win32 processes), you can do the folllowing:</p></p>
+<ul>
+<li>
+<p>Use CreateRemoteThread() to inject some code into the<br />
+    process.</li></p>
+<li>
+<p>Call GetCommandLine() from within the injected code.</li></p>
+<li>
+<p>IPC the results back to your app.</li><br />
+</ul></p>
+<p>The obvious problem with this technique is that it seems awfully<br />
+complicated just to do such a simple thing. The other reason I don't like it is<br />
+that is essentially invasive. Felix Kasza has a sample on doing it this way on<br />
+his <a href="http:&#47;&#47;www.mvps.org&#47;win32&#47;processes&#47;remthread.html">website</a>.</p></p>

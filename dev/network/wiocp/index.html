@@ -1,0 +1,48 @@
+---
+layout: page
+status: publish
+published: true
+title: An I&#47;O Completion Port Template
+author:
+  display_name: Tomas Restrepo
+  login: tomasr
+  email: tomas@winterdom.com
+  url: http://winterdom.com/
+author_login: tomasr
+author_email: tomas@winterdom.com
+author_url: http://winterdom.com/
+wordpress_id: 1121
+wordpress_url: http://winterdom.com/?page_id=1121
+date: '2009-04-28 02:41:23 +0000'
+date_gmt: '2009-04-28 02:41:23 +0000'
+categories:
+- Uncategorized
+tags: []
+comments: []
+---
+<p>Here's another useful class: <code>wiocp::IoCompPort</code>. This template<br />
+wraps the I&#47;O Completion port apis in a way that makes it very easy to create your own<br />
+IOCP-based server applications.</p></p>
+<p>The class is defined like this:</p></p>
+<pre class="codes"><code><br />
+  <FONT color=#0000ff>template</FONT> <FONT color=#0000ff><</FONT><br />
+    <FONT color=#0000ff>class</FONT> T<FONT color=#0000ff>,</FONT>          <FONT color=#cc9900>&#47;&#47; derived class</FONT><br />
+    <FONT color=#0000ff>class</FONT> TOV<FONT color=#0000ff>,</FONT>        <FONT color=#cc9900>&#47;&#47; overlapped class (you can use DefOverlapped)</FONT><br />
+    <FONT color=#0000ff>class</FONT> TCK         <FONT color=#cc9900>&#47;&#47; completion key class</FONT><br />
+  <FONT color=#0000ff>></FONT> <FONT color=#0000ff>class</FONT> IoCompPort<br />
+  <FONT color=#0000ff>{</FONT><br />
+      <FONT color=#0000ff>....</FONT><br />
+  <FONT color=#0000ff>}</FONT><br />
+</code></pre></p>
+<p>Using <code>IoCompPort</code> is very easy: Just derive your own class from <code>IoCompPort</code><br />
+and implement a few functions.</p></p>
+<p>What are the benefits: <code>IoCompPort</code> wraps the ugly IOCP apis with type-safe template fuctions.<br />
+It also saves you from having to call the apis directly, since it handles the IOCP thread-pool for you,<br />
+taking care of thread creation&#47;destruction, and just calling your implementation function to<br />
+process I&#47;O requests. Another benefit is that it allows you to easily pass all the state information<br />
+you need on your io requests either through the OVERLAPPED struct or through the CompletionKey<br />
+(wiocp.h has all the information you need to use either or both!).</p></p>
+<p><b>UPDATE</b> 08&#47;01&#47;2001: Thanks to Andrew MacLean for pointing out to me that with a simple<br />
+fix, the ban on virtual functions in the OVERLAPPED-derived class could be lifted (and beating the<br />
+thing on my head several times until I fixed it <g>. Thanks Andrew!</p>
+<p>Here's the file: <a href="&#47;files&#47;winterdom_cpp.zip">winterdom_cpp.zip</a></p></p>

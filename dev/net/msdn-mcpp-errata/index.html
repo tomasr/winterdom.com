@@ -1,0 +1,53 @@
+---
+layout: page
+status: publish
+published: true
+title: 'Errata: Tips & Tricks to bolster your Managed C++ code in VS.NET'
+author:
+  display_name: Tomas Restrepo
+  login: tomasr
+  email: tomas@winterdom.com
+  url: http://winterdom.com/
+author_login: tomasr
+author_email: tomas@winterdom.com
+author_url: http://winterdom.com/
+wordpress_id: 1094
+wordpress_url: http://winterdom.com/?page_id=1094
+date: '2009-04-28 02:15:02 +0000'
+date_gmt: '2009-04-28 02:15:02 +0000'
+categories:
+- Uncategorized
+tags: []
+comments: []
+---
+<p align="left">In here I'll outline the errors and problems I've discovered about my MSDN magazine article<br />
+(which you can read <a href="http:&#47;&#47;msdn.microsoft.com&#47;msdnmag&#47;issues&#47;02&#47;02&#47;ManagedC&#47;ManagedC.asp">here</a>).</p>
+<h2>Unsupported Managed Operators</h2></p>
+<p align=left>This is one that Martin Lapierre pointed out to me (Thanks Martin!).</p></p>
+<p>As it turns out, there are three Managed Operators that you can't overload from your Managed C++ code:</p>
+<ul>
+<li>op_True (operator true)
+<li>op_False (operator false)
+<li>op_LogicalNot (operator!)<br />
+</ul><br />
+Arguably this is a bug, but it is really two kinds of bugs (even if the end result is the same).<br />
+The first two operators are not supported at all, while the third one is supported under a different<br />
+name.</p>
+<p>You would normally define op_True and op_False operators in MC++ like this:</p>
+<pre class="codes"><code><br />
+static bool op_True(T * t) { ... }<br />
+static bool op_False(T* t) { ... }<br />
+</code></pre><br />
+The problem is that the compiler won't recognize these signatures as managed operators, and thus<br />
+doesn't generate the correct metadata alongside them needed for the C# compiler to recognize them.<br />
+What's missing from the generated metadata is the <code>specialname</code> attribute.</p>
+<p>The problem with op_LogicalNot, on the other hand, is quite different. The problem is that the<br />
+MC++ compiler only recognizes this operator under a name that was used in some of the early .NET betas<br />
+and not under the name that the CLR rules dictate. So, if you try declaring it with the name<br />
+op_LogicalNot, the MC++ compiler will just treat it as any other static method and generate the normal<br />
+metadata associated with it (i.e. not <code>specialname</code>). The end result is the same as for<br />
+op_True and op_False.</p>
+<p>The name for op_LogicalNot that the MC++ compiler <i>does</i> recognize is op_Negation, and thus,<br />
+if you declare the operator with this name, the compiler will generate the correct signature for a<br />
+managed operator, but now, it is the C# compiler which doesn't see the declaration, since it is looking<br />
+for a method call op_LogicalNote, which, obviously, doesn't exist.</p></p>

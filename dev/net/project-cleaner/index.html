@@ -1,0 +1,101 @@
+---
+layout: page
+status: publish
+published: true
+title: Project Cleaner
+author:
+  display_name: Tomas Restrepo
+  login: tomasr
+  email: tomas@winterdom.com
+  url: http://winterdom.com/
+author_login: tomasr
+author_email: tomas@winterdom.com
+author_url: http://winterdom.com/
+wordpress_id: 1097
+wordpress_url: http://winterdom.com/?page_id=1097
+date: '2009-04-28 02:17:35 +0000'
+date_gmt: '2009-04-28 02:17:35 +0000'
+categories:
+- Uncategorized
+tags: []
+comments: []
+---
+
+<p align="left">While the VS.NET IDE is very nice, the project models for VisualC# and<br />
+Visual Basic.NET lack several capabilities. One of those is providing a "Clean" build option<br />
+that deletes intermediate and output files from a project&#47;solution.</p></p>
+<p>So I set out to build a VS.NET AddIn that provided this capability. The result is<br />
+ProjectCleaner, a simple AddIn that will give you a "Clean Project" option when you<br />
+right-click on a project in solution explorer, or a "Clean Solution" option when you right-click<br />
+on a solution.</p></p>
+<p>In building it, however, I ran into several gotchas, which I wanted to explain here in case<br />
+anybody else runs into them.</p></p>
+<h2>Solution Explorer</h2></p>
+<p>In order to provide a "Clean Project" option, I needed to detect on which project node the user<br />
+had righ<span lang="en-us">t</span>-clicked in the Solution Explorer window. I found this to be non-intuitive. To do so, you use the<br />
+SelectedItems property of the _DTE object, like this:</p>
+<pre class="codes"><code><br />
+private Project GetSelectedProject()<br />
+{<br />
+   SelectedItems items = AppObject.SelectedItems;<br />
+   Debug.Assert(items.Count==1, "Incorrect number of selected items");</p>
+<p>   return items.Item(1).Project;<br />
+}<br />
+</pre></code></p>
+<p>This, of course, assumes you do this when you get the command invocation; it won't work on other contexts.</p>
+<h2>Output Groups</h2></p>
+<p>Each project has a collection of OutputGroup object, each of one represents a collection of files.<br />
+However, the name is really misleading, because the OutputGroups collection includes groups that are not<br />
+<i>outputs</i> of the project, but also <i>inputs</i>. In the case of the C# and VB.NET project models,<br />
+you'll encounter one group called "SourceFiles" which includes the list of source files<br />
+in the project.</p></p>
+<p>Another weird thing is that an OutputGroup object includes two properties: FileNames and FileURLs.<br />
+Contrary to what the documentation says, it seems that the FileNames property only lists filenames with paths<br />
+relative to the project's directory, not the full path. And in the case of the FileURLs property, which does<br />
+give you full paths (in the form of file:&#47;&#47;c:\.....), it has one extra glitch: If you're looking at an<br />
+OutputGroup representing the produced binaries (like the "Built" group), you'll see that this path<br />
+points you into the intermediate directory (the obj&#47; dir), and not into the real output directory (the bin&#47; dir).<br />
+</p></p>
+<p><span lang="en-us">Another limitation is that there is no OutputGroup<br />
+representing the project's references that had the "Local Copy" property set to<br />
+true. To get these, you need to add a reference to your AddIn project to the<br />
+VSLangProj assembly. Once you've done that, you can cast the Object property of<br />
+your Project instance to a variable of the type VSProject. This object will<br />
+include a References collection with all project references. You can then check<br />
+the CopyLocal property for each each Reference object in it to find if you need<br />
+to delete it.</span></p></p>
+<p><span lang="en-us">This still has one minor limitation: The Reference.Name<br />
+property only lists the assembly simple name, without extension, which means you<br />
+kind of have to assume it is a known value. There's also no way to find out if<br />
+VS.NET copied a debug info file (.pdb) alongside with the referenced assembly.<br />
+</span></p></p>
+<p><span lang="en-us">You can check the code that deals with this inside the<br />
+InternalCleanProject(), DeleteFilesInGroup() and DeleteReferenceCopy() methods<br />
+of the ProjectCleaner class.</span></p></p>
+<h2>Commands</h2></p>
+<p><span lang="en-us">I finally was able to delete commands previously created.<br />
+The trick is that to reference a command your AddIn created, you need to use the<br />
+full name of it when calling the Commands.Item() method. For example, if my<br />
+AddIn adds a command named "CleanProject", the full name of the command will be<br />
+"ProjectCleaner.Connect.CleanProject".</span><br />
+<h2>Final Notes</h2></p>
+<p>Keep in mind that it<br />
+is an early version, so be sure to have backups of your data before trying it. I assume no<br />
+responsibility for<br />
+what might go wrong. Also, notice that this version has two limitations: It is harsh, and<br />
+<span lang="en-us">might</span> completely delete your<br />
+project's bin and obj directories, and won't do anything in C++ projects. I hope to improve<br />
+this situation somewhat in the near future.<br />
+</p></p>
+<p><b>Updated: 01&#47;29&#47;2002</b>. Thanks to Craig Skibo from<br />
+Microsoft for helping me out figure a couple of things!</p></p>
+<p>You can download ProjectCleaner's source code <a href="&#47;files&#47;ProjectCleaner.zip">here</a>.<br><br />
+You can download an MSI installation with ProjectCleaner's<br />
+binaries for VS.NET RTM <a href="&#47;files&#47;ProjectCleanerSetup.msi">here</a> (notice it doesn't include the framework or MSI 2.0<br />
+bootstrapper).</p></p>
+<p><b>Updated: 02&#47;01&#47;2002</b>. Chris Sells pointed out to me a couple of things that weren't working<br />
+on the MSI installer. Those are now fixed. Also, you can now find a new options dialog in the VS.NET<br />
+Tools->Options dialog, under the Winterdom folder. This switch allows you to use the new behavior<br />
+(delete only project output groups and local references), or delete all files in the output<br />
+and intermediate directories.  (I suggest using the MSI installation, the source distribution<br />
+doesn't contain the merge file needed to create the appropriate registry entries for this to happen).</p></p>

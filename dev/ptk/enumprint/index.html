@@ -1,0 +1,49 @@
+---
+layout: page
+status: publish
+published: true
+title: Using EnumPrinters
+author:
+  display_name: Tomas Restrepo
+  login: tomasr
+  email: tomas@winterdom.com
+  url: http://winterdom.com/
+author_login: tomasr
+author_email: tomas@winterdom.com
+author_url: http://winterdom.com/
+wordpress_id: 1137
+wordpress_url: http://winterdom.com/?page_id=1137
+date: '2009-04-28 02:56:10 +0000'
+date_gmt: '2009-04-28 02:56:10 +0000'
+categories:
+- Uncategorized
+tags: []
+comments:
+- id: 2757
+  author: fritz
+  author_email: cat22net@gmail.com
+  author_url: ''
+  date: '2012-07-08 12:14:48 +0000'
+  date_gmt: '2012-07-08 12:14:48 +0000'
+  content: "Hi, I try your code in my PC.\r\n\r\nAnd appear the following error:\r\n\r\n........
+    has encountered a problem and needs to close.  We are sorry for the inconvenience.\r\nIf
+    you were in middle of something, the information you were working on might be
+    lost.\r\n\r\nPlease tell Microsoft about this problem.\r\n\r\nWe have created
+    an error report that you can send to us. We will treat this report as confidential
+    and anonymous"
+---
+<p>This sample shows a very simple console program that displays<br />
+some information about the local printers installed on the local system. For<br />
+this, it uses the EnumPrinters() API in level 2, which returns the printers<br />
+information in a PRINTER_INFO_2 structure array. Some of the information<br />
+contained therein is:</p></p>
+<ul>
+<li>Server name</li>
+<li>Printer name</li>
+<li>Share name (if Applicable)</li>
+<li>Ports the printer is connected to</li>
+<li>Driver name</li>
+<li>Comment and location provided by the admin</li>
+<li>Under Win9x, it says if the printer is the default printer for the system</li><br />
+</ul></p>
+<p>So, without anything else, here it is: <a href="&#47;files&#47;enumprint.c">enumprint.c</a></p></p>

@@ -1,0 +1,101 @@
+---
+layout: page
+status: publish
+published: true
+title: BizTalk
+author:
+  display_name: Tomas Restrepo
+  login: tomasr
+  email: tomas@winterdom.com
+  url: http://winterdom.com/
+author_login: tomasr
+author_email: tomas@winterdom.com
+author_url: http://winterdom.com/
+wordpress_id: 1072
+wordpress_url: http://winterdom.com/?page_id=1072
+date: '2009-04-28 01:44:37 +0000'
+date_gmt: '2009-04-28 01:44:37 +0000'
+categories:
+- Uncategorized
+tags: []
+comments:
+- id: 19024
+  author: Zurinet
+  author_email: akaschmid@yahoo.com
+  author_url: ''
+  date: '2013-07-31 08:08:30 +0000'
+  date_gmt: '2013-07-31 08:08:30 +0000'
+  content: "Hi Thomas\r\nI have this query in listing 1. I need to execute in Main(string[]args)\r\nThe
+    LoadStream method in class DocLoader (Listing 2) supposed to load the stream,\r\nand
+    pass it to a BizTalk Process  module  IBaseMessage. Listing 1\r\nHowever I am
+    getting an Error that says \"Value cannot be null.Parameter name: body\"!\r\nin
+    Listing 3. I have made sure that the file CSV_FF_RecvInput.txt exist is added
+    in the project resourses.\r\n\r\nlisting 1\r\n{\r\n\r\nIBaseMessage input = MessageHelper.CreateFromStream(DocLoader.LoadStream(\"CSV_FF_RecvInput.txt\"));\r\n}
+    \r\n\r\nListing 2 \r\npublic static Stream LoadStream(string name)\r\n        {\r\n
+    \           string resName = typeof(DocLoader).Namespace + \".\" + name;\r\n            Assembly
+    assembly = Assembly.GetExecutingAssembly();\r\n            return assembly.GetManifestResourceStream(resName);\r\n
+    \       }\r\n\r\nListing 3.\t\t\t\r\n public static IBaseMessage CreateFromStream(Stream
+    body)\r\n      {\r\n         if ( body == null )\r\n            throw new ArgumentNullException(\"body\");\r\n\r\n
+    \        IBaseMessage message = _factory.CreateMessage();\r\n         message.Context
+    = _factory.CreateMessageContext();\r\n\r\n         IBaseMessagePart bodyPart =
+    CreatePartFromStream(body);\r\n\r\n         message.AddPart(\"body\", bodyPart,
+    true);\r\n\r\n         return message;\r\n      }\r\n\r\n\r\nAny help! Please
+    let me know what i am doing wrong."
+---
+<p>Here are some articles about BizTalk Server I've written. Use at your own risk ;)</p>
+<dl>
+<dt><a href="&#47;dev&#47;bts&#47;btsffschematut1">BizTalk 2004 Flat File Schema Tutorial 1</a></dt></p>
+<dd>A simple introductory article using a CSV file as an example</dd><br />
+</dl></p>
+<dl>
+<dt><a href="&#47;dev&#47;bts&#47;btsffschematut2">BizTalk 2004 Flat File Schema Tutorial 2</a></dt></p>
+<dd>A tutorial using a more complex schema</dd><br />
+</dl></p>
+<dl>
+<dt><a href="&#47;files&#47;NullAdapterSol.zip">BizTalk 2004 Null Send Adapter</a></dt></p>
+<dd>A sample Send Adapter that dispatches messages into oblivion. You can find the most updated code at <a href='http:&#47;&#47;github.com&#47;tomasr&#47;nulladapter&#47;tree&#47;master'>http:&#47;&#47;github.com&#47;tomasr&#47;nulladapter&#47;tree&#47;master</a></dd><br />
+</dl></p>
+<dl>
+<dt><a href="&#47;files&#47;NullAdapterR2.zip">BizTalk 2006 R2 Null Send Adapter</a></dt></p>
+<dd>A version of the &#47;dev&#47;null adapter for BizTalk Server 2006 R2 that illustrates how to add<br />
+   a custom adapter configuration dialog using IPropertyPageFrame. You can find the most updated code at <a href='http:&#47;&#47;github.com&#47;tomasr&#47;nulladapter&#47;tree&#47;R2'>http:&#47;&#47;github.com&#47;tomasr&#47;nulladapter&#47;tree&#47;R2</a></dd><br />
+</dl></p>
+<dl>
+<dt><a href="&#47;files&#47;TracerComponent.zip">BizTalk 2004 Tracer Pipeline Component</a></dt></p>
+<dd>A sample pipeline component that logs messages as they are read to files.</dd><br />
+</dl></p>
+<dl>
+<dt><a href="&#47;files&#47;btsreset.cs.txt">BTSReset Source Code</a></dt></p>
+<dd>A command line tool to stop, start and restart BizTalk Application Host Instances, similar to iisreset.exe</dd><br />
+</dl></p>
+<dl>
+<dt><a href="&#47;files&#47;MsmqDeliveryNotifications.zip">Reliable MSMQ messaging with BizTalk 2004 Sample</a></dt></p>
+<dd>A sample illustrating how to use MSMQ acknowledgements and administrative queues with the BizTalk 2004 MSMQ adapter.</dd><br />
+</dl></p>
+<dl>
+<dt><a href="&#47;files&#47;EncodingComponent.zip">Fix Encoding Pipeline Component</a></dt></p>
+<dd>A sample custom pipeline component you can use to explicitly tell assemblers and disassemblers what encoding to use. You can find the latest version of the code at <a href='http:&#47;&#47;github.com&#47;tomasr&#47;fixencoding'>http:&#47;&#47;github.com&#47;tomasr&#47;fixencoding</a></dd><br />
+</dl></p>
+<dl>
+<dt><a href="&#47;files&#47;EncodingComponent2004.zip">Fix Encoding Pipeline Component for BizTalk 2004</a></dt></p>
+<dd>A back-ported version for BizTalk 2004 of this component</dd><br />
+</dl></p>
+<dl>
+<dt><a href="&#47;files&#47;EncryptionPipelineSol.zip">Symmetric Crypto Pipeline Components for BizTalk 2006</a></dt></p>
+<dd>Sample decoder&#47;encoder components that use symmetric encryption for BizTalk 2006 pipelines.</dd><br />
+</dl></p>
+<dl>
+<dt><a href="&#47;files&#47;PipelineTesting.zip">Pipeline Testing Library for BTS 2006</a></dt></p>
+<dd>Helper library to unit test BizTalk Pipelines, custom Pipeline Components and schemas. You can find the most updated code at <a href='http:&#47;&#47;github.com&#47;tomasr&#47;pipelinetesting'>http:&#47;&#47;github.com&#47;tomasr&#47;pipelinetesting</a></dd><br />
+</dl></p>
+<dl>
+<dt><a href="&#47;files&#47;BinaryAttachments.zip">Binary Attachments Sample</a></dt></p>
+<dd>Sample on how to add arbitrary binary message parts to a multi-part<br />
+   message in an orchestration</dd><br />
+</dl></p>
+<dl>
+<dt><a href="&#47;files&#47;BtsErrorLookup.cs.txt">BizTalk Error Lookup</a></dt></p>
+<dd>Sample command line utility to lookup common HRESULT codes<br />
+   returned by the BizTalk Messaging Engine and pipeline<br />
+   components.</dd><br />
+</dl></p>

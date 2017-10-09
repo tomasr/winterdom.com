@@ -1,0 +1,277 @@
+---
+layout: page
+status: publish
+published: true
+title: BizTalk 2004 Flat File Schema Tutorial 1
+author:
+  display_name: Tomas Restrepo
+  login: tomasr
+  email: tomas@winterdom.com
+  url: http://winterdom.com/
+author_login: tomasr
+author_email: tomas@winterdom.com
+author_url: http://winterdom.com/
+wordpress_id: 1077
+wordpress_url: http://winterdom.com/?page_id=1077
+date: '2009-04-28 01:48:34 +0000'
+date_gmt: '2009-04-28 01:48:34 +0000'
+categories:
+- Uncategorized
+tags: []
+comments: []
+---
+<p>The BizTalk Server 2004 documentation is rather scant on the topic of creating<br />
+schemas overall, but, specifically, it is surprisingly poor at explaining the<br />
+basic concepts behind the flat file extensions to the designer.</p></p>
+<p>So, let's try to clear up a few of the concepts by creating a simple, yet<br />
+interesting Flat File schema that parses CSV (Comma-Separated-Values) file.</p></p>
+<p>Let's start with the basics: What rules are there for a CSV file, in plain<br />
+text?</p></p>
+<blockquote><p> A CSV file contains a set of records, separated by a CR&#47;LF pair<br />
+   (\r\n). Each record contains a set of fields separated by a comma (,). If a<br />
+   field contains either a comma, or a CR&#47;LF, then it must be escaped by enclosing<br />
+   said feed between double quotes. </blockquote></p>
+<p>There is certainly more to a CSV file, but let's use this definition for now to<br />
+start this tutorial.</p></p>
+<p>The first thing we need to do is create a new Schema, let's call it<br />
+"CSV". Once we created the schema, we need to tell BizTalk that is we<br />
+want to enable the flat file designer. To do this, selecte the schema, open the<br />
+properties window; find the "Schema Editor Extensions" property and<br />
+enable the appropriate one, as presented in the following image:</p><br />
+<img src="&#47;images&#47;articles&#47;BizTalkTut_FFExt.jpg" &#47;></p>
+<p>Now, let's rename the root node of the schema to a more sensible name, say<br />
+"CSV"; this will be the root of the XML document generated from the<br />
+CSV file contents. Since the CSV file contains a set of records, let's add a<br />
+new Record Element underneath the CSV node and call it "Record", as<br />
+well.</p><br />
+<img src="&#47;images&#47;articles&#47;BizTalkTut_Tree1.jpg" width='649px' height='489px' &#47;></p>
+<p>The Record node can be repeated any number of times, so let's set the minOccurs<br />
+and maxOccurs properties as appropriate:<br />
+</p><br />
+<img src="&#47;images&#47;articles&#47;BizTalkTut_Prop1.jpg" &#47;></p>
+<p>Each record is composed by a collection of fields, so we want to add those as<br />
+well:</p><br />
+<img src="&#47;images&#47;articles&#47;BizTalkTut_Fields.jpg" width='649px' height='489px' &#47;></p>
+<p>Now comes the interesting part, which is making it deal with the Flat File side<br />
+of things. Let's start inside out.</p></p>
+<p>First, we want to ensure that the schema parses correctly each field inside a<br />
+record. So, we'll go ahead and select the Record node and open up its<br />
+properties. Here, we need to tell BizTalk that this is a delimited record, not<br />
+a positional one, so we set the value of the Structure property to<br />
+"Delimited".</p></p>
+<p>Next, we need to tell it what kind of delimiters it uses (a comma). For this,<br />
+we we'll use the Child Delimiter set of properties of the Record node, and set<br />
+them like this:</p></p>
+<table class="simpleTable">
+<tr>
+<th>Property</th></p>
+<th>Value</th><br />
+   </tr></p>
+<tr>
+<td>Child Delimiter Type</td></p>
+<td>Character</td><br />
+   </tr></p>
+<tr>
+<td>Child Delimiter</td></p>
+<td>,</td><br />
+   </tr></p>
+<tr>
+<td>Child Order</td></p>
+<td>Infix</td><br />
+   </tr></p>
+<tr>
+<td>Preserve Delimiter for Empty Data</td></p>
+<td>yes</td><br />
+   </tr><br />
+</table></p>
+<p>What this means is that each field in each record will be separated by a<br />
+character (a comma), and that the position of the delimiter between the record<br />
+will be between each field (that is, infix). Other possible values of the Child<br />
+Order property include Postfix (which means it will always appear after the<br />
+field, even after the last one) or Prefix (which means the delimiter always<br />
+appears before the field, even before the first one).</p></p>
+<p>To understand the difference between this three values, let's consider an<br />
+example of what they would parse:</p></p>
+<table class="simpleTable">
+<tr>
+<td>Infix</td></p>
+<td>field1,field2,field3</td><br />
+   </tr></p>
+<tr>
+<td>Postfix</td></p>
+<td>field1,field2,field3,</td><br />
+   </tr></p>
+<tr>
+<td>Prefix</td></p>
+<td>,field1,field2,field3</td><br />
+   </tr><br />
+</table></p>
+<p>Clearly, it is the infix case what we want. Enabling the Preserve Delimiter<br />
+for Empty Data property means that fields with no value will not be ignored,<br />
+but serialized as empty elements (and that they'll have the necessary<br />
+delimiters added, to enable things like "March, Robert,,Peter").</p></p>
+<p>Now that we can parse each record, we need to tell BizTalk what separates each<br />
+record in the file, which is a pair of CR&#47;LF. To do this, we need to select the<br />
+root element of the Schema (CSV) and configure its properties like this:</p></p>
+<table class="simpleTable">
+<tr>
+<th>Property</th></p>
+<th>Value</th><br />
+   </tr></p>
+<tr>
+<td>Structure</td></p>
+<td>Delimited</td><br />
+   </tr></p>
+<tr>
+<td>Child Delimiter Type</td></p>
+<td>Hexadecimal</td><br />
+   </tr></p>
+<tr>
+<td>Child Delimiter</td></p>
+<td>0x0D 0x0A</td><br />
+   </tr></p>
+<tr>
+<td>Child Order</td></p>
+<td>Infix</td><br />
+   </tr><br />
+</table></p>
+<p>Here we're telling BizTalk that the delimiter is not a specified as a printable<br />
+character, but rather as the hexadecimal values of the characters. The way to<br />
+specify the characters is not very clear in the documentation, so keep this in<br />
+mind:</p></p>
+<ul>
+<li>
+   You need to type a hexadecimal value that includes the 0x prefix</li></p>
+<li>
+   If you need to specify more than one character, then put a space between them<br />
+   and put the 0x prefix on each of them. While the editor seems to accepts other<br />
+   formats, they don't work as one might naturaly expect.</li><br />
+</ul></p>
+<p>One suggestion I'd make to the BizTalk team in charge of the schema editor<br />
+would be to allow us to use, in this cases, the "Character" delimiter<br />
+type and instead put the escape sequences as the value (say, "\r\n").<br />
+That would make it much simpler and more intuitive, in my opinion.</p></p>
+<p>Armed with this configuration, we can try the schema for the first time.<br />
+Configure it so that we can validate the schema against a native instance, and<br />
+put this in the input text file:</p></p>
+<pre><code>Restrepo,Tomas,27<br />
+Brown, Robert, 34<br />
+Smith, Lauren, 24</code></pre></p>
+<p>If we try that, we'll see this result:</p></p>
+<pre><code><CSV xmlns="urn:schemas-winterdom-com:csv"><br />
+   <Record><br />
+      <Field>Restrepo</Field><br />
+      <Field>Tomas</Field><br />
+      <Field>27</Field><br />
+   </Record><br />
+   <Record><br />
+      <Field>Brown</Field><br />
+      <Field> Robert</Field><br />
+      <Field> 34</Field><br />
+   </Record><br />
+   <Record><br />
+      <Field>Smith</Field><br />
+      <Field> Lauren</Field><br />
+      <Field> 24</Field><br />
+   </Record><br />
+</CSV></code></pre></p>
+<p>Great,this worked! However, it has a few minor things that don't quite act like<br />
+we want to. The first one is the empty spaces on some of the <Field><br />
+values, which we might like to avoid. To do so, we could tell BizTalk that<br />
+fields might be padded with empty spaces, by selecting the Field node and<br />
+configuring the following properties:</p></p>
+<table class="simpleTable">
+<tr>
+<th>Property</th></p>
+<th>Value</th><br />
+   </tr></p>
+<tr>
+<td>Pad Character Type</td></p>
+<td>Character</td><br />
+   </tr></p>
+<tr>
+<td>Pad Character</td></p>
+<td>&nbsp; (empty space)</td><br />
+   </tr></p>
+<tr>
+<td>Justification</td></p>
+<td>Right</td><br />
+   </tr><br />
+</table></p>
+<p>However, this doesn't quite solve the problem, since if we had trailing<br />
+spaces, instead, they wouldn't be removed. This is a side-effect of the value<br />
+of the Justification property, since it tells BizTalk where the padding would<br />
+go. Unfortunately, there's no such thing as a "Justified" setting,<br />
+only left or right are allowed.</p></p>
+<p>A second problem this schema has is that if there are empty lines on the file<br />
+(say, traling CR&#47;LF pairs) then BizTalk will generate empty Record<br />
+declarations, like this:</p></p>
+<pre><code><Record><br />
+   <Field></Field><br />
+</Record></code></pre></p>
+<p>To be quite honest, I don't know yet how to avoid this, so let's leave that<br />
+aside for a while. We'll come back to it eventually.</p></p>
+<p>The biggest problem with our schema right now, is that it won't allow fields<br />
+that contain embedded ";" or CR&#47;LFs, since there is no way to escape<br />
+them. In flat file schemas, there are two ways to solve this problem:</p></p>
+<ol>
+<li>
+   Use escape characters: these act like the "\" character in C# or C++<br />
+   string literals, giving special meaning to the next character. We set this on<br />
+   BizTalk using the Escape Character and Escape Character Type properties on the<br />
+   field node.<br />
+   </li></p>
+<li>
+   Using wrap characters: These specify that fields containing problematic<br />
+   characters will be surrounded in special characters that mean that nothing<br />
+   inside it is supposed to be interpreted as having special meaning.<br />
+   </li><br />
+</ol></p>
+<p>Number 2 is what we want in order to comply with the CSV definition we gave<br />
+above, which requires us to wrap problematic fields in double quotes. To do<br />
+this, we'll select the Field node and configure the following properties:</p></p>
+<table class="simpleTable">
+<tr>
+<th>Property</th></p>
+<th>Value</th><br />
+   </tr></p>
+<tr>
+<td>Wrap Character Type</td></p>
+<td>Character</td><br />
+   </tr></p>
+<tr>
+<td>Wrap Character</td></p>
+<td>" (double quote)</td><br />
+   </tr><br />
+</table></p>
+<p>With these new properties configured, we can parse the following document<br />
+correctly:</p></p>
+<div>
+   <span class="caption">Input</span></p>
+<pre><code>Restrepo,Tomas,27<br />
+"Brown,row a<br />
+lot", Robert, 34<br />
+Smith, Lauren, 24</code></pre><br />
+   </div></p>
+<div>
+      <span class="caption">Output</span></p>
+<pre><code><CSV xmlns="urn:schemas-winterdom-com:csv"><br />
+   <Record><br />
+      <Field>Restrepo</Field><br />
+      <Field>Tomas</Field><br />
+      <Field>27</Field><br />
+   </Record><br />
+   <Record><br />
+      <Field>Brown,row a<br />
+lot</Field><br />
+      <Field>Robert</Field><br />
+      <Field>34</Field><br />
+   </Record><br />
+   <Record><br />
+      <Field>Smith</Field><br />
+      <Field>Lauren</Field><br />
+      <Field>24</Field><br />
+   </Record><br />
+</CSV></code></pre></div></p>
+<p>And that's it for now. As you can see, it is not all that hard to use, although<br />
+      it can be a little bit confusing at times. Hope this helps anyone!</p></p>

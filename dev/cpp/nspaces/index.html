@@ -1,0 +1,222 @@
+---
+layout: page
+status: publish
+published: true
+title: On C++ Namespaces
+author:
+  display_name: Tomas Restrepo
+  login: tomasr
+  email: tomas@winterdom.com
+  url: http://winterdom.com/
+author_login: tomasr
+author_email: tomas@winterdom.com
+author_url: http://winterdom.com/
+wordpress_id: 1057
+wordpress_url: http://winterdom.com/?page_id=1057
+date: '2009-04-27 04:00:12 +0000'
+date_gmt: '2009-04-27 04:00:12 +0000'
+categories:
+- Uncategorized
+tags: []
+comments:
+- id: 1906
+  author: Duane
+  author_email: godsproop7@hotmail.com
+  author_url: ''
+  date: '2012-01-31 13:02:56 +0000'
+  date_gmt: '2012-01-31 13:02:56 +0000'
+  content: Great post! This was really helpful. Thanks. I also agree that there should
+    be keyword for the unamed namespaces instead of leaving them blank. It's better
+    to be verbose in programming.
+- id: 2440
+  author: Tim
+  author_email: timbobel@gmail.com
+  author_url: http://www.timzaman.com
+  date: '2012-05-05 10:11:35 +0000'
+  date_gmt: '2012-05-05 10:11:35 +0000'
+  content: Dont forget ISO specification expects &lsquo;;&rsquo; after class definitions
+- id: 2697
+  author: On C++ Namespaces &laquo; CobiwareTexts
+  author_email: ''
+  author_url: http://cobiwaretexts.wordpress.com/2012/06/27/on-c-namespaces/
+  date: '2012-06-27 01:52:46 +0000'
+  date_gmt: '2012-06-27 01:52:46 +0000'
+  content: "[...] Source:&nbsp;winterdom.com Share this:TwitterFacebookLike this:LikeBe
+    the first to like this. [...]"
+---
+<h2>Introduction</h2></p>
+<p align="left">Since it's creation by Bjarne Stroustrup, C++ has undergone<br />
+extensive changes, specially in more recent years by the C++ Standards<br />
+Committee. Several new features have been added to the basic language,<br />
+including templates, exception handling, run time type information, and, of<br />
+course, namespaces.</p>
+<p align="left">You might be inclined to believe that namespaces don't affect you<br />
+one way or another unless you decide to use them, but they do. The C++<br />
+Standards Committee has basically rewritten the Standard Library, placing most<br />
+of its facilities inside a namespace called <code>std</code>. This change alone<br />
+forces changes in existing pre-draft programs that use the SL.</p>
+<h2>But, What's a namespace, really?</h2></p>
+<p align="left">A namespace defines a new scope. Members of a namespace are said<br />
+to have namespace scope. They provide a way to avoid name collisions (of<br />
+variables, types, classes or functions) without some of the restrictions<br />
+imposed by the use of classes, and without the inconvenience of handling nested<br />
+classes.</p>
+<p align="left">Defining a namespace is similar to defining a class. First goes<br />
+the <code>namespace</code> keyword, followed by the identifier (the namespace<br />
+name), followed by member declarations enclosed in braces. For example:</p>
+<div class="codes">
+<pre><code><span style="color: #0000ff;">namespace</span> direct <span style="color: #0000ff;">{</span><br />
+  <span style="color: #0000ff;">class</span> Arrow<br />
+  <span style="color: #0000ff;">{</span><br />
+  <span style="color: #0000ff;">public</span>:<br />
+    Arrow<span style="color: #0000ff;">(</span><span style="color: #0000ff;">int</span> dir<span style="color: #0000ff;">);</span><br />
+    <span style="color: #0000ff;">void</span>  setDirection<span style="color: #0000ff;">(</span><span style="color: #0000ff;">int</span> dir<span style="color: #0000ff;">);</span><br />
+  <span style="color: #0000ff;">private</span>:<br />
+    <span style="color: #0000ff;">int</span>   direction<span style="color: #0000ff;">;</span><br />
+  <span style="color: #0000ff;">}</span><br />
+  <span style="color: #cc9900;">&#47;&#47; ...... other stuff</span><br />
+<span style="color: #0000ff;">}</span></p>
+<p></code></pre><br />
+</div></p>
+<p align="left">A namespace, however, cannot have access specifiers, such as <code>public:</code><br />
+or <code>private:</code>. All members of a namespace are public. It cannot have<br />
+a trailing semicolon, either. An important difference between classes and<br />
+namespaces, is that class definitions are said to be closed, meaning that, once<br />
+defined, new members cannot be added to it. A namespace definition is open, and<br />
+can be split over several units. For example:</p>
+<div class="codes">
+<pre><code><span style="color: #cc9900;">&#47;&#47; file SY.h</span><br />
+<span style="color: #0000ff;">namespace</span> SY <span style="color: #0000ff;">{</span><br />
+  <span style="color: #0000ff;">class</span> Maker <span style="color: #0000ff;">{</span> <span style="color: #0000ff;">...</span> <span style="color: #0000ff;">};</span><br />
+  <span style="color: #0000ff;">class</span> SuperMaker : <span style="color: #0000ff;">public</span> Maker <span style="color: #0000ff;">{</span> <span style="color: #0000ff;">...</span> <span style="color: #0000ff;">};</span><br />
+<span style="color: #0000ff;">}</span></p>
+<p><span style="color: #cc9900;">&#47;&#47; file  data.h</span><br />
+<span style="color: #0000ff;">namespace</span> SY <span style="color: #0000ff;">{</span><br />
+  <span style="color: #0000ff;">class</span> Binder <span style="color: #0000ff;">{</span> <span style="color: #0000ff;">...</span> <span style="color: #0000ff;">};</span><br />
+  <span style="color: #0000ff;">class</span> DataBinder : <span style="color: #0000ff;">public</span> Binder <span style="color: #0000ff;">{</span> <span style="color: #0000ff;">...</span> <span style="color: #0000ff;">};</span><br />
+<span style="color: #0000ff;">}</span><br />
+</code></pre><br />
+</div></p>
+<p align="left">In this example, there are two files (<span lang="en-us">SY</span>.h<br />
+and data.h), both defining namespace SY. The definition of SY on data.h does<br />
+not conflict with the one in<br />
+<span lang="en-us">SY</span>.h, but actually <em>extends</em> it. If you look<br />
+closely at the Standard Library, you'll notice that no single header file<br />
+declares all members of namespace <code>std</code>. Each file only declares<br />
+some members, adding them to the global <code>std</code> namespace.</p>
+<h2>Using Namespaces</h2></p>
+<p align="left">There are four ways you can refer to namespace members:</p></p>
+<ul>
+<li> Using the full member name, including the namespace it belongs to. For example:&nbsp;
+<div class="codes">
+<pre><code>  std::cout <span style="color: #0000ff;"><<</span> <strong><span style="color: #000000;">"Hello Nasty"</span></strong><span style="color: #0000ff;">;</span><br />
+	</code></pre><br />
+</div><br />
+Note: Remember that on Pre-Draft days, cout was not declared in any namespace<br />
+(they didn't exist yet, anyway), and header files used an .h suffix.</li></p>
+<li> By taking advantage of Using-Declarations, as in&nbsp;
+<div class="codes">
+<pre><code>  <span style="color: #0000ff;">using</span> std::cout<span style="color: #0000ff;">;</span><br />
+  cout <span style="color: #0000ff;"><<</span> <strong><span style="color: #000000;">"Hello Nasty"</span></strong><span style="color: #0000ff;">;</span><br />
+	</code></pre><br />
+</div><br />
+this declares cout in the current scope as synonym for <code>std::cout</code>.</li></p>
+<li> By taking advantage of Using-Directives, as in&nbsp;
+<div class="codes">
+<pre><code>  <span style="color: #0000ff;">using</span> <span style="color: #0000ff;">namespace</span> std<span style="color: #0000ff;">;</span><br />
+  cout <span style="color: #0000ff;"><<</span> <strong><span style="color: #000000;">"Hello Nasty"</span></strong><span style="color: #0000ff;">;</span><br />
+	</code></pre><br />
+</div><br />
+which specifies that the current scope can refer to names in the <code>std</code><br />
+namespace without using full qualifiers. This is mostly used when porting<br />
+legacy code.</li></p>
+<li> Using aliases. Say, for example, I have&nbsp;
+<div class="codes">
+<pre><code>  <span style="color: #0000ff;">namespace</span> X<br />
+  <span style="color: #0000ff;">{</span><br />
+    <span style="color: #0000ff;">namespace</span> Y<br />
+    <span style="color: #0000ff;">{</span><br />
+      <span style="color: #0000ff;">class</span> Z <span style="color: #0000ff;">{</span> <span style="color: #0000ff;">...</span> <span style="color: #0000ff;">};</span><br />
+    <span style="color: #0000ff;">}</span><br />
+  <span style="color: #0000ff;">}</span><br />
+	</code></pre><br />
+</div><br />
+The full qualifier for Z is <code>X::Y::Z</code>, but we can declare an alias<br />
+using</p>
+<div class="codes">
+<pre><code>  <span style="color: #0000ff;">namespace</span> w <span style="color: #0000ff;">=</span> X::Y<span style="color: #0000ff;">;</span><br />
+	</code></pre><br />
+</div><br />
+This declares w as an alias for namespace X::Y, thus we can access Z using <code>w::Z</code>.</p>
+<p>Note: As you can see, namespaces can be nested. One of the design goals of<br />
+namespaces was to encourage programmers and vendors to wrap their libraries<br />
+inside them, minimizing name collisions. One particularly useful way of taking<br />
+advantage of this is when you are designing libraries for, say, your company,<br />
+which involve several pieces of functionality. For example, I keep some of my<br />
+reusable system classes and templates in a <code>WRuntime</code> namespace,<br />
+which contains different namespaces inside it like <code>WThreading</code> and <code><br />
+WLogging</code>.</li><br />
+</ul></p>
+<h2>Unnamed Namespaces</h2></p>
+<p align="left">Until now, I've only covered <em>named</em> namespaces, but you can<br />
+also declare <em>unnamed</em> namespaces. Take for example:</p>
+<div class="codes">
+<pre><code>  <span style="color: #0000ff;">namespace</span><br />
+  <span style="color: #0000ff;">{</span><br />
+    <span style="color: #0000ff;">class</span> Car<br />
+    <span style="color: #0000ff;">{</span><br />
+      <span style="color: #0000ff;">....</span> <span style="color: #cc9900;">&#47;&#47; class members here</span><br />
+    <span style="color: #0000ff;">}</span><br />
+    <span style="color: #cc9900;">&#47;&#47; other members here</span><br />
+  <span style="color: #0000ff;">}</span><br />
+</code></pre><br />
+</div></p>
+<p align="left">this definition behaves exactly like:</p></p>
+<div class="codes">
+<pre><code>  <span style="color: #0000ff;">namespace</span> __UniqueName__<br />
+  <span style="color: #0000ff;">{</span><br />
+    <span style="color: #0000ff;">class</span> Car<br />
+    <span style="color: #0000ff;">{</span><br />
+      <span style="color: #0000ff;">....</span> <span style="color: #cc9900;">&#47;&#47; class members here</span><br />
+    <span style="color: #0000ff;">}</span><br />
+    <span style="color: #cc9900;">&#47;&#47; other members here</span><br />
+  <span style="color: #0000ff;">}</span></p>
+<p>  <span style="color: #0000ff;">using namespace</span> __UniqueName__;<br />
+</code></pre><br />
+</div></p>
+<p align="left">For each unnamed namespace, the compiler generates a unique name<br />
+(represented here by __UniqueName__), which differs from <em>every</em> other<br />
+name in the program. You might be asking yourself, What's the use of this?</p>
+<p align="left">Let's see the example above. Class Car is defined in an unnamed<br />
+namespace declared at global scope, thus, it can be referred to as if it were<br />
+declared directly at global scope. However, since it's a member of an unnamed<br />
+namespace, the compiler mangles its name with the generated namespace name, so<br />
+it won't conflict with other names.</p>
+<p align="left">Unnamed namespaces can also be defined inside other namespaces.<br />
+Suppose the unnamed namespace in the example above was declared inside<br />
+namespace <code>foo</code>. Then class Car could be referred to as <code>foo::Car</code>.<br />
+Notice there's no mention of the unnamed namespace, but the link name for Car<br />
+will still be mangled with namespace foo and the unique name generated for the<br />
+unnamed namespace by the compiler.</p>
+<p align="left">An interesting use of unnamed namespaces is hiding names inside<br />
+modules. Before, this would be done using the <code>static</code> keyword, but<br />
+the new C++ Standard reads in section 7.3.1.1 Unnamed Spaces, paragraph 2:</p>
+<blockquote><p>"The use of the static keyword is deprecated when declaring objects in a<br />
+namespace scope, the unnamed namespace provides a superior alternative."&nbsp;</blockquote><br />
+In case you've forgotten (or didn't know), <code>static</code>, when applied at<br />
+namespace scope, specifies internal linkage. However, <code>static</code> only<br />
+applies to names of objects, functions and anonymous unions, not to type<br />
+declarations.</p>
+<p>Personally, I feel that, while unnamed namespaces are a far better solution<br />
+than static to this problem, it's not the best that could have been<br />
+implemented. To me, using unnamed namespaces in this way seem to be too much<br />
+like taking advantage of a "side" effect of the lack of name of the namespace.<br />
+I would feel much more comfortable with an appropriately named keyword to<br />
+accomplish this behavior (think <code>hidden</code> or <code>internal</code>),<br />
+but then again, I'm no language lawyer, nor am I completely informed of the<br />
+reasons why the committee chose it that way.</p>
+<h2>Conclusion</h2></p>
+<p align="left">Namespaces are a powerful addition to an already powerful<br />
+language, giving the programmer more flexibility, provided he knows how to take<br />
+advantage of it. Please consider the use of namespaces carefully when planning<br />
+your next project, you might be surprised at how useful they can be.</p>

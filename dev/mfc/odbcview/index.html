@@ -1,0 +1,34 @@
+---
+layout: page
+status: publish
+published: true
+title: Enumerating ODBC Data Sources and Drivers
+author:
+  display_name: Tomas Restrepo
+  login: tomasr
+  email: tomas@winterdom.com
+  url: http://winterdom.com/
+author_login: tomasr
+author_email: tomas@winterdom.com
+author_url: http://winterdom.com/
+wordpress_id: 1116
+wordpress_url: http://winterdom.com/?page_id=1116
+date: '2009-04-28 02:37:02 +0000'
+date_gmt: '2009-04-28 02:37:02 +0000'
+categories:
+- Uncategorized
+tags: []
+comments: []
+---
+<p>The ODBC API provides ways to enumerate both DSN (Data Sources)<br />
+and ODBC Drivers, and it's actually pretty easy to do once you know where to<br />
+look. Here's a sample that shows User and System DSNs installed on the system,<br />
+as well as available drivers. It's a full MFC application,but it's pretty<br />
+simple, and it's UI is pretty simmilar to the ODBC configuration control panel<br />
+applet. The App is written in VC++ 6.0, but should be easy to move to 5.0.</p></p>
+<p>As<br />
+a plus, the sample shows how to use a CPropertySheet as the app's main window<br />
+(instead of a dialog), and how to use parent classes based on MFC to add more<br />
+code reusability, while keeping the ability to use ClassWizard to add message<br />
+handlers.</p></p>
+<p>Now, download the files from <a href="&#47;files&#47;odbcview.zip">here</a></p></p>

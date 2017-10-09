@@ -1,0 +1,67 @@
+---
+layout: page
+status: publish
+published: true
+title: Getting an ITEMIDLIST For a Path
+author:
+  display_name: Tomas Restrepo
+  login: tomasr
+  email: tomas@winterdom.com
+  url: http://winterdom.com/
+author_login: tomasr
+author_email: tomas@winterdom.com
+author_url: http://winterdom.com/
+wordpress_id: 1162
+wordpress_url: http://winterdom.com/?page_id=1162
+date: '2009-04-29 01:00:54 +0000'
+date_gmt: '2009-04-29 01:00:54 +0000'
+categories:
+- Uncategorized
+tags: []
+comments: []
+---
+<p>If you have ever used <code>ShBrowseForFolder()</code>, you've probably noticed the <code>pidlRoot</code> member of the <code>BROWSEINFO</code> structure. It can be<br />
+used to set the "root" folder to browse from. It's usually set to <code>NULL</code>, which<br />
+means the "Desktop" folder.</p></p>
+<p>Ever wanted to use another folder as the root for the "Browse For Folder"<br />
+common dialog, but didn't know how to create an ITEMIDLIST for a given path? Here's a<br />
+function that does it. </p></p>
+<pre class="codes"><code><br />
+BOOL GetItemIdListFromPath <FONT color=#0000ff>(</FONT>LPWSTR lpszPath<FONT color=#0000ff>,</FONT> LPITEMIDLIST <FONT color=#0000ff>*</FONT>lpItemIdList<FONT color=#0000ff>)</FONT><br />
+<FONT color=#0000ff>{</FONT><br />
+   LPSHELLFOLDER pShellFolder <FONT color=#0000ff>=</FONT> <FONT color=#8080cc>NULL</FONT><FONT color=#0000ff>;</FONT><br />
+   HRESULT         hr<FONT color=#0000ff>;</FONT><br />
+   ULONG         chUsed<FONT color=#0000ff>;</FONT></p>
+<p>   <FONT color=#cc9900>&#47;&#47; Get desktop IShellFolder interface</FONT><br />
+   <FONT color=#0000ff>if</FONT> <FONT color=#0000ff>(</FONT>SHGetDesktopFolder <FONT color=#0000ff>(&amp;</FONT>pShellFolder<FONT color=#0000ff>)</FONT> <FONT color=#0000ff>!=</FONT> NOERROR<FONT color=#0000ff>)</FONT><br />
+      <FONT color=#0000ff>return</FONT> FALSE<FONT color=#0000ff>;</FONT>     <FONT color=#cc9900>&#47;&#47; failed</FONT></p>
+<p>   <FONT color=#cc9900>&#47;&#47; convert the path to an ITEMIDLIST</FONT><br />
+   hr <FONT color=#0000ff>=</FONT> pShellFolder<FONT color=#0000ff>-></FONT>ParseDisplayName <FONT color=#0000ff>(</FONT><br />
+                  <FONT color=#8080cc>NULL</FONT><FONT color=#0000ff>,</FONT>           <FONT color=#cc9900>&#47;&#47; owner window</FONT><br />
+                  <FONT color=#8080cc>NULL</FONT><FONT color=#0000ff>,</FONT>           <FONT color=#cc9900>&#47;&#47; reserved (must be NULL)</FONT><br />
+                  lpszPath<FONT color=#0000ff>,</FONT>       <FONT color=#cc9900>&#47;&#47; folder name</FONT><br />
+                  <FONT color=#0000ff>&amp;</FONT>chUsed<FONT color=#0000ff>,</FONT>    <FONT color=#cc9900>&#47;&#47; number of chars parsed</FONT><br />
+                  lpItemIdList<FONT color=#0000ff>,</FONT>   <FONT color=#cc9900>&#47;&#47; ITEMIDLIST</FONT><br />
+                  <FONT color=#8080cc>NULL</FONT>            <FONT color=#cc9900>&#47;&#47; attributes (can be NULL)</FONT><br />
+               <FONT color=#0000ff>);</FONT></p>
+<p>   <FONT color=#0000ff>if</FONT> <FONT color=#0000ff>(</FONT>FAILED<FONT color=#0000ff>(</FONT>hr<FONT color=#0000ff>))</FONT><br />
+   <FONT color=#0000ff>{</FONT><br />
+      pShellFolder<FONT color=#0000ff>-></FONT>Release<FONT color=#0000ff>();</FONT><br />
+      <FONT color=#0000ff>*</FONT>lpItemIdList <FONT color=#0000ff>=</FONT> <FONT color=#8080cc>NULL</FONT><FONT color=#0000ff>;</FONT><br />
+      <FONT color=#0000ff>return</FONT> FALSE<FONT color=#0000ff>;</FONT><br />
+   <FONT color=#0000ff>}</FONT></p>
+<p>   pShellFolder<FONT color=#0000ff>-></FONT>Release<FONT color=#0000ff>();</FONT><br />
+   <FONT color=#0000ff>return</FONT> TRUE<FONT color=#0000ff>;</FONT><br />
+<FONT color=#0000ff>}</FONT> <FONT color=#cc9900>&#47;&#47; GetItemIdListFromPath</FONT><br />
+</pre></code></p>
+<p>It's written in C++, but converting it to plain C is just a matter<br />
+of changing a couple of lines. To do it, change all interface calls like:<br />
+<code>pShellFolder->ParseDisplayName()</code><br />
+to<br />
+<code>pShellFolder->lpVtbl->ParseDisplayName(pShellFolder, ...)</code>, and similar<br />
+changes to other calls.</p></p>
+<p>Two things: The function receives the path as a UNICODE (LPWSTR) string,<br />
+so you'll have to convert ANSI strings to unicode using <code>MultiByteToWideChar()</code><br />
+before calling the function. Finally, remember that you should free the memory referenced<br />
+by the pointer to the ITEMIDLIST you get from the function by calling the Free() method of the<br />
+IMalloc interface, which you can get using </code>SHGetMalloc()</code>.</p></p>

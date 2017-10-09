@@ -1,0 +1,31 @@
+---
+layout: page
+status: publish
+published: true
+title: A simple media-locking program for Win95
+author:
+  display_name: Tomas Restrepo
+  login: tomasr
+  email: tomas@winterdom.com
+  url: http://winterdom.com/
+author_login: tomasr
+author_email: tomas@winterdom.com
+author_url: http://winterdom.com/
+wordpress_id: 1141
+wordpress_url: http://winterdom.com/?page_id=1141
+date: '2009-04-28 02:57:54 +0000'
+date_gmt: '2009-04-28 02:57:54 +0000'
+categories:
+- Uncategorized
+tags: []
+comments: []
+---
+<p align="left">This program is a sample on how to lock removable media, preventing its removal,<br />
+by using MS-DOS in21h calls under Win95. Some caveats, however: It will NOT work on NT,<br />
+and it won't work on all drives, even if the program says it succeeded in locking. For example,<br />
+my own CD-ROM drive, doesn't support locking, so the program will not work with it. Floppy<br />
+drives usually don't support locking either.</p></p>
+<p align="left">The program can be called : lock <drive letter> [-l | -u |<br />
+-s]. -l will lock the drive. -u will unlock it and -s will dislay the lock count<br />
+for the drive. The code has complete explanations on the functions, so here it<br />
+is: <A href="&#47;files&#47;lock.c">lock.c</a></p></p>

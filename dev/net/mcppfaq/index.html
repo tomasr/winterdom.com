@@ -1,0 +1,146 @@
+---
+layout: page
+status: publish
+published: true
+title: Unofficial Managed C++ FAQ
+author:
+  display_name: Tomas Restrepo
+  login: tomasr
+  email: tomas@winterdom.com
+  url: http://winterdom.com/
+author_login: tomasr
+author_email: tomas@winterdom.com
+author_url: http://winterdom.com/
+wordpress_id: 1091
+wordpress_url: http://winterdom.com/?page_id=1091
+date: '2009-04-28 02:13:15 +0000'
+date_gmt: '2009-04-28 02:13:15 +0000'
+categories:
+- Uncategorized
+tags: []
+comments: []
+---
+<h2>List of entries</h2></p>
+<ol>
+<li>
+            <a href="#compSwitches">Compiler switches incompatible with &#47;clr</a></i></p>
+<li>
+            <a href="#operatorsRefObj">Why can't I use the overloaded operators on type 'X'</a></li></p>
+<li>
+            <a href="#badOperators">Can I overload managed operators on my MC++ classes?</a></li></p>
+<li>
+            <a href="#basicTypeRef">How can I define a method that takes an 'ref' argument?</a></li></p>
+<li>
+            <a href="#arrayOfIntsRef">How can I define a method that takes an array of ints by<br />
+               reference?</a></li></p>
+<li>
+            <a href="#attributedEnum">Why do I always get an error when trying to add an<br />
+               attribute to an enum value?</a></li><br />
+      </ol></p>
+<p align="right"><font size="-1"><i>Last Modified: June 1, 2002</i></font></p>
+<hr width="95%" bgcolor="#ddd" align="center" &#47;>
+         <a name="#compSwitches"></a></p>
+<h3>Compiler switches incompatible with &#47;clr</h3></p>
+<p align="left">The following options are incompatible with the &#47;clr compiler<br />
+         switch:</p>
+<ul>
+<li>
+               <b>&#47;GL</b><br />
+            - Link Time Code Generation.</p>
+<li>
+               <b>&#47;Zd</b><br />
+            - Generate COFF debug information.</p>
+<li>
+               <b>&#47;ZI</b><br />
+            - Support "Edit and Continue&1uot; in debug information.</p>
+<li>
+               <b>&#47;ML (&#47;MLd)</b><br />
+            - Link statically to the CRT (debug).</p>
+<li>
+               <b>&#47;Gm</b><br />
+            - Enable Minimal rebuild.</p>
+<li>
+               <b>&#47;YX</b><br />
+            - Automatic use of precompiled headers.</p>
+<li>
+               <b>&#47;RTCc</b><br />
+            - Runtime error check for possible data loss in conversion.</p>
+<li>
+               <b>&#47;RTCs</b><br />
+            - Stack Frame runtime error checking.</p>
+<li>
+               <b>&#47;RTCu</b><br />
+            - Runtime error check for use of unintialized variable.</p>
+<li>
+               <b>&#47;RTC1</b><br />
+            - Equivalent to &#47;RTCsu.<br />
+         </ul></p>
+<hr width="95%" bgcolor="#ddd" align="center" &#47;>
+         <a name="#operatorsRefObj"></a></p>
+<h3>Why can't I use the overloaded operators on type 'X'</h3></p>
+<p>If type 'X' is a reference object, you won't be able to consume any of the<br />
+         overloaded managed operators it might have defined. This is because there's a<br />
+         real impedance mismatch between operator overloading and the fact that in MC++<br />
+         reference objects have to be accessed through pointers. Since standard C++,<br />
+         from which MC++ sort of came out, explicitly defines semantics for standard<br />
+         operators on pointers, such as the meaning of order relations (<, >, =, etc.),<br />
+         the use of actual operators would conflict with them.</p></p>
+<p>Note that you should be able to use some overloaded operators on value types,<br />
+         though.</p></p>
+<hr width="95%" bgcolor="#ddd" align="center" &#47;>
+      <a name="#badOperators"></a></p>
+<h3>Can I overload managed operators on my MC++ classes?</h3></p>
+<p>Yes, using the appropriate operator name (such as <code>op_Addition</code>.<br />
+         However, not all managed operators defined by the CLR can be overloaded on the<br />
+         first release of MC++, because of compiler bugs. Look <a href="MSDN_MCPP_ERRATA.html"><br />
+            here</a> for detailed information on those.</p></p>
+<hr width="95%" bgcolor="#ddd" align="center" &#47;>
+      <a name="#basicTypeRef"></a></p>
+<h3>How can I define a method that takes an 'ref' argument?</h3></p>
+<p>
+      If you want to define a method that takes a reference argument (that is, and<br />
+      in&#47;out argument) that C# programs can see defined as "ref", you can use the C++<br />
+      reference (&amp;) syntax.</p>
+<p>However, if the type of the argument is one of the basic types, and you try to<br />
+         use the C++ name for the type, this won't compile at first. For example, this<br />
+         won't work:</p></p>
+<pre class="codes"><code><br />
+      void MethodWithRef(int&amp; v);<br />
+      </code></pre></p>
+<p>The simplest workaround is to use the CLR's typename, instead:</p></p>
+<pre class="codes"><code><br />
+      void MethodWithRef(System::Int32&amp; v);<br />
+      </code></pre></p>
+<hr width="95%" bgcolor="#ddd" align="center" &#47;>
+      <a name="#arrayOfIntsRef"></a></p>
+<h3>How can I define a method that takes an array of ints by reference?</h3></p>
+<p>Try something like this:</p>
+<pre class="codes"><code><br />
+      void MethodWithRef(System::Int32 (&amp;intArray) __gc[]) {<br />
+         const size_t arraySize = 2;<br />
+         intArray = new int __gc[arraySize];<br />
+         &#47;&#47; fill array<br />
+      }<br />
+      </code></pre></p>
+<hr width="95%" bgcolor="#ddd" align="center" &#47;>
+         <a name="#attributedEnum"></a></p>
+<h3>Why do I always get an error when trying to add an attribute to an enum value?</h3></p>
+<p>You're probably doing something like this:</p>
+<pre class="codes"><code><br />
+      public __gc class MyCustomAttribute : public Attribute<br />
+      {<br />
+         public:<br />
+            MyCustomAttribute(String* desc) {<br />
+            }<br />
+         &#47;&#47; rest of implementation<br />
+      };</p>
+<p>      __value enum MyEnum {<br />
+         [ MyCustomAttribute(S"Value 1") ]<br />
+         value_1 = 1,<br />
+         [ MyCustomAttribute(S"Value 2") ]<br />
+         value_2 = 2,<br />
+      };<br />
+      </code></pre></p>
+<p>And you're getting a C2143 and a few other errors, right? The cause is a bug in<br />
+      the current MC++ compiler that doesn't allow it to parse attributes in an enum<br />
+      declaration, so there's no workaround for it.</p></p>

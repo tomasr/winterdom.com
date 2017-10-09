@@ -1,0 +1,105 @@
+---
+layout: page
+status: publish
+published: true
+title: A better thread class
+author:
+  display_name: Tomas Restrepo
+  login: tomasr
+  email: tomas@winterdom.com
+  url: http://winterdom.com/
+author_login: tomasr
+author_email: tomas@winterdom.com
+author_url: http://winterdom.com/
+wordpress_id: 1147
+wordpress_url: http://winterdom.com/?page_id=1147
+date: '2009-04-28 03:00:46 +0000'
+date_gmt: '2009-04-28 03:00:46 +0000'
+categories:
+- Uncategorized
+tags: []
+comments: []
+---
+<p>Threads can be complicated beasts until you get used to them. They are certainly useful, but at the same<br />
+time, they can add a lot of complexity. I have seen several<br />
+attemps to provide the ultimate thread wrapper class for Win32, including<br />
+MFC's CWinThread and several others on <a href="http:&#47;&#47;www.cuj.com">C&#47;C++ Users Journal</a>, to name a<br />
+few.</font></p><br />
+<P>However, I've never been to keen on any of them. I always thought<br />
+there had to be a better way. In December 1999, Allen Broadman and&nbsp;Eric<br />
+Shaw published an article on CUJ called&nbsp;"Executing a&nbsp;Class Member in<br />
+its own thread" that provided a particular solution to the problem. It was very<br />
+elegant in some respects and provided much welcome type safety and a lot of<br />
+flexibility: It allowed you to create a thread and call any function on any<br />
+object instance you wanted, provided the function had a certain signature.</P><br />
+<P>They really had the right idea, but approached it the wrong way.<br />
+While it was good and useful, it was unsuitable for any but the most basic use<br />
+of threads. The particular problems they had were:</P><br />
+<UL><br />
+  <LI><br />
+  <DIV>There was no way to keep the thread object around.</DIV><br />
+  <LI><br />
+  <DIV>You were left with a raw thread handle, instead of wrapping<br />
+  that as well.</DIV></LI></UL><br />
+<P>So I took their idea and implemented it in a way that fixed both<br />
+of the problems above. It was rather simple: All you had to do was avoid having<br />
+the function's signature as a template parameter! This doesn't reduce type<br />
+safety at all because even in Broadman's and Shaw's implementation the<br />
+function's signature was known, and could simply be deduced from the object's<br />
+type. </P><br />
+<P>Some time after writing this, I decided to rethink the approach I<br />
+had, which encapsulated everything in a single class, and instead try something<br />
+similar to what Broadman and Shaw had, which was to have a special stand-alone<br />
+thread creation function that provided automatic type discovery. This meant<br />
+splitting the Thread implementation in three different parts:</P><br />
+<UL><br />
+  <LI><br />
+  <DIV>A <code>Thread</code> class, which wraps a thread HANDLE and ID, but does<br />
+  not provide means to create that thread. This si the object you get to keep<br />
+  when you create the thread, and provides wrappers around several useful apis,<br />
+  like <code>ResumeThread()</code>. It also has correctly defined copy constructor and<br />
+  assignment operators that use <code>DuplicateHandle()</code> internally.</DIV><br />
+  <LI><br />
+  <DIV>A </code>ThreadImpl<></code> template that creates the Thread object<br />
+  and has the internally-used ThreadProc. </DIV><br />
+  <LI><br />
+  <DIV>A couple of Thread creation functions that provide the<br />
+  automatic type discovery.</DIV></LI></UL><br />
+<P>Yet another advantage of my implementation is that the class<br />
+template allows you to provide a thread creation class, so you can plug in your<br />
+custom creation function. I supply two classes:</P><br />
+<UL><br />
+  <LI><br />
+  <DIV><code>Win32<span lang="en-us">Threader</span></code>, which simply calls the<br />
+  <code>CreateThread()</code> Win32 api.</DIV><br />
+  <LI><br />
+  <DIV><code>Crt<span lang="en-us">Threader</span></code>, which can be used with VC++ C Runtime library,<br />
+  which simply calls <code>_beginthread()</code>.</DIV></LI></UL><br />
+<P>To run threads, you can use one of the two <code>RunOnThread()</code> functions<br />
+provided. The first template argument in each one is the type of the Creator class to use, and has<br />
+to be provided explicitly at call time (see example below). </p>
+<p>The difference between the two functions is that one is for starting threads on<br />
+member functions, while the second overload is able to start threads on global standalone functions, or<br />
+static member functions. This is done through the use of an adapter class, called GlobalAdaptor.</p>
+<p><P>Using the template is pretty simple, here's an example:</P></p>
+<pre class="codes"><code><br />
+<FONT color=#0000ff>class</FONT> ThreadedObj <FONT color=#0000ff>{</FONT><br />
+<FONT color=#0000ff>public</FONT>:<br />
+  DWORD some<FONT color=#0000ff>(</FONT><FONT color=#0000ff>int</FONT> a<FONT color=#0000ff>)</FONT> <FONT color=#0000ff>{</FONT><br />
+     printf <FONT color=#0000ff>(</FONT> <B><FONT color=#000000>"In thread: </FONT></B><FONT color=#008080>%d</FONT><FONT color=#008080>\n</FONT><B><FONT color=#000000>"</FONT></B><FONT color=#0000ff>,</FONT> a <FONT color=#0000ff>);</FONT><br />
+     <FONT color=#0000ff>return</FONT> <FONT color=#8080cc>0</FONT><FONT color=#0000ff>;</FONT><br />
+  <FONT color=#0000ff>}</FONT><br />
+<FONT color=#0000ff>};</FONT></p>
+<p>DWORD StandAlone <FONT color=#0000ff>(</FONT> <FONT color=#0000ff>int</FONT> b <FONT color=#0000ff>)</FONT><br />
+<FONT color=#0000ff>{</FONT><br />
+  printf <FONT color=#0000ff>(</FONT> <B><FONT color=#000000>"In thread: </FONT></B><FONT color=#008080>%d</FONT><B><FONT color=#000000> - </FONT></B><FONT color=#008080>%d</FONT><FONT color=#008080>\n</FONT><B><FONT color=#000000>"</FONT></B><FONT color=#0000ff>,</FONT> GetCurrentThreadId<FONT color=#0000ff>(),</FONT> b <FONT color=#0000ff>);</FONT><br />
+  <FONT color=#0000ff>return</FONT> <FONT color=#8080cc>0</FONT><FONT color=#0000ff>;</FONT><br />
+<FONT color=#0000ff>}</FONT></p>
+<p><FONT color=#0000ff>using</FONT> <FONT color=#0000ff>namespace</FONT> Winterdom::Runtime::Threading<FONT color=#0000ff>;</FONT></p>
+<p>ThreadedObj obj<FONT color=#0000ff>;</FONT><br />
+Thread thread <FONT color=#0000ff>=</FONT> RunOnThread<FONT color=#0000ff><</FONT>Win32Threader<FONT color=#0000ff>>(</FONT>obj<FONT color=#0000ff>,</FONT> <FONT color=#0000ff>&amp;</FONT>ThreadedObj::some<FONT color=#0000ff>,</FONT> <FONT color=#8080cc>8</FONT><FONT color=#0000ff>);</FONT></p>
+<p><FONT color=#cc9900>&#47;&#47; or something like this for a standalone function</FONT><br />
+<FONT color=#cc9900>&#47;&#47;  Thread thread = RunOnThread<CrtThreader>(StandAlone, 8);</FONT></p>
+<p>thread<FONT color=#0000ff>.</FONT>WaitOn<FONT color=#0000ff>();</FONT><br />
+</code></pre></p>
+<p>Grab the file here: <A href="&#47;files&#47;winterdom_cpp.zip">winterdom_cpp.zip</A></p></p>

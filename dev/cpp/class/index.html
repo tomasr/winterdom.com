@@ -1,0 +1,76 @@
+---
+layout: page
+status: publish
+published: true
+title: Class Members as Callbacks
+author:
+  display_name: Tomas Restrepo
+  login: tomasr
+  email: tomas@winterdom.com
+  url: http://winterdom.com/
+author_login: tomasr
+author_email: tomas@winterdom.com
+author_url: http://winterdom.com/
+wordpress_id: 1060
+wordpress_url: http://winterdom.com/?page_id=1060
+date: '2009-04-27 04:02:40 +0000'
+date_gmt: '2009-04-27 04:02:40 +0000'
+categories:
+- Uncategorized
+tags: []
+comments: []
+---
+<p align="left">This is a topic that pops up regularly on<br />
+<a href="news:&#47;&#47;msnews.microsoft.com">Microsoft's Visual C++</a> newsgroups. In these<br />
+days, many people are changing, evolving from procedural designs to more object-oriented<br />
+ones. Under Windows, where callbacks are a necessary evil, this causes some trouble.</p>
+<p align="left">It's necessary to understand why the trouble arises in the first place.<br />
+As many of you know, callbacks are a special kind of function you don't call yourself directly.<br />
+Instead, you give a pointer to the function to another function, so that Windows can call<br />
+it when it's need it. An example of this are windows procedures, and enumeration functions.</p></p>
+<p align="left">To make this process work correctly, strict typedefs are define in the<br />
+Windows header files. If you try to use a class member as a callback, the compiler will<br />
+give you an error, saying that the member prototype does not match the required typedef.</p></p>
+<p align="left">You know you defined the member correctly, yet it doesn't work. So you try using the<br />
+address of operator '&', and all you get is a different error from the compiler. What's up?<br />
+The answer is simple, yet is not clearly stated anywhere. In C++, class member functions<br />
+have a hidden parameter on the stack, which is actually the <font color="#008080">this</font><br />
+pointer. That's what allows a member function to access other members in the particular<br />
+class instance.</p></p>
+<p align="left">There's only one way to get rid of the this pointer: making the member<br />
+static. This brings other, more important and hard to solve problems. If you can't access<br />
+the class from your callback, then what's the use of putting it in a class? You have to<br />
+find a way of getting around this limitation. The most ugly hack is, of course, putting the<br />
+instance of the class as a global variable, which the callback can access. While this solves the<br />
+problem, it isn't very object oriented, and it leads to code that can be hard to maintain.</p></p>
+<p align="left">Windows itself gives you the answer to this problem for many of the<br />
+most used callbacks. Many functions that require callbacks allow you to pass an extra, application<br />
+defined, parameter to the callback, which you can use to give the callback access to the class instance. An example of<br />
+this are the <code>CreateWindow()</code>, <code>EnumChildWindows()</code>, <code>EnumResourceNames()</code><br />
+and many others.</p></p>
+<p align="left">The above mentioned solutions are the easiest ways to get around this<br />
+problem, but are not the only ones. If you're good in assembly (which I'm not, so I'm not even going<br />
+to try and explain it), you can write a little stub that allows you to use a non static member function as a callback.<br />
+For this you need to write a piece of inline assembly in a static member of the class, and use it<br />
+as callback. This stub then handles parameters to the *real* non static member that does the<br />
+real work. This is very similar to what Microsoft's own Active Template Library (ATL) does<br />
+for it's window procedure implementation.</p></p>
+<p align="left">A particular case of this problem is creating window classes.<br />
+Well, the easiest way is to use the mechanism provided by the Window creation<br />
+routines themselves. What you can do, is have your window class have a static<br />
+WndProc method, that you register as the window's window procedure. To give the<br />
+this pointer to <code>WndProc</code>, you have to take a two step approach:</p></p>
+<ol>
+<li>
+<p align="left">Pass the <font color="#008080"> this</font> pointer in the <code>LPARAM</code> argument of<br />
+    <code>CreateWindow()</code></li></p>
+<li>
+<p align="left">On <code>WndProc</code>, when you handle <code>WM_CREATE</code>, store the pointer<br />
+    received on the window data, using <code>SetWindowLong()</code> with <code>GWL_USERDATA</code><br />
+     index.</li><br />
+</ol></p>
+<p align="left">On Subsequent messages, you can then retrieve the instance<br />
+pointer through <code>GetWindowLong()</code>, cast it back to your class and call through it.<br />
+One note though: If your class is a dialog wrapper, you can't use <code>GWL_USERDATA</code><br />
+to store the pointer. Instead, you need to use the <code>DWL_USER</code> index.</p></p>
+<p align="left">&nbsp;</p></p>

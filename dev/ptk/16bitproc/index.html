@@ -1,0 +1,68 @@
+---
+layout: page
+status: publish
+published: true
+title: 'SAMPLE: Enumerating 16-bit Processes under WinNT'
+author:
+  display_name: Tomas Restrepo
+  login: tomasr
+  email: tomas@winterdom.com
+  url: http://winterdom.com/
+author_login: tomasr
+author_email: tomas@winterdom.com
+author_url: http://winterdom.com/
+wordpress_id: 1130
+wordpress_url: http://winterdom.com/?page_id=1130
+date: '2009-04-28 02:52:52 +0000'
+date_gmt: '2009-04-28 02:52:52 +0000'
+categories:
+- Uncategorized
+tags: []
+comments: []
+---
+<p>If you've ever fooled around with the PSAPI library under<br />
+Windows NT to build a list of processes running on the system (using the<br />
+EnumProcesses() API), you probably know that you won't get the 16-bit <i>Windows</i> Applications that way. Instead, all you'll<br />
+get is the list of NTVDM.EXE instances on the system.<br />
+</p></p>
+<p>Well, there's a [relatively] simple way to get around that<br />
+limitation, but the answer is not some hidden functions on PSAPI or the<br />
+Performance Counters in the registry. The answer is to look for the Win16<br />
+debugging facilities built onto NT itself. The thing goes like this:</p></p>
+<p>The WinNT NTVDM subsystem provides a set of services that allow<br />
+a Win32 process to debug 16-bit Windows applications running on the system. For<br />
+this, there's a library called VDMDBG.DLL, for which all functions are exported<br />
+through the vdmdbg.h and vdmdbg.lib files you'll find in the Platform SDK. Among<br />
+those are some calls that allow us to get the list of 16-bit processes running<br />
+under a <i>Virtual Machine</i> in the NT subsystem. Most of this function are<br />
+documented in VDMDbg.hlp, which comes with the SDK, with one notable exception<br />
+noted later.</p></p>
+<p>Briefly, What you have to do is call the VDMEnumProcessWOW()<br />
+function, which will call a CALLBACK function in your program for every process<br />
+on the machine which are Win16 subsystems, which are usually instances of<br />
+NTVDM.EXE. On the first version of NT, there could only be one Win16 subsystem<br />
+executing on the machine, but on later releases, there can be more than one,<br />
+which provides address space separation. For each Win16 Subsystem, you have to<br />
+enumerate the 16-bit processes running inside them, which are referred to as <i>Tasks</i>.<br />
+For this, we can use the VDMEnumTaskWOW() call. </p></p>
+<p>The problem with this function is that in the callback procedure<br />
+we only get the Thread ID in the Win16 subsystem under which the task is<br />
+running, as well as win16 handles to the process and the task. To be able to get<br />
+the filename of the running executable, you would need to call VDMModuleFirst().<br />
+The problem is that to be able to call this functions, WOWDEB.EXE needs to be<br />
+running <i>inside</i> the win16 subsystem that runs the application. Getting<br />
+this to work is a pain the a**, and I really couldn't do it.</p></p>
+<p>However, it turned out that there was an even easier way.<br />
+There's an undocumented call that appears on vdmdbg.h, called VDMEnumTaskWOWEx()<br />
+which works just like the original, with the notable exception that the callback<br />
+also receives the module name and the full path of the executable as parameters.</p></p>
+<p>To show how this is done, I built a simple, dialog based<br />
+application written in plan C. It's small, and doesn't do anything interesting<br />
+besides showing the 16-bit processes running on the system, but it does show how<br />
+to do it in a clear manner.&nbsp;</p></p>
+<p>You can download a zipped file with the project<br />
+files (written on VC++ 6.0) from <A href="&#47;files&#47;enum16bit.zip">here</a>.&nbsp;</p></p>
+<p> And finally,<br />
+here's a snapshot of the sample's screen:</p></p>
+<p align="center"><IMG border=0 height=198 src="&#47;images&#47;articles&#47;enum16bit.jpg" width=341></p></p>
+<p>&nbsp;</p></p>

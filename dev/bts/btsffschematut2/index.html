@@ -1,0 +1,525 @@
+---
+layout: page
+status: publish
+published: true
+title: BizTalk 2004 Flat File Schema Tutorial 2
+author:
+  display_name: Tomas Restrepo
+  login: tomasr
+  email: tomas@winterdom.com
+  url: http://winterdom.com/
+author_login: tomasr
+author_email: tomas@winterdom.com
+author_url: http://winterdom.com/
+wordpress_id: 1085
+wordpress_url: http://winterdom.com/?page_id=1085
+date: '2009-04-28 02:04:09 +0000'
+date_gmt: '2009-04-28 02:04:09 +0000'
+categories:
+- Uncategorized
+tags: []
+comments: []
+---
+<p>In this tutorial, I'll show you how to create a schema for a somewhat<br />
+more complex Flat File involving both delimited and positional records, and how<br />
+to use tags to distinguish between different possible records at one position<br />
+in the file.</p></p>
+<p>Consider this example file:</p></p>
+<pre><code><br />
+CITYLIST<br />
+CSEATTLE                       WA00198776<br />
+SWASHINGTON                    WA<br />
+SARIZONA                       AZ<br />
+CTUCSON                        AZ89112299<br />
+.<br />
+MILKPRICES<br />
+SEATTLE                         1000USD<br />
+TUCSON                         19200USD<br />
+      </code></pre></p>
+<p>What this has is information about two different topics: A list of cities,<br />
+and milk prices, which form the two different parts of the file.<br />
+Each one is formed by a set of records, but the records in each one of<br />
+the parts is very different. Also, the first part (the list of cities) contains two<br />
+different kinds of records (one for Cities, and one for States).</p></p>
+<p>Let's see the definition of the file in more detail:</p></p>
+<ul>
+<li>The List of cities begins with the string CITYLIST on a line of it's own. It is defined by a set of records, which can be of two kinds:
+<ul>
+<li>City Records</li>
+<li>State Records</li><br />
+   </ul><br />
+   </li></p>
+<li>The Milk prices list begins with the string MILKPRICES on a line of it's own. It is defined by a set of records of a single type: MilkPrice.</li>
+<li>Sections in the file are separated by CR&#47;LF.CR&#47;LF</li><br />
+</ul></p>
+<p>The City Records are defined like this:</p></p>
+<ul>
+<li>They begin with the letter C</li>
+<li>The name of the city comes next, 30 characters long</li>
+<li>The initials of the state of the city (2 chars) go next</li>
+<li>The number of sewers in the city comes next, being an 8 digit number which is padded with 0s to the left.</li><br />
+</ul></p>
+<p>The State records are defined like this:</p></p>
+<ul>
+<li>They begin with the letter S</li>
+<li>The name of the state comes next, 30 characters long</li>
+<li>The initials of the state (2 chars) go next</li><br />
+</ul></p>
+<p>The Milk Price records are defined like this:</p></p>
+<ul>
+<li>The name of the city, 30 characters long</li>
+<li>A number representing the price, which can be 6 digits long (4+2 decimals)</li>
+<li>A three-letter currency abreviation.</li><br />
+</ul></p>
+<p>As you can see, this file, although simple in appearance, has a few interesting<br />
+challenges for parsing. First of all, it contains records of several kinds,<br />
+divided in two different sections. Also, it has both a delimited structure<br />
+(the sections are delimited among themselves by the '\r\n.\r\n' sequence) as<br />
+well as positional records. It also has a few interesting things, like paddings on a<br />
+few elements.</p></p>
+<p>Let's start then to create a schema for it. Let's call this schema "MultiFile" ;)<br />
+For this schema, we'll configure the following properties:</p></p>
+<table class="simpleTable" ID="Table1">
+<tr>
+<th>Property</th></p>
+<th>Value</th><br />
+   </tr></p>
+<tr>
+<td>TargetNamespace</td></p>
+<td>urn:schemas-winterdom-com:multifile</td><br />
+   </tr></p>
+<tr>
+<td>Case</td></p>
+<td>Uppercase</td><br />
+   </tr><br />
+</table></p>
+<p>Our MultiFile schema will begin with a single root element, called MultiFile.<br />
+Since this node will contain both of our sections in the file, we want it to be<br />
+configured as a delimited record. We'll also want it to contain<br />
+an <xs:all&#47;> instead of an <xs:sequence&#47;>, since we'd ideally like it<br />
+to support the sections in any order. Here's how we'd configure it:</p>      </p>
+<table class="simpleTable" ID="Table2">
+<tr>
+<th>Property</th></p>
+<th>Value</th><br />
+   </tr></p>
+<tr>
+<td>Structure</td></p>
+<td>Delimited</td><br />
+   </tr></p>
+<tr>
+<td>Child Order</td></p>
+<td>Infix</td><br />
+   </tr></p>
+<tr>
+<td>Child Delimiter Type</td></p>
+<td>Hexadecimal</td><br />
+   </tr></p>
+<tr>
+<td>Child Delimiter</td></p>
+<td>0x0D 0x0A 0x2E 0x0D 0x0A (\r\n.\r\n)</td><br />
+   </tr><br />
+</table></p>
+<p>Inside this root node, we'll insert our section records. Let's start with the CityList record, which we'll configure like this:</p></p>
+<table class="simpleTable" ID="Table3">
+<tr>
+<th>Property</th></p>
+<th>Value</th><br />
+   </tr></p>
+<tr>
+<td>Structure</td></p>
+<td>Delimited</td><br />
+   </tr></p>
+<tr>
+<td>Tag Identifier</td></p>
+<td>CITYLIST</td><br />
+   </tr></p>
+<tr>
+<td>Group Order Type</td></p>
+<td>choice</td><br />
+   </tr></p>
+<tr>
+<td>Group Max Occurs</td></p>
+<td>unbounded</td><br />
+   </tr></p>
+<tr>
+<td>Group Min Occurs</td></p>
+<td>0</td><br />
+   </tr></p>
+<tr>
+<td>Preserve Delimiter for Empty Data</td></p>
+<td>No</td><br />
+   </tr></p>
+<tr>
+<td>Child Order</td></p>
+<td>Infix</td><br />
+   </tr></p>
+<tr>
+<td>Child Delimiter Type</td></p>
+<td>Hexadecimal</td><br />
+   </tr></p>
+<tr>
+<td>Child Delimiter</td></p>
+<td>0x0D 0x0A (\r\n)</td><br />
+   </tr><br />
+</table></p>
+<p>This is where things start to get interesting. Notice how we use the Tag<br />
+Identifier property to tell BizTalk that it can recognize that the record is of<br />
+type CityList because it begins with the string CITYLIST (since we don't set the<br />
+Tag Offset property, it is assumed to be 0).</p></p>
+<p>Now we need to insert two child records, one for the City record,<br />
+and one for the State record. For each one, we'll set up in our schema each field<br />
+in the record as an attribute of the City Node. Each one should be configured like<br />
+described below.</p></p>
+<p><b>City</b></p>
+<table class="simpleTable" ID="Table4">
+<tr>
+<th>Property</th></p>
+<th>Value</th><br />
+   </tr></p>
+<tr>
+<td>Structure</td></p>
+<td>Positional</td><br />
+   </tr></p>
+<tr>
+<td>Tag Identifier</td></p>
+<td>C</td><br />
+   </tr><br />
+</table></p>
+<pre><code><br />
+Fields:<br />
+Name<br />
+   Justification           Left<br />
+   Pad Character           ' ' (space)<br />
+   Pad Character Type      Character<br />
+   Data Type               xs:string<br />
+   Positional Length       30<br />
+   Positional Offset       1<br />
+State<br />
+   Data Type               xs:string<br />
+   Positional Length       2<br />
+NumSewers<br />
+   Justification           Right<br />
+   Pad Character           0<br />
+   Pad Character Type      Character<br />
+   Data Type               xs:int<br />
+   Positional Length       8<br />
+      </code></pre></p>
+<p><b>State</b></p>
+<table class="simpleTable" ID="Table5">
+<tr>
+<th>Property</th></p>
+<th>Value</th><br />
+   </tr></p>
+<tr>
+<td>Structure</td></p>
+<td>Positional</td><br />
+   </tr></p>
+<tr>
+<td>Tag Identifier</td></p>
+<td>S</td><br />
+   </tr><br />
+</table></p>
+<pre><code><br />
+Fields:<br />
+Name<br />
+   Justification           Left<br />
+   Pad Character           ' ' (space)<br />
+   Pad Character Type      Character<br />
+   Data Type               xs:string<br />
+   Positional Length       30<br />
+   Positional Offset       1<br />
+Initials<br />
+   Data Type               xs:string<br />
+   Positional Length       2<br />
+      </code></pre></p>
+<p>Armed with this, we'd suppose we should now be able to parse this:</p></p>
+<pre><code><br />
+CITYLIST<br />
+CSEATTLE                      WA00198776<br />
+SWASHINGTON                   WA<br />
+SARIZONA                      AZ<br />
+CTUCSON                       AZ00002299<br />
+   </code></pre></p>
+<p>Right? Wrong! As you soon will have noticed, it fails.<br />
+The reason, well, simple, actually. The Tag for the CityList element is defined<br />
+as CITYLIST, not CITYLIST\r\n. So what BizTalk would parse right now would actually be this:</p></p>
+<pre><code><br />
+CITYLISTCSEATTLE                      WA00198776<br />
+SWASHINGTON                   WA<br />
+SARIZONA                      AZ<br />
+CTUCSON                       AZ00002299<br />
+   </code></pre></p>
+<p>One would think that by setting the Child Delimiter Order property of the CityList<br />
+node to "Prefix" would be enough, however, this is not true.<br />
+The reason for this is that, since there are no actual fields in CityList<br />
+(only child records), it simple won't recognize that delimiter there (nor insert it<br />
+if you generate an instance from vs.net). If there actually was a small<br />
+field just before the City and State records, it would be recognized as appropriate,<br />
+though. This seems to me to be a small bug, though, since it is definitely not what<br />
+one would expect.</p></p>
+<p>So, what can we do about this?</p></p>
+<p>In fact, afaik, there's no way to tell BizTalk that there's a<br />
+CR&#47;LF following the tag, at least directly from the UI. One way I found<br />
+that works is to open up the XSD file directly in the text editor, find<br />
+the tag_name attribute for CityList with the value CITYLIST&amp;#x0D;&amp;#x0A;. It's a<br />
+fun trick in that we basically encode the CR&#47;LF pair using character entities.<br />
+I had a pleasant surprise to find it worked, but I definitely would like something better<br />
+in the UI that allowed this. (Before anyone asks, yes, I did try putting that directly<br />
+in the Tag Identifier property, but that won't work because BizTalk will encode<br />
+the character entity into &amp;amp;#0D; which doesn't work :().</p></p>
+<p>Now, let's be honest... this is a bit of a hack, because we're basically<br />
+telling BizTalk that the tag is actually "CITYLIST\r\n", which we know ain't<br />
+the truth, but it works, and it's good enough for now.</p></p>
+<p>Defining the rest of the document schema is very similar to what we've done so far.<br />
+We need to add the MilkPrices node under the root, configured like this:</p></p>
+<table class="simpleTable" ID="Table6">
+<tr>
+<th>Property</th></p>
+<th>Value</th><br />
+   </tr></p>
+<tr>
+<td>Structure</td></p>
+<td>Delimited</td><br />
+   </tr></p>
+<tr>
+<td>Tag Identifier</td></p>
+<td>MILKPRICES&amp;#x0D;&amp;#x0A;</td><br />
+   </tr></p>
+<tr>
+<td>Group Order Type</td></p>
+<td>sequence</td><br />
+   </tr></p>
+<tr>
+<td>Preserve Delimiter for Empty Data</td></p>
+<td>No</td><br />
+   </tr></p>
+<tr>
+<td>Child Order</td></p>
+<td>Infix</td><br />
+   </tr></p>
+<tr>
+<td>Child Delimiter Type</td></p>
+<td>Hexadecimal</td><br />
+   </tr></p>
+<tr>
+<td>Child Delimiter</td></p>
+<td>0x0D 0x0A (\r\n)</td><br />
+   </tr><br />
+</table></p>
+<p>Under MilkPrices, we'll insert a positional record to contain each price, as well as the necessary fields, as defined below:</p></p>
+<p><b>MilkPrice</b></p>
+<table class="simpleTable" ID="Table7">
+<tr>
+<th>Property</th></p>
+<th>Value</th><br />
+   </tr></p>
+<tr>
+<td>Structure</td></p>
+<td>Positional</td><br />
+   </tr></p>
+<tr>
+<td>Min Occurs</td></p>
+<td>0</td><br />
+   </tr></p>
+<tr>
+<td>Max Occurs</td></p>
+<td>unbounded</td><br />
+   </tr><br />
+</table></p>
+<pre><code><br />
+CityName (Attribute Field)<br />
+   Justification           Left<br />
+   Pad Character           ' ' (space)<br />
+   Pad Character Type      Character<br />
+   Data Type               xs:string<br />
+   Positional Length       30</p>
+<p>Price (Attribute Field)<br />
+   Justification           Right<br />
+   Pad Character           ' ' (space)<br />
+   Pad Character Type      Character<br />
+   Data Type               xs:decimal<br />
+   Positional Length       6</p>
+<p>Currency (Attribute Field)<br />
+   Justification           Right<br />
+   Pad Character           ' ' (space)<br />
+   Pad Character Type      Character<br />
+   Data Type               xs:string<br />
+   Positional Length       3<br />
+      </code></pre></p>
+<p>Now, however, we run into a little snag. Depending on how our schema is defined,<br />
+we can get into a case where either the schema fails to parse the sample file, or<br />
+in which only a single record within the CityList section is recognized, while the<br />
+rest is ignored.</p></p>
+<p>The problem lies in the fact that, when you're defining the schema, you define,<br />
+in essence, a state machine (might not be entirely obvious). In our case,<br />
+the problem lies in the fact that the delimiters for both the MultiFile root node and<br />
+the CityList node begin with \r\n. So, what happens is that the parser will process<br />
+the first record inside CityList, and then find a \r\n. How will BizTalk know<br />
+that this \r\n it found means the end of the records inside CityList, or the beginning<br />
+of the delimiter for the MultiFile record?</p></p>
+<p>Answer: it doesn't, so with our current configuration, the schema will fail<br />
+to parse completely.</p></p>
+<p>The simplest way to fix this that I found was to define the CityList delimiter<br />
+to be postfix, and then change the delimiter in the MultiFile record to just<br />
+be ".\r\n". This would eliminate the ambiguity, while allowing us<br />
+to keep our file syntax.</p></p>
+<p>You may have noticed that, so far, I've left one thing<br />
+out: How to make sure that BizTalk Server recognizes the decimal numbers in<br />
+the Price field of the MilkPrice record correctly. As it currently is, it<br />
+will not parse the decimal digits correctly, and will just lead to a number<br />
+that's a hundred times larger than it really is (there is no decimal separator<br />
+in the file format).</p></p>
+<p>Well, honestly? I haven't found a way to make this work from within<br />
+the basic parser, there's just no property I can see that controls this.<br />
+Two options come to mind: </p></p>
+<ul>
+<li>Creating a BizTalk map that will use a functoid to change the value<br />
+   as appropriate (simply divide it by 100)</il></p>
+<li>Parsing the field into two actual fields (the integral part,<br />
+   and the decimal part). You could then write a map that puts them<br />
+   together as appropriate.</li><br />
+</ul></p>
+<p>Here's how our schema looks in the end:</p></p>
+<pre><code><br />
+<?xml version="1.0" encoding="utf-16"?><br />
+<xs:schema xmlns="urn:schemas-winterdom-com:multifile" xmlns:b="http:&#47;&#47;schemas.microsoft.com&#47;BizTalk&#47;2003" elementFormDefault="qualified" targetNamespace="urn:schemas-winterdom-com:multifile" xmlns:xs="http:&#47;&#47;www.w3.org&#47;2001&#47;XMLSchema"><br />
+  <xs:annotation><br />
+    <xs:appinfo><br />
+      <b:schemaInfo count_positions_by_byte="false" standard="Flat File" root_reference="MultiFile" case="upper" &#47;><br />
+      <schemaEditorExtension:schemaInfo namespaceAlias="b" extensionClass="Microsoft.BizTalk.FlatFileExtension.FlatFileExtension" standardName="Flat File" xmlns:schemaEditorExtension="http:&#47;&#47;schemas.microsoft.com&#47;BizTalk&#47;2003&#47;SchemaEditorExtensions" &#47;><br />
+    </xs:appinfo><br />
+  </xs:annotation><br />
+  <xs:element name="MultiFile"><br />
+    <xs:annotation><br />
+      <xs:appinfo><br />
+        <b:recordInfo structure="delimited" preserve_delimiter_for_empty_data="true" suppress_trailing_delimiters="false" sequence_number="1" child_order="infix" child_delimiter_type="hex" child_delimiter="0x2E 0x0D 0x0A" &#47;><br />
+      </xs:appinfo><br />
+    </xs:annotation><br />
+    <xs:complexType><br />
+      <xs:sequence><br />
+        <xs:annotation><br />
+          <xs:appinfo><br />
+            <b:groupInfo sequence_number="0" &#47;><br />
+          </xs:appinfo><br />
+        </xs:annotation><br />
+        <xs:element name="CityList"><br />
+          <xs:annotation><br />
+            <xs:appinfo><br />
+              <b:recordInfo sequence_number="1" structure="delimited" preserve_delimiter_for_empty_data="false" suppress_trailing_delimiters="true" tag_name="CITYLIST&amp;#xD;&amp;#xA;" child_order="postfix" child_delimiter_type="hex" child_delimiter="0x0D 0x0A" &#47;><br />
+            </xs:appinfo><br />
+          </xs:annotation><br />
+          <xs:complexType><br />
+            <xs:choice minOccurs="0" maxOccurs="unbounded"><br />
+              <xs:annotation><br />
+                <xs:appinfo><br />
+                  <b:groupInfo sequence_number="0" &#47;><br />
+                </xs:appinfo><br />
+              </xs:annotation><br />
+              <xs:element name="City"><br />
+                <xs:annotation><br />
+                  <xs:appinfo><br />
+                    <b:recordInfo sequence_number="1" structure="positional" preserve_delimiter_for_empty_data="true" suppress_trailing_delimiters="false" tag_name="C" &#47;><br />
+                  </xs:appinfo><br />
+                </xs:annotation><br />
+                <xs:complexType><br />
+                  <xs:attribute name="Name" type="xs:string"><br />
+                    <xs:annotation><br />
+                      <xs:appinfo><br />
+                        <b:fieldInfo sequence_number="1" justification="left" pad_char_type="char" pad_char=" " pos_length="30" pos_offset="1" &#47;><br />
+                      </xs:appinfo><br />
+                    </xs:annotation><br />
+                  </xs:attribute><br />
+                  <xs:attribute name="State" type="xs:string"><br />
+                    <xs:annotation><br />
+                      <xs:appinfo><br />
+                        <b:fieldInfo sequence_number="2" justification="left" pos_length="2" &#47;><br />
+                      </xs:appinfo><br />
+                    </xs:annotation><br />
+                  </xs:attribute><br />
+                  <xs:attribute name="NumSewers" type="xs:int"><br />
+                    <xs:annotation><br />
+                      <xs:appinfo><br />
+                        <b:fieldInfo sequence_number="3" justification="right" pos_length="8" pad_char_type="char" pad_char="0" &#47;><br />
+                      </xs:appinfo><br />
+                    </xs:annotation><br />
+                  </xs:attribute><br />
+                </xs:complexType><br />
+              </xs:element><br />
+              <xs:element name="State"><br />
+                <xs:annotation><br />
+                  <xs:appinfo><br />
+                    <b:recordInfo sequence_number="2" structure="positional" preserve_delimiter_for_empty_data="true" suppress_trailing_delimiters="false" tag_name="S" &#47;><br />
+                  </xs:appinfo><br />
+                </xs:annotation><br />
+                <xs:complexType><br />
+                  <xs:attribute name="Name" type="xs:string"><br />
+                    <xs:annotation><br />
+                      <xs:appinfo><br />
+                        <b:fieldInfo sequence_number="1" justification="left" pad_char_type="char" pad_char=" " pos_length="30" pos_offset="1" &#47;><br />
+                      </xs:appinfo><br />
+                    </xs:annotation><br />
+                  </xs:attribute><br />
+                  <xs:attribute name="Initials" type="xs:string"><br />
+                    <xs:annotation><br />
+                      <xs:appinfo><br />
+                        <b:fieldInfo sequence_number="2" justification="left" pos_length="2" &#47;><br />
+                      </xs:appinfo><br />
+                    </xs:annotation><br />
+                  </xs:attribute><br />
+                </xs:complexType><br />
+              </xs:element><br />
+            </xs:choice><br />
+          </xs:complexType><br />
+        </xs:element><br />
+        <xs:element name="MilkPrices"><br />
+          <xs:annotation><br />
+            <xs:appinfo><br />
+              <b:recordInfo sequence_number="2" structure="delimited" preserve_delimiter_for_empty_data="false" suppress_trailing_delimiters="false" tag_name="MILKPRICES&amp;#xD;&amp;#xA;" child_delimiter_type="hex" child_delimiter="0x0D 0x0A" child_order="infix" &#47;><br />
+            </xs:appinfo><br />
+          </xs:annotation><br />
+          <xs:complexType><br />
+            <xs:sequence><br />
+              <xs:annotation><br />
+                <xs:appinfo><br />
+                  <b:groupInfo sequence_number="0" &#47;><br />
+                </xs:appinfo><br />
+              </xs:annotation><br />
+              <xs:element minOccurs="0" maxOccurs="unbounded" name="MilkPrice"><br />
+                <xs:annotation><br />
+                  <xs:appinfo><br />
+                    <b:recordInfo sequence_number="1" structure="positional" preserve_delimiter_for_empty_data="true" suppress_trailing_delimiters="false" &#47;><br />
+                  </xs:appinfo><br />
+                </xs:annotation><br />
+                <xs:complexType><br />
+                  <xs:attribute name="CityName" type="xs:string"><br />
+                    <xs:annotation><br />
+                      <xs:appinfo><br />
+                        <b:fieldInfo sequence_number="1" justification="left" pad_char_type="char" pad_char=" " pos_length="30" &#47;><br />
+                      </xs:appinfo><br />
+                    </xs:annotation><br />
+                  </xs:attribute><br />
+                  <xs:attribute name="Price" type="xs:decimal"><br />
+                    <xs:annotation><br />
+                      <xs:appinfo><br />
+                        <b:fieldInfo sequence_number="2" justification="right" pos_length="6" pad_char_type="char" pad_char="0" &#47;><br />
+                      </xs:appinfo><br />
+                    </xs:annotation><br />
+                  </xs:attribute><br />
+                  <xs:attribute name="Currency" type="xs:string"><br />
+                    <xs:annotation><br />
+                      <xs:appinfo><br />
+                        <b:fieldInfo sequence_number="3" justification="left" pad_char_type="char" pad_char=" " pos_length="3" &#47;><br />
+                      </xs:appinfo><br />
+                    </xs:annotation><br />
+                  </xs:attribute><br />
+                </xs:complexType><br />
+              </xs:element><br />
+            </xs:sequence><br />
+          </xs:complexType><br />
+        </xs:element><br />
+      </xs:sequence><br />
+    </xs:complexType><br />
+  </xs:element><br />
+</xs:schema><br />
+   </code></pre></p>

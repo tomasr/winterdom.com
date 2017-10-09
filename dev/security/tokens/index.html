@@ -1,0 +1,176 @@
+---
+layout: page
+status: publish
+published: true
+title: Adjusting Process Token Privileges
+author:
+  display_name: Tomas Restrepo
+  login: tomasr
+  email: tomas@winterdom.com
+  url: http://winterdom.com/
+author_login: tomasr
+author_email: tomas@winterdom.com
+author_url: http://winterdom.com/
+wordpress_id: 1156
+wordpress_url: http://winterdom.com/?page_id=1156
+date: '2009-04-29 00:56:27 +0000'
+date_gmt: '2009-04-29 00:56:27 +0000'
+categories:
+- Uncategorized
+tags: []
+comments:
+- id: 1258
+  author: Adjusting Process Token Privileges &laquo; Monkisoft&#39;s daily
+  author_email: ''
+  author_url: http://www.monkisoft.com/wp/archive/adjusting-process-token-privileges/
+  date: '2009-12-18 01:09:57 +0000'
+  date_gmt: '2009-12-18 01:09:57 +0000'
+  content: "[...] Privileges   Working on setting token privileges so my process can
+    kill itself. Here is a good link Here is Dr. Dobbs article on the subject. I was
+    trying to find a complete list of privileges but [...]"
+- id: 2593
+  author: Nikhil Sebastian
+  author_email: nikhiljs@hotmail.com
+  author_url: ''
+  date: '2012-06-06 16:10:42 +0000'
+  date_gmt: '2012-06-06 16:10:42 +0000'
+  content: "Excellent explanation. Writing about each detail so clearly... great job.
+    Please keep up the great work. Appreciate your effort.\r\n\r\nThank you."
+- id: 620911
+  author: Aaron
+  author_email: aaronhritz@gmail.com
+  author_url: ''
+  date: '2015-12-11 17:56:27 +0000'
+  date_gmt: '2015-12-11 17:56:27 +0000'
+  content: This was really helpful. Thank you.
+---
+<p>As some of you know, Windows NT is a far more secure OS than Windows 9x, both<br />
+from a User and Developer standpoint. For a developer, this aspect of NT brings a new challenge:<br />
+Getting programs to work both under 9x and NT comfortably.</p>
+<p>Under NT, many of the Win32 API functions require that the process has a<br />
+certain level of privilege to execute, which is a good thing, and a great advance on security,<br />
+compared to 9x. But this also involves more work for the programmer, because some times he's<br />
+responsible for getting the program to work for user's which do not have Administrator privileges.<br />
+Don't believe that just because you're not doing low level stuff, or changing user, rights or whatever,<br />
+you won't need to know this, because you will. A specific example, the <code>SetSystemTime()</code><br />
+call: It's simple, just changes the system time, but requires that the process has SE_SYSTEMTIME_NAME<br />
+privilege on it's tokens, which is <i>not</i> enabled by default.</p></p>
+<p>But, What's an access token? A token is:</p>
+<blockquote><p>
+A group of security attributes permanently attached to a process when a user logs on to the<br />
+operating system. An access token contains privileges and security identifiers for a user,<br />
+global group, or local group. The privileges regulate the use of some system services and<br />
+the security identifiers regulate access to objects that are protected by access-control<br />
+lists (ACLs). There are two kinds of access token: primary and impersonation.<br />
+</blockquote></p>
+<p>When adjusting a process access tokens, you have to be careful to leave the<br />
+tokens in the state they were in. Don't assume that you can just change them and leave it like<br />
+that (unless you are enabling the SE_SHUTDOWN_NAME privilege, in which case it doesn't matter),<br />
+you should always return them to the state you found them. Following this simple rule<br />
+ensures that your program won't cause security troubles later.&nbsp;</p></p>
+<p>Now, let's go a little deeper. What's the whole purpose of<br />
+tokens? Tokens are created by the Local Security Authority (lsass.exe), and<br />
+allow the system to keep track of some information related to the process. The<br />
+most important information a process token holds is the SID of the user account<br />
+the process is running under. It also carries the list of SID's for groups the<br />
+user is member of, and, obviously, which privileges the user has been granted.<br />
+All this allows the system to easily determine if the process should be granted<br />
+access to a protected resource. Another important thing the token carries is a<br />
+default DACL (<i>Discretionary Access Control List</i>) that is used to assign<br />
+default security settings to objects (i.e. files) created by the process in<br />
+behalf of the user. Keep in mind that this DACL is only used if the process<br />
+doesn't explicitly supply a security descriptor when the object is created.</p></p>
+<p>One thing I haven't mentioned so far is that threads can also<br />
+have tokens associated, which you can get at via the OpenThreadToken() api.<br />
+However, you'll soon notice that most of the time calling this api will fail.<br />
+Why? Because usually a thread <i>won't</i> have a token attached, in which case<br />
+the system will use the token of the process the thread is running on. When a<br />
+thread <i>does</i> have a token attached to it, it's because it is <i>impersonating</i><br />
+another user, in which case it is said that the thread runs under a different<br />
+security context. Is important to notice that a thread can also impersonate the<br />
+same user account the process is running under, via the ImpersonateSelf() api.</p></p>
+<p> There are some basic steps to<br />
+adjusting the tokens, so let's review them, and later I'll present an example.</p></p>
+<p><OL><br />
+	<LI>Call <code>OpenProcessToken()</code> with <i>at least</i> the TOKEN_ADJUST_PRIVILEGE and<br />
+	TOKEN_QUERY flags.<br />
+	<LI>Use <code>LookupPrivilegeValue()</code> to get the LUID (Locally Unique Identifier) of<br />
+	the privilege you want to adjust.<br />
+	<LI>Call <code>AdjustTokenPrivileges()</code> to adjust the tokens.<br />
+	<LI>Do whatever calls you need to do to accomplish your task.<br />
+	<LI>Call <code>AdjustTokenPrivileges()</code> again to set the old privileges back and<br />
+	leave the tokens as found.<br />
+	<LI>Close the Token handle.<br />
+</OL></p>
+<p>Let's see an example: Here we enable the SE_SYSTEMTIME_NAME privilege<br />
+to be able of setting the system time:</p></p>
+<pre class="codes"><code><br />
+HANDLE      hToken<FONT color=#0000ff>;</FONT>     <FONT color=#cc9900>&#47;*</FONT><FONT color=#cc9900> process token *&#47;</FONT><br />
+TOKEN_PRIVILEGES tp<FONT color=#0000ff>;</FONT>    <FONT color=#cc9900>&#47;*</FONT><FONT color=#cc9900> token provileges *&#47;</FONT><br />
+TOKEN_PRIVILEGES oldtp<FONT color=#0000ff>;</FONT>    <FONT color=#cc9900>&#47;*</FONT><FONT color=#cc9900> old token privileges *&#47;</FONT><br />
+DWORD    dwSize <FONT color=#0000ff>=</FONT> <FONT color=#0000ff>sizeof</FONT> <FONT color=#0000ff>(</FONT>TOKEN_PRIVILEGES<FONT color=#0000ff>);</FONT><br />
+LUID     luid<FONT color=#0000ff>;</FONT>          </p>
+<p><FONT color=#cc9900>&#47;*</FONT><FONT color=#cc9900> now, set the SE_SYSTEMTIME_NAME privilege to our current</FONT><br />
+<FONT color=#cc9900>*  process, so we can call SetSystemTime()</FONT><br />
+<FONT color=#cc9900>*&#47;</FONT><br />
+<FONT color=#0000ff>if</FONT> <FONT color=#0000ff>(</FONT>!OpenProcessToken <FONT color=#0000ff>(</FONT>GetCurrentProcess<FONT color=#0000ff>(),</FONT> TOKEN_ADJUST_PRIVILEGES <FONT color=#0000ff>|</FONT> TOKEN_QUERY<FONT color=#0000ff>,</FONT><br />
+   <FONT color=#0000ff>&amp;</FONT>hToken<FONT color=#0000ff>))</FONT><br />
+<FONT color=#0000ff>{</FONT><br />
+   printf <FONT color=#0000ff>(</FONT><B><FONT color=#000000>"OpenProcessToken() failed with code </FONT></B><FONT color=#008080>%d</FONT><FONT color=#008080>\n</FONT><B><FONT color=#000000>"</FONT></B><FONT color=#0000ff>,</FONT> GetLastError<FONT color=#0000ff>());</FONT><br />
+   <FONT color=#0000ff>return</FONT> <FONT color=#8080cc>1</FONT><FONT color=#0000ff>;</FONT><br />
+<FONT color=#0000ff>}</FONT><br />
+<FONT color=#0000ff>if</FONT> <FONT color=#0000ff>(</FONT>!LookupPrivilegeValue <FONT color=#0000ff>(</FONT><FONT color=#8080cc>NULL</FONT><FONT color=#0000ff>,</FONT> SE_SYSTEMTIME_NAME<FONT color=#0000ff>,</FONT> <FONT color=#0000ff>&amp;</FONT>luid<FONT color=#0000ff>))</FONT><br />
+<FONT color=#0000ff>{</FONT><br />
+   printf <FONT color=#0000ff>(</FONT><B><FONT color=#000000>"LookupPrivilege() failed with code </FONT></B><FONT color=#008080>%d</FONT><FONT color=#008080>\n</FONT><B><FONT color=#000000>"</FONT></B><FONT color=#0000ff>,</FONT> GetLastError<FONT color=#0000ff>());</FONT><br />
+   CloseHandle <FONT color=#0000ff>(</FONT>hToken<FONT color=#0000ff>);</FONT><br />
+   <FONT color=#0000ff>return</FONT> <FONT color=#8080cc>1</FONT><FONT color=#0000ff>;</FONT><br />
+<FONT color=#0000ff>}</FONT></p>
+<p>ZeroMemory <FONT color=#0000ff>(&amp;</FONT>tp<FONT color=#0000ff>,</FONT> <FONT color=#0000ff>sizeof</FONT> <FONT color=#0000ff>(</FONT>tp<FONT color=#0000ff>));</FONT><br />
+tp<FONT color=#0000ff>.</FONT>PrivilegeCount <FONT color=#0000ff>=</FONT> <FONT color=#8080cc>1</FONT><FONT color=#0000ff>;</FONT><br />
+tp<FONT color=#0000ff>.</FONT>Privileges<FONT color=#0000ff>[</FONT><FONT color=#8080cc>0</FONT><FONT color=#0000ff>].</FONT>Luid <FONT color=#0000ff>=</FONT> luid<FONT color=#0000ff>;</FONT><br />
+tp<FONT color=#0000ff>.</FONT>Privileges<FONT color=#0000ff>[</FONT><FONT color=#8080cc>0</FONT><FONT color=#0000ff>].</FONT>Attributes <FONT color=#0000ff>=</FONT> SE_PRIVILEGE_ENABLED<FONT color=#0000ff>;</FONT></p>
+<p><FONT color=#cc9900>&#47;*</FONT><FONT color=#cc9900> Adjust Token privileges *&#47;</FONT><br />
+<FONT color=#0000ff>if</FONT> <FONT color=#0000ff>(</FONT>!AdjustTokenPrivileges <FONT color=#0000ff>(</FONT>hToken<FONT color=#0000ff>,</FONT> FALSE<FONT color=#0000ff>,</FONT> <FONT color=#0000ff>&amp;</FONT>tp<FONT color=#0000ff>,</FONT> <FONT color=#0000ff>sizeof</FONT><FONT color=#0000ff>(</FONT>TOKEN_PRIVILEGES<FONT color=#0000ff>),</FONT><br />
+         <FONT color=#0000ff>&amp;</FONT>oldtp<FONT color=#0000ff>,</FONT> <FONT color=#0000ff>&amp;</FONT>dwSize<FONT color=#0000ff>))</FONT><br />
+<FONT color=#0000ff>{</FONT><br />
+   printf <FONT color=#0000ff>(</FONT><B><FONT color=#000000>"AdjustTokenPrivileges() failed with code </FONT></B><FONT color=#008080>%d</FONT><FONT color=#008080>\n</FONT><B><FONT color=#000000>"</FONT></B><FONT color=#0000ff>,</FONT> GetLastError<FONT color=#0000ff>());</FONT><br />
+   CloseHandle <FONT color=#0000ff>(</FONT>hToken<FONT color=#0000ff>);</FONT><br />
+   <FONT color=#0000ff>return</FONT> <FONT color=#8080cc>1</FONT><FONT color=#0000ff>;</FONT><br />
+<FONT color=#0000ff>}</FONT></p>
+<p><FONT color=#cc9900>&#47;*</FONT><FONT color=#cc9900> Set time *&#47;</FONT><br />
+<FONT color=#0000ff>if</FONT> <FONT color=#0000ff>(</FONT>!SetSystemTime <FONT color=#0000ff>(&amp;</FONT>stCurrentTime<FONT color=#0000ff>))</FONT><br />
+<FONT color=#0000ff>{</FONT><br />
+   printf <FONT color=#0000ff>(</FONT><B><FONT color=#000000>"SetSystemTime() failed with code </FONT></B><FONT color=#008080>%d</FONT><FONT color=#008080>\n</FONT><B><FONT color=#000000>"</FONT></B><FONT color=#0000ff>,</FONT> GetLastError<FONT color=#0000ff>());</FONT><br />
+   CloseHandle <FONT color=#0000ff>(</FONT>hToken<FONT color=#0000ff>);</FONT><br />
+   <FONT color=#0000ff>return</FONT> <FONT color=#8080cc>1</FONT><FONT color=#0000ff>;</FONT><br />
+<FONT color=#0000ff>}</FONT></p>
+<p><FONT color=#cc9900>&#47;*</FONT><FONT color=#cc9900> disable SE_SYSTEMTIME_NAME again *&#47;</FONT><br />
+AdjustTokenPrivileges <FONT color=#0000ff>(</FONT>hToken<FONT color=#0000ff>,</FONT> FALSE<FONT color=#0000ff>,</FONT> <FONT color=#0000ff>&amp;</FONT>oldtp<FONT color=#0000ff>,</FONT> dwSize<FONT color=#0000ff>,</FONT> <FONT color=#8080cc>NULL</FONT><FONT color=#0000ff>,</FONT> <FONT color=#8080cc>NULL</FONT><FONT color=#0000ff>);</FONT><br />
+<FONT color=#0000ff>if</FONT> <FONT color=#0000ff>(</FONT>GetLastError<FONT color=#0000ff>()</FONT> <FONT color=#0000ff>!=</FONT> ERROR_SUCCESS<FONT color=#0000ff>)</FONT><br />
+<FONT color=#0000ff>{</FONT><br />
+   printf <FONT color=#0000ff>(</FONT><B><FONT color=#000000>"AdjustTokenPrivileges() failed with code </FONT></B><FONT color=#008080>%d</FONT><FONT color=#008080>\n</FONT><B><FONT color=#000000>"</FONT></B><FONT color=#0000ff>,</FONT> GetLastError<FONT color=#0000ff>());</FONT><br />
+   CloseHandle <FONT color=#0000ff>(</FONT>hToken<FONT color=#0000ff>);</FONT><br />
+   <FONT color=#0000ff>return</FONT> <FONT color=#8080cc>1</FONT><FONT color=#0000ff>;</FONT><br />
+<FONT color=#0000ff>}</FONT></p>
+<p>CloseHandle <FONT color=#0000ff>(</FONT>hToken<FONT color=#0000ff>);</FONT><br />
+</code></pre></p>
+<p>As you can see from the example, it's not really a hard thing to do, but<br />
+requires several non trivial calls just to do a simple task. </p></p>
+<p>Finally, let's consider some linguistic issues. What exactly the<br />
+difference between a <i>privilege </i>and a <i>right</i> is, that's something<br />
+most people don't clearly understand. The problem is terminology. The original<br />
+Windows NT docs referred to privileges as <i>Advanced User Rights</i>, which<br />
+doesn't help much, either.</p></p>
+<p>One way to clarify things is by understanding that permissions<br />
+(a.k.a. rights) are <i>always</i> associated to a particular object. You have<br />
+the permission to open a file, to read from it, etc. There are a set of generic<br />
+rights, but every object type supplies it's own rights that only make sense for<br />
+it. The system knows what rights a user have to access an object by looking at<br />
+the ACL (<i>Access Control List</i>) associated with the object. Usually, ACL's<br />
+are saved along with the object, so they are persistent if the object itself is.<br />
+For example, a file's ACL is saved along with it on disk.</p></p>
+<p>&nbsp;Privileges, on the other hand, are associated with<br />
+particular <i>actions</i> on the system, and are granted to users, not objects.<br />
+Privileges allow a user to override permissions, and this is why you have to be<br />
+careful when granting them. A user with SE_RESTORE_NAME privilege could easily<br />
+overwrite almost any file on the system..</p></p>

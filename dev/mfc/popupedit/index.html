@@ -1,0 +1,32 @@
+---
+layout: page
+status: publish
+published: true
+title: An MFC PopupEdit Control
+author:
+  display_name: Tomas Restrepo
+  login: tomasr
+  email: tomas@winterdom.com
+  url: http://winterdom.com/
+author_login: tomasr
+author_email: tomas@winterdom.com
+author_url: http://winterdom.com/
+wordpress_id: 1108
+wordpress_url: http://winterdom.com/?page_id=1108
+date: '2009-04-28 02:33:22 +0000'
+date_gmt: '2009-04-28 02:33:22 +0000'
+categories:
+- Uncategorized
+tags: []
+comments: []
+---
+<p>The PopupEdit class is a simple CEdit-derived MFC class, that&nbsp;behaves very much like the edit control that appears when you edit an entry in a&nbsp;ListView control. It's designed to be very easy to use, and I think you might<br />
+find it useful in your own applications.</p>
+<p>Using the control is very simple: Call <code>PopupEdit::Create()</code> to&nbsp;create the control. After that, you call <code>PopupEdit::Show()</code> to make it visible.&nbsp;When you show it, you can specify the rectangle (in client coordinates of the&nbsp;parent window) where you want to display it, along with an initial text. Every time&nbsp;the control goes away, it resets its text back to "" (an&nbsp;empty string).</p>
+<p>When the control is displayed, it will automatically grab focus&nbsp;and select the string in it. When the user presses the Enter key to accept the&nbsp;new text, the control will send a <code>PE_TEXTIN</code> message to the parent window, with a&nbsp;pointer to the text in the <code>LPARAM</code> of the message. That way, it's very easy to&nbsp;grab the new text. After that, or if the user presses ESC or gives another&nbsp;control the focus, the PopupEdit control will hide itself.</p>
+<p>One nice thing of the control is it's ability to auto-resize itself to make the string fit, just like the ListView control &nbsp;does. This is only&nbsp;done if the control has the <code>PE_AUTOHEXPAND</code> style.</p>
+<p>Grab the file here:</p>
+<ul>
+<li><a href="&#47;files&#47;PopupEdit.h">PopupEdit.h</a> :&nbsp;&nbsp;&nbsp;header file</li>
+<li><a href="&#47;files&#47;PopupEdit.cpp">PopupEdit.cpp</a> : implementation&nbsp;file</li><br />
+</ul></p>
