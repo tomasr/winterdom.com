@@ -8,7 +8,7 @@ tags:
 - ManagedServiceIdentity
 comments: []
 ---
-In a previous [post]{% post_url 2017-09-07-azure-sql-tde-protector-keyvault %} I was lamenting not having a way
+In a previous [post]({% post_url 2017-09-07-azure-sql-tde-protector-keyvault %}) I was lamenting not having a way
 to obtained the managed service identity generated for an Azure resource, such as a Azure SQL logical server
 or a Web App from the Azure Resource Manager (ARM) template itself.
 
