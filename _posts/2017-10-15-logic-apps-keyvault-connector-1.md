@@ -10,10 +10,9 @@ comments: []
 ---
 Azure Logic Apps now supports writing [custom connectors](https://docs.microsoft.com/en-us/azure/logic-apps/custom-connector-overview), which
 are just custom REST APIs for which you can customize the experience so that they feel
-like the built-in Logic Apps connectors.
-
-I wanted to give try my hand at writing one, so decided on a simple use case: Writing
-a connector that provides a way to retrieve a secret stored in Azure Key Vault.
+like the built-in Logic Apps connectors. I wanted to give try my hand at writing one,
+so decided on a simple use case: Writing a connector that provides a way to retrieve
+a secret stored in Azure Key Vault.
 
 This part 1 in a series of articles on my experience writing this.
 
