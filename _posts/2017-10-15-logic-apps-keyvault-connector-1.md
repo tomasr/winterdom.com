@@ -18,6 +18,9 @@ a secret stored in Azure Key Vault.
 
 This part 1 in a series of articles on my experience writing this.
 
+> __Update 2017-10-17:__ A few details on the post have been updated due to me confusing 
+> `summary` and `x-ms-summary`.
+
 ## Connector Implementation
 
 In this post, I'd like to talk a bit about the connector implementation. I decided to implement
@@ -68,7 +71,7 @@ public  async Task<IEnumerable<Secret>> Get(String vaultName)
 ``` 
 
 Notice how I use the `DescriptionAttribute` to specify the longer operation description, and
-the `SummaryAttribute` to add the value for `x-ms-summary`. Both are processed by custom
+the `SummaryAttribute` to add the value for `summary`. Both are processed by custom
 `IOperationFilter` extensions for `Swashbuckle`. Here's the code for handling the summary:
 
 ```c#
@@ -88,7 +91,7 @@ public class SummaryFilter : IOperationFilter {
                          .OfType<SummaryAttribute>()
                          .FirstOrDefault();
     if ( summary != null ) {
-      operation.Extensions["x-ms-summary"] = summary.Summary;
+      operation.Summary = summary.Summary;
     }
   }
 }
