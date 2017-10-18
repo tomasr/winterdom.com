@@ -64,7 +64,7 @@ I ended up writing my operations like this:
 
 ```c#
 [HttpGet()]
-[SwaggerOperation(OperationId = "List Secrets")]
+[SwaggerOperation(OperationId = "ListSecrets")]
 [Summary("Lists all secrets")]
 [Description("Lists the secrets stored in Key Vault")]
 public  async Task<IEnumerable<Secret>> Get(String vaultName)
