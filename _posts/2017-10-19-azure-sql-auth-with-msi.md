@@ -164,7 +164,7 @@ public static class ADAuthentication
 Then we can use the token to authenticate to SQL and obtain the username, to ensure we are
 indeed connecting with our Managed Service Identity:
 
-```C#
+```c#
 public async Task<ActionResult> UsingSP()
 {
     String cs = ConfigurationManager.ConnectionStrings["SqlDb"].ConnectionString;
