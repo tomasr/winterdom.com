@@ -94,8 +94,8 @@ We should see something like this as output:
 
 ```json
 {
-  "principalId": "6110386e-4fef-422a-b5db-c6cd4a1373ee",
-  "tenantId": "8305b292-c023-4f1e-af1a-a042eb5bceb5",
+  "principalId": "f76495ad-d682-xxxx-xxxx-bc70710ebf0e",
+  "tenantId": "8305b292-c023-xxxx-xxxx-a042eb5bceb5",
   "type": null
 }
 ```
@@ -105,13 +105,13 @@ using the `az ad sp show --id $principalId`, which should print something like t
 
 ```json
 {
-  "appId": "716d2e7a-ce15-4d84-9f05-c52eccb3f511",
-  "displayName": "kvtrapp1",
-  "objectId": "6110386e-4fef-422a-b5db-c6cd4a1373ee",
+  "appId": "09b89d60-1c0f-xxxx-xxxx-e009833f478f",
+  "displayName": "msitr2app",
+  "objectId": "f76495ad-d682-xxxx-xxxx-bc70710ebf0e",
   "objectType": "ServicePrincipal",
   "servicePrincipalNames": [
-    "716d2e7a-ce15-4d84-9f05-c52eccb3f511",
-    "https://identity.azure.net/oK39j26sAYNcxWFBTZI/+wr3KK86QhYt7Y85CZhnIq8="
+    "09b89d60-1c0f-xxxx-xxxx-e009833f478f",
+    "https://identity.azure.net/R1arAxq7+EKpM2wyumvvaZ0n+9ICN6YkZB/sse/1VtI="
   ]
 }
 ```
@@ -121,13 +121,84 @@ using the `az ad sp show --id $principalId`, which should print something like t
 
 ## Creating SQL Users
 
-Now I can connect to my SQL database and create all the necessary users
-from Azure Active Directory. Remember that for this we use the `CREATE USER`
-and `ALTER ROLE` T-SQL statements.
+Azure SQL Database does not support creating logins or users from
+servince principals created from Managed Service Identity. The only way to
+provide access to one is to add it to an AAD group, and then grant
+access to the group to the database.
 
-First, I'll want to authenticate to SQL using the service principal
-assigned, so I'll do something like:
+We can use the Azure CLI to create the group and add our MSI to it:
 
-```SQL
-
+```bash
+az ad group create --display-name SQLUsers --mail-nickname 'NotSet'
+az ad group member add -g SQLUsers --member-id f76495ad-d682-xxxx-xxxx-bc70710ebf0e
 ```
+
+Notice that in the second command, we're passing the `objectId` or `principalId` value,
+rather than the application id.
+
+Now, I can grant access to the group using the same script we've used in the previous posts:
+
+```powershell
+.\Add-SqlAadUser.ps1 -sqlServer $serverName -database $dbName -sqlAdminCredentials $cred -aadUser SQLUsers
+```
+
+## Authenticating to the Database
+
+To obtain a token for our Azure SQL database, I'll use the
+[Microsoft.Azure.Services.AppAuthentication](https://www.nuget.org/packages/Microsoft.Azure.Services.AppAuthentication)
+library:
+
+```c#
+public static class ADAuthentication
+{
+    const String SqlResource = "https://database.windows.net/";
+
+    public static Task<String> GetSqlTokenAsync()
+    {
+        var provider = new AzureServiceTokenProvider();
+        return provider.GetAccessTokenAsync(SqlResource);
+    }
+}
+```
+
+Then we can use the token to authenticate to SQL and obtain the username, to ensure we are
+indeed connecting with our Managed Service Identity:
+
+```C#
+public async Task<ActionResult> UsingSP()
+{
+    String cs = ConfigurationManager.ConnectionStrings["SqlDb"].ConnectionString;
+
+    var token = await ADAuthentication.GetSqlTokenAsync();
+
+    var user = await GetSqlUserName(cs, token);
+    ViewBag.SqlUserName = user;
+    return View("UserContext");
+}
+
+private async Task<String> GetSqlUserName(String connectionString, String token)
+{
+    using (var conn = new SqlConnection(connectionString))
+    {
+        conn.AccessToken = token;
+        await conn.OpenAsync();
+        String text = "SELECT SUSER_SNAME()"; 
+        using (var cmd = new SqlCommand(text, conn))
+        {
+            var result = await cmd.ExecuteScalarAsync();
+            return result as String;
+        }
+    }
+}
+```
+
+The value of `SUSER_SNAME()` should come back something like this:
+`09b89d60-1c0f-xxxx-xxxx-e009833f478f@8305b292-c023-xxxx-xxxx-a042eb5bceb5`. Notice that
+what we get back as the name is based on the `applicationId` of the service principal.
+
+## Final Thoughts
+
+Managed Service Identity makes it a lot simpler and more secure to access other
+Azure resources from your Web Applications deployed to App Service. Notice, however,
+than in its current form it will not support scenarios such as credential delegation,
+but we may see support for this added in the future.
