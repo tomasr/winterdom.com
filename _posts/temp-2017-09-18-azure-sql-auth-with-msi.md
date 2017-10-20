@@ -12,15 +12,15 @@ comments: []
 On a [previous article]({% post_url 2017-08-31-token-delegation-azure-sql %}) I
 discussed how to use a certificate stored in Key Vault to provide authentication
 to Azure Active Directory from a Web Application deployed in AppService so that
-we could authenticate (and delegate credentials) to an Azure SQL database.
+we could authenticate to an Azure SQL database.
 
 With the introduction of [Managed Service Identity](https://azure.microsoft.com/en-us/blog/keep-credentials-out-of-code-introducing-azure-ad-managed-service-identity/),
 this becomes even easier, as we can just get rid of the complexity of deploying
 the Key Vault certificate.
 
-Let's see how we could implement the same scenario using Managed Service Identity instead.
+Let's see how we could use MSI to authenticate the application to a SQL Database.
 
-## Creating the resources
+## Enabling Managed Service Identity
 
 The first step is creating the necessary Azure resources for this post. As usual, I'll
 use Azure Resource Manager (ARM) templates for this. I'll create a new SQL Server, SQL
@@ -80,6 +80,8 @@ The key bit in the template above is this fragment:
     "type": "SystemAssigned"
 },
 ```
+
+> __Note:__ You can also enable MSI from the Azure Portal for an existing Web App.
 
 Once the web application resource has been created, we can query the identity
 information from the resource:
