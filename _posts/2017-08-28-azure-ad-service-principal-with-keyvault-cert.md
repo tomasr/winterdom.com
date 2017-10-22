@@ -82,11 +82,11 @@ New-AzureRmADServicePrincipal -DisplayName $principalName `
 The script assumes you've already signed in to your Azure Subscription using
 `Login-AzureRMAccount`. Let's try executing the script:
 
-![Executing the script](http://static.winterdom.com/images/2017/ad-spwithcert.png)
+![Executing the script]({{site.images_base}}/2017/ad-spwithcert.png)
 
 If we go into the Key Vault in the Azure Portal, we can see the new certificate generated:
 
-![Key Vault Certificate Secret](http://static.winterdom.com/images/2017/kv-certificate.png)
+![Key Vault Certificate Secret]({{site.images_base}}/2017/kv-certificate.png)
 
 We can also query the new Service Principal and verify that it is indeed setup with 
 certificate-based authentication:

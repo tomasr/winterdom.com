@@ -11,7 +11,7 @@ comments: []
 With the release of [Viasfora](http://viasfora.com/) v3.6 in the following days,
 there are two new features coming up:
 
-![Import / Export settings](http://static.winterdom.com/images/2017/vsf-export.png)
+![Import / Export settings]({{site.images_base}}/2017/vsf-export.png)
 
 * Exporting/Importing the current settings. Generally speaking, you can always just copy the `Viasfora.xml` settings file, but this provides a more straight implementation.
 * Exporting your current Viasfora color settings as a "Theme" that you can share or move to a new computer. 

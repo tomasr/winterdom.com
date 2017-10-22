@@ -304,7 +304,7 @@ private async Task<String> GetSqlUserName(String connectionString, String token)
 
 If the connection succeeds, we should see something like this in our application:
 
-![Authenticated user message](http://static.winterdom.com/images/2017/sql-adauth1.png)
+![Authenticated user message]({{site.images_base}}/2017/sql-adauth1.png)
 
 Here the username will be composed of two parts separated by `@`:
 

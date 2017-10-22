@@ -120,7 +120,7 @@ If the container is ready, we should see something like:
 When the container is fully deployed, we just need to use an SSH agent with the right private key
 to connect and run powershell on it:
 
-![PowerShell on Linux](http://static.winterdom.com/images/2017/ps-linux.png)
+![PowerShell on Linux]({{site.images_base}}/2017/ps-linux.png)
 
 Once we're done playing with our environment, we can just delete the container instance:
 

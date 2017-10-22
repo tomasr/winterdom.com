@@ -39,7 +39,7 @@ menu:
 * Select the "Write annotations" permission.
 * Press the "Generate key" button.
 
-![Create a new API key](http://static.winterdom.com/images/2017/ai-create-api-key.png)
+![Create a new API key]({{site.images_base}}/2017/ai-create-api-key.png)
 
 Once the key has been generated, copy the value. If you don't, you'll have to create a brand new
 key! Also, note the __Application ID__ value for your Application Insights resource, displayed
@@ -50,12 +50,12 @@ alongside your new API key. We will need both to create a new annotation later o
 Create a brand new Function App in your Azure Subscription. For this demo, I'll create
 a new one in a __Consumption Plan__:
 
-![Create a new Function App](http://static.winterdom.com/images/2017/ai-new-function.png)
+![Create a new Function App]({{site.images_base}}/2017/ai-new-function.png)
 
 Now, create a new Function. For simplicity, I'm going to use the "Webhook + API" template
 in JavaScript:
 
-![Add new function](http://static.winterdom.com/images/2017/ai-function-hook.png)
+![Add new function]({{site.images_base}}/2017/ai-function-hook.png)
 
 The request sent by Kudu is going to contain some useful properties for our new function:
 
@@ -140,7 +140,7 @@ module.exports = function (context, req) {
 We also need to configure our Application Insights application id and application key. To avoid
 hardcoding these on the code, let's create them as application Settings:
 
-![Application Settings](http://static.winterdom.com/images/2017/ai-function-settings.png)
+![Application Settings]({{site.images_base}}/2017/ai-function-settings.png)
 
 Finally, since we're using the `require` package, we also need to add a `package.json` file
 as described [here](https://docs.microsoft.com/en-us/azure/azure-functions/functions-reference-node#node-version-and-package-management).
@@ -163,7 +163,7 @@ Before we can do that, though, we need to obtain the key used to control access
 to our Function. To do this, in the portal, select the __Manage__ option for the function,
 and then either use the value of the default key, or create a new one:
 
-![Function key](http://static.winterdom.com/images/2017/ai-function-keys.png)
+![Function key]({{base.images_base}}/2017/ai-function-keys.png)
 
 Take a note of the value of the key; we'll use it in a bit (note that the
 `</> Get function URL` link on the function editor also gives you the full URL + key).
@@ -177,7 +177,7 @@ with the following settings:
 * Select this as a PostDeployment hook.
 * Press the __Add Url__ button to create the hook.
 
-![Webhook in Kudu](http://static.winterdom.com/images/2017/ai-kudu-hook.png)
+![Webhook in Kudu]({{site.images_base}}/2017/ai-kudu-hook.png)
 
 ## Step 4: Testing the Webhook
 
@@ -195,4 +195,4 @@ see something like this in the log:
 
 In Application Insights, we should also see our Release Annotation appear on charts:
 
-![Release annotations on charts](http://static.winterdom.com/images/2017/ai-annotations.png)
+![Release annotations on charts]({{site.images_base}}/2017/ai-annotations.png)

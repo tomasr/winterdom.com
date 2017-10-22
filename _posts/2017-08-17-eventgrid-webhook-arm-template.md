@@ -121,7 +121,7 @@ can then specify the WebHook URL, and the filter of which events you want delive
 
 End result of applying the template in the portal shows are hook created correctly:
 
-![WebHook in Azure Portal](http://static.winterdom.com/images/2017/eg-webhook.png)
+![WebHook in Azure Portal]({{site.images_base}}/2017/eg-webhook.png)
 
 I also added some outputs to the ARM template so that it returns the topic endpoint URL
 of the created Event Grid, as well as the first access key:

@@ -14,7 +14,7 @@ like the built-in Logic Apps connectors. I wanted to give try my hand at writing
 so decided on a simple use case: Writing a connector that provides a way to retrieve
 a secret stored in Azure Key Vault.
 
-![Key Vault Connector](http://static.winterdom.com/images/2017/la-getsecret.png)
+![Key Vault Connector]({{site.images_base}}/2017/la-getsecret.png)
 
 This part 1 in a series of articles on my experience writing this.
 

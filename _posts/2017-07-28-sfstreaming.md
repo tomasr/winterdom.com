@@ -23,7 +23,7 @@ listener, and so becomes useful on a whole bunch of other scenarios.
 If you read the documentation above, you'll have noticed that you can open the streaming trace viewer
 from the _Cloud Explorer_ tool window:
 
-![Launching streaming trace viewer](http://static.winterdom.com/images/2017/sf-viewstreamingtraces.png)
+![Launching streaming trace viewer]({{site.images_base}}/2017/sf-viewstreamingtraces.png)
 
 One big downside of this is that it requires not only that you have the Service Fabric SDK installed,
 but also that you have a local Service Fabric cluster deployed, and started.
@@ -46,7 +46,7 @@ recognize the syntax right away.
 The beauty on this is that you can easily change the list of ETW providers that are enabled by clicking on
 the little gearbox icon (third one from the left):
 
-![Selecting ETW Providers](http://static.winterdom.com/images/2017/sf-etwproviders.png)
+![Selecting ETW Providers]({{site.images_base}}/2017/sf-etwproviders.png)
 
 In the example above, I'm enabling some of the ETW providers in the Application Insights SDK to troubleshoot
 some issues related to dependency collection. Once you've customized the list, press the Apply button so it
@@ -55,13 +55,13 @@ takes effect.
 ##Viewing Events
 Once collection is started, you can watch events scroll by on the grid:
 
-![ETW events scrolling by](http://static.winterdom.com/images/2017/sf-traces.png)
+![ETW events scrolling by]({{site.images_base}}/images/2017/sf-traces.png)
 
 You can also pause and restart the trace at any time using the first button at the top-left. For each event,
 you'll notice that a TimeStamp, the event name and the textual message associated with the event will be displayed.
 However, you can also expand an event to view the full event detail in JSON format:
 
-![ETW event details](http://static.winterdom.com/images/2017/sf-eventdetails.png)
+![ETW event details]({{site.images_base}}/2017/sf-eventdetails.png)
 
 Also not immediately obvious: You can right-click on an event and select the "Copy Event" command from
 the context menu. This will copy the full JSON details to the clipboard.

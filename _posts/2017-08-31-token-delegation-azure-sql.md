@@ -50,7 +50,7 @@ To do this, I'm going to open the Azure AD portal and find the
 Service Principal in the _App Registrations_ section of the portal.
 Here, I open the _Reply URLs_ page and add the application host (i.e. `https://<app>.azurewebsites.net/`):
 
-![Set Reply URL](http://static.winterdom.com/images/2017/ad-setappurl.png)
+![Set Reply URL]({{site.images_base}}/2017/ad-setappurl.png)
 
 
 ### Granting Sign-In permission
@@ -63,7 +63,7 @@ Here, I select `Windows Azure Active Directory (Microsoft.Azure.ActiveDirectory)
 the API, and check the "Sign in and read user profile" option under
 "Delegated Permissions":
 
-![Grant Sign in permissions](http://static.winterdom.com/images/2017/ad-signinpermission.png)
+![Grant Sign in permissions]({{site.images_base}}/2017/ad-signinpermission.png)
 
 Then click save and confirm all changes.
 
@@ -75,7 +75,7 @@ Again, click on the `+ Add` button, and select `Azure SQL Database` as the API.
 Then, check the "Access Azure SQL DB and Data Warehouse" option under the
 "Delegated Permissions" section:
 
-![Grant SQL Permissions](http://static.winterdom.com/images/2017/ad-sqlpermissions.png)
+![Grant SQL Permissions]({{site.images_base}}/2017/ad-sqlpermissions.png)
 
 Then save all the changes.
 
@@ -236,7 +236,7 @@ to access SQL Server in Azure AD.
 If everything was setup correctly, however, I should see my user
 credentials delegated to SQL server without problems:
 
-![User delegated to SQL](http://static.winterdom.com/images/2017/sql-adauth2.png)
+![User delegated to SQL]({{site.images_base}}/2017/sql-adauth2.png)
 
 ## Conclusion
 

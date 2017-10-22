@@ -9,7 +9,7 @@ tags:
 comments: []
 ---
 Azure SQL now supports setting up Transparent Data Encryption while bringing your
-[own encryption keys](https://azure.microsoft.com/en-us/blog/preview-sql-transparent-data-encryption-tde-with-bring-your-own-key-support/).
+[key encryption keys](https://azure.microsoft.com/en-us/blog/preview-sql-transparent-data-encryption-tde-with-bring-your-key-key-support/).
 This is easy to setup in the Azure Portal, but I wanted to try setting this up
 in an automated manner, preferably leveraging ARM templates as much as possible.
 
@@ -34,7 +34,7 @@ in an Azure Key Vault. So let's first create one:
 * Select the `Generate` option, the name, and other required properties
 * Click the `Create` button to complete the process
 
-![Creating encryption key](http://static.winterdom.com/images/2017/kv-createsqlkey.png)
+![Creating encryption key]({{site.images_base}}/2017/kv-createsqlkey.png)
 
 You could do the same in a script with an Azure CLI command like the following:
 
@@ -90,7 +90,7 @@ as it would simplify things somewhat.
 
 Once the server is created, we'll see this identity reflected in the resource properties:
 
-![SQL Service Principal](http://static.winterdom.com/images/2017/sql-serviceprincipal.png)
+![SQL Service Principal]({{site.images_base}}/2017/sql-serviceprincipal.png)
 
 While we're at it, let's create a new database on the server, and enable TDE.
 The latter is done by creating a nested resource of type `transparentDataEncryption`:
@@ -210,4 +210,4 @@ the server to the new server key.
 If we go into the portal and check the TDE settings for the SQL Server, we should see it is
 indeed configured to use Key Vault at this point:
 
-![TDE with Key Vault](http://static.winterdom.com/images/2017/sql-tde-keyvault.png)
+![TDE with Key Vault]({{site.images_base}}/2017/sql-tde-keyvault.png)
