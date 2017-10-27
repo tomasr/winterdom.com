@@ -24,9 +24,7 @@ tagline:
   </h2>
 
   <div>
-    {% if post.shortinfo %}
-    {{ post.shortinfo }}
-    {% elsif post.description %}
+    {% if post.description %}
     {{ post.description }}
     {% else %}
     {{ post.excerpt }}
