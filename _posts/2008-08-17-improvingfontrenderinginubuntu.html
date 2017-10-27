@@ -50,8 +50,8 @@ comments:
 <table cellpadding="4" border="0">
 <tbody>
 <tr>
-<td><img height="224" alt="vim-linux-no-alias" src="http:&#47;&#47;www.winterdom.com&#47;weblog&#47;content&#47;binary&#47;WindowsLiveWriter&#47;ImprovingFontRenderinginUbuntu_136D4&#47;vim-linux-no-alias_3.png" width="355" border="0" &#47;></td>
-<td><img height="216" alt="vim-win-aliased" src="http:&#47;&#47;www.winterdom.com&#47;weblog&#47;content&#47;binary&#47;WindowsLiveWriter&#47;ImprovingFontRenderinginUbuntu_136D4&#47;vim-win-aliased_3.png" width="355" border="0" &#47;></td>     </tr><br />
+<td><img height="224" alt="vim-linux-no-alias" src="&#47;weblog&#47;content&#47;binary&#47;WindowsLiveWriter&#47;ImprovingFontRenderinginUbuntu_136D4&#47;vim-linux-no-alias_3.png" width="355" border="0" &#47;></td>
+<td><img height="216" alt="vim-win-aliased" src="&#47;weblog&#47;content&#47;binary&#47;WindowsLiveWriter&#47;ImprovingFontRenderinginUbuntu_136D4&#47;vim-win-aliased_3.png" width="355" border="0" &#47;></td>     </tr><br />
 <tr>
 <td><center><b>Ubuntu</b></center></td>
 <td><center><b>Windows</b></center></td>     </tr>   </tbody></table>
@@ -62,13 +62,13 @@ comments:
 <li>The quotes are a lot harder to see, especially in comments where there is less contrast between the foreground and background colors. </li> </ul>
 <p>I pinged Damien to ask if he knew what this might be related to. He pointed out that every Operating System had a different way of rendering fonts so it was natural for them to look a bit different on each one. I was, of course, aware of this and even remembered that Jeff Atwood had <a href="http:&#47;&#47;www.codinghorror.com&#47;blog&#47;archives&#47;000884.html">touched on this topic</a> in the past. Damien also suggested I verified that my Ubuntu installation had sub-pixel hinting enabled.</p>
 <p>I went ahead and checked it one more time, and the font settings clearly showed sub-pixel rendering and full hinting enabled:</p>
-<p><a href="http:&#47;&#47;www.winterdom.com&#47;weblog&#47;content&#47;binary&#47;WindowsLiveWriter&#47;ImprovingFontRenderinginUbuntu_136D4&#47;xfce-fonts_2.png"><img style="border-top-width: 0px; border-left-width: 0px; border-bottom-width: 0px; border-right-width: 0px" height="133" alt="xfce-fonts" src="http:&#47;&#47;www.winterdom.com&#47;weblog&#47;content&#47;binary&#47;WindowsLiveWriter&#47;ImprovingFontRenderinginUbuntu_136D4&#47;xfce-fonts_thumb.png" width="477" border="0" &#47;></a> </p>
+<p><a href="&#47;weblog&#47;content&#47;binary&#47;WindowsLiveWriter&#47;ImprovingFontRenderinginUbuntu_136D4&#47;xfce-fonts_2.png"><img style="border-top-width: 0px; border-left-width: 0px; border-bottom-width: 0px; border-right-width: 0px" height="133" alt="xfce-fonts" src="&#47;weblog&#47;content&#47;binary&#47;WindowsLiveWriter&#47;ImprovingFontRenderinginUbuntu_136D4&#47;xfce-fonts_thumb.png" width="477" border="0" &#47;></a> </p>
 <p>Damien's comment regarding the settings made me remember something: I use Xubuntu, which uses XFCE as the desktop manager. However, I believe GVim is written on top of GTK+ (Gnome) and wondered if this had anything to do with it.</p>
 <p>I went ahead and checked the Gnome settings just in case, and they did not have sub-pixel smoothing enabled; only the "best appearance" setting was checked. So I went ahead and changed the Gnome settings as well, restarted the machine (just in case) and.... no dice. The font still didn't look right.</p><br />
 <h2>Solving the Puzzle</h2>
 <p>After a couple of days of tweaking options here and there, I finally found a combination of settings that allowed Envy Code R to be rendered on Ubuntu a lot better for my taste. </p>
 <p>Here's the catch: I had to enable sub-pixel hinting (setting it to RGB), but change the hinting setting from <em>Full</em> to <em>Slight</em>. This makes some fonts look a little bit more fuzzy, but it makes both Envy Code and DejaVu Sans Mono look great (or at least a heck of a lot better), which is what I wanted all along:</p>
-<p><img style="border-top-width: 0px; border-left-width: 0px; border-bottom-width: 0px; border-right-width: 0px" height="224" alt="vim-linux-aliased" src="http:&#47;&#47;www.winterdom.com&#47;weblog&#47;content&#47;binary&#47;WindowsLiveWriter&#47;ImprovingFontRenderinginUbuntu_136D4&#47;vim-linux-aliased_3.png" width="355" border="0" &#47;> </p>
+<p><img style="border-top-width: 0px; border-left-width: 0px; border-bottom-width: 0px; border-right-width: 0px" height="224" alt="vim-linux-aliased" src="&#47;weblog&#47;content&#47;binary&#47;WindowsLiveWriter&#47;ImprovingFontRenderinginUbuntu_136D4&#47;vim-linux-aliased_3.png" width="355" border="0" &#47;> </p>
 <p>Turns out that the XFCE vs. Gnome thing wasn't really important after all. In the end, here's how I got it to work:</p>
 <ol>
 <li>Open the XFCE Settings Manager, and then launch the User Interface applet. </li>
@@ -77,7 +77,7 @@ comments:
 <p>If you're using Gnome as your desktop, you can get the same using the Gnome appearance applet:</p>
 <ol>
 <li>Run the Gnome settings UI by launching the gnome-appearance-properties application from a terminal window. I don't remember where this is located in the UI, but should be easy to get to. </li>
-<li>Go to the Fonts tab and then click the Details Button. In here, set the Smoothing option to "Subpixel (LCDs)" and the Hinting option to "Slight". Make sure the subpixel order option matches your screen.      <br &#47;>      <br &#47;><img style="border-top-width: 0px; border-left-width: 0px; border-bottom-width: 0px; border-right-width: 0px" height="330" alt="linux-gnome-settings" src="http:&#47;&#47;www.winterdom.com&#47;weblog&#47;content&#47;binary&#47;WindowsLiveWriter&#47;ImprovingFontRenderinginUbuntu_136D4&#47;linux-gnome-settings_3.png" width="560" border="0" &#47;> </li>
+<li>Go to the Fonts tab and then click the Details Button. In here, set the Smoothing option to "Subpixel (LCDs)" and the Hinting option to "Slight". Make sure the subpixel order option matches your screen.      <br &#47;>      <br &#47;><img style="border-top-width: 0px; border-left-width: 0px; border-bottom-width: 0px; border-right-width: 0px" height="330" alt="linux-gnome-settings" src="&#47;weblog&#47;content&#47;binary&#47;WindowsLiveWriter&#47;ImprovingFontRenderinginUbuntu_136D4&#47;linux-gnome-settings_3.png" width="560" border="0" &#47;> </li>
 <li>Apply all the settings. </li> </ol>
 <p>Now I can enjoy Envy Code R on Linux as well as Windows :-D.</p>
 <div class="wlWriterSmartContent" id="scid:0767317B-992E-4b12-91E0-4F059A8CECA8:9d99d964-cbad-4998-8ff6-6eded07d8e01" style="padding-right: 0px; display: inline; padding-left: 0px; padding-bottom: 0px; margin: 0px; padding-top: 0px">Technorati tags: <a href="http:&#47;&#47;technorati.com&#47;tags&#47;Ubuntu" rel="tag">Ubuntu</a>, <a href="http:&#47;&#47;technorati.com&#47;tags&#47;Vim" rel="tag">Vim</a>, <a href="http:&#47;&#47;technorati.com&#47;tags&#47;Fonts" rel="tag">Fonts</a></div><!--end_raw--></p>

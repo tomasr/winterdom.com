@@ -31,7 +31,7 @@ comments:
     (If you want to discuss in private e-mail: sseely_at_catalystss_dot_com)
 ---
 <p><!--start_raw-->
-<p>On my <a href="http:&#47;&#47;www.winterdom.com&#47;weblog&#47;2007&#47;02&#47;20&#47;URIsAndWCFTransportChannels.aspx">last post</a> I&nbsp;put out&nbsp;some questions on the design of URI&nbsp;syntaxes for Windows Communication Foundation transport channels. <a href="http:&#47;&#47;blogs.catalystss.com&#47;blogs&#47;Scott_Seely&#47;">Scott Seely</a> posted a very interesting response and I wanted to comment a bit on it.</p>
+<p>On my <a href="&#47;weblog&#47;2007&#47;02&#47;20&#47;URIsAndWCFTransportChannels.aspx">last post</a> I&nbsp;put out&nbsp;some questions on the design of URI&nbsp;syntaxes for Windows Communication Foundation transport channels. <a href="http:&#47;&#47;blogs.catalystss.com&#47;blogs&#47;Scott_Seely&#47;">Scott Seely</a> posted a very interesting response and I wanted to comment a bit on it.</p>
 <p>First Scott says:</p><br />
 <blockquote>
 <p><em>"The address element can take a set of extra headers-- see EndpointAddress.Headers. These headers can also be passed in as part of the config object model. This feature exists to handle scenarios like yours. The URI should contain enough information to hit the endpoint."</em></p></blockquote>
@@ -43,7 +43,7 @@ comments:
 <p><em>"As for asymmetry in the URI scheme, what you need to do is tell any clients, via policy and WSDL, how to connect to your endpoint. So long as you can express that asymettry in a way that the client can work with it with no ill effects, you should be fine."</em></p></blockquote>
 <p>That's the crux of the issue I have with my current scheme. The URI assymmetry I talked about is partially caused by the underlying transport: The message sender&nbsp;needs to specify some information, but the message receiver needs to specify different information. How come?</p>
 <p>The thing here to understand is that the protocol I'm working with has routing intermediaries:</p>
-<p><img src="http:&#47;&#47;www.winterdom.com&#47;weblog&#47;content&#47;binary&#47;WindowsLiveWriter&#47;URIsinWCFTransportsContinued_C7EC&#47;WcfRouting.png" height="144" width="446"> </p>
+<p><img src="&#47;weblog&#47;content&#47;binary&#47;WindowsLiveWriter&#47;URIsinWCFTransportsContinued_C7EC&#47;WcfRouting.png" height="144" width="446"> </p>
 <p>Those routing intermediaries don't know anything about WCF or SOAP (and much less WS-*). All they know is how to receive a message from a message publisher (which in our case would be a WCF client proxy) and route them to somewhere a message consumer (which in our case would be a WCF service) based on a configured criteria. </p>
 <p>Furthermore, the information the message publisher needs to provide to establish a successful connection to the router and send a message is not the same a message consumer needs to provide to successfully connect to the router and receive a message (yes, for this protocol receive-side endpoints need to actively connect to the router and request message delivery).</p>
 <p>One important fact that can be derived from this is that because of the presence of the intermediate router (and there could be more than one involved), the client and server addressing schemes will not be the same. That's because there's a very loose coupling between the message publishers (clients) and message consumers (services) because one does not know anything about the other and <em>can't address it directly</em>. </p>

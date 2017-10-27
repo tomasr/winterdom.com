@@ -32,7 +32,7 @@ comments:
 ---
 <p><!--start_raw--><P>I've just uploaded a set of sample Windows Workflow Foundation activities for Microsoft Message Queue in the Winterdom.Workflow.Activities.Msmq assembly.</P><br />
 <P>The MsmqSendActivity allows you to send a .NET object as an MSMQ message by just binding the activity to one of your workflow's properties and selecting the appropriate formatter (XmlMessageFormatter or BinaryFormatter). If the queue is transactional, you can put the activity inside a TransactionalScope activity.</P><br />
-<P><IMG src="http:&#47;&#47;www.winterdom.com&#47;weblog&#47;content&#47;binary&#47;MsmqActivities_Ex.jpg" border=0></P><br />
+<P><IMG src="&#47;weblog&#47;content&#47;binary&#47;MsmqActivities_Ex.jpg" border=0></P><br />
 <P>The MsmqReceiveActivity allows you to receive an MSMQ message into a typed .NET object; the activity will do the deserialization based on the selected formatter. The activity can also be used inside an EventDrivenActivity so you can use it inside a Listen shape or in a StateMachine workflow to trigger state changes.</P><br />
 <P>The samples include the following features:</P><br />
 <UL><br />
@@ -77,6 +77,6 @@ comments:
 <div class='codebg'><code>WorkflowRuntime workflowRuntime <span class="Operator">=</span>&nbsp;<span class="Statement">new</span>&nbsp;WorkflowRuntime<span class="Operator">(</span><span class="String">"ConsoleApplication"</span><span class="Operator">);</span><br &#47;><br />
 workflowRuntime<span class="Operator">.</span>AddService<span class="Operator">(</span><span class="Statement">new</span>&nbsp;MsmqListenerService<span class="Operator">());</span><br />
 </code></div><br />
-<P>Update: The sample activities can be downloaded from <A href="http:&#47;&#47;www.winterdom.com&#47;dev&#47;wwf&#47;MsmqActivities.zip">here</A>.</P><br />
+<P>Update: The sample activities can be downloaded from <A href="&#47;dev&#47;wwf&#47;MsmqActivities.zip">here</A>.</P><br />
 <P>I hope to improve them and add new functionality (if I can) to them, so if you have any comments&#47;bugs&#47;features, do let me know! One feature I would definitely like to implement is correlation support, but as of now I'm not entirely sure what the best approach for that might be.</P><br />
 <P></P><!--end_raw--></p>

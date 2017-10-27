@@ -44,7 +44,7 @@ comments: []
 <ul>
 <li>The WSDL that defines the contract you'll want to receive or send messages to (extended with your binding component specific port&#47;binding&#47;operation configuration data) </li>
 <li>The deployment descriptors which tell your component if you want to receive or send messages for the corresponding WSDL file. </li> </ul>
-<p><img style="border-right: 0px; border-top: 0px; border-left: 0px; border-bottom: 0px" height="94" alt="wsdl" src="http:&#47;&#47;www.winterdom.com&#47;weblog&#47;content&#47;binary&#47;WindowsLiveWriter&#47;Theothersideofthebridge_119E3&#47;wsdl_3.png" width="604" border="0" &#47;> </p>
+<p><img style="border-right: 0px; border-top: 0px; border-left: 0px; border-bottom: 0px" height="94" alt="wsdl" src="&#47;weblog&#47;content&#47;binary&#47;WindowsLiveWriter&#47;Theothersideofthebridge_119E3&#47;wsdl_3.png" width="604" border="0" &#47;> </p>
 <p>In reality, WSDL permeates the entire JBI development experience, including how messages are represented internally between the JBI runtime and binding components &#47; service engines.</p>
 <p>A huge downside of this, though is that the code needs to "understand" the contracts being used, so parsing the WSDL files and extracting your component's configuration data is your responsibility. Libraries like <a href="http:&#47;&#47;sourceforge.net&#47;projects&#47;wsdl4j">WSDL4J</a> help, but it can still be a drag.</p>
 <p>What does really irk me a bit about JBI though is not that you have to manually craft WSDL files (not that it's a lot of fun). It's that the JBI spec doesn't address the design time aspect of JBI components at all besides, you guessed it, manually crafting WSDL files and deployment descriptors.</p>

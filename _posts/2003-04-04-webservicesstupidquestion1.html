@@ -55,7 +55,7 @@ using System.Web.Services;<br />
 using System.Web.Services.Protocols;<br />
 using System.Xml;<br />
 using System.Xml.Serialization;<br />
-[ XmlRoot(Namespace="http:&#47;&#47;www.winterdom.com&#47;schemas&#47;customer") ]<br />
+[ XmlRoot(Namespace="&#47;schemas&#47;customer") ]<br />
 public class Customer<br />
 {<br />
 [ XmlElement("name") ]<br />
@@ -63,7 +63,7 @@ public string Name;<br />
 [ XmlElement("phone") ]<br />
 public string Phone;<br />
 }<br />
-[ WebService(Namespace="http:&#47;&#47;www.winterdom.com&#47;services&#47;WeirdBhv") ]<br />
+[ WebService(Namespace="&#47;services&#47;WeirdBhv") ]<br />
 public class WeirdBhv<br />
 {<br />
 [ WebMethod ]<br />
@@ -82,8 +82,8 @@ return c;<br />
 xmlns:xsd="http:&#47;&#47;www.w3.org&#47;2001&#47;XMLSchema"<br />
 xmlns:soap="http:&#47;&#47;schemas.xmlsoap.org&#47;soap&#47;envelope&#47;"><br />
 <soap:Body><br />
-<GetCustomerResponse xmlns="http:&#47;&#47;www.winterdom.com&#47;services&#47;WeirdBhv"><br />
-<GetCustomerResult xmlns="http:&#47;&#47;www.winterdom.com&#47;schemas&#47;customer"><br />
+<GetCustomerResponse xmlns="&#47;services&#47;WeirdBhv"><br />
+<GetCustomerResult xmlns="&#47;schemas&#47;customer"><br />
 <name>string</name></p>
 <phone>string</phone><br />
 </GetCustomerResult><br />
@@ -93,7 +93,7 @@ xmlns:soap="http:&#47;&#47;schemas.xmlsoap.org&#47;soap&#47;envelope&#47;"><br /
 </code></pre></p>
 <p>Notice how the Customer instance is serialized on an element named GetCustomerResult. Now, if you were to invoke the service with the HTTP POST binding, you'd get this, instead:</p></p>
 <pre class="codes"><code><?xml version="1.0" encoding="utf-8"?><br />
-<Customer xmlns="http:&#47;&#47;www.winterdom.com&#47;schemas&#47;customer"><br />
+<Customer xmlns="&#47;schemas&#47;customer"><br />
 <name>string</name></p>
 <phone>string</phone><br />
 </Customer><br />

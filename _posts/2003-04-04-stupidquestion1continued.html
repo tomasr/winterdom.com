@@ -57,8 +57,8 @@ comments:
 xmlns:xsd="http:&#47;&#47;www.w3.org&#47;2001&#47;XMLSchema"<br />
 xmlns:soap="http:&#47;&#47;schemas.xmlsoap.org&#47;soap&#47;envelope&#47;"><br />
 <soap:Body><br />
-<GetCustomerResponse xmlns="http:&#47;&#47;www.winterdom.com&#47;services&#47;WeirdBhv"><br />
-<Customer xmlns="http:&#47;&#47;www.winterdom.com&#47;schemas&#47;customer"><br />
+<GetCustomerResponse xmlns="&#47;services&#47;WeirdBhv"><br />
+<Customer xmlns="&#47;schemas&#47;customer"><br />
 <name>string</name></p>
 <phone>string</phone><br />
 </Customer><br />
@@ -67,7 +67,7 @@ xmlns:soap="http:&#47;&#47;schemas.xmlsoap.org&#47;soap&#47;envelope&#47;"><br /
 </soap:Envelope><br />
 </code></pre></p>
 <p>This is indeed exactly what would happen if I had changed my Customer definition like this:</p></p>
-<pre class="codes"><code>[ XmlRoot("Customer", Namespace="http:&#47;&#47;www.winterdom.com&#47;schemas&#47;customer") ]<br />
+<pre class="codes"><code>[ XmlRoot("Customer", Namespace="&#47;schemas&#47;customer") ]<br />
 public class Customer<br />
 {<br />
 ...<br />

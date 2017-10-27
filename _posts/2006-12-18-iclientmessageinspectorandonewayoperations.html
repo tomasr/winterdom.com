@@ -23,7 +23,7 @@ tags: []
 comments: []
 ---
 <p><!--start_raw-->
-<p>A while ago I talked a bit about Windows Communication Foundation's IParameterInspector extensibility and how it was <a href="http:&#47;&#47;www.winterdom.com&#47;weblog&#47;2006&#47;09&#47;28&#47;IParameterInspectorAndOneWayOperations.aspx">affected by One-Way operations</a> on the server and client side. Just so you're aware, the IClientMessageInspector has the same issues as IParameterInspector on the client side; that is, the AfterReceiveReply() method will never be called for OneWay methods. </p>
+<p>A while ago I talked a bit about Windows Communication Foundation's IParameterInspector extensibility and how it was <a href="&#47;weblog&#47;2006&#47;09&#47;28&#47;IParameterInspectorAndOneWayOperations.aspx">affected by One-Way operations</a> on the server and client side. Just so you're aware, the IClientMessageInspector has the same issues as IParameterInspector on the client side; that is, the AfterReceiveReply() method will never be called for OneWay methods. </p>
 <p>I'm working currently on implementing client-side proxy instrumentation in WCF for QuickCounters, and to work around this limitation, here's what I'm currently doing:</p>
 <ol>
 <li>While&nbsp;constructing my IClientMessageInspector implementation, I build a&nbsp;map of operations from the endpoint ContractDescription (which I get from the IEndpointBehavior implementation). Here I take note of which operations are OneWay.</li>

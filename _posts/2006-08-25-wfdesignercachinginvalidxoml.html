@@ -22,7 +22,7 @@ categories:
 tags: []
 comments: []
 ---
-<p><!--start_raw--><P>While <A href="http:&#47;&#47;www.winterdom.com&#47;weblog&#47;2006&#47;08&#47;19&#47;MsmqActivitiesUpdated.aspx"><FONT color=#52b3cb>updating</FONT></A> my <A href="http:&#47;&#47;www.winterdom.com&#47;weblog&#47;2006&#47;03&#47;03&#47;MSMQWorkflowActivitiesV1.aspx"><FONT color=#d99694>MSMQ Activities</FONT></A> for Windows Workflow Foundation, I ran into a strange issue with the WF designer when working with XOML-based workflows.</P><br />
+<p><!--start_raw--><P>While <A href="&#47;weblog&#47;2006&#47;08&#47;19&#47;MsmqActivitiesUpdated.aspx"><FONT color=#52b3cb>updating</FONT></A> my <A href="&#47;weblog&#47;2006&#47;03&#47;03&#47;MSMQWorkflowActivitiesV1.aspx"><FONT color=#d99694>MSMQ Activities</FONT></A> for Windows Workflow Foundation, I ran into a strange issue with the WF designer when working with XOML-based workflows.</P><br />
 <P>The problem I was trying to solve was something like the following: The MsmqReceiveActivity had an attached dependency property called Label, as well as&nbsp;a regular .NET property around it. In code based workflows, that worked just fine. However, when designing XOML based workflows, it appeared to worked fine as well, but as soon as you closed the designer and tried opening the workflow again you'd get an error saying that the activity class needed to implement static GetLabel() and SetLabel() accessors. This was funky because the activity actually had those!</P><br />
 <P>Looking at the generated XOML code, it was doing something like this:</P></p>
 <div class='codebg'><code><span class="Function"><</span><span class="Tag">ns0</span><span class="Comment">:</span><span class="Function">MsmqReceiveActivity</span><br &#47;><br />

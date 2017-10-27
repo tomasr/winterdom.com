@@ -22,7 +22,7 @@ tags: []
 comments: []
 ---
 <p><!--start_raw-->
-<p>Some time ago I posted a rant about how I <a href="http:&#47;&#47;www.winterdom.com&#47;weblog&#47;2006&#47;10&#47;24&#47;FailNicely.aspx">disliked the failure model</a> for Windows Communication Foundation ServiceHosts. Turns out I was only partly right.</p>
+<p>Some time ago I posted a rant about how I <a href="&#47;weblog&#47;2006&#47;10&#47;24&#47;FailNicely.aspx">disliked the failure model</a> for Windows Communication Foundation ServiceHosts. Turns out I was only partly right.</p>
 <p>The thing is, the ServiceHost behavior is not quite as I described. When it fails it actually does throw a useful exception, however, you need to be aware of how to correctly close the host in case of failures.</p>
 <p>What happens is that if you call Close() on the ServiceHost after it threw an exception (i.e. it was in the Faulted state), you'll get a new exception, this time the dreaded CommunicationObjectFaultedException, which "hides" the original exception, thus giving origin to my earlier rant.</p>
 <p>I can live with this, and up to a point, it makes sense. What I <em>do</em>&nbsp;dislike is the fact that the model is certainly "broken" in my opinion because based on the behavior above, I can tell that objects such as ServiceHost <em>should've never implemented IDisposable</em> in the first place. The reason is simple: The standard model for IDisposable is: Call it as soon as you're done with the resource, even in fault scenarios. That's why the using block in C# is implemented as a try{}&#47;finally{} block. </p>

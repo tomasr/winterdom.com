@@ -47,7 +47,7 @@ using System.Web.Services;<br />
 using System.Web.Services.Protocols;<br />
 using System.Xml;<br />
 using System.Xml.Serialization;<br />
-[ XmlRoot(Namespace="http:&#47;&#47;www.winterdom.com&#47;schemas&#47;client") ]<br />
+[ XmlRoot(Namespace="&#47;schemas&#47;client") ]<br />
 public class Client<br />
 {<br />
 [ XmlAttribute("id") ]<br />
@@ -55,7 +55,7 @@ public int ID;<br />
 [ XmlElement("name") ]<br />
 public string Name;<br />
 }<br />
-[ WebService(Namespace="http:&#47;&#47;www.winterdom.com&#47;services&#47;Weird2") ]<br />
+[ WebService(Namespace="&#47;services&#47;Weird2") ]<br />
 public class Weird2<br />
 {<br />
 [ WebMethod ]<br />
@@ -75,13 +75,13 @@ return c;<br />
 xmlns:xsd="http:&#47;&#47;www.w3.org&#47;2001&#47;XMLSchema"<br />
 xmlns:soap="http:&#47;&#47;schemas.xmlsoap.org&#47;soap&#47;envelope&#47;"><br />
 <soap:Body><br />
-<GetClientResponse xmlns="http:&#47;&#47;www.winterdom.com&#47;services&#47;Weird2"><br />
+<GetClientResponse xmlns="&#47;services&#47;Weird2"><br />
 <client id="int"><br />
-<name xmlns="http:&#47;&#47;www.winterdom.com&#47;schemas&#47;client">string</name><br />
+<name xmlns="&#47;schemas&#47;client">string</name><br />
 </client><br />
 </GetClientResponse><br />
 </soap:Body><br />
 </soap:Envelope><br />
 </code></pre></p>
-<p>Notice how the client element is now serialized outside the http:&#47;&#47;www.winterdom.com&#47;schemas&#47;client schema and instead is serialized in the WebService's default namespace. The reason I point this out as a potential problem is that since the Client type is serialized with an attribute, that attribute has just been left hanging, too (Yes, I'm aware of the special way attributes fit within XSD).</p></p>
+<p>Notice how the client element is now serialized outside the &#47;schemas&#47;client schema and instead is serialized in the WebService's default namespace. The reason I point this out as a potential problem is that since the Client type is serialized with an attribute, that attribute has just been left hanging, too (Yes, I'm aware of the special way attributes fit within XSD).</p></p>
 <p>OK, maybe it's not a problem, but I sure as hell know this wasn't what I originally expected to happen :)</p><!--end_raw--></p>

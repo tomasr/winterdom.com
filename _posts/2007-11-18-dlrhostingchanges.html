@@ -22,7 +22,7 @@ comments: []
 ---
 <p><!--start_raw-->
 <p>Ending last week, my friend <a href="http:&#47;&#47;www.iunknown.com&#47;">John Lam</a> pushed a big set of IronRuby and DLR changes into the public IronRuby SVN repository (<a href="http:&#47;&#47;rubyforge.org&#47;pipermail&#47;ironruby-core&#47;2007-November&#47;000460.html">announcement</a>). These include some of the initial changes in the Dynamic Language Runtime Infrastructure. </p>
-<p>I'm still going through the new bits, but from what I can see so far, most of what I wrote on my <a href="http:&#47;&#47;www.winterdom.com&#47;weblog&#47;2007&#47;11&#47;08&#47;HostingIronRubyWithTheDLR.aspx">previous article</a> on Hosting the DLR is still essentially OK. </p>
+<p>I'm still going through the new bits, but from what I can see so far, most of what I wrote on my <a href="&#47;weblog&#47;2007&#47;11&#47;08&#47;HostingIronRubyWithTheDLR.aspx">previous article</a> on Hosting the DLR is still essentially OK. </p>
 <p>One change I did notice was that the CompileFile() method of the ScriptEngine class now return an object implementing IScriptScope. Seems IScriptModule&#47;ScriptModule were mostly renamed to IScriptScope&#47;ScriptScope, though some vestiges of the old Module concept seem to remain yet around.</p>
 <p>Obviously there are a lot more changes in the internal implementation of Microsoft.Scripting, but that was the only one that I noticed that impacted my previous article.</p>
 <p>I'll keep posting as new changes are committed, and I'll post a complete, more detailed article on DLR hosting once the code is more stable.</p>

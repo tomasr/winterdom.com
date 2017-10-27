@@ -21,7 +21,7 @@ tags: []
 comments: []
 ---
 <p><!--start_raw-->
-<p>Fellow BizTalk developer Bram Veldhoen was kind enough to send me some suggestions for a future version of my <a href="http:&#47;&#47;www.winterdom.com&#47;weblog&#47;2007&#47;08&#47;09&#47;PipelineTesting11Released.aspx">PipelineTesting</a> library, as well as with a question that could point to a potential bug in the library.</p>
+<p>Fellow BizTalk developer Bram Veldhoen was kind enough to send me some suggestions for a future version of my <a href="&#47;weblog&#47;2007&#47;08&#47;09&#47;PipelineTesting11Released.aspx">PipelineTesting</a> library, as well as with a question that could point to a potential bug in the library.</p>
 <p>The problem basically revolves around consuming a stream returned by the XML Assembler component in a send pipeline when testing under a library. What Bram noticed was that executing the pipeline would seem to work, but trying to read the body part stream of the output message would fail with a <code>ComException</code> with error code <code>0x8004005 (E_FAIL)</code>.</p>
 <p>I was fairly confident this should've been working, based on my own use of the library, but I sat down to test it just to make sure. What I discovered was that indeed this can happen if the pipeline context for the test is not aware of the schema for the message being processed by the pipeline. </p>
 <p>I added a new test to the library to make sure this was working correctly:</p>

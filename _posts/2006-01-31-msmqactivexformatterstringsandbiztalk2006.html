@@ -39,7 +39,7 @@ comments:
   content: |
     Rich,
     If your existing application sends the messages to MSMQ as strings, then you might be able to get it done by simply telling BizTalk that the messages are encoded as UTF-16 (unicode). The FixEncoding pipeline component I published should allow you to do this fairly easily.
-    http:&#47;&#47;www.winterdom.com&#47;weblog&#47;2006&#47;01&#47;31&#47;FixMessageEncodingCustomPipelineComponentSample.aspx
+    &#47;weblog&#47;2006&#47;01&#47;31&#47;FixMessageEncodingCustomPipelineComponentSample.aspx
     (retro-porting it to BTS2004 should just be a matter of recreating the VS.NET 2003 projects).
 - id: 281
   author: Rich
@@ -135,4 +135,4 @@ comments:
 <p>
 <p>For example, if your existing .NET application expects the message contents to be a string, then you can now just configure the MSMQ adapter properties on your BizTalk Send Port to set MSMQ.BodyType to the value 8 (VT_BSTR), and then configure a send pipeline to write your message in Unicode (with no BOM) encoding and it will be processed correctly!</p></p></p>
 <p>
-<p><img src="http:&#47;&#47;www.winterdom.com&#47;weblog&#47;images&#47;Msmq2006BodyType.jpg"&#47;></p></p><!--end_raw--></p>
+<p><img src="&#47;weblog&#47;images&#47;Msmq2006BodyType.jpg"&#47;></p></p><!--end_raw--></p>

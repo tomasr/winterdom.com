@@ -22,9 +22,9 @@ tags: []
 comments: []
 ---
 <p><!--start_raw-->
-<p>The first thing I asked myself when I started writing my custom Windows Communication Framework transport channel was: What exactly do I need to implement? The information on what classes you need to write and what interfaces you need to implement is out there in the documentation and elsewhere (as I pointed out in my <a href="http:&#47;&#47;www.winterdom.com&#47;weblog&#47;2007&#47;02&#47;14&#47;WritingAWCFTransportChannelPart1.aspx">previous entry</a>). </p>
+<p>The first thing I asked myself when I started writing my custom Windows Communication Framework transport channel was: What exactly do I need to implement? The information on what classes you need to write and what interfaces you need to implement is out there in the documentation and elsewhere (as I pointed out in my <a href="&#47;weblog&#47;2007&#47;02&#47;14&#47;WritingAWCFTransportChannelPart1.aspx">previous entry</a>). </p>
 <p>However, it still took a bit of time for it to "click" for me. To make it easier to remember, here's a small figure I created outlining what I think are the key concepts in the transport channel model:</p>
-<p><img height="487" src="http:&#47;&#47;www.winterdom.com&#47;weblog&#47;content&#47;binary&#47;WindowsLiveWriter&#47;WritingaWCFTransportChannelPart2_76E0&#47;WCFChannelModel.png" width="644"> </p>
+<p><img height="487" src="&#47;weblog&#47;content&#47;binary&#47;WindowsLiveWriter&#47;WritingaWCFTransportChannelPart2_76E0&#47;WCFChannelModel.png" width="644"> </p>
 <p>I think the figure is pretty self explanatory, but let's add a few comments anyway:</p>
 <ul>
 <li>The "Configuration Binding Element" is purely a configuration-level entity. That is, it's purpose is to be used in the XML configuration files (or programatically) to configure the transport-part of the binding you'll be using. As such, it's main purpose is to gather some required configuration options and create the transport binding element. <br>Confused by the naming of all the element classes? You're not the only one. I think the whole binding element + configuration element part of WCF was horribly named making it unnecessarily confusing. </li>

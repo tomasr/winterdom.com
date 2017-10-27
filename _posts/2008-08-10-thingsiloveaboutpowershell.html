@@ -50,16 +50,16 @@ comments:
 <h2>Switching to Network Shares</h2>
 <p>One of the most annoying limitations of the old cmd.exe was that it provided almost no support for network shares that were not mapped as drives. </p>
 <p>The PowerShell provided model, fortunately, didn't make this mistake, so you can use set-location to switch to a network share and execute commands there just like in any other local folder:</p>
-<p><img style="border-right: 0px; border-top: 0px; border-left: 0px; border-bottom: 0px" height="204" alt="ps_network" src="http:&#47;&#47;www.winterdom.com&#47;weblog&#47;content&#47;binary&#47;WindowsLiveWriter&#47;ThingsILoveAboutPowerShell_9E16&#47;ps_network_6.png" width="706" border="0" &#47;> </p><br />
+<p><img style="border-right: 0px; border-top: 0px; border-left: 0px; border-bottom: 0px" height="204" alt="ps_network" src="&#47;weblog&#47;content&#47;binary&#47;WindowsLiveWriter&#47;ThingsILoveAboutPowerShell_9E16&#47;ps_network_6.png" width="706" border="0" &#47;> </p><br />
 <h2>Location Stacks</h2>
 <p>Like other shells, PowerShell supports pushing folders into a stack and then popping them back out, making it a lot easier to navigate around a few folders without having to remember the complete paths each time. You manipulate the location stack using the push-location and pop-location commands, which are aliased to pushd and popd respectively.</p>
 <p>I find this very useful when running doing builds or when working with Vim and some scripting language.</p>
 <p>The PowerShell implementation, however, has a couple of advantages:</p>
 <ol>
 <li>It works on the provider model, so you can push&#47;pop more than just file system locations. For example, you could use the location stack to move around the registry. </li>
-<li>It supports multiple stacks: You can keep multiple, named location stacks at the same time by simply using the -stackName parameter:&#160; <br &#47;>      <br &#47;><img style="border-right: 0px; border-top: 0px; border-left: 0px; border-bottom: 0px" height="106" alt="ps_stacks" src="http:&#47;&#47;www.winterdom.com&#47;weblog&#47;content&#47;binary&#47;WindowsLiveWriter&#47;ThingsILoveAboutPowerShell_9E16&#47;ps_stacks_5.png" width="556" border="0" &#47;> </li> </ol>
+<li>It supports multiple stacks: You can keep multiple, named location stacks at the same time by simply using the -stackName parameter:&#160; <br &#47;>      <br &#47;><img style="border-right: 0px; border-top: 0px; border-left: 0px; border-bottom: 0px" height="106" alt="ps_stacks" src="&#47;weblog&#47;content&#47;binary&#47;WindowsLiveWriter&#47;ThingsILoveAboutPowerShell_9E16&#47;ps_stacks_5.png" width="556" border="0" &#47;> </li> </ol>
 <p>The contents of the location stacks are stored as part of your PowerShell Session State, and you can see the contents of each stack by using the get-location command:</p>
-<p><img style="border-right: 0px; border-top: 0px; border-left: 0px; border-bottom: 0px" height="146" alt="ps_liststacks" src="http:&#47;&#47;www.winterdom.com&#47;weblog&#47;content&#47;binary&#47;WindowsLiveWriter&#47;ThingsILoveAboutPowerShell_9E16&#47;ps_liststacks_3.png" width="525" border="0" &#47;> </p>
+<p><img style="border-right: 0px; border-top: 0px; border-left: 0px; border-bottom: 0px" height="146" alt="ps_liststacks" src="&#47;weblog&#47;content&#47;binary&#47;WindowsLiveWriter&#47;ThingsILoveAboutPowerShell_9E16&#47;ps_liststacks_3.png" width="525" border="0" &#47;> </p>
 <p>Notice that the default stack will always have an empty string ('') as its name.</p><br />
 <h2>It's .NET-based</h2>
 <p>The fact that PowerShell is based on the .NET Framework can be confusing to some people due to some of the underlying complexity of the framework leaking to the shell (like value types).</p>

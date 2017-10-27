@@ -188,7 +188,7 @@ comments:
     Files: http:&#47;&#47;maximelabelle.wordpress.com&#47;2010&#47;05&#47;20&#47;an-encodingtranscoder-custom-pipeline-component&#47;'
 ---
 <p><!--start_raw-->
-<p>I've just posted a new sample (very simple one, by the way) custom pipeline component for BizTalk Server: The <a href="http:&#47;&#47;www.winterdom.com&#47;dev&#47;bts&#47;EncodingComponent.zip">FixEncodingComponent</a>. What this sample does is allow you to tell the XmlDisassembler exactly using which encoding or Charset it should interpret the message in.</p></p>
+<p>I've just posted a new sample (very simple one, by the way) custom pipeline component for BizTalk Server: The <a href="&#47;dev&#47;bts&#47;EncodingComponent.zip">FixEncodingComponent</a>. What this sample does is allow you to tell the XmlDisassembler exactly using which encoding or Charset it should interpret the message in.</p></p>
 <p>
 <p>This alleviates the problem sometimes where you get an incoming XML message on which the XmlDisassembler barfs because it cannot figure out on it's own what the message's encoding is to process it.  According to the BizTalk documentation, here's the rules the XmlDisassembler uses to figure out a message's encoding:</p></p></p>
 <ol>
@@ -203,10 +203,10 @@ comments:
 <li>Create a new custom receive pipeline</li>
 <li>Add the XmlDisassembler to the pipeline and configure it to your need.</li>
 <li>Add the FixEncodingComponent to the pipeline in the Decode stage, so that it is run before the XmlDisassembler.
-<p><img src="http:&#47;&#47;www.winterdom.com&#47;weblog&#47;images&#47;FixEncoding_Use.jpg"&#47;></p><br />
+<p><img src="&#47;weblog&#47;images&#47;FixEncoding_Use.jpg"&#47;></p><br />
 </li></p>
 <li>Set the Encoding parameter of the component in the Property Explorer to the encoding you want to use. To make this easier, the component implements a custom UITypeEditor that pops up a list of all the encodings supported by the .NET framework:
-<p><img src="http:&#47;&#47;www.winterdom.com&#47;weblog&#47;images&#47;FixEncoding_EncodingList.jpg"&#47;></p><br />
+<p><img src="&#47;weblog&#47;images&#47;FixEncoding_EncodingList.jpg"&#47;></p><br />
 </li><br />
 </ol></p>
 <p>

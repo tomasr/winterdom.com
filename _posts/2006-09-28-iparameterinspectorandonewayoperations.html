@@ -22,7 +22,7 @@ tags: []
 comments: []
 ---
 <p><!--start_raw-->
-<p>I talked <a href="http:&#47;&#47;www.winterdom.com&#47;weblog&#47;2006&#47;09&#47;27&#47;IParameterInspectorInWCF.aspx">before</a> about the IParameterInspector extension interface in Windows Communication Foundation. One topic I didn't cover was the behavior of IParameterInspector in relation to one way operations in WCF services. I'm refering here to operations explicitly marked with [OperationContract(IsOneWay=true)].</p>
+<p>I talked <a href="&#47;weblog&#47;2006&#47;09&#47;27&#47;IParameterInspectorInWCF.aspx">before</a> about the IParameterInspector extension interface in Windows Communication Foundation. One topic I didn't cover was the behavior of IParameterInspector in relation to one way operations in WCF services. I'm refering here to operations explicitly marked with [OperationContract(IsOneWay=true)].</p>
 <p>With OneWay operations, the behavior of IParameterInspector is different in the server and client side:</p>
 <p>On the server (dispatcher) side, both BeforeCall() and AfterCall() will be called normally. On AfterCall(), the outputs parameter array will be of zero-length and the returnValue argument will be null, as expected.</p>
 <p>On the client (proxy) side, however, the AfterCall() method in your IParameterInspector implementation will <em>never</em> be called by the runtime. While this makes sense, it might not have been what you expected, so be&nbsp;mindful of this little fact.</p>

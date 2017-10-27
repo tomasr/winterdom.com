@@ -21,7 +21,7 @@ tags: []
 comments: []
 ---
 <p><!--start_raw-->
-<p>Last year I wrote an entry about adding <a href="http:&#47;&#47;www.winterdom.com&#47;weblog&#47;2006&#47;08&#47;17&#47;ArbitraryBinaryAttachmentsToMultiPartMessages.aspx">arbitrary binary attachments</a> to a Multi-Part message in BizTalk 2006 using a helper C# component. That entry has been fairly popular (as far as BizTalk posts go, which is not usually much!), and I occasionally get questions about it.</p>
+<p>Last year I wrote an entry about adding <a href="&#47;weblog&#47;2006&#47;08&#47;17&#47;ArbitraryBinaryAttachmentsToMultiPartMessages.aspx">arbitrary binary attachments</a> to a Multi-Part message in BizTalk 2006 using a helper C# component. That entry has been fairly popular (as far as BizTalk posts go, which is not usually much!), and I occasionally get questions about it.</p>
 <p>The sample uses a bit of clever code to insert arbitrary attachments into an existing XLANGMessage instance during construction. However, it's not very clear that this is actually a supported scenario and so there's always a chance it might get you into trouble.</p>
 <p>I recently thought of another way, possibly much better supported to accomplish the same in BizTalk 2006, though with a little performance hit: Use the Invoke Pipelines feature in BizTalk 2006 Orchestrations.</p>
 <p>Basically, the idea would be to create a custom pipeline component (depending on what you need it could be a regular encoding&#47;pre-assemble or an assembler component), generate a new multi-part message in it, and return that to the orchestration.</p>

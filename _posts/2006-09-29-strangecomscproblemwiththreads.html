@@ -24,7 +24,7 @@ comments: []
 ---
 <p><!--start_raw-->
 <p>I've been spending most of today diagnosing a fairly strange issue that has been nagging one of our services in production, and which we hadn't yet been able to fully repro until today. The basic application itself is fairly simple: It's an ASP.NET v1.1 Web Service that calls into a custom ServicedComponent configured locally in a COM+ Server application:</p>
-<p><img height="294" alt="Service Architecture" src="http:&#47;&#47;www.winterdom.com&#47;weblog&#47;content&#47;binary&#47;WindowsLiveWriter&#47;StrangeCOMSCProblemwithThreads_106DE&#47;WS_ComPlus_Problem5.png" width="506"> </p>
+<p><img height="294" alt="Service Architecture" src="&#47;weblog&#47;content&#47;binary&#47;WindowsLiveWriter&#47;StrangeCOMSCProblemwithThreads_106DE&#47;WS_ComPlus_Problem5.png" width="506"> </p>
 <p>It worked fine for a while, but a few weeks ago we started getting intermittent failures, that manifested themselves&nbsp;when the COM+ application stopped working after a few days of constant running, at which point it would start returning errors when a call to a remote ServicedComponent. The remote component works fine (it's was a preexisting component built for another project that works fine for everyone else). All is running on Windows 2000 Server, by the way.</p>
 <p>The really weird issue is that the errors the application would start returning where of two different kinds:</p>
 <ol>

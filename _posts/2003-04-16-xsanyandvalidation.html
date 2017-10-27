@@ -64,9 +64,9 @@ comments:
 <p>Imagine I had the following schema:</p></p>
 <pre class="codes"><code><?xml version="1.0" encoding="utf-8" ?><br />
 <xs:schema<br />
-targetNamespace="http:&#47;&#47;www.winterdom.com&#47;schemas&#47;valprb1"<br />
+targetNamespace="&#47;schemas&#47;valprb1"<br />
 elementFormDefault="qualified"<br />
-xmlns="http:&#47;&#47;www.winterdom.com&#47;schemas&#47;valprb1"<br />
+xmlns="&#47;schemas&#47;valprb1"<br />
 xmlns:xs="http:&#47;&#47;www.w3.org&#47;2001&#47;XMLSchema"<br />
 ><br />
 <xs:element name="test"><br />
@@ -80,15 +80,15 @@ xmlns:xs="http:&#47;&#47;www.w3.org&#47;2001&#47;XMLSchema"<br />
 </xs:schema><br />
 </code></pre></p>
 <p>And the following XML:</p></p>
-<pre class="codes"><code><test xmlns="http:&#47;&#47;www.winterdom.com&#47;schemas&#47;valprb1"><br />
+<pre class="codes"><code><test xmlns="&#47;schemas&#47;valprb1"><br />
 <value1>whatever</value1><br />
 <!-- Should fit in xs:any --><br />
-<s:other xmlns:s="http:&#47;&#47;www.winterdom.com&#47;schemas&#47;other">asdad</s:other><br />
+<s:other xmlns:s="&#47;schemas&#47;other">asdad</s:other><br />
 </test><br />
 </code></pre></p>
 <p>What should the correct behavior be here regarding the validation of s:other given my specification of processContents="skip"? I'm not quite entirely sure of what the <a href="http:&#47;&#47;www.w3.org&#47;TR&#47;xmlschema-1&#47;">XSD specification</a> implies. My initial understanding would've been that the validator should not try to actually validate anything fitting in the xs:any section, just verify that it is indeed valid XML. However, this seems not to be the case, at least for the .NET XmlValidatingReader, which reports:</p></p>
 <pre>Error: Could not find schema information for the<br />
-element 'http:&#47;&#47;www.winterdom.com&#47;schemas&#47;other:other'.<br />
+element '&#47;schemas&#47;other:other'.<br />
 An error occurred at file:&#47;&#47;&#47;C:&#47;temp&#47;test.xml(4, 5).<br />
 </pre></p>
 <p>The message obviously points out that I haven't given any schema information for s:other, but my question goes towards the why I should have to do it? If I was using skip?</p></p>

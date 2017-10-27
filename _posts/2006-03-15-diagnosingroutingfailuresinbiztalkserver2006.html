@@ -23,21 +23,21 @@ comments: []
 <p><!--start_raw--><P>BizTalk Server 2006 offers some tools that can make it easier to diagnose routing failures in your BizTalk deployments, with the help of the new query facilities in the BizTalk Server 2006 Administration Console. Imagine for example that you've got an incoming message through a receive location that failed routing and was suspended.</P><br />
 <P>The first thing you'll want to do is open up the BizTalk Server 2006 Administration Console, go to the Group Hub page and create a new query. To diagnose a routing failure, you can do two different queries.</P><br />
 <P><STRONG>Querying for Messages<BR></STRONG>The first possible query is to query for messages. If a routing failure occurred, you will find the message listed in the results pane in the "Suspended (resumable)" state, as the following screenshot shows:<BR></P><br />
-<P><IMG src="http:&#47;&#47;www.winterdom.com&#47;weblog&#47;content&#47;binary&#47;BTS_06_RF_MsgList.png" border=0></P><br />
+<P><IMG src="&#47;weblog&#47;content&#47;binary&#47;BTS_06_RF_MsgList.png" border=0></P><br />
 <P>The first record you see in the screenshot above (the one where the MessageType field is empty) is the actual message that failed routing. If you double click on it, you will see a new dialog window open where you can see the message details, as well as the message context and even the content of each part associated with the message. This is one of my favourite windows in the new UI because it is much more usable than the old HAT windows.</P><br />
-<P><IMG src="http:&#47;&#47;www.winterdom.com&#47;weblog&#47;content&#47;binary&#47;BTS_06_RF_RFRProps.png" border=0></P><br />
+<P><IMG src="&#47;weblog&#47;content&#47;binary&#47;BTS_06_RF_RFRProps.png" border=0></P><br />
 <P>The second record you see in the results pane, however, is far more interesting. This one is actually a Routing Failure Report pseudo-message, which has no actual body, but contains the real state (and message context) of the message at the point the routing failure occurred. You can always recognize an RFR because its Service Class field contains the value "Routing Failure Report". </P><br />
-<P><IMG src="http:&#47;&#47;www.winterdom.com&#47;weblog&#47;content&#47;binary&#47;BTS_06_RF_MsgProps.png" border=0></P><br />
+<P><IMG src="&#47;weblog&#47;content&#47;binary&#47;BTS_06_RF_MsgProps.png" border=0></P><br />
 <P>Since the Routing Failure Report contains the real message context, you can use it to check if the expected context properties were promoted, and what the values of them were. So this is the place to look for if you feel that perhaps the routing problem occurred because your pipeline or adapter didn't promote the right values or the right properties.</P><br />
 <P><STRONG>Querying for services<BR></STRONG>You can also start by querying for suspended service instances (message receives&#47;sends are also service instances):</P><br />
-<P><IMG src="http:&#47;&#47;www.winterdom.com&#47;weblog&#47;content&#47;binary&#47;BTS_06_RF_SvcLists.png" border=0></P><br />
+<P><IMG src="&#47;weblog&#47;content&#47;binary&#47;BTS_06_RF_SvcLists.png" border=0></P><br />
 <P>The Messaging Service Instance is the actual instance that was suspended. By opening up the Service Details window, you can look at the exact error message that was logged in the Error Information tab:</P><br />
 <P><EM>The published message could not be routed because no subscribers were found. This error occurs if the subscribing orchestration or send port has not been enlisted, or if some of the message properties necessary for subscription evaluation have not been promoted. Please use the Biztalk Administration console to troubleshoot this failure.</EM></P><br />
 <P>You can also see the list of messages associated with this service instance (in this case only one) in the Messages tab of the window.</P><br />
-<P><IMG src="http:&#47;&#47;www.winterdom.com&#47;weblog&#47;content&#47;binary&#47;BTS_06_RF_SDMsgList.png" border=0></P><br />
+<P><IMG src="&#47;weblog&#47;content&#47;binary&#47;BTS_06_RF_SDMsgList.png" border=0></P><br />
 <P>By analogy, the Routing Failure Report instance is a service instance associated with the routing failure report; from here you can get access to the Routing Failure Report message as well.</P><br />
 <P><STRONG>Troubleshooting the routing failure</STRONG><BR>One really interesting option here is that you can right-click on either of the suspended service instances in the Query Results pane and you'll see a new "Troubleshoot Routing Failure" submenu with some options to help you diagnose why the routing failure happened:</P><br />
-<P><IMG src="http:&#47;&#47;www.winterdom.com&#47;weblog&#47;content&#47;binary&#47;BTS_06_RF_TBSMenu.png" border=0></P><br />
+<P><IMG src="&#47;weblog&#47;content&#47;binary&#47;BTS_06_RF_TBSMenu.png" border=0></P><br />
 <UL><br />
 <LI>The <EM>Find failed service instance</EM> option will run a new query that will find you the specific service instance that failed. It is not as useful in the above example because we already new exactly what service instance it was (it had been already returned in the original query), but in cases where you have hundreds of service instances, this can make it a lot easier to find the relevant instance.</LI><br />
 <LI>The <EM>Show all subscriptions</EM> option will open a new query window that queries for all subscriptions defined in the message box.</LI><br />

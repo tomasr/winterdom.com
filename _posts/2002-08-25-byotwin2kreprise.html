@@ -53,7 +53,7 @@ comments:
     <p>Cheers</p>
     <p>James</p>
 ---
-<p><!--start_raw-->I've done some more digging on the BYOT problem on Win2k I <a href="http:&#47;&#47;www.winterdom.com&#47;weblog&#47;archives&#47;000140.html">reported</a> a while back. Now, I've come up with a plain C++ version of the original test (albeit more manual), and get the same errors as with .NET involved, which is not suprising at all.</p>
+<p><!--start_raw-->I've done some more digging on the BYOT problem on Win2k I <a href="&#47;weblog&#47;archives&#47;000140.html">reported</a> a while back. Now, I've come up with a plain C++ version of the original test (albeit more manual), and get the same errors as with .NET involved, which is not suprising at all.</p>
 <p>What <i>is</i> surprising, at least to me, is that the problem only occurs if the exporter of the TIP Transaction and the importer of it (via <code>ICreateWithTipTransaction</code>) are running on separate processes. If both run in the same process, it works just fine, <i>even</i> if the thread calling <code>ICreateWithTipTransaction::CreateInstance()</code> is <i>not</i> inside a COM+ context.</p></p>
-<p>For those of you wanting to play with this, here's the <a href="http:&#47;&#47;www.winterdom.com&#47;weblog&#47;files&#47;TipTx.zip">VC++.NET project </a><br />
+<p>For those of you wanting to play with this, here's the <a href="&#47;weblog&#47;files&#47;TipTx.zip">VC++.NET project </a><br />
 I used this time. Now, you can call AppHost.exe with no arguments, and get a TIP Transaction URL in return, and call AppHost.exe again in another console passing the URL as an argument. Changing the code to do both inside the same process is left as an excercise for the reader :)</p><!--end_raw--></p>
