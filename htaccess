@@ -4,4 +4,11 @@ permalink: .htaccess
 ---
 RewriteEngine On
 RewriteRule ([^/]+)/(\d\d\d\d)/(.*)  /$2/$3   [R]
+
+RewriteCond %{THE_REQUEST} /([^.]+)\.html [NC]
+RewriteRule (.*) /%1 [R=302,L]  
+
+RewriteCond %{REQUEST_FILENAME}\.html -f
+RewriteRule ^(.*)$ $1.html
+
 Options +MultiViews
