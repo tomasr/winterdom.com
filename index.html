@@ -24,7 +24,7 @@ tagline:
   </h2>
 
   <div>
-    {{ post.excerpt }}
+    {{ post.content | markdownify | strip_html | truncatewords: 50 }} 
   </div>
 
 </article>
