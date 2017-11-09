@@ -6,7 +6,7 @@ tags:
 - Azure
 - AppService
 - AzureFunctions
-- AppInsights
+- ApplicationInsights
 - WebHooks
 comments: []
 ---
