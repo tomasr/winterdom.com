@@ -22,12 +22,15 @@ follow, so I thought I'd document here the steps I followed to test the customer
 I'll assume we already have an API implemented and published in API Management and that we want to use
 Azure Active Directory as the OAuth2 provider. For this article, I'll use an API I called PQR in API Management.
 
-## Step 1: Register the API Management application
+## Step 1: Register the Azure AD applications
 
-The first step would be to register a new Azure AD application to represent our API Management instance.
+The first step would be to register a new Azure AD application to represent our API.
 I'll create a new application like this:
 
 ![Creating the AD Application]({{site.images_base}}/2017/apim-oauth-1.png)
+
+Next create a second application, which we'll call `apim-portal`. This one will be used to
+represent the API Management Developer Portal, so that we can test our APIs from it.
 
 Once the application is created, we need to generate a new key for it:
 
@@ -35,7 +38,9 @@ Once the application is created, we need to generate a new key for it:
 
 Make a note of both the application Id and the new key, as we'll need this in a moment.
 
-> You could also create the application easily using the `az ad app create` command in the
+Also, grant permissions to `apim-portal` to call the `apim-pqr` application.
+
+> You could also create the application easily using the `az ad sp create` command in the
 > Azure CLI.
 
 ## Step 2: Adding the OAuth2 authorization server
@@ -59,7 +64,7 @@ the authorization endpoint URL for my AAD Tenant:
 > The authorization URL will be in the form `https://login.microsoftonline.com/{tenantid}/oauth2/authorize`.
 
 Then we can configure the Token endpoint URL, as well as adding the value of the `resource` parameter.
-The latter should be configured with the value of the `App ID URI` field of the Azure AD application
+The latter should be configured with the value of the `App ID URI` field of the `apim-pqr` application
 we created in the first step:
 
 ![OAuth2 token url]({{site.images_base}}/2017/apim-oauth-5.png)
@@ -67,7 +72,7 @@ we created in the first step:
 > The token URL will be in the form `https://login.microsoftonline.com/{tenantid}/oauth2/token`.
 
 We'll leave the default scope empty for now, and configure the Client ID/Secret that we copied
-after creating the application in step 1:
+after creating the `apim-portal` application in step 1:
 
 ![OAuth2 client information]({{site.images_base}}/2017/apim-oauth-6.png)
 
