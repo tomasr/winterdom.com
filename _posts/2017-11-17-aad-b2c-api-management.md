@@ -119,4 +119,4 @@ token will use the `Application Id` rather than the `App ID URI`.
 Now, I should be able to obtain a token from the Developer Portal for my API and
 test the API:
 
-![Testing the API]({{site.images_base}}/2017/apim-b2c-9.png)
+![Testing the API]({{site.images_base}}/2017/apim-b2c-10.png)
