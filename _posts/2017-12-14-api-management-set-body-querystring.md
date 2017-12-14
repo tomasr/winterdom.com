@@ -17,7 +17,7 @@ If you're using a _Liquid_ template, it would look something like this:
 ```xml
 <set-body template="liquid">
 {
-    "userId": "{{"{{context.Request.OriginalUrl.Query.userId}}}}"
+    "userId": "{{"{{context.Request.OriginalUrl.Query.userId"}}}}"
 }
 </set-body>
 ```
