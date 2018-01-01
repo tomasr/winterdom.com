@@ -12,6 +12,7 @@ images_base: https://static.winterdom.com/images
 permalink: /:year/:month/:day/:title
 excerpt_separator: "\r\n"
 BASE_PATH: https://winterdom.com
+url: https://winterdom.com
 
 kramdown:
   input: GFM
