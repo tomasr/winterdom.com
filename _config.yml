@@ -45,4 +45,5 @@ tags_path: tags.html
 
 plugins:
   - jekyll-paginate
+  - jekyll-sitemap
   - rouge
