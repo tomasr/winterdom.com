@@ -1,6 +1,7 @@
 ---
 layout: post
-category: VisualStudio
+category:
+- Visual Studio
 title: Updating Viasfora Themes
 tags:
 - Viasfora

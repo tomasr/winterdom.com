@@ -1,6 +1,7 @@
 ---
 layout: post
-category: VisualStudio
+category:
+- Visual Studio
 title: Viasfora Themes and Settings in v3.6
 tags:
 - Viasfora

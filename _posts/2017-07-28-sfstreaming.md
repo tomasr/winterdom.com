@@ -1,6 +1,7 @@
 ---
 layout: post
-category: VisualStudio
+category:
+- Visual Studio
 title: Service Fabric Streaming Trace Viewer
 tags:
 - Azure

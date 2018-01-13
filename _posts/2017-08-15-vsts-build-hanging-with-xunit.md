@@ -1,6 +1,7 @@
 ---
 layout: post
-category: VisualStudio
+category:
+- Visual Studio
 title: VSTS Build hanging with XUnit tests
 tags:
 - VSTS
