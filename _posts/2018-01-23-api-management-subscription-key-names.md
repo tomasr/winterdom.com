@@ -67,6 +67,7 @@ the following process:
 * Select the API you want to modify
 * Make sure the __Design__ tab is selected
 * Click on the pencil icon next to the __Frontend__ section to edit the raw API definition
+
   ![Edit Frontend]({{site.images_base}}/2018/apim-keys-2.png)
 * You will see a YAML definition for the API, including a `securityDefinitions` section where
   the names of the header and query string value are defined.
