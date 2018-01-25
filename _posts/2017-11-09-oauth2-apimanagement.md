@@ -140,7 +140,7 @@ The policy would look something like this:
 Here we're using the OpenId Connect metadata published by our Azure AD tenant so that API Management
 can get details such as the signature keys to validate the token. Then we're also checking that the
 token was generated for the right API, by comparing the `Audience` claim against the `App ID URI`
-of our Azure AD application.
+of the `apim-pqr` application.
 
 ## Step 5: Testing the API
 
