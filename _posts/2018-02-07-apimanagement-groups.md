@@ -12,6 +12,7 @@ to manage the visibility of Products to users.
 
 They are somewhat interesting, in that it is not obvious how to leverage them right away.
 As the documentation states, there are 3 built-in, system groups:
+:w
 
 * Administrators
 * Developers
@@ -19,9 +20,12 @@ As the documentation states, there are 3 built-in, system groups:
 
 These groups are immutable, meaning you cannot add or remove members to these groups. This sounds a bit strange at first, but it is not a big deal:
 
-* The Administrators group is a bit of a left-over from having the Publishers Portal. Since this is [soon going away](https://blogs.msdn.microsoft.com/apimanagement/2018/02/06/publisher-portal-deprecated-april-1-2018/), it is not that big of a deal.
-* The Developers group has any user that has signed up for the Developer Portal, so all external users are adding automatically to this group.
-* The Guest group is special, as it really doesn't have any members. It's really non-users, so it fills a special need.
+* The __Administrators__ group is a bit of a left-over from having the Publishers Portal. Since this is
+  [soon going away](https://blogs.msdn.microsoft.com/apimanagement/2018/02/06/publisher-portal-deprecated-april-1-2018/),
+  it is not that big of a deal.
+* The __Developers__ group has any user that has signed up for the Developer Portal, so all external users
+  are added automatically to this group.
+* The __Guest__ group is special, as it really doesn't have any members. It's really non-users, so it fills a special need.
 
 Custom Groups, however, are quite interesting, if you take a bit of time to explore how
 they work. To do that, let's consider the following scenario:
@@ -66,3 +70,13 @@ then I only see APIs in the `Customer Service` product:
 
 ![Third Parties User]({{site.images_base}}/2018/apim-groups-4.png)
 
+## Something to keep in mind
+
+There are a few things worth keeping in mind about API Management Groups:
+
+* Remember that any APIs associated to products to which the `Developers` or `Guests`
+  groups have access will be pretty much visible to everyone.
+* If you decide to change your Product / Group structure later on, you will find that if
+  a user has a subscription to a Product, she will be able to see all APIs included in
+  the product, even if the groups the user is a member of do not grant permissions over
+  said product. This will be the case until all said subscriptions are removed.gg
