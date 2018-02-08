@@ -12,7 +12,6 @@ to manage the visibility of Products to users.
 
 They are somewhat interesting, in that it is not obvious how to leverage them right away.
 As the documentation states, there are 3 built-in, system groups:
-:w
 
 * Administrators
 * Developers
