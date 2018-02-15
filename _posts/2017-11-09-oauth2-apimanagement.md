@@ -81,7 +81,7 @@ using the Publisher Portal, with almost the exact same user experience.
 
 Before moving on to the next step, there is something missing. In the screenshot above, notice there's
 a field with the `redirect_uri` to be used with API Management. We need to copy this URL, and
-add it to the Reply URLs of our `apim-pqr` application in Azure Active Directory. Otherwise, authentication
+add it to the Reply URLs of our `apim-portal` application in Azure Active Directory. Otherwise, authentication
 with fail later on.
 
 ## Step 3: Configure the API to use OAuth2 authorization
