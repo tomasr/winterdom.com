@@ -1,7 +1,7 @@
 ---
 layout: post
 category: Azure
-title: Azure SQL Database Service Principal not appearin in Azure Active Directory
+title: Azure SQL Database Service Principal not present in AAD
 tags:
 - Azure
 - AAD
