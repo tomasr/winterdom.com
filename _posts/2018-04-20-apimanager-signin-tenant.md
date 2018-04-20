@@ -1,7 +1,7 @@
 ---
 layout: post
 category: Azure
-title: API Management Signin Tenant
+title: API Management Sign-in Tenant
 tags:
 - Azure
 - APIManagement
