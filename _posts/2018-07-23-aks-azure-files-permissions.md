@@ -88,6 +88,7 @@ by Andy Zhang.
     volumeName: pv-azurefile  
   ```
 * Create a volume for your pod out of the PVC.
+  
   ```yaml
   volumes:
     - name: azurefile01
