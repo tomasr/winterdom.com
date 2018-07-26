@@ -126,3 +126,5 @@ deploy it. This is just cumbersome.
 
 I wish you could just adjust default permissions directly when creating the volume, but alas,
 apparently this is not possible with the Kubernetes model (or simply unsupported by the Azure Files plugin).
+
+__Update:__ Posted some additional findings [here]({% post_url 2018-07-26-azurefile-persistent-volumes-retain-issue %})
