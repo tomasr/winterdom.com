@@ -128,3 +128,9 @@ I wish you could just adjust default permissions directly when creating the volu
 apparently this is not possible with the Kubernetes model (or simply unsupported by the Azure Files plugin).
 
 __Update:__ Posted some additional findings [here]({% post_url 2018-07-26-azurefile-persistent-volumes-retain-issue %})
+
+## Getting fixed!
+
+__Update 2018-11-15__: Looks like this issue is [finally fixed](https://github.com/kubernetes/kubernetes/pull/69854)
+in Kubernetes `v1.11.4` with the default permissions for Azure Files reverting to `0777`.
+Great news.
