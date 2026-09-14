@@ -1,0 +1,14 @@
+_config.yml
+  h_6741970e533aaa 14-22,54
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.4",
+  "base_commit_sha": "224afc455b7a797cd2b3100f22bcc08c7a17ca64",
+  "prompts": {},
+  "humans": {
+    "h_6741970e533aaa": {
+      "author": "Tomas Restrepo <tomas@winterdom.com>"
+    }
+  }
+}
