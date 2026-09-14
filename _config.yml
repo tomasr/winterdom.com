@@ -3,7 +3,7 @@
 exclude: ["README.md"] # files to exclude
 highlighter: rouge
 markdown: kramdown
-disqus: winterdom
+#disqus: winterdom
 title: Winterdom
 images_base: https://static.winterdom.com/images
 permalink: /:year/:month/:day/:title
