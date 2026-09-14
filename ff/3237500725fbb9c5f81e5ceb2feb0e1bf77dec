@@ -1,0 +1,14 @@
+_posts/2026-09-14-kondex-a-declaration-indexing-tool.md
+  h_6741970e533aaa 1-141
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.4",
+  "base_commit_sha": "ff3237500725fbb9c5f81e5ceb2feb0e1bf77dec",
+  "prompts": {},
+  "humans": {
+    "h_6741970e533aaa": {
+      "author": "Tomas Restrepo <tomas@winterdom.com>"
+    }
+  }
+}
