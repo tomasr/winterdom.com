@@ -1,7 +1,5 @@
 # visit https://github.com/mojombo/jekyll/wiki/Configuration for more settings
 
-paginate: 10 # pagination based on number of posts
-paginate_path: "page:num"
 exclude: ["README.md"] # files to exclude
 highlighter: rouge
 markdown: kramdown
@@ -12,6 +10,15 @@ permalink: /:year/:month/:day/:title
 excerpt_separator: "\r\n"
 BASE_PATH: https://winterdom.com
 url: https://winterdom.com
+
+pagination:
+  enabled: true
+  per_page: 10 
+  permalink: '/page:num'
+  title: ':title - page :num'
+  limit: 0
+  sort_field: 'date'
+  sort_reverse: true
 
 kramdown:
   input: GFM
@@ -44,6 +51,6 @@ tags_path: tags.html
 # sidebar_background_image: https://www.dropbox.com/s/g9h23zrycedxtk5/sky.png?raw=1
 
 plugins:
-  - jekyll-paginate
+  - jekyll-paginate-v2
   - jekyll-sitemap
   - rouge
