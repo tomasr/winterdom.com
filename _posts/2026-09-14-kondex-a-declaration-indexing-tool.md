@@ -1,7 +1,7 @@
 ---
 layout: post
 category: Tools
-title: Kondex: A declaration indexing tool
+title: 'Kondex: A declaration indexing tool'
 tags:
 - Claude
 - LLM
