@@ -1,0 +1,14 @@
+Gemfile
+  h_6741970e533aaa 5-6
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.4",
+  "base_commit_sha": "a5fd931de16f464703c412f05e88930a1578eaa5",
+  "prompts": {},
+  "humans": {
+    "h_6741970e533aaa": {
+      "author": "Tomas Restrepo <tomas@winterdom.com>"
+    }
+  }
+}
