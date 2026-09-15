@@ -208,7 +208,7 @@ data_source  data.azurerm_resource_group.dns-rg                  terraform/prod/
 You can see Terraform introduces its own set of declaration kinds (data_source, variable, resource, module, output, local, provider). Showing a declaration still works the same way:
 
 ```
-kondex show azuread_application.azuredns-sp
+> kondex show azuread_application.azuredns-sp
 resource azuread_application.azuredns-sp
   file         terraform/prod/security.tf:28-31
   declaration  resource "azuread_application" "azuredns-sp"
