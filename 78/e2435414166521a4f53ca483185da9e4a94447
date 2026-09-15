@@ -1,0 +1,14 @@
+_posts/2026-09-15-kondex-searching-the-index.md
+  h_6741970e533aaa 1-233
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.4",
+  "base_commit_sha": "78e2435414166521a4f53ca483185da9e4a94447",
+  "prompts": {},
+  "humans": {
+    "h_6741970e533aaa": {
+      "author": "Tomas Restrepo <tomas@winterdom.com>"
+    }
+  }
+}
