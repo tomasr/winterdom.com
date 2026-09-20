@@ -378,3 +378,21 @@
     padding-top: 26px;
   }
 }
+
+/* Legacy type size --------------------------------------------------------
+   341 inline font-size declarations in points, plus a handful of <font size>
+   attributes, all set for a 960px Verdana-era column: 266 at 10pt, 75 at
+   9pt. 9pt is 12px, under the 13px floor SPEC.md puts on every text on the
+   site, and 10pt is a third smaller than the body size the design sets.
+
+   CSS cannot raise a size conditionally, so the authored size is dropped and
+   the element takes the scale around it. Five declarations at 16pt lose a
+   deliberate step up; 341 gain a readable one.
+
+   Part of the accessibility pass. See also the dark-theme colour rule above:
+   same content, same reason. */
+
+.article-body [style*="font-size"],
+.article-body font[size] {
+  font-size: inherit !important;
+}
