@@ -1,0 +1,25 @@
+{{- /*
+  Fonts and stylesheets for the 2026 redesign.
+
+  Three families in one Google Fonts request -- the decision in SPEC.md is
+  CDN, no self-hosting and no subsetting step. Newsreader is variable with an
+  optical-size axis; opsz is deliberately not pinned so it tracks the font
+  size on its own.
+
+  Not yet referenced from baseof.html: that page still carries the Bootstrap
+  era head, and the two sheets would fight. Wiring happens with the header
+  and footer partials in the next step.
+*/ -}}
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;0,6..72,600;1,6..72,400&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap">
+
+{{- $sheets := slice
+  (resources.Get "css/tokens.css")
+  (resources.Get "css/base.css")
+-}}
+{{- $css := $sheets | resources.Concat "css/main.css" -}}
+{{- if hugo.IsProduction -}}
+  {{- $css = $css | minify | fingerprint -}}
+{{- end -}}
+<link rel="stylesheet" href="{{ $css.RelPermalink }}"{{ with $css.Data.Integrity }} integrity="{{ . }}"{{ end }}>

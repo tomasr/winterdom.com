@@ -1,0 +1,260 @@
+/* ---------------------------------------------------------------------------
+   Base element styles — winterdom.com, 2026 redesign.
+   Source of truth: design/SPEC.md.
+
+   This sheet styles bare elements and the page shell only. Component rules
+   (header, footer, list rows, pagination) and the article element sheet
+   scoped under .article-body arrive in later steps.
+--------------------------------------------------------------------------- */
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html {
+  -webkit-text-size-adjust: 100%;
+}
+
+body {
+  margin: 0;
+  background: var(--paper);
+  color: var(--ink);
+  font-family: var(--font-body);
+  font-size: var(--fs-body);
+  line-height: var(--lh-body);
+  font-weight: 400;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  /* Raw URLs in twenty years of posts must never blow out the measure. */
+  overflow-wrap: break-word;
+}
+
+/* Headings ------------------------------------------------------------- */
+
+h1, h2, h3, h4, h5, h6 {
+  margin: 0;
+  color: var(--ink-strong);
+  font-weight: 500;
+  font-family: var(--font-display);
+  letter-spacing: var(--tr-title);
+  /* In-page anchors should not land flush against the viewport edge. */
+  scroll-margin-top: var(--space-4);
+}
+
+h1 {
+  font-size: var(--fs-page-title);
+  line-height: var(--lh-page-title);
+  letter-spacing: var(--tr-page-title);
+}
+
+h2 {
+  font-size: var(--fs-h2);
+  line-height: var(--lh-h2);
+}
+
+h3 {
+  font-size: var(--fs-h3);
+  line-height: var(--lh-h3);
+}
+
+/* h4 and below leave the serif for the body sans. */
+h4, h5, h6 {
+  font-family: var(--font-body);
+  font-size: var(--fs-h4);
+  line-height: var(--lh-h4);
+  font-weight: 600;
+  letter-spacing: 0;
+}
+
+/* Text ----------------------------------------------------------------- */
+
+p,
+figure,
+blockquote,
+dl,
+dd {
+  margin: 0;
+}
+
+small {
+  font-size: var(--fs-caption);
+  line-height: var(--lh-caption);
+}
+
+b, strong {
+  font-weight: 600;
+}
+
+/* Newsreader's italic is reserved for pull quotes. Ordinary emphasis in
+   body copy is IBM Plex Sans italic and needs no rule of its own. */
+
+/* Links ---------------------------------------------------------------- */
+
+a {
+  color: var(--accent);
+  text-decoration: none;
+  text-underline-offset: 2px;
+}
+
+a:hover {
+  color: var(--accent-hover);
+  text-decoration: underline;
+}
+
+/* Code ----------------------------------------------------------------- */
+
+code,
+pre,
+kbd,
+samp {
+  font-family: var(--font-mono);
+}
+
+code {
+  font-size: 0.88em;
+}
+
+pre {
+  margin: 0;
+  font-size: var(--fs-code);
+  line-height: var(--lh-code);
+}
+
+pre code {
+  font-size: inherit;
+}
+
+/* Media ---------------------------------------------------------------- */
+
+img,
+svg,
+video,
+iframe,
+embed,
+object {
+  max-width: 100%;
+}
+
+img,
+video {
+  height: auto;
+}
+
+/* Forms ---------------------------------------------------------------- */
+
+button,
+input,
+select,
+textarea {
+  font: inherit;
+  color: inherit;
+}
+
+button {
+  cursor: pointer;
+}
+
+/* Focus ----------------------------------------------------------------
+   A visible ring on keyboard focus only, so a mouse click never shows one.
+   2px of --accent clears 3:1 against both --paper and --surface in either
+   theme; the 2px offset keeps it off the element's own border. */
+
+:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+
+:focus:not(:focus-visible) {
+  outline: none;
+}
+
+/* Page shell -----------------------------------------------------------
+   .page is the flex column that pins the footer to the bottom of the
+   viewport on short pages. .band is the centred content column: gutters
+   as padding, the band plus both gutters as the max width. .measure is
+   the article text column inside it. */
+
+.page {
+  display: flex;
+  flex-direction: column;
+  min-height: 100dvh;
+}
+
+.page > main {
+  flex: 1 0 auto;
+}
+
+.page > .site-footer {
+  margin-top: auto;
+}
+
+.band {
+  width: 100%;
+  max-width: var(--band-outer);
+  margin-inline: auto;
+  padding-inline: var(--gutter);
+}
+
+.measure {
+  max-width: var(--measure);
+}
+
+/* Skip link ------------------------------------------------------------
+   First focusable element on the page, off-screen until focused, then a
+   solid accent chip at the top-left jumping to #main. */
+
+.skip-link {
+  position: absolute;
+  left: var(--space-2);
+  top: var(--space-2);
+  z-index: 100;
+  padding: 12px 16px;
+  border-radius: var(--radius);
+  background: var(--accent);
+  color: var(--on-accent);
+  font-size: var(--fs-small);
+  text-decoration: none;
+  transform: translateY(calc(-100% - var(--space-4)));
+}
+
+.skip-link:focus {
+  transform: translateY(0);
+}
+
+.skip-link:hover {
+  color: var(--on-accent);
+  text-decoration: none;
+}
+
+/* Screen-reader-only text, for labels the design shows as icons. */
+
+.visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  padding: 0;
+  border: 0;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+/* Motion ---------------------------------------------------------------- */
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
