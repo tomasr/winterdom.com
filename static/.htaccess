@@ -14,7 +14,9 @@ RewriteRule ^(.+[^/])$ /$1/index.html [L]
 RewriteCond %{REQUEST_FILENAME}\.html -f
 RewriteRule ^(.*)$ $1.html
 
-# Jekyll's paginate-v2 emitted /page2, /page3...; Hugo emits /page/2/, /page/3/.
-RewriteRule ^page(\d+)/?$ /page/$1/ [R=301,L]
+# Jekyll's paginate-v2 emitted /page2, /page3...; the home page no longer
+# paginates at all -- it shows the most recent handful and points at the
+# archive, which is where twenty years of posts now live.
+RewriteRule ^page(\d+)/?$ /archive/ [R=301,L]
 
 Options +MultiViews
