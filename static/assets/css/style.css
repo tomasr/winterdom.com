@@ -213,3 +213,50 @@ ul.dropdown-menu>li>a>i.fa {
 }
 
 @import url(code.css)
+
+/* Archived comments imported from the original WordPress export. Read-only:
+   there is no comment form. */
+.comments {
+	margin-top: 40px;
+	clear: both;
+}
+
+.comments .section-title {
+	margin-bottom: 20px;
+}
+
+.comment {
+	padding: 0 0 0 20px;
+	margin-bottom: 25px;
+	border-left: solid #ddd 4px;
+}
+
+.comment-meta {
+	margin-bottom: 6px;
+}
+
+.comment-author {
+	font-weight: bold;
+}
+
+.comment-author a {
+	color: #2c3e50;
+}
+
+.comment-date {
+	margin-left: 10px;
+	text-transform: uppercase;
+	font-size: 12px;
+	letter-spacing: 2px;
+	color: #999;
+}
+
+.comment-body p:last-child {
+	margin-bottom: 0;
+}
+
+/* Bodies that arrived as plain text keep their original line breaks; the
+   ones WordPress wrapped in <p>/<br> do not get this. */
+.comment-body-plain {
+	white-space: pre-wrap;
+}

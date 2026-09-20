@@ -1,0 +1,37 @@
+{{- /*
+  Renders the comment threads archived in each post's front matter by the
+  original WordPress export. These are historical and read-only -- there is
+  no comment form, and Disqus is gone.
+
+  author_email is deliberately never emitted. It holds third-party addresses,
+  and publishing them (or a gravatar hash derived from them) would expose
+  personal data that was never public on the old site.
+
+  Comment bodies are a mix: some are plain text with \r\n breaks, others carry
+  real markup (<p>, <br>, <a rel="nofollow">) added by WordPress. The bodies
+  were audited for javascript:/data: URLs and inline event handlers before
+  this was written as safeHTML; there are none.
+*/ -}}
+{{- with .Params.comments }}
+<section class="comments" id="comments">
+  <h4 class="section-title">{{ len . }} Comment{{ if ne (len .) 1 }}s{{ end }}</h4>
+
+  {{ range sort . "date" }}
+  {{- $c := . -}}
+  <article class="comment" id="comment-{{ $c.id }}">
+    <div class="comment-meta">
+      <span class="comment-author">
+        {{- with $c.author_url -}}
+          <a href="{{ . }}" rel="nofollow ugc noopener">{{ $c.author }}</a>
+        {{- else -}}
+          {{ $c.author }}
+        {{- end -}}
+      </span>
+      <span class="comment-date">{{ (time.AsTime $c.date).Format "January 02, 2006" }}</span>
+    </div>
+    {{- $body := $c.content | default "" -}}
+    <div class="comment-body{{ if not (or (strings.Contains $body "<p") (strings.Contains $body "<br")) }} comment-body-plain{{ end }}">{{ $body | safeHTML }}</div>
+  </article>
+  {{ end }}
+</section>
+{{ end -}}

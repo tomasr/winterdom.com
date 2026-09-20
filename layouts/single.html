@@ -63,6 +63,8 @@
 
     <div class="clearfix"></div>
 
+		{{ partial "comments.html" . }}
+
 		<ul class="pager">
 		  {{ with .PrevInSection }}
 		  <li class="previous"><a href="{{ .RelPermalink }}" title="{{ .Title }}">&larr; Previous</a></li>
