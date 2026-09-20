@@ -331,3 +331,10 @@ a.post-row__category:hover {
     flex-basis: 100%;
   }
 }
+
+/* A list with no section header above it draws its own top hairline, so a
+   single row still gets both. The term pages are the only place this
+   happens -- everywhere else the header rule does the job. */
+.post-list--ruled {
+  border-top: 1px solid var(--rule);
+}

@@ -196,3 +196,163 @@
     padding: 22px 20px;
   }
 }
+
+/* Term columns ------------------------------------------------------------
+   The category index: everything with more than five posts in one column,
+   the long tail in the other at a smaller size. Two columns of unequal
+   length, aligned at the top rather than stretched. */
+
+.term-columns {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  align-items: start;
+  gap: 56px;
+  padding-top: 38px;
+}
+
+.term-column {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.term-column__title {
+  font-family: var(--font-body);
+  font-size: var(--fs-eyebrow);
+  line-height: var(--lh-eyebrow);
+  font-weight: 600;
+  letter-spacing: var(--tr-upper);
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+.term-rows {
+  display: flex;
+  flex-direction: column;
+}
+
+.term-row {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: var(--space-3);
+  padding-block: 11px;
+  border-bottom: 1px solid var(--rule);
+}
+
+.term-row:hover {
+  text-decoration: none;
+}
+
+.term-row__name {
+  font-family: var(--font-display);
+  font-size: 23px;
+  line-height: 1.25;
+  letter-spacing: var(--tr-title);
+  color: var(--ink-strong);
+}
+
+.term-row:hover .term-row__name {
+  color: var(--accent);
+}
+
+.term-row__count {
+  flex-shrink: 0;
+  font-family: var(--font-mono);
+  font-size: 12.5px;
+  color: var(--muted);
+}
+
+/* The tail is lighter: body sans at reading size rather than the serif. */
+.term-row--small {
+  padding-block: 8px;
+}
+
+.term-row--small .term-row__name {
+  font-family: var(--font-body);
+  font-size: var(--fs-small);
+  letter-spacing: 0;
+  color: var(--ink);
+}
+
+.term-row--small .term-row__count {
+  font-size: 12px;
+}
+
+/* Note box ----------------------------------------------------------------
+   An aside in a column, not a callout in an article. Same surface, same
+   mono label. */
+
+.note {
+  display: flex;
+  flex-direction: column;
+  gap: 9px;
+  margin-top: 18px;
+  padding: 18px 20px;
+  border-radius: var(--radius);
+  background: var(--surface);
+}
+
+.note__label {
+  font-family: var(--font-mono);
+  font-size: var(--fs-eyebrow);
+  line-height: var(--lh-eyebrow);
+  letter-spacing: var(--tr-upper);
+  text-transform: uppercase;
+  color: var(--accent);
+}
+
+.note__text {
+  font-size: 14.5px;
+  line-height: 1.65;
+  color: var(--ink);
+}
+
+/* A tag is a string, not a title, so its heading is mono with the hash. */
+.page-head__title--tag {
+  font-family: var(--font-mono);
+  font-size: var(--fs-h2);
+  font-weight: 400;
+  letter-spacing: 0;
+  color: var(--accent);
+}
+
+/* Tag cloud ---------------------------------------------------------------
+   Bigger pills than a list row carries, with the count set inside so the
+   cloud says something about weight without resizing the type. */
+
+.tag-cloud {
+  gap: 10px;
+  padding-top: 20px;
+}
+
+.tag-pill--lg {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 7px 14px;
+  font-size: 13.5px;
+  color: var(--ink-strong);
+}
+
+.tag-pill__count {
+  color: var(--muted);
+}
+
+@media (max-width: 899px) {
+  .term-columns {
+    gap: 40px;
+  }
+}
+
+@media (max-width: 639px) {
+  .term-columns {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 34px;
+    padding-top: 28px;
+  }
+
+  .term-row__name {
+    font-size: 21px;
+  }
+}

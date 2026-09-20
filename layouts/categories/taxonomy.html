@@ -1,0 +1,77 @@
+{{ define "main" }}
+{{- /*
+  All 41 categories on one page, largest first, with the long tail in a
+  lighter treatment in its own column.
+
+  This replaces the shared taxonomy.html, which rendered every term and all
+  of its posts into hidden tab panes -- 300KB for categories alone, and the
+  reason category links used to point at /categories/#anchor rather than at
+  a page.
+
+  Ties are broken alphabetically through a composite sort key rather than by
+  relying on the sort being stable: six categories hold one post each and
+  their order should not move between builds.
+*/ -}}
+{{- $posts := where site.RegularPages "Section" "posts" -}}
+
+{{- $terms := slice -}}
+{{- range .Pages -}}
+  {{- $count := len .Pages -}}
+  {{- $terms = $terms | append (dict
+      "page" .
+      "count" $count
+      "key" (printf "%06d%s" (sub 999999 $count) (lower .LinkTitle))) -}}
+{{- end -}}
+{{- $terms = sort $terms "key" -}}
+
+{{- /* SPEC.md puts the break at five posts: 1-5 is the long tail. */ -}}
+{{- $main := where $terms "count" "gt" 5 -}}
+{{- $tail := where $terms "count" "le" 5 -}}
+
+{{- $multi := 0 -}}
+{{- range $posts -}}
+  {{- with .Params.categories -}}
+    {{- if gt (len .) 1 }}{{ $multi = add $multi 1 }}{{ end -}}
+  {{- end -}}
+{{- end -}}
+
+{{ partial "page-head.html" (dict
+  "eyebrow" (printf "%d categories · %s posts" (len .Pages) (lang.FormatNumberCustom 0 (len $posts)))
+  "title" .Title
+  "lede" .Description
+  "link" (dict "text" "Browse by year instead →" "url" ("/archive/" | relURL))
+) }}
+
+<div class="term-columns">
+
+  <section class="term-column">
+    <h2 class="term-column__title">Main shelves</h2>
+    <div class="term-rows">
+      {{- range $main }}
+      <a class="term-row" href="{{ .page.RelPermalink }}">
+        <span class="term-row__name">{{ .page.LinkTitle }}</span>
+        <span class="term-row__count">{{ .count }}</span>
+      </a>
+      {{- end }}
+    </div>
+  </section>
+
+  <section class="term-column">
+    <h2 class="term-column__title">The long tail &middot; five posts or fewer</h2>
+    <div class="term-rows">
+      {{- range $tail }}
+      <a class="term-row term-row--small" href="{{ .page.RelPermalink }}">
+        <span class="term-row__name">{{ .page.LinkTitle }}</span>
+        <span class="term-row__count">{{ .count }}</span>
+      </a>
+      {{- end }}
+    </div>
+
+    <div class="note">
+      <span class="note__label">Posts in more than one</span>
+      <p class="note__text">{{ $multi }} posts carry two categories or more. The eyebrow on a list row shows only the first, alphabetically &mdash; the article&rsquo;s own meta line shows all of them.</p>
+    </div>
+  </section>
+
+</div>
+{{ end }}

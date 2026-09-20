@@ -1,7 +1,7 @@
 ---
 slug: "powershell6-in-containers"
 categories:
-- Powershell
+- PowerShell
 title: Trying out PowerShell 6.0 in containers
 tags:
 - Azure

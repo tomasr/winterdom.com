@@ -1,0 +1,40 @@
+{{ define "main" }}
+{{- /*
+  Every tag, as a pill. Tags are the fine-grained axis: many to a post,
+  uncurated, one page each. Ordered by count with ties alphabetical, the
+  same composite key the category index uses.
+*/ -}}
+{{- $posts := where site.RegularPages "Section" "posts" -}}
+
+{{- $terms := slice -}}
+{{- range .Pages -}}
+  {{- $count := len .Pages -}}
+  {{- $terms = $terms | append (dict
+      "page" .
+      "count" $count
+      "key" (printf "%06d%s" (sub 999999 $count) (lower .LinkTitle))) -}}
+{{- end -}}
+{{- $terms = sort $terms "key" -}}
+
+{{ partial "page-head.html" (dict
+  "eyebrow" (printf "%d tags" (len .Pages))
+  "title" .Title
+  "lede" .Description
+  "link" (dict "text" "Browse by category instead →" "url" ("/categories/" | relURL))
+) }}
+
+{{- if $terms }}
+<section class="page-section">
+  <ul class="tag-list tag-cloud">
+    {{- range $terms }}
+    <li><a class="tag-pill tag-pill--lg" href="{{ .page.RelPermalink }}">{{ .page.LinkTitle }}<span class="tag-pill__count">{{ .count }}</span></a></li>
+    {{- end }}
+  </ul>
+</section>
+{{- else }}
+<div class="empty">
+  <h2 class="empty__title">No tags yet</h2>
+  <p class="empty__text">Nothing carries a tag. The <a href="{{ "/archive/" | relURL }}">archive</a> lists everything by year.</p>
+</div>
+{{- end }}
+{{ end }}
