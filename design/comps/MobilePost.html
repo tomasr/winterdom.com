@@ -1,0 +1,117 @@
+<!doctype html>
+<!--
+  Article @390 — reference comp, winterdom.com redesign.
+  Static mockup, NOT a Hugo template. Read it for metrics, markup shape and
+  colour values; the rules are written down in ../SPEC.md.
+  Sample post titles, bodies and excerpts are invented placeholders.
+-->
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Article on a phone — winterdom</title>
+
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;0,6..72,600;1,6..72,400&amp;family=IBM+Plex+Sans:wght@400;500;600&amp;family=IBM+Plex+Mono:wght@400;500&amp;display=swap">
+<style>
+body{margin:0;background:#FFFFFF;color:#353535;font-family:'IBM Plex Sans',system-ui,sans-serif;-webkit-font-smoothing:antialiased;}
+a{color:#3C6E71;}
+a:hover{color:#2A5254;}
+h1,h2,h3{font-family:'Newsreader',Georgia,serif;font-weight:500;margin:0;color:#1D1F1F;letter-spacing:-0.012em;}
+p{margin:0;}
+pre{margin:0;}
+code,pre{font-family:'IBM Plex Mono',ui-monospace,SFMono-Regular,monospace;}
+</style>
+</head>
+<body>
+
+<div style="width: 390px; height: 1420px; box-sizing: border-box; padding: 20px 24px 0 24px; background: #FFFFFF; display: flex; flex-direction: column;">
+
+  <header style="display: flex; align-items: center; justify-content: space-between; padding-bottom: 16px; border-bottom: 1px solid #D9D9D9;">
+    <a href="MobileHome.html" style="display: flex; align-items: center; gap: 9px; text-decoration: none;">
+      <svg width="22" height="22" viewBox="0 0 32 32" fill="none" stroke="#3C6E71" stroke-width="2" stroke-linecap="round" aria-hidden="true">
+        <g><path d="M16 4L16 28"/><path d="M16 9.6L11.6 7"/><path d="M16 9.6L20.4 7"/><path d="M16 22.4L11.6 25"/><path d="M16 22.4L20.4 25"/></g>
+        <g transform="rotate(60 16 16)"><path d="M16 4L16 28"/><path d="M16 9.6L11.6 7"/><path d="M16 9.6L20.4 7"/><path d="M16 22.4L11.6 25"/><path d="M16 22.4L20.4 25"/></g>
+        <g transform="rotate(120 16 16)"><path d="M16 4L16 28"/><path d="M16 9.6L11.6 7"/><path d="M16 9.6L20.4 7"/><path d="M16 22.4L11.6 25"/><path d="M16 22.4L20.4 25"/></g>
+      </svg>
+      <span style="font-family: 'Newsreader', Georgia, serif; font-size: 23px; font-weight: 500; letter-spacing: -0.02em; color: #1D1F1F;">winterdom</span>
+    </a>
+    <button type="button" aria-label="Open menu" style="width: 44px; height: 44px; display: flex; align-items: center; justify-content: center; background: transparent; border: 0; cursor: pointer; color: #1D1F1F; margin-right: -10px;">
+      <svg width="20" height="14" viewBox="0 0 20 14" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><path d="M1 1h18"/><path d="M1 7h18"/><path d="M1 13h12"/></svg>
+    </button>
+  </header>
+
+  <article style="padding: 30px 0 0 0;">
+
+    <div style="display: flex; flex-direction: column; gap: 13px; padding-bottom: 20px; border-bottom: 1px solid #D9D9D9;">
+      <div style="display: flex; align-items: center; gap: 8px; font-family: 'IBM Plex Mono', monospace; font-size: 11.5px; letter-spacing: 0.1em; text-transform: uppercase; color: #5C605E;">
+        <time datetime="2026-09-16">16 Sep 2026</time>
+        <span aria-hidden="true">·</span>
+        <span>in</span>
+        <a href="MobileHome.html" style="color: #3C6E71; text-decoration: none;">Tools</a>
+      </div>
+      <h1 style="font-size: 32px; line-height: 1.16;">Kondex: Teaching Claude to use it</h1>
+      <div style="display: flex; gap: 7px; flex-wrap: wrap;">
+        <a href="MobileHome.html" style="font-family: 'IBM Plex Mono', monospace; font-size: 11.5px; color: #5C605E; text-decoration: none; padding: 3px 9px; border: 1px solid #D9D9D9; border-radius: 999px;">claude</a>
+        <a href="MobileHome.html" style="font-family: 'IBM Plex Mono', monospace; font-size: 11.5px; color: #5C605E; text-decoration: none; padding: 3px 9px; border: 1px solid #D9D9D9; border-radius: 999px;">llm</a>
+        <a href="MobileHome.html" style="font-family: 'IBM Plex Mono', monospace; font-size: 11.5px; color: #5C605E; text-decoration: none; padding: 3px 9px; border: 1px solid #D9D9D9; border-radius: 999px;">tools</a>
+      </div>
+    </div>
+
+    <div style="display: flex; flex-direction: column; gap: 20px; padding: 24px 0 0 0;">
+      <p style="font-size: 17px; line-height: 1.7; color: #353535;">In my previous two posts, I covered how <code style="font-size: 0.88em; background: #F3F4F3; padding: 2px 5px; border-radius: 3px; color: #1D1F1F;">kondex</code> builds its index and how you can query it. There's one part I haven't talked about yet, though: an index is not very useful if the LLM never thinks of using it.</p>
+
+      <p style="font-size: 17px; line-height: 1.7; color: #353535;">If you look back at the architecture diagram in the first post, you'll notice a box labeled "kondex plugin", which contains a <code style="font-size: 0.88em; background: #F3F4F3; padding: 2px 5px; border-radius: 3px; color: #1D1F1F;">SessionStart</code> hook and a skill. Let's see why both of them are there.</p>
+
+      <h2 style="font-size: 25px; line-height: 1.25; padding-top: 8px;">Starting with a skill</h2>
+
+      <p style="font-size: 17px; line-height: 1.7; color: #353535;">A skill is cheap: a folder, a description, and instructions that only load when the model decides the description matches the task. That last part is the catch.</p>
+
+      <div style="border: 1px solid #E2E4E2; border-radius: 5px; overflow: hidden; background: #F7F8F7;">
+        <div style="display: flex; align-items: center; justify-content: space-between; padding: 8px 14px; border-bottom: 1px solid #E2E4E2; background: #F0F2F0;">
+          <span style="font-family: 'IBM Plex Mono', monospace; font-size: 10.5px; letter-spacing: 0.1em; text-transform: uppercase; color: #5C605E;">plugin.json</span>
+        </div>
+        <pre style="padding: 14px 16px; font-size: 12px; line-height: 1.7; color: #353535; overflow: hidden;"><span style="color:#5C605E;">{</span>
+  <span style="color:#284B63;">"name"</span><span style="color:#5C605E;">:</span> <span style="color:#2A5254;">"kondex"</span><span style="color:#5C605E;">,</span>
+  <span style="color:#284B63;">"hooks"</span><span style="color:#5C605E;">:</span> <span style="color:#5C605E;">{</span>
+    <span style="color:#284B63;">"SessionStart"</span><span style="color:#5C605E;">:</span>
+      <span style="color:#2A5254;">"./hooks/start.py"</span>
+  <span style="color:#5C605E;">}</span>
+<span style="color:#5C605E;">}</span></pre>
+      </div>
+
+      <blockquote style="margin: 0; padding: 2px 0 2px 18px; border-left: 2px solid #3C6E71;">
+        <p style="font-family: 'Newsreader', Georgia, serif; font-size: 19px; line-height: 1.5; font-style: italic; color: #1D1F1F;">If you cannot tell whether a change made the model reach for your tool more often, you are guessing.</p>
+      </blockquote>
+
+      <p style="font-size: 17px; line-height: 1.7; color: #353535;">So I wrote a small harness that replays a fixed set of prompts and records whether the index was consulted before the first file read. Crude, but enough to see movement.</p>
+    </div>
+
+    <div style="display: flex; gap: 14px; align-items: center; padding: 22px 0; margin-top: 24px; border-top: 1px solid #D9D9D9; border-bottom: 1px solid #D9D9D9;">
+      <img src="portrait.jpg" alt="Tomas Restrepo" style="width: 46px; height: 46px; border-radius: 999px; object-fit: cover; display: block; flex-shrink: 0;">
+      <div style="display: flex; flex-direction: column; gap: 3px;">
+        <span style="font-size: 14px; font-weight: 500; color: #1D1F1F;">Tomas Restrepo</span>
+        <p style="font-size: 13.5px; line-height: 1.55; color: #5C605E;">Developer in Colombia. <a href="MobileHome.html">About →</a></p>
+      </div>
+    </div>
+
+    <a href="MobilePost.html" style="display: flex; flex-direction: column; gap: 5px; margin-top: 20px; padding: 16px 18px; border: 1px solid #D9D9D9; border-radius: 4px; text-decoration: none;">
+      <span style="font-family: 'IBM Plex Mono', monospace; font-size: 10.5px; letter-spacing: 0.12em; text-transform: uppercase; color: #5C605E;">← Previous</span>
+      <span style="font-family: 'Newsreader', Georgia, serif; font-size: 18px; color: #1D1F1F;">Kondex: Searching the index</span>
+    </a>
+
+  </article>
+
+  <footer style="margin-top: auto; padding: 26px 0 24px 0; border-top: 1px solid #D9D9D9; display: flex; flex-direction: column; gap: 14px;">
+    <div style="display: flex; gap: 16px; flex-wrap: wrap;">
+      <a href="MobileHome.html" style="font-size: 13.5px; color: #5C605E; text-decoration: none;">GitHub</a>
+      <a href="MobileHome.html" style="font-size: 13.5px; color: #5C605E; text-decoration: none;">LinkedIn</a>
+      <a href="MobileHome.html" style="font-size: 13.5px; color: #5C605E; text-decoration: none;">Twitter</a>
+      <a href="MobileHome.html" style="font-size: 13.5px; color: #5C605E; text-decoration: none;">500px</a>
+      <a href="MobileHome.html" style="font-size: 13.5px; color: #5C605E; text-decoration: none;">RSS</a>
+    </div>
+    <span style="font-size: 13px; color: #1D1F1F;">© 2026 Tomas Restrepo · Built with Hugo</span>
+  </footer>
+
+</div>
+
+</body>
+</html>

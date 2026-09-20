@@ -1,0 +1,151 @@
+<!doctype html>
+<!--
+  Article elements — reference comp, winterdom.com redesign.
+  Static mockup, NOT a Hugo template. Read it for metrics, markup shape and
+  colour values; the rules are written down in ../SPEC.md.
+  Sample post titles, bodies and excerpts are invented placeholders.
+-->
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Article elements — every markdown construct</title>
+
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;0,6..72,600;1,6..72,400&amp;family=IBM+Plex+Sans:wght@400;500;600&amp;family=IBM+Plex+Mono:wght@400;500&amp;display=swap">
+<style>
+body{margin:0;background:#FFFFFF;color:#353535;font-family:'IBM Plex Sans',system-ui,sans-serif;-webkit-font-smoothing:antialiased;}
+a{color:#3C6E71;}
+a:hover{color:#2A5254;}
+h1,h2,h3,h4{font-family:'Newsreader',Georgia,serif;font-weight:500;margin:0;color:#1D1F1F;letter-spacing:-0.012em;}
+p{margin:0;}
+pre{margin:0;}
+ul,ol{margin:0;}
+table{border-collapse:collapse;}
+code,pre{font-family:'IBM Plex Mono',ui-monospace,SFMono-Regular,monospace;}
+</style>
+</head>
+<body>
+
+<div style="width: 1280px; height: 2680px; box-sizing: border-box; padding: 52px 80px; background: #FFFFFF; display: flex; flex-direction: column; gap: 34px;">
+
+  <div style="display: flex; align-items: baseline; justify-content: space-between; padding-bottom: 14px; border-bottom: 1px solid #1D1F1F;">
+    <h1 style="font-family: 'IBM Plex Sans', sans-serif; font-size: 12px; font-weight: 600; letter-spacing: 0.18em; text-transform: uppercase; color: #1D1F1F;">Article elements</h1>
+    <span style="font-family: 'IBM Plex Mono', monospace; font-size: 12px; color: #5C605E;">everything Hugo's markdown can emit · 720px measure</span>
+  </div>
+
+  <div style="display: flex; gap: 60px; align-items: flex-start;">
+
+    <div style="width: 720px; flex-shrink: 0; display: flex; flex-direction: column; gap: 26px;">
+
+      <h2 style="font-size: 30px; line-height: 1.25;">A section heading, h2</h2>
+      <p style="font-size: 18.5px; line-height: 1.72; color: #353535;">Body copy sits at 18.5 over 1.72. A <a href="Elements.html">link in running text</a> takes the accent with no underline until hover, and <code style="font-size: 0.88em; background: #F3F4F3; padding: 2px 6px; border-radius: 3px; color: #1D1F1F;">inline code</code> takes the surface tint. Press <code style="font-size: 0.88em; background: #F3F4F3; padding: 2px 6px; border: 1px solid #D9D9D9; border-radius: 3px; color: #1D1F1F;">Ctrl</code> <code style="font-size: 0.88em; background: #F3F4F3; padding: 2px 6px; border: 1px solid #D9D9D9; border-radius: 3px; color: #1D1F1F;">K</code> for the keyboard variant.</p>
+
+      <h3 style="font-size: 24px; line-height: 1.3; padding-top: 6px;">A subsection, h3</h3>
+      <p style="font-size: 18.5px; line-height: 1.72; color: #353535;">A long bare URL like https://github.com/winterdom/viasfora/blob/master/README.md wraps rather than blowing out the measure.<sup style="font-family: 'IBM Plex Mono', monospace; font-size: 11px; color: #3C6E71;">1</sup></p>
+
+      <h4 style="font-family: 'IBM Plex Sans', sans-serif; font-size: 17px; font-weight: 600; color: #1D1F1F; padding-top: 4px;">A minor heading, h4</h4>
+
+      <ul style="padding-left: 22px; display: flex; flex-direction: column; gap: 10px;">
+        <li style="font-size: 18.5px; line-height: 1.6; color: #353535;">An unordered item, marker in muted grey</li>
+        <li style="font-size: 18.5px; line-height: 1.6; color: #353535;">A second item that runs long enough to wrap onto a second line and shows the hanging indent</li>
+        <li style="font-size: 18.5px; line-height: 1.6; color: #353535;">A third, with a nested list under it
+          <ul style="padding-left: 22px; padding-top: 10px; display: flex; flex-direction: column; gap: 8px; list-style: circle;">
+            <li style="font-size: 17px; line-height: 1.6; color: #353535;">One level of nesting is supported</li>
+            <li style="font-size: 17px; line-height: 1.6; color: #353535;">Hollow marker, same indent</li>
+          </ul>
+        </li>
+      </ul>
+
+      <ol style="padding-left: 24px; display: flex; flex-direction: column; gap: 10px;">
+        <li style="font-size: 18.5px; line-height: 1.6; color: #353535;">Numbers are mono and muted</li>
+        <li style="font-size: 18.5px; line-height: 1.6; color: #353535;">Same metrics as the bullet list</li>
+      </ol>
+
+      <blockquote style="margin: 0; padding: 4px 0 4px 26px; border-left: 2px solid #3C6E71;">
+        <p style="font-family: 'Newsreader', Georgia, serif; font-size: 21px; line-height: 1.55; font-style: italic; color: #1D1F1F;">A pull quote is Newsreader italic with a two-pixel accent rule. No quotation marks, no attribution line unless the source is named.</p>
+      </blockquote>
+
+      <div style="padding: 18px 20px; background: #F3F4F3; border-radius: 4px; display: flex; flex-direction: column; gap: 7px;">
+        <span style="font-family: 'IBM Plex Mono', monospace; font-size: 11px; letter-spacing: 0.16em; text-transform: uppercase; color: #3C6E71;">Note</span>
+        <p style="font-size: 16px; line-height: 1.65; color: #353535;">A callout is a surface fill with a mono label. No icon, no coloured left border, no emoji. Use it for asides the reader can skip.</p>
+      </div>
+
+      <table style="width: 100%;">
+        <thead>
+          <tr>
+            <th style="text-align: left; font-family: 'IBM Plex Mono', monospace; font-size: 11px; font-weight: 400; letter-spacing: 0.14em; text-transform: uppercase; color: #5C605E; padding: 10px 14px 10px 0; border-bottom: 1px solid #D9D9D9;">Flag</th>
+            <th style="text-align: left; font-family: 'IBM Plex Mono', monospace; font-size: 11px; font-weight: 400; letter-spacing: 0.14em; text-transform: uppercase; color: #5C605E; padding: 10px 14px; border-bottom: 1px solid #D9D9D9;">Default</th>
+            <th style="text-align: left; font-family: 'IBM Plex Mono', monospace; font-size: 11px; font-weight: 400; letter-spacing: 0.14em; text-transform: uppercase; color: #5C605E; padding: 10px 0 10px 14px; border-bottom: 1px solid #D9D9D9;">What it does</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td style="font-size: 15px; color: #353535; padding: 10px 14px 10px 0; border-bottom: 1px solid #D9D9D9;"><code style="font-size: 13.5px;">--depth</code></td>
+            <td style="font-size: 15px; color: #353535; padding: 10px 14px; border-bottom: 1px solid #D9D9D9;">3</td>
+            <td style="font-size: 15px; color: #353535; padding: 10px 0 10px 14px; border-bottom: 1px solid #D9D9D9;">How far to walk the tree</td>
+          </tr>
+          <tr>
+            <td style="font-size: 15px; color: #353535; padding: 10px 14px 10px 0; border-bottom: 1px solid #D9D9D9;"><code style="font-size: 13.5px;">--json</code></td>
+            <td style="font-size: 15px; color: #353535; padding: 10px 14px; border-bottom: 1px solid #D9D9D9;">off</td>
+            <td style="font-size: 15px; color: #353535; padding: 10px 0 10px 14px; border-bottom: 1px solid #D9D9D9;">Emit machine-readable output</td>
+          </tr>
+        </tbody>
+      </table>
+      <p style="font-size: 13px; line-height: 1.6; color: #5C605E;">No zebra striping, no outer border, no vertical rules. A wide table scrolls inside its own container.</p>
+
+      <figure style="margin: 0; display: flex; flex-direction: column; gap: 10px;">
+        <div style="height: 200px; background: #F3F4F3; border-radius: 4px; display: flex; align-items: center; justify-content: center;">
+          <span style="font-family: 'IBM Plex Mono', monospace; font-size: 12px; letter-spacing: 0.14em; text-transform: uppercase; color: #5C605E;">[POST IMAGE — full measure, 4px radius]</span>
+        </div>
+        <figcaption style="font-size: 13px; line-height: 1.6; color: #5C605E; text-align: center;">Captions sit below, centred, at caption size.</figcaption>
+      </figure>
+
+      <div style="display: flex; align-items: center; justify-content: center; padding: 14px 0;">
+        <div style="width: 40px; height: 1px; background: #D9D9D9;"></div>
+      </div>
+
+      <div style="display: flex; flex-direction: column; gap: 10px;">
+        <span style="font-family: 'IBM Plex Mono', monospace; font-size: 11px; letter-spacing: 0.16em; text-transform: uppercase; color: #5C605E;">Notes</span>
+        <p style="font-size: 15px; line-height: 1.65; color: #5C605E;"><sup style="font-family: 'IBM Plex Mono', monospace; font-size: 11px; color: #3C6E71;">1</sup> Footnotes land here, above the byline, with a return arrow back to the reference. <a href="Elements.html" style="text-decoration: none;">↩</a></p>
+      </div>
+
+    </div>
+
+    <aside style="flex-grow: 1; display: flex; flex-direction: column; gap: 22px;">
+      <h2 style="font-family: 'IBM Plex Sans', sans-serif; font-size: 11px; font-weight: 600; letter-spacing: 0.16em; text-transform: uppercase; color: #5C605E;">Spacing rules</h2>
+      <div style="display: flex; flex-direction: column; gap: 14px; padding: 20px; background: #F3F4F3; border-radius: 4px;">
+        <p style="font-size: 14px; line-height: 1.65; color: #353535;"><span style="color: #1D1F1F; font-weight: 500;">26px</span> between block elements, always.</p>
+        <p style="font-size: 14px; line-height: 1.65; color: #353535;"><span style="color: #1D1F1F; font-weight: 500;">+18px</span> above an h2, <span style="color: #1D1F1F; font-weight: 500;">+12px</span> above an h3, <span style="color: #1D1F1F; font-weight: 500;">+8px</span> above an h4.</p>
+        <p style="font-size: 14px; line-height: 1.65; color: #353535;"><span style="color: #1D1F1F; font-weight: 500;">40px</span> either side of a horizontal rule.</p>
+        <p style="font-size: 14px; line-height: 1.65; color: #353535;">First element after the title block and last before the byline get no extra margin.</p>
+      </div>
+
+      <h2 style="font-family: 'IBM Plex Sans', sans-serif; font-size: 11px; font-weight: 600; letter-spacing: 0.16em; text-transform: uppercase; color: #5C605E; padding-top: 10px;">Syntax tokens</h2>
+      <div style="display: flex; flex-direction: column; gap: 11px;">
+        <div style="display: flex; align-items: baseline; gap: 12px;"><span style="width: 13px; height: 13px; border-radius: 3px; background: #284B63; flex-shrink: 0;"></span><code style="font-size: 12.5px; color: #353535;">.k .kd .kt — keywords</code></div>
+        <div style="display: flex; align-items: baseline; gap: 12px;"><span style="width: 13px; height: 13px; border-radius: 3px; background: #2A5254; flex-shrink: 0;"></span><code style="font-size: 12.5px; color: #353535;">.s .s1 .s2 — strings</code></div>
+        <div style="display: flex; align-items: baseline; gap: 12px;"><span style="width: 13px; height: 13px; border-radius: 3px; background: #6A706D; flex-shrink: 0;"></span><code style="font-size: 12.5px; color: #353535;">.c .c1 .cm — comments</code></div>
+        <div style="display: flex; align-items: baseline; gap: 12px;"><span style="width: 13px; height: 13px; border-radius: 3px; background: #1D1F1F; flex-shrink: 0;"></span><code style="font-size: 12.5px; color: #353535;">.na .nt .nf — names</code></div>
+        <div style="display: flex; align-items: baseline; gap: 12px;"><span style="width: 13px; height: 13px; border-radius: 3px; background: #5C605E; flex-shrink: 0;"></span><code style="font-size: 12.5px; color: #353535;">.m .mi .nb — numbers</code></div>
+        <div style="display: flex; align-items: baseline; gap: 12px;"><span style="width: 13px; height: 13px; border-radius: 3px; background: #353535; flex-shrink: 0;"></span><code style="font-size: 12.5px; color: #353535;">.o .p — punctuation</code></div>
+      </div>
+      <p style="font-size: 13px; line-height: 1.6; color: #5C605E;">Six colours, not twenty. Anything unmapped inherits plain text.</p>
+    </aside>
+
+  </div>
+
+  <div style="display: flex; flex-direction: column; gap: 18px; padding-top: 6px; border-top: 1px solid #D9D9D9;">
+    <h2 style="font-family: 'IBM Plex Sans', sans-serif; font-size: 11px; font-weight: 600; letter-spacing: 0.16em; text-transform: uppercase; color: #5C605E; padding-top: 20px;">Code block, with overflow and a highlighted line</h2>
+    <div style="width: 720px; border: 1px solid #E2E4E2; border-radius: 5px; overflow: hidden; background: #F7F8F7;">
+      <div style="display: flex; align-items: center; justify-content: space-between; padding: 9px 16px; border-bottom: 1px solid #E2E4E2; background: #F0F2F0;">
+        <span style="font-family: 'IBM Plex Mono', monospace; font-size: 11px; letter-spacing: 0.1em; text-transform: uppercase; color: #5C605E;">kondex/query.py</span>
+        <button type="button" style="font-family: 'IBM Plex Mono', monospace; font-size: 11px; letter-spacing: 0.06em; text-transform: uppercase; color: #5C605E; background: transparent; border: 1px solid #D9D9D9; border-radius: 3px; padding: 4px 10px; cursor: pointer;">Copy</button>
+      </div>
+      <pre style="padding: 18px 20px 18px 0; font-size: 13.5px; line-height: 1.75; color: #353535; overflow: hidden;"><span style="display: block; padding-left: 20px;"><span style="color:#6A706D;font-style:italic;"># A line that runs well past the measure to show horizontal overflow rather than wrapping</span></span><span style="display: block; padding-left: 20px;"><span style="color:#284B63;">def</span> <span style="color:#1D1F1F;">search</span>(index, term, depth=<span style="color:#5C605E;">3</span>):</span><span style="display: block; padding-left: 20px; background: #E9EBEA;">    hits = index.lookup(term, depth=depth)</span><span style="display: block; padding-left: 20px;">    <span style="color:#284B63;">return</span> [h <span style="color:#284B63;">for</span> h <span style="color:#284B63;">in</span> hits <span style="color:#284B63;">if</span> h.kind != <span style="color:#2A5254;">"local"</span>]</span></pre>
+    </div>
+    <p style="font-size: 13px; line-height: 1.6; color: #5C605E; max-width: 720px;">Line numbers stay off — they cost too much of a 720px measure. A highlighted line is a full-bleed <code style="font-size: 12.5px; color: #1D1F1F;">--surface-2</code> band, which is why the pre is padded on the left rather than the whole block.</p>
+  </div>
+
+</div>
+
+</body>
+</html>

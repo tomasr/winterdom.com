@@ -1,0 +1,151 @@
+<!doctype html>
+<!--
+  Tag / category / 404 / pagination — reference comp, winterdom.com redesign.
+  Static mockup, NOT a Hugo template. Read it for metrics, markup shape and
+  colour values; the rules are written down in ../SPEC.md.
+  Sample post titles, bodies and excerpts are invented placeholders.
+-->
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Remaining page types</title>
+
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;0,6..72,600;1,6..72,400&amp;family=IBM+Plex+Sans:wght@400;500;600&amp;family=IBM+Plex+Mono:wght@400;500&amp;display=swap">
+<style>
+body{margin:0;background:#FFFFFF;color:#353535;font-family:'IBM Plex Sans',system-ui,sans-serif;-webkit-font-smoothing:antialiased;}
+a{color:#3C6E71;}
+a:hover{color:#2A5254;}
+h1,h2,h3{font-family:'Newsreader',Georgia,serif;font-weight:500;margin:0;color:#1D1F1F;letter-spacing:-0.012em;}
+p{margin:0;}
+code{font-family:'IBM Plex Mono',ui-monospace,monospace;}
+</style>
+</head>
+<body>
+
+<div style="width: 1280px; height: 1720px; box-sizing: border-box; padding: 52px 80px; background: #FFFFFF; display: flex; flex-direction: column; gap: 32px;">
+
+  <div style="display: flex; align-items: baseline; justify-content: space-between; padding-bottom: 14px; border-bottom: 1px solid #1D1F1F;">
+    <h1 style="font-family: 'IBM Plex Sans', sans-serif; font-size: 12px; font-weight: 600; letter-spacing: 0.18em; text-transform: uppercase; color: #1D1F1F;">Remaining page types</h1>
+    <span style="font-family: 'IBM Plex Mono', monospace; font-size: 12px; color: #5C605E;">header and footer omitted — same on all four</span>
+  </div>
+
+  <div style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 32px;">
+
+    <div style="display: flex; flex-direction: column; gap: 12px;">
+      <span style="font-family: 'IBM Plex Mono', monospace; font-size: 11px; letter-spacing: 0.16em; text-transform: uppercase; color: #5C605E;">layouts/tags/term.html</span>
+      <div style="padding: 30px 32px; border: 1px solid #D9D9D9; border-radius: 5px; display: flex; flex-direction: column; gap: 22px;">
+        <div style="display: flex; flex-direction: column; gap: 10px;">
+          <h2 style="font-family: 'IBM Plex Mono', monospace; font-size: 30px; font-weight: 400; color: #3C6E71;">#claude</h2>
+          <p style="font-size: 15px; line-height: 1.6; color: #5C605E;">A tag heading is set in mono with the hash, because a tag is a string, not a title.</p>
+        </div>
+        <div style="display: flex; flex-direction: column;">
+          <div style="display: flex; align-items: baseline; gap: 22px; padding: 14px 0; border-top: 1px solid #D9D9D9;">
+            <time datetime="2026-09-16" style="font-family: 'IBM Plex Mono', monospace; font-size: 12.5px; color: #5C605E; width: 78px; flex-shrink: 0;">16 Sep 2026</time>
+            <span style="font-family: 'Newsreader', Georgia, serif; font-size: 20px; color: #1D1F1F; flex-grow: 1;">Kondex: Teaching Claude to use it</span>
+            <span style="font-family: 'IBM Plex Mono', monospace; font-size: 11px; letter-spacing: 0.14em; text-transform: uppercase; color: #3C6E71;">Tools</span>
+          </div>
+          <div style="display: flex; align-items: baseline; gap: 22px; padding: 14px 0; border-top: 1px solid #D9D9D9; border-bottom: 1px solid #D9D9D9;">
+            <time datetime="2026-09-15" style="font-family: 'IBM Plex Mono', monospace; font-size: 12.5px; color: #5C605E; width: 78px; flex-shrink: 0;">15 Sep 2026</time>
+            <span style="font-family: 'Newsreader', Georgia, serif; font-size: 20px; color: #1D1F1F; flex-grow: 1;">Kondex: Searching the index</span>
+            <span style="font-family: 'IBM Plex Mono', monospace; font-size: 11px; letter-spacing: 0.14em; text-transform: uppercase; color: #3C6E71;">Tools</span>
+          </div>
+        </div>
+        <a href="Archive.html" style="font-size: 14px; color: #3C6E71; text-decoration: none;">← All tags</a>
+      </div>
+    </div>
+
+    <div style="display: flex; flex-direction: column; gap: 12px;">
+      <span style="font-family: 'IBM Plex Mono', monospace; font-size: 11px; letter-spacing: 0.16em; text-transform: uppercase; color: #5C605E;">layouts/categories/term.html</span>
+      <div style="padding: 30px 32px; border: 1px solid #D9D9D9; border-radius: 5px; display: flex; flex-direction: column; gap: 22px;">
+        <div style="display: flex; flex-direction: column; gap: 10px;">
+          <span style="font-family: 'IBM Plex Mono', monospace; font-size: 11px; letter-spacing: 0.16em; text-transform: uppercase; color: #3C6E71;">Category</span>
+          <h2 style="font-size: 34px; line-height: 1.15;">Tools</h2>
+          <p style="font-size: 15.5px; line-height: 1.6; color: #5C605E;">Developer tooling, editors, extensions, and the small programs I build to get out of my own way.</p>
+        </div>
+        <div style="display: flex; flex-direction: column;">
+          <div style="display: flex; align-items: baseline; gap: 22px; padding: 14px 0; border-top: 1px solid #D9D9D9;">
+            <time datetime="2026-09-16" style="font-family: 'IBM Plex Mono', monospace; font-size: 12.5px; color: #5C605E; width: 78px; flex-shrink: 0;">16 Sep 2026</time>
+            <span style="font-family: 'Newsreader', Georgia, serif; font-size: 20px; color: #1D1F1F; flex-grow: 1;">Kondex: Teaching Claude to use it</span>
+          </div>
+          <div style="display: flex; align-items: baseline; gap: 22px; padding: 14px 0; border-top: 1px solid #D9D9D9; border-bottom: 1px solid #D9D9D9;">
+            <time datetime="2026-09-14" style="font-family: 'IBM Plex Mono', monospace; font-size: 12.5px; color: #5C605E; width: 78px; flex-shrink: 0;">14 Sep 2026</time>
+            <span style="font-family: 'Newsreader', Georgia, serif; font-size: 20px; color: #1D1F1F; flex-grow: 1;">Kondex: A declaration indexing tool</span>
+          </div>
+        </div>
+        <a href="Categories.html" style="font-size: 14px; color: #3C6E71; text-decoration: none;">← All categories</a>
+      </div>
+    </div>
+
+  </div>
+
+  <div style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 32px;">
+
+    <div style="display: flex; flex-direction: column; gap: 12px;">
+      <span style="font-family: 'IBM Plex Mono', monospace; font-size: 11px; letter-spacing: 0.16em; text-transform: uppercase; color: #5C605E;">layouts/404.html</span>
+      <div style="padding: 48px 32px; border: 1px solid #D9D9D9; border-radius: 5px; display: flex; flex-direction: column; align-items: center; gap: 22px; height: 344px; box-sizing: border-box; justify-content: center;">
+        <svg width="84" height="84" viewBox="0 0 32 32" fill="none" stroke="#3C6E71" stroke-width="1.5" stroke-linecap="round" aria-hidden="true">
+          <g><path d="M16 3.5L16 28.5"/><path d="M16 9.2L11.4 6.5"/><path d="M16 9.2L20.6 6.5"/><path d="M16 22.8L11.4 25.5"/><path d="M16 22.8L20.6 25.5"/></g>
+          <g transform="rotate(60 16 16)"><path d="M16 3.5L16 28.5"/><path d="M16 9.2L11.4 6.5"/><path d="M16 9.2L20.6 6.5"/><path d="M16 22.8L11.4 25.5"/><path d="M16 22.8L20.6 25.5"/></g>
+          <g transform="rotate(120 16 16)"><path d="M16 3.5L16 28.5"/><path d="M16 9.2L11.4 6.5"/><path d="M16 9.2L20.6 6.5"/><path d="M16 22.8L11.4 25.5"/><path d="M16 22.8L20.6 25.5"/></g>
+        </svg>
+        <h2 style="font-size: 34px; line-height: 1.2; text-align: center;">Nothing here.</h2>
+        <p style="font-size: 16px; line-height: 1.65; color: #5C605E; text-align: center; max-width: 380px;">Twenty years of moving things around will do that. The archive is the best place to start looking.</p>
+        <div style="display: flex; gap: 12px; padding-top: 4px;">
+          <a href="Main.html" style="font-size: 14px; color: #FFFFFF; background: #3C6E71; border: 1px solid #3C6E71; border-radius: 4px; padding: 12px 18px; min-height: 44px; box-sizing: border-box; text-decoration: none; display: flex; align-items: center;">Home</a>
+          <a href="Archive.html" style="font-size: 14px; color: #1D1F1F; border: 1px solid #D9D9D9; border-radius: 4px; padding: 12px 18px; min-height: 44px; box-sizing: border-box; text-decoration: none; display: flex; align-items: center;">Archive</a>
+        </div>
+      </div>
+    </div>
+
+    <div style="display: flex; flex-direction: column; gap: 12px;">
+      <span style="font-family: 'IBM Plex Mono', monospace; font-size: 11px; letter-spacing: 0.16em; text-transform: uppercase; color: #5C605E;">Pagination — three states</span>
+      <div style="padding: 30px 32px; border: 1px solid #D9D9D9; border-radius: 5px; display: flex; flex-direction: column; gap: 26px; height: 344px; box-sizing: border-box; justify-content: center;">
+        <div style="display: flex; flex-direction: column; gap: 8px;">
+          <span style="font-size: 12.5px; color: #5C605E;">First page</span>
+          <div style="display: flex; align-items: center; justify-content: space-between; padding: 14px 0; border-top: 1px solid #D9D9D9;">
+            <span style="font-size: 15px; color: #5C605E;">← Newer</span>
+            <span style="font-family: 'IBM Plex Mono', monospace; font-size: 13px; color: #5C605E;">Page 1 of 12</span>
+            <a href="Pages.html" style="font-size: 15px; color: #3C6E71; text-decoration: none;">Older →</a>
+          </div>
+        </div>
+        <div style="display: flex; flex-direction: column; gap: 8px;">
+          <span style="font-size: 12.5px; color: #5C605E;">Middle</span>
+          <div style="display: flex; align-items: center; justify-content: space-between; padding: 14px 0; border-top: 1px solid #D9D9D9;">
+            <a href="Pages.html" style="font-size: 15px; color: #3C6E71; text-decoration: none;">← Newer</a>
+            <span style="font-family: 'IBM Plex Mono', monospace; font-size: 13px; color: #5C605E;">Page 6 of 12</span>
+            <a href="Pages.html" style="font-size: 15px; color: #3C6E71; text-decoration: none;">Older →</a>
+          </div>
+        </div>
+        <div style="display: flex; flex-direction: column; gap: 8px;">
+          <span style="font-size: 12.5px; color: #5C605E;">Last page</span>
+          <div style="display: flex; align-items: center; justify-content: space-between; padding: 14px 0; border-top: 1px solid #D9D9D9;">
+            <a href="Pages.html" style="font-size: 15px; color: #3C6E71; text-decoration: none;">← Newer</a>
+            <span style="font-family: 'IBM Plex Mono', monospace; font-size: 13px; color: #5C605E;">Page 12 of 12</span>
+            <span style="font-size: 15px; color: #5C605E;">Older →</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <div style="display: flex; flex-direction: column; gap: 12px;">
+    <span style="font-family: 'IBM Plex Mono', monospace; font-size: 11px; letter-spacing: 0.16em; text-transform: uppercase; color: #5C605E;">Empty states</span>
+    <div style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 32px;">
+      <div style="padding: 26px 32px; background: #F3F4F3; border-radius: 5px; display: flex; flex-direction: column; gap: 8px;">
+        <h3 style="font-size: 21px;">No posts here yet</h3>
+        <p style="font-size: 15px; line-height: 1.6; color: #5C605E;">Shown when a category or tag page has nothing in it. Offer the archive, never a dead end.</p>
+      </div>
+      <div style="padding: 26px 32px; background: #F3F4F3; border-radius: 5px; display: flex; flex-direction: column; gap: 8px;">
+        <h3 style="font-size: 21px;">One post in this tag</h3>
+        <p style="font-size: 15px; line-height: 1.6; color: #5C605E;">A single row still gets both hairlines, so the list never looks like a stray line of text.</p>
+      </div>
+    </div>
+  </div>
+
+  <p style="font-size: 13px; line-height: 1.6; color: #5C605E; padding-top: 4px; border-top: 1px solid #D9D9D9; max-width: 860px;">All four reuse the post-list row and the page header from the archive. Build the row as one partial and these pages are configuration, not design. The disabled end of a pagination row is muted text, never a greyed-out link — it is not focusable.</p>
+
+</div>
+
+</body>
+</html>
