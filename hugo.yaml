@@ -49,11 +49,12 @@ markup:
       # kramdown allowed raw HTML in markdown; Goldmark strips it by default.
       unsafe: true
   highlight:
-    # assets/css/monokai.css already carries the Pygments class names that
-    # Chroma emits, so reuse it instead of inlining styles.
+    # Chroma emits Pygments class names; the six-colour token map in
+    # assets/css/code.css styles them. No theme file: monokai was a
+    # dark scheme on a white page, and inert with noClasses anyway.
     noClasses: false
-    style: "monokai"
     lineNos: false
+    tabWidth: 2
 
 params:
   description: "by dæmons be driven - a site by Tomas Restrepo"

@@ -1,0 +1,305 @@
+/* ---------------------------------------------------------------------------
+   Code blocks and syntax — winterdom.com, 2026 redesign.
+   Source of truth: design/SPEC.md, "Code blocks and syntax". Comps:
+   Elements.html (the token swatches and the highlighted line), Post.html.
+
+   Three kinds of code block have to land in the same box:
+
+     1. Fenced blocks, wrapped by layouts/_markup/render-codeblock.html and
+        tokenised by Chroma into Pygments class names.
+     2. Legacy <pre> blocks -- 81 posts -- committed as raw HTML with no
+        wrapper, no header bar and no token classes at all.
+     3. Legacy <div class="codebg"><code> blocks -- 88 posts -- exported from
+        Vim with its own class names: Identifier, Statement, String, Comment.
+
+   The old static/assets/css/code.css and monokai.css coloured 2 and 3 with a
+   dark Monokai palette on a white page. Both are gone; the map below covers
+   Chroma and Vim with the same six colours.
+--------------------------------------------------------------------------- */
+
+/* Six colours, not twenty. --deep and --ink-strong already carry the
+   keyword and name values in both themes; the string and comment greens
+   and greys do not exist elsewhere, so they live here. Every pairing below
+   clears 4.5:1 against its own --surface. */
+
+:root {
+  --syn-string: #2A5254;
+  --syn-comment: #6A706D;
+  --syn-add-fg: #2A5254;
+  --syn-add-bg: #E6EFEA;
+  --syn-del-fg: #7A3B2A;
+  --syn-del-bg: #F6E8E3;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --syn-string: #9FCFC4;
+    --syn-comment: #8A918E;
+    --syn-add-fg: #9FCFC4;
+    --syn-add-bg: #1E2A26;
+    --syn-del-fg: #D9A18C;
+    --syn-del-bg: #2C211E;
+  }
+}
+
+:root[data-theme="dark"] {
+  --syn-string: #9FCFC4;
+  --syn-comment: #8A918E;
+  --syn-add-fg: #9FCFC4;
+  --syn-add-bg: #1E2A26;
+  --syn-del-fg: #D9A18C;
+  --syn-del-bg: #2C211E;
+}
+
+/* The box ----------------------------------------------------------------
+   One surface box, whichever of the three kinds arrives. Scrolls sideways
+   rather than wrapping: code that wraps at a 720px measure is harder to
+   read than code you have to push. */
+
+.codeblock,
+.article-body pre,
+.article-body .codebg {
+  border: 1px solid var(--rule);
+  border-radius: var(--radius-block);
+  background: var(--surface);
+}
+
+.codeblock {
+  /* Keeps the header bar's corners inside the radius. */
+  overflow: hidden;
+}
+
+.article-body pre,
+.article-body .codebg {
+  padding: 18px 20px;
+  overflow-x: auto;
+}
+
+/* Inside the wrapper the box lives on .codeblock, so the pre gives it up. */
+.codeblock pre {
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+}
+
+.article-body pre {
+  font-size: var(--fs-code);
+  line-height: var(--lh-code);
+  color: var(--ink);
+  tab-size: 2;
+}
+
+/* Undoes the inline-code pill from article.css for code inside a block. */
+.article-body pre code,
+.article-body .codebg code {
+  padding: 0;
+  border: 0;
+  border-radius: 0;
+  background: none;
+  color: inherit;
+  font-size: inherit;
+}
+
+.article-body .codebg code {
+  display: block;
+  font-size: var(--fs-code);
+  line-height: var(--lh-code);
+  color: var(--ink);
+}
+
+/* Header bar -------------------------------------------------------------
+   Filename, or the language when the fence gives no filename, and the Copy
+   button that copy.js injects. Omitted entirely when a fence carries
+   neither -- the render hook decides, not this sheet. */
+
+.codeblock__bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-3);
+  padding: 9px 16px;
+  border-bottom: 1px solid var(--rule);
+  background: var(--surface-2);
+}
+
+.codeblock__name {
+  overflow: hidden;
+  font-family: var(--font-mono);
+  font-size: var(--fs-eyebrow);
+  line-height: var(--lh-eyebrow);
+  letter-spacing: var(--tr-upper-tight);
+  text-transform: uppercase;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  color: var(--muted);
+}
+
+.codeblock__copy {
+  flex-shrink: 0;
+  padding: 4px 10px;
+  border: 1px solid var(--rule);
+  border-radius: var(--radius-inline);
+  background: transparent;
+  font-family: var(--font-mono);
+  font-size: var(--fs-eyebrow);
+  letter-spacing: var(--tr-upper-tight);
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+.codeblock__copy:hover {
+  color: var(--ink-strong);
+  border-color: var(--ink-strong);
+}
+
+/* Same trick as the tag pills: reach 44px without growing the bar. */
+@media (pointer: coarse) {
+  .codeblock__bar {
+    position: relative;
+  }
+
+  .codeblock__copy::after {
+    content: "";
+    position: absolute;
+    inset: 0 0 0 auto;
+    width: 60px;
+  }
+}
+
+/* Chroma -----------------------------------------------------------------
+   Line numbers stay off. A highlighted line is a band across the full width
+   of the block, which is why .hl pulls back out through the pre's padding
+   rather than sitting inside it. */
+
+
+.codeblock .hl {
+  display: block;
+  margin-inline: -20px;
+  padding-inline: 20px;
+  background: var(--surface-2);
+}
+
+/* The token map. Anything not named here inherits plain text -- that is the
+   point of six colours. JSON keys land on .nt and read as --ink-strong,
+   which is intended and is what the comps show. */
+
+.article-body .k,
+.article-body .kd,
+.article-body .kn,
+.article-body .kr,
+.article-body .kt { color: var(--deep); }
+
+.article-body .s,
+.article-body .s1,
+.article-body .s2,
+.article-body .sb,
+.article-body .sd { color: var(--syn-string); }
+
+.article-body .c,
+.article-body .c1,
+.article-body .cm,
+.article-body .cs {
+  color: var(--syn-comment);
+  font-style: italic;
+}
+
+.article-body .na,
+.article-body .nt,
+.article-body .nf,
+.article-body .nc { color: var(--ink-strong); }
+
+.article-body .m,
+.article-body .mi,
+.article-body .mf,
+.article-body .no,
+.article-body .nb { color: var(--muted); }
+
+.article-body .o,
+.article-body .p { color: var(--ink); }
+
+.article-body .gi {
+  color: var(--syn-add-fg);
+  background: var(--syn-add-bg);
+}
+
+.article-body .gd {
+  color: var(--syn-del-fg);
+  background: var(--syn-del-bg);
+}
+
+/* Legacy Vim exports ------------------------------------------------------
+   88 posts carry code exported by Vim's :TOhtml, which writes its own class
+   names. They are scoped to the two block kinds so a stray .Comment or .Tag
+   somewhere else in twenty years of markup is not repainted by accident.
+
+   Mapped onto exactly the six colours above, not onto a second palette. */
+
+.article-body .codebg .Statement,
+.article-body .codebg .Keyword,
+.article-body .codebg .Conditional,
+.article-body .codebg .Repeat,
+.article-body .codebg .StorageClass,
+.article-body .codebg .Structure,
+.article-body .codebg .Typedef,
+.article-body .codebg .Type,
+.article-body .codebg .Define,
+.article-body .codebg .PreProc,
+.article-body .codebg .Include,
+.article-body .codebg .Exception,
+.article-body pre .Statement,
+.article-body pre .Keyword,
+.article-body pre .Conditional,
+.article-body pre .Repeat,
+.article-body pre .StorageClass,
+.article-body pre .Structure,
+.article-body pre .Typedef,
+.article-body pre .Type,
+.article-body pre .Define,
+.article-body pre .PreProc,
+.article-body pre .Include,
+.article-body pre .Exception { color: var(--deep); }
+
+.article-body .codebg .String,
+.article-body .codebg .Character,
+.article-body pre .String,
+.article-body pre .Character { color: var(--syn-string); }
+
+.article-body .codebg .Comment,
+.article-body .codebg .SpecialComment,
+.article-body pre .Comment,
+.article-body pre .SpecialComment { color: var(--syn-comment); }
+
+.article-body .codebg .Function,
+.article-body .codebg .Identifier,
+.article-body .codebg .Tag,
+.article-body pre .Function,
+.article-body pre .Identifier,
+.article-body pre .Tag { color: var(--ink-strong); }
+
+.article-body .codebg .Number,
+.article-body .codebg .Float,
+.article-body .codebg .Boolean,
+.article-body .codebg .Constant,
+.article-body pre .Number,
+.article-body pre .Float,
+.article-body pre .Boolean,
+.article-body pre .Constant { color: var(--muted); }
+
+/* Legacy line breaks ------------------------------------------------------
+   Every line in a legacy code block ends with a <br> AND a newline: the
+   original export wrote the tag, a later migration kept the newline. Inside
+   white-space: pre that is two breaks, so every block has been double
+   spaced since the WordPress days. Suppressing the tag leaves the newline
+   and the whitespace intact; suppressing the newline instead would need a
+   content rewrite.
+
+   In .codebg there is no pre, so the newline collapses and the export's own
+   break and the injected one sit next to each other -- hence br + br. */
+
+.article-body pre br {
+  display: none;
+}
+
+.article-body .codebg br + br {
+  display: none;
+}

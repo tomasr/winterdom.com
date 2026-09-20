@@ -54,6 +54,7 @@
   /* Uppercase mono always carries its tracking. Untracked uppercase mono
      reads as a bug, so these two live as tokens rather than magic numbers. */
   --tr-upper: 0.16em;
+  --tr-upper-tight: 0.14em;
   --tr-upper-loose: 0.18em;
 
   /* Space — 8px rhythm, scale 4 / 8 / 16 / 24 / 40 / 64 ----------------- */

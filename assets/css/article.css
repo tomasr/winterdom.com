@@ -1,0 +1,380 @@
+/* ---------------------------------------------------------------------------
+   The article — winterdom.com, 2026 redesign.
+   Source of truth: design/SPEC.md, "Article elements". Comps: Post.html,
+   Elements.html, MobilePost.html.
+
+   Everything below .article-body styles ELEMENTS, not classes. 1,117 of the
+   1,169 posts are raw HTML committed in the WordPress era: Bootstrap classes,
+   <font> tags, inline styles, Word paste. A rule keyed to a class the new
+   templates emit would miss two decades of writing. See CLAUDE.md.
+
+   Code blocks and the syntax token map live in code.css.
+--------------------------------------------------------------------------- */
+
+.article {
+  max-width: var(--measure);
+  margin-inline: auto;
+  padding-top: 56px;
+}
+
+/* Title block ------------------------------------------------------------ */
+
+.article__header {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+  padding-bottom: 28px;
+  border-bottom: 1px solid var(--rule);
+}
+
+.article__meta {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 10px;
+  font-family: var(--font-mono);
+  font-size: 12px;
+  line-height: var(--lh-eyebrow);
+  /* The low end of the range in SPEC.md. This line runs long -- a date, a
+     separator, "filed in" and up to six categories -- and 0.16em across all
+     of it pushes the categories onto a second row at the measure. */
+  letter-spacing: var(--tr-upper-tight);
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+/* Every category the post holds, comma-separated. The single primary
+   category is a list-row thing; here they all appear. */
+.article__categories a {
+  color: var(--accent);
+}
+
+.article__title {
+  font-size: var(--fs-post-title);
+  line-height: var(--lh-post-title);
+  letter-spacing: var(--tr-title);
+}
+
+.article__tags {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+}
+
+.article__tagged {
+  margin-right: 2px;
+  font-family: var(--font-mono);
+  font-size: var(--fs-eyebrow);
+  line-height: var(--lh-eyebrow);
+  letter-spacing: var(--tr-upper-tight);
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+/* Body ------------------------------------------------------------------
+   26px between block elements, always, with headings adding their own space
+   on top. The owl selector rather than a flex column: the legacy posts carry
+   stray <br> and inline wrappers at top level, and flex would turn every one
+   of them into a row of its own. */
+
+.article-body {
+  padding-top: 34px;
+}
+
+.article-body > * + * {
+  margin-top: 26px;
+}
+
+.article-body h2 { margin-top: 44px; }   /* 26 + 18 */
+.article-body h3 { margin-top: 38px; }   /* 26 + 12 */
+.article-body h4,
+.article-body h5,
+.article-body h6 { margin-top: 34px; }   /* 26 + 8  */
+
+/* First element after the title block gets no extra space. */
+.article-body > :first-child {
+  margin-top: 0;
+}
+
+/* Several hundred posts end every block with </p><br>, a habit of the
+   WordPress editor. Between two blocks that break is a whole empty line on
+   top of the 26px, so the gap comes out at nearly 60px. Only a <br> that
+   directly follows a block element goes -- one sitting between two lines of
+   bare text is doing real work and stays. */
+.article-body > :is(p, div, ul, ol, dl, pre, blockquote, table, figure,
+                    h1, h2, h3, h4, h5, h6) + br {
+  display: none;
+}
+
+/* Headings in twenty years of posts run from h1 down. An h1 inside the body
+   would compete with the post title, so it is pulled back to section size. */
+.article-body h1 {
+  font-size: var(--fs-h2);
+  line-height: var(--lh-h2);
+}
+
+/* Lists ------------------------------------------------------------------ */
+
+.article-body ul,
+.article-body ol {
+  margin-block: 0;
+  padding-left: 22px;
+}
+
+.article-body li {
+  line-height: 1.6;
+}
+
+.article-body li + li {
+  margin-top: 10px;
+}
+
+.article-body li::marker {
+  color: var(--muted);
+}
+
+.article-body ol > li::marker {
+  font-family: var(--font-mono);
+}
+
+/* One level of nesting in the design: hollow marker, same indent. */
+.article-body ul ul,
+.article-body ul ol,
+.article-body ol ul,
+.article-body ol ol {
+  margin-top: 10px;
+  padding-left: 22px;
+}
+
+.article-body ul ul { list-style: circle; }
+.article-body ol ol { list-style: lower-alpha; }
+
+/* Quotes ----------------------------------------------------------------- */
+
+.article-body blockquote {
+  margin: 0;
+  padding: 4px 0 4px 26px;
+  border-left: 2px solid var(--accent);
+  font-family: var(--font-display);
+  font-size: var(--fs-quote);
+  line-height: var(--lh-quote);
+  font-style: italic;
+  color: var(--ink-strong);
+}
+
+/* Legacy quotes carry their own paragraphs; the type is set on the
+   blockquote so that a bare text node gets it too. */
+.article-body blockquote p {
+  font-size: inherit;
+  line-height: inherit;
+}
+
+.article-body blockquote code,
+.article-body blockquote pre {
+  font-family: var(--font-mono);
+  font-style: normal;
+}
+
+/* Rules, figures, media -------------------------------------------------- */
+
+/* A centred segment, not a line across the measure. */
+.article-body hr {
+  width: 40px;
+  height: 1px;
+  margin: 40px auto;
+  border: 0;
+  background: var(--rule);
+}
+
+.article-body figure {
+  margin: 0;
+}
+
+.article-body img {
+  border-radius: var(--radius);
+}
+
+.article-body figcaption {
+  margin-top: 10px;
+  font-size: var(--fs-caption);
+  line-height: var(--lh-caption);
+  color: var(--muted);
+  text-align: center;
+}
+
+.article-body iframe,
+.article-body video {
+  width: 100%;
+  border: 0;
+  border-radius: var(--radius);
+}
+
+.article-body iframe {
+  aspect-ratio: 16 / 9;
+}
+
+/* Tables ------------------------------------------------------------------
+   Full measure, a hairline under every row, no zebra, no outer border, no
+   vertical rules. Markdown tables arrive wrapped by the render hook; the
+   four legacy posts holding raw table markup get the element styles alone. */
+
+.article-body table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.article-body th,
+.article-body td {
+  padding: 10px 14px;
+  border-bottom: 1px solid var(--rule);
+}
+
+.article-body tr > :first-child { padding-left: 0; }
+.article-body tr > :last-child { padding-right: 0; }
+
+.article-body th {
+  text-align: left;
+  font-family: var(--font-mono);
+  font-size: var(--fs-eyebrow);
+  font-weight: 400;
+  letter-spacing: var(--tr-upper-tight);
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+.article-body td {
+  font-size: 15px;
+  line-height: 1.6;
+}
+
+/* The right hairline is the affordance that there is more table off to the
+   side -- SPEC.md asks for a rule rather than a shadow or a fade. */
+.article-body .table-wrap {
+  overflow-x: auto;
+  border-right: 1px solid var(--rule);
+}
+
+.article-body .table-wrap table {
+  min-width: 100%;
+}
+
+/* Inline code and keys --------------------------------------------------- */
+
+.article-body code,
+.article-body kbd,
+.article-body samp {
+  font-size: 0.88em;
+  padding: 2px 6px;
+  border-radius: var(--radius-inline);
+  background: var(--surface);
+  color: var(--ink-strong);
+}
+
+.article-body kbd {
+  border: 1px solid var(--rule);
+}
+
+/* Footnotes ---------------------------------------------------------------
+   Goldmark emits .footnotes with an hr on top. The rule goes and a mono
+   label takes its place, because the design names the block. */
+
+.article-body sup a,
+.article-body .footnote-ref {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--accent);
+}
+
+.article-body .footnotes {
+  margin-top: 40px;
+  font-size: 15px;
+  line-height: 1.65;
+  color: var(--muted);
+}
+
+.article-body .footnotes hr {
+  display: none;
+}
+
+.article-body .footnotes::before {
+  content: "Notes";
+  display: block;
+  margin-bottom: 10px;
+  font-family: var(--font-mono);
+  font-size: var(--fs-eyebrow);
+  letter-spacing: var(--tr-upper);
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+.article-body .footnote-backref {
+  text-decoration: none;
+}
+
+/* Callout -----------------------------------------------------------------
+   The one class in this sheet, and deliberately so: there is no markdown
+   syntax for a callout, so it is authored as HTML in new posts, and nothing
+   in the archive uses the name.
+
+   div.callout > p.callout__label + p */
+
+.article-body .callout {
+  padding: 18px 20px;
+  border-radius: var(--radius);
+  background: var(--surface);
+  font-size: var(--fs-small);
+  line-height: 1.65;
+}
+
+.article-body .callout__label {
+  margin-bottom: 7px;
+  font-family: var(--font-mono);
+  font-size: var(--fs-eyebrow);
+  letter-spacing: var(--tr-upper);
+  text-transform: uppercase;
+  color: var(--accent);
+}
+
+/* Legacy colour -----------------------------------------------------------
+   670 font tags carrying color="#000000", 93 blue, 41 red, and some 2,300
+   inline color declarations, all authored against a white page between 2003
+   and 2015. On the light theme they are honoured -- that is the page they
+   were written for. On the dark theme black text on #17191A is invisible, so
+   the authored colour is dropped and the text inherits --ink.
+
+   Repeated under both dark selectors for the reason given in tokens.css. */
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) .article-body font[color],
+  :root:not([data-theme="light"]) .article-body [style*="color"] {
+    color: inherit !important;
+  }
+}
+
+:root[data-theme="dark"] .article-body font[color],
+:root[data-theme="dark"] .article-body [style*="color"] {
+  color: inherit !important;
+}
+
+/* Phone ------------------------------------------------------------------ */
+
+@media (max-width: 639px) {
+  .article {
+    padding-top: 32px;
+  }
+
+  .article__header {
+    gap: 14px;
+    padding-bottom: 22px;
+  }
+
+  .article__meta {
+    gap: 8px;
+    font-size: 11.5px;
+  }
+
+  .article-body {
+    padding-top: 26px;
+  }
+}

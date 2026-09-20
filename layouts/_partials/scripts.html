@@ -1,8 +1,16 @@
-{{- /* Behaviour, not layout. The phone menu is the only thing on this site
-       that needs script, and it degrades: with no JS the `no-js` class
-       survives, the toggle is hidden and the panel stands open as a plain
-       stacked nav. See the tail of chrome.css. */ -}}
-{{- $js := resources.Get "js/menu.js" -}}
+{{- /* Behaviour, not layout, and both pieces degrade.
+
+       menu.js drives the phone menu: with no JS the `no-js` class survives,
+       the toggle is hidden and the panel stands open as a plain stacked nav.
+       See the tail of chrome.css.
+
+       copy.js adds the Copy button to fenced code blocks. With no JS, or no
+       clipboard API, no button is ever created. */ -}}
+{{- $js := slice
+  (resources.Get "js/menu.js")
+  (resources.Get "js/copy.js")
+  | resources.Concat "js/site.js"
+-}}
 {{- if hugo.IsProduction -}}
   {{- $js = $js | minify | fingerprint -}}
 {{- end -}}

@@ -1,0 +1,27 @@
+{{- /*
+  Fenced code blocks. Wraps Chroma's output in the surface box the design
+  calls for and adds the header bar: filename if the fence carries one,
+  otherwise the language. A fence with neither gets no bar -- SPEC.md.
+
+      ```go {filename="main.go"}
+
+  The Copy button is injected by assets/js/copy.js rather than rendered
+  here, so a reader with no script is never shown a button that cannot do
+  anything.
+
+  Legacy posts do not come through this hook at all: their code is raw
+  HTML committed in the WordPress era. assets/css/code.css styles those
+  defensively -- see the tail of that file.
+*/ -}}
+{{- $label := .Type -}}
+{{- with .Attributes -}}
+  {{- with .filename -}}{{- $label = . -}}{{- end -}}
+{{- end -}}
+<div class="codeblock">
+  {{- with $label }}
+  <div class="codeblock__bar">
+    <span class="codeblock__name">{{ . }}</span>
+  </div>
+  {{- end }}
+  {{ transform.Highlight .Inner .Type .Options }}
+</div>
