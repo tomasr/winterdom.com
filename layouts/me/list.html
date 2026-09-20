@@ -1,0 +1,42 @@
+{{ define "main" }}
+{{- /*
+  About. Prose on the left, portrait and links on the right.
+
+  The copy is content/me/_index.md and is rendered as authored -- the comp
+  rewrites it a little, but the words are the author's.
+
+  No disclaimer box in the aside, which the comp does show. The footer
+  carries the disclaimer on every page already and the page's own content
+  quotes it, so a third copy on this one page would be the only thing a
+  reader noticed.
+*/ -}}
+{{- $a := site.Params.author -}}
+{{- $social := partial "social.html" . -}}
+{{- $portrait := resources.Get "img/portrait.jpg" -}}
+
+<div class="about">
+  <div class="about__main">
+    {{ partial "page-head.html" (dict "eyebrow" "About me" "title" $a.name) }}
+    <div class="article-body">
+      {{ .Content }}
+    </div>
+  </div>
+
+  <aside class="about__aside">
+    {{- with $portrait }}
+    {{- $img := .Fill "304x304 Center" }}
+    <img class="about__portrait" src="{{ $img.RelPermalink }}" width="152" height="152"
+         alt="{{ $a.name }}">
+    {{- end }}
+
+    <div class="about__block">
+      <h2 class="about__label">Elsewhere</h2>
+      <ul class="about__links">
+        {{- range $social }}
+        <li><a href="{{ .url }}">{{ .label | default .title }}</a></li>
+        {{- end }}
+      </ul>
+    </div>
+  </aside>
+</div>
+{{ end }}

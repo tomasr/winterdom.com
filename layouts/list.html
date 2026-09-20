@@ -1,7 +1,21 @@
 {{ define "main" }}
-<div class="page-header">
-  <h1>{{ .Title }}{{ with .Params.tagline }} <small>{{ . }}</small>{{ end }}</h1>
-</div>
+{{- /*
+  A standalone page. /dev/ and everything under it: 34 legacy WordPress
+  pages of samples and articles, all of them branch bundles, which is why
+  they come through a list template rather than single.html.
 
-{{ .Content }}
+  SPEC.md names this template layouts/page/single.html. That path only
+  resolves for a page whose type is "page", and nothing here has one --
+  content/me/_index.md and the /dev/ tree are sections. Changing the
+  content to fit the filename would have been the wrong way round.
+
+  The body gets the article element sheet: the markup inside is the same
+  WordPress-era HTML the posts carry.
+*/ -}}
+<div class="static">
+  {{ partial "page-head.html" (dict "title" .Title) }}
+  <div class="article-body">
+    {{ .Content }}
+  </div>
+</div>
 {{ end }}

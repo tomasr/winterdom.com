@@ -356,3 +356,172 @@
     font-size: 21px;
   }
 }
+
+/* Standalone pages --------------------------------------------------------
+   /dev/ and anything else that is prose with a title. Same measure as an
+   article; the body carries the article element sheet. */
+
+.static {
+  max-width: var(--measure);
+  margin-inline: auto;
+}
+
+/* About -------------------------------------------------------------------
+   Prose at the article measure, portrait and links beside it. The aside
+   takes whatever the band has left rather than a fixed width, so the prose
+   column is the one that stays honest. */
+
+.about {
+  display: flex;
+  align-items: flex-start;
+  gap: 72px;
+  padding-top: 4px;
+}
+
+.about__main {
+  flex-shrink: 0;
+  max-width: 700px;
+}
+
+.about__aside {
+  display: flex;
+  flex-direction: column;
+  gap: 28px;
+  flex-grow: 1;
+  padding-top: 60px;
+}
+
+.about__portrait {
+  display: block;
+  width: 152px;
+  height: 152px;
+  border-radius: var(--radius-pill);
+  object-fit: cover;
+}
+
+.about__block {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.about__label {
+  font-family: var(--font-body);
+  font-size: var(--fs-eyebrow);
+  line-height: var(--lh-eyebrow);
+  font-weight: 600;
+  letter-spacing: var(--tr-upper);
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+.about__links {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.about__links a {
+  font-size: 15px;
+}
+
+@media (max-width: 899px) {
+  .about {
+    flex-direction: column;
+    gap: var(--space-5);
+  }
+
+  .about__main {
+    max-width: none;
+  }
+
+  .about__aside {
+    padding-top: 0;
+  }
+}
+
+/* 404 ---------------------------------------------------------------------
+   Centred, the mark at its largest, and two ways out. */
+
+.notfound {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 22px;
+  max-width: 480px;
+  margin-inline: auto;
+  padding-block: 96px;
+  text-align: center;
+}
+
+.notfound .mark {
+  color: var(--accent);
+}
+
+.notfound__title {
+  font-size: 34px;
+  line-height: 1.2;
+}
+
+.notfound__text {
+  max-width: 380px;
+  font-size: var(--fs-small);
+  line-height: 1.65;
+  color: var(--muted);
+}
+
+.notfound__actions {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 12px;
+  padding-top: var(--space-1);
+}
+
+/* Buttons -----------------------------------------------------------------
+   The only buttons outside a code block. 44px tall everywhere, not just
+   under a thumb: there are two of them and nothing else on the page. */
+
+.button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 44px;
+  padding: 12px 18px;
+  border: 1px solid var(--rule);
+  border-radius: var(--radius);
+  font-size: 14px;
+  color: var(--ink-strong);
+}
+
+.button:hover {
+  border-color: var(--ink-strong);
+  color: var(--ink-strong);
+  text-decoration: none;
+}
+
+.button--primary,
+.button--primary:hover {
+  border-color: var(--accent);
+  background: var(--accent);
+  color: var(--on-accent);
+}
+
+.button--primary:hover {
+  border-color: var(--accent-hover);
+  background: var(--accent-hover);
+}
+
+@media (max-width: 639px) {
+  .notfound {
+    gap: 18px;
+    padding-block: 56px;
+  }
+
+  .notfound__title {
+    font-size: 28px;
+  }
+}

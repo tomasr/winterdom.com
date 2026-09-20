@@ -2,18 +2,12 @@
   Site footer. Copyright and the disclaimer on the left, social links on
   the right. The disclaimer text is fixed and appears on every page.
 
-  Social links are driven by site.Params.author, so a key removed from the
-  config drops its link rather than leaving a dead one.
+  The links come from social.html, which builds them from
+  site.Params.author. The About page renders the same list in its aside.
 */ -}}
 
 {{- $a := site.Params.author -}}
-{{- $social := slice -}}
-{{- with $a.github }}{{ $social = $social | append (dict "title" "GitHub" "url" (printf "https://github.com/%s" .)) }}{{ end -}}
-{{- with $a.linkedin }}{{ $social = $social | append (dict "title" "LinkedIn" "url" (printf "https://linkedin.com/in/%s" .)) }}{{ end -}}
-{{- with $a.twitter }}{{ $social = $social | append (dict "title" "Twitter" "url" (printf "https://twitter.com/%s" .)) }}{{ end -}}
-{{- with index $a "500px" }}{{ $social = $social | append (dict "title" "500px" "url" (printf "https://500px.com/%s" .)) }}{{ end -}}
-{{- with $a.email }}{{ $social = $social | append (dict "title" "Email" "url" (printf "mailto:%s" .)) }}{{ end -}}
-{{- with site.Home.OutputFormats.Get "rss" }}{{ $social = $social | append (dict "title" "RSS" "url" .RelPermalink) }}{{ end -}}
+{{- $social := partial "social.html" . -}}
 
 <footer class="site-footer">
   <div class="band site-footer__row">
