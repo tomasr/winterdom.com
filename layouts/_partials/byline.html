@@ -1,0 +1,22 @@
+{{- /*
+  The byline, at the foot of the article rather than the top.
+
+  The portrait is assets/img/portrait.jpg -- the photo that replaces the old
+  gravatar. It is not committed yet, so resources.Get returns nothing and the
+  byline renders as name and bio alone. Drop a square photo at that path and
+  the image appears; nothing else has to change.
+
+  Rendered at 56px, generated at 112 for a 2x display.
+*/ -}}
+{{- $portrait := resources.Get "img/portrait.jpg" -}}
+<aside class="byline">
+  {{- with $portrait }}
+  {{- $img := .Fill "112x112 Center" }}
+  <img class="byline__portrait" src="{{ $img.RelPermalink }}" width="56" height="56"
+       alt="{{ site.Params.author.name }}" loading="lazy">
+  {{- end }}
+  <div class="byline__text">
+    <span class="byline__name">{{ site.Params.author.name }}</span>
+    <p class="byline__bio">{{ site.Params.author.bio }} <a href="{{ "/me/" | relURL }}">More about me &rarr;</a></p>
+  </div>
+</aside>

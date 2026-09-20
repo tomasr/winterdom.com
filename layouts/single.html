@@ -1,10 +1,11 @@
 {{ define "main" }}
 {{- /*
-  A post. The title block, the body and nothing wider than the measure.
+  A post, and nothing wider than the measure: title block, the series box
+  when the front matter names one, the body, the byline, prev/next, and the
+  archived comment threads.
 
-  The byline, the series box and the styling of the prev/next cards and the
-  comment threads are step 5; the markup for the last two is here already so
-  that step is a stylesheet and not a template rewrite.
+  The element sheet for the body is assets/css/article.css; everything
+  around it is assets/css/post.css.
 */ -}}
 <article class="article">
 
@@ -38,11 +39,15 @@
     {{- end }}
   </header>
 
+  {{ partial "series.html" . }}
+
   {{- /* Twenty years of raw WordPress HTML land in here. The sheet under
          .article-body styles elements, never classes -- see CLAUDE.md. */}}
   <div class="article-body">
     {{ .Content }}
   </div>
+
+  {{ partial "byline.html" . }}
 
   <nav class="post-nav" aria-label="More posts">
     {{- with .PrevInSection }}

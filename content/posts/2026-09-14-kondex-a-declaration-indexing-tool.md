@@ -1,4 +1,5 @@
 ---
+series: kondex
 slug: "kondex-a-declaration-indexing-tool"
 categories:
 - Tools

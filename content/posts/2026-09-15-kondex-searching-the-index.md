@@ -1,4 +1,5 @@
 ---
+series: kondex
 slug: "kondex-searching-the-index"
 categories:
 - Tools

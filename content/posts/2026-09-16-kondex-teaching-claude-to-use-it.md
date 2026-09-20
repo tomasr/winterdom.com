@@ -1,4 +1,5 @@
 ---
+series: kondex
 slug: "kondex-teaching-claude-to-use-it"
 categories:
 - Tools

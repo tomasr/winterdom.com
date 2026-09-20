@@ -5,7 +5,11 @@
 
   author_email is deliberately never emitted. It holds third-party addresses,
   and publishing them (or a gravatar hash derived from them) would expose
-  personal data that was never public on the old site.
+  personal data that was never public on the old site. That is also why there
+  are no avatars here: there is no hash to hash.
+
+  The list is flat. The export carries no parent references, so there is no
+  threading and no reply indent -- sorted by date and nothing else.
 
   Comment bodies are a mix: some are plain text with \r\n breaks, others carry
   real markup (<p>, <br>, <a rel="nofollow">) added by WordPress. The bodies
@@ -14,24 +18,28 @@
 */ -}}
 {{- with .Params.comments }}
 <section class="comments" id="comments">
-  <h4 class="section-title">{{ len . }} Comment{{ if ne (len .) 1 }}s{{ end }}</h4>
+  <div class="section-head">
+    <h2 class="section-head__title">{{ len . }} Comment{{ if ne (len .) 1 }}s{{ end }}</h2>
+    <span class="section-head__note">archived from WordPress &mdash; closed</span>
+  </div>
 
-  {{ range sort . "date" }}
-  {{- $c := . -}}
-  <article class="comment" id="comment-{{ $c.id }}">
-    <div class="comment-meta">
-      <span class="comment-author">
-        {{- with $c.author_url -}}
-          <a href="{{ . }}" rel="nofollow ugc noopener">{{ $c.author }}</a>
-        {{- else -}}
-          {{ $c.author }}
-        {{- end -}}
-      </span>
-      <span class="comment-date">{{ (time.AsTime $c.date).Format "January 02, 2006" }}</span>
-    </div>
-    {{- $body := $c.content | default "" -}}
-    <div class="comment-body{{ if not (or (strings.Contains $body "<p") (strings.Contains $body "<br")) }} comment-body-plain{{ end }}">{{ $body | safeHTML }}</div>
-  </article>
-  {{ end }}
+  <div class="comments__list">
+    {{- range sort . "date" }}
+    {{- $c := . }}
+    <article class="comment" id="comment-{{ $c.id }}">
+      <div class="comment__meta">
+        {{- with $c.author_url }}
+        <a class="comment__author" href="{{ . }}" rel="nofollow ugc noopener">{{ $c.author }}</a>
+        {{- else }}
+        <span class="comment__author">{{ $c.author }}</span>
+        {{- end }}
+        {{- $when := time.AsTime $c.date }}
+        <time class="comment__date" datetime="{{ $when.Format "2006-01-02" }}">{{ $when.Format "January 2, 2006" }}</time>
+      </div>
+      {{- $body := $c.content | default "" }}
+      <div class="comment__body{{ if not (or (strings.Contains $body "<p") (strings.Contains $body "<br")) }} comment__body--plain{{ end }}">{{ $body | safeHTML }}</div>
+    </article>
+    {{- end }}
+  </div>
 </section>
 {{ end -}}
