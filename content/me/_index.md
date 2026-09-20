@@ -14,12 +14,12 @@ date: '2009-04-27 01:00:10 +0000'
 date_gmt: '2009-04-27 01:00:10 +0000'
 tags: []
 ---
-My name is Tomas Restrepo and I'm software develope located in Colombia, South America.
+My name is Tomas Restrepo and I'm a software developer located in Colombia, South America.
 
-I'm the author of [Viasfora](https://viasfora/), a Visual Studio extension, famous
+I'm the author of [Viasfora](https://viasfora.com/), a Visual Studio extension, famous
 for adding _Rainbow Braces_ to the text editor. It has over 200K downloads.
 
-I'm currently CTO at [CData](https://www.cdata.com/).
+I'm currently Chief Architect at [CData](https://www.cdata.com/).
 
 > The opinions expressed herein are my own personal opinions and do not represent my employer's view in any way.
 

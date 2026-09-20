@@ -76,7 +76,7 @@ params:
   home:
     eyebrow: "by dæmons be driven"
     title: "Software, tools, and notes from the workbench."
-    lede: "I'm Tomas Restrepo — a software developer in Colombia and CTO at CData. I build developer tools and write about what I learn doing it."
+    lede: "I'm Tomas Restrepo — a software developer in Colombia and Chief Architect at CData. I build developer tools and write about what I learn doing it."
 
   # The "Things I build" band on the home page. A project with no `url`
   # renders as plain text rather than a dead link; kondex has no public
