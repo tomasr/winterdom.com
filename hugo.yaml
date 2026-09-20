@@ -64,9 +64,11 @@ params:
     email: "tomas@winterdom.com"
     email_md5: "d2cb495ec8c6975874403030a4865a33"
     github: "tomasr"
+    # The handle is still the Twitter one and the card meta tags are still
+    # named twitter:*, which X did not rename. The link goes to x.com.
     twitter: "tomasrestrepo"
     linkedin: "tomasr"
-    500px: "tomasr"
+    instagram: "trestrepom"
     bio: "Software developer located in Colombia."
     description: "by dæmons be driven - a site by Tomas Restrepo"
 

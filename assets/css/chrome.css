@@ -253,25 +253,29 @@
   color: var(--muted);
 }
 
+/* Icons rather than words -- see footer.html, where each link carries the
+   name it drops as an aria-label. Each one is a 44px square around a 20px
+   glyph, and the row is pulled out by half the difference so the first and
+   last icons sit on the text edge rather than 12px inside it. */
 .site-footer__links {
   display: flex;
   flex-wrap: wrap;
-  gap: 0 20px;
+  gap: 2px;
+  margin-inline: -12px;
 }
 
 .site-footer__links a {
   display: flex;
   align-items: center;
-  /* Touch target, and it costs nothing on a pointer device. */
-  min-height: 44px;
-  font-size: 14px;
+  justify-content: center;
+  width: 44px;
+  height: 44px;
   color: var(--muted);
-  text-decoration: none;
 }
 
 .site-footer__links a:hover {
   color: var(--ink-strong);
-  text-decoration: underline;
+  text-decoration: none;
 }
 
 @media (max-width: 639px) {

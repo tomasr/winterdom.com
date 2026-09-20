@@ -15,9 +15,12 @@
       <span class="site-footer__copyright">&copy; {{ now.Format "2006" }} {{ $a.name }} &middot; Built with Hugo</span>
       <p class="site-footer__disclaimer">The opinions expressed herein are my own personal opinions and do not represent my employer's view in any way.</p>
     </div>
+    {{- /* Icons rather than words. Each link carries the name it drops as
+           an aria-label, so the row reads the same to a screen reader as
+           the text version did. */}}
     <nav class="site-footer__links" aria-label="Elsewhere">
       {{- range $social }}
-      <a href="{{ .url }}">{{ .title }}</a>
+      <a href="{{ .url }}" aria-label="{{ .title }}">{{ partial "icon.html" (dict "name" .icon) }}</a>
       {{- end }}
     </nav>
   </div>
