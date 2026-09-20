@@ -1,24 +1,11 @@
 {{ define "main" }}
 {{ $paginator := .Paginate (where site.RegularPages "Section" "posts") }}
 
+<div class="post-list">
 {{ range $paginator.Pages }}
-
-<article class="home">
-
-  <span class="post-date">
-    {{ partial "postdate.html" . }}
-  </span>
-
-  <h2>
-    <a href="{{ .RelPermalink }}">{{ .Title }}</a>
-  </h2>
-
-  <div>
-    {{ $w := split .Plain " " }}{{ if gt (len $w) 50 }}{{ delimit (first 50 $w) " " | safeHTML }}...{{ else }}{{ .Plain | safeHTML }}{{ end }}
-  </div>
-
-</article>
+  {{ partial "post-row.html" (dict "page" . "level" 2) }}
 {{ end }}
+</div>
 <hr/>
 
 <ul class="pager">
