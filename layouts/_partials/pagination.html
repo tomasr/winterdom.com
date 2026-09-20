@@ -1,0 +1,26 @@
+{{- /*
+  Previous and next at either end, the count in mono in the middle. No
+  numbered page list: with 117 pages of history it would wrap.
+
+  A disabled end is muted text, not a greyed-out link -- it is not a link at
+  all, so the tab key skips it.
+
+  Nothing is rendered when there is only one page.
+
+  Pass the paginator itself:  {{ partial "pagination.html" $paginator }}
+*/ -}}
+{{- if gt .TotalPages 1 }}
+<nav class="pagination" aria-label="Pagination">
+  {{- with .Prev }}
+  <a class="pagination__end" href="{{ .URL }}">&larr; Newer</a>
+  {{- else }}
+  <span class="pagination__end is-disabled">&larr; Newer</span>
+  {{- end }}
+  <span class="pagination__count">Page {{ .PageNumber }} of {{ .TotalPages }}</span>
+  {{- with .Next }}
+  <a class="pagination__end" href="{{ .URL }}">Older &rarr;</a>
+  {{- else }}
+  <span class="pagination__end is-disabled">Older &rarr;</span>
+  {{- end }}
+</nav>
+{{- end -}}

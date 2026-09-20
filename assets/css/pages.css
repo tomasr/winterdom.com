@@ -1,0 +1,198 @@
+/* ---------------------------------------------------------------------------
+   List-page furniture — winterdom.com, 2026 redesign.
+   Page head, year rail, pagination, empty state. Shared by the archive, the
+   taxonomy pages, About and 404.
+   Comps: Archive.html, Categories.html, Pages.html, About.html.
+--------------------------------------------------------------------------- */
+
+/* Page head --------------------------------------------------------------
+   Eyebrow, title, lede on the left; an optional link on the right, sitting
+   on the baseline of the lede. */
+
+.page-head {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 60px;
+  padding-top: 56px;
+}
+
+.page-head__text {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.page-head__eyebrow {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  line-height: var(--lh-eyebrow);
+  letter-spacing: var(--tr-upper);
+  text-transform: uppercase;
+  color: var(--accent);
+}
+
+/* 44px, not the 50px SPEC.md lists for a page title: every comp that draws
+   one other than the home hero sets 44/1.12, and 50 belongs to the hero
+   alone. Base.css keeps 50 as the bare h1 default, which is what the hero
+   uses. */
+.page-head__title {
+  font-size: var(--fs-post-title);
+  line-height: var(--lh-post-title);
+  letter-spacing: var(--tr-title);
+}
+
+.page-head__lede {
+  max-width: 580px;
+  font-size: 17px;
+  line-height: 1.65;
+  color: var(--muted);
+}
+
+.page-head__aside {
+  flex-shrink: 0;
+  padding-bottom: 6px;
+  font-size: 15px;
+}
+
+/* Year rail ---------------------------------------------------------------
+   Every year that holds a post. The year being looked at is filled rather
+   than outlined, and is the only element on the site that puts text on
+   --accent, which is what --on-accent exists for. */
+
+.year-rail {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+  padding-top: var(--space-5);
+}
+
+.year-rail__year {
+  display: inline-flex;
+  align-items: center;
+  padding: 9px 14px;
+  border: 1px solid var(--rule);
+  border-radius: var(--radius);
+  font-family: var(--font-mono);
+  font-size: 13px;
+  line-height: 1.4;
+  color: var(--ink-strong);
+}
+
+.year-rail__year:hover {
+  border-color: var(--ink-strong);
+  text-decoration: none;
+}
+
+.year-rail__year.is-current,
+.year-rail__year.is-current:hover {
+  border-color: var(--accent);
+  background: var(--accent);
+  color: var(--on-accent);
+}
+
+/* 38px under a mouse is fine; under a thumb it is not. The rail is the only
+   control here that can grow without the design noticing. */
+@media (pointer: coarse) {
+  .year-rail__year {
+    min-height: 44px;
+  }
+}
+
+/* Sections ---------------------------------------------------------------- */
+
+.page-section {
+  padding-top: 44px;
+}
+
+.page-section__more {
+  display: inline-block;
+  margin-top: 18px;
+  font-size: 15px;
+}
+
+/* Pagination --------------------------------------------------------------
+   No numbered list: 117 pages of history would wrap. A disabled end is
+   muted text and not a link, so the tab key skips it. */
+
+.pagination {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-4);
+  padding-top: 22px;
+}
+
+.pagination__end {
+  font-size: 15px;
+}
+
+.pagination__end.is-disabled {
+  color: var(--muted);
+}
+
+.pagination__count {
+  font-family: var(--font-mono);
+  font-size: var(--fs-meta);
+  color: var(--muted);
+}
+
+@media (pointer: coarse) {
+  a.pagination__end {
+    display: inline-flex;
+    align-items: center;
+    min-height: 44px;
+  }
+}
+
+/* Empty state -------------------------------------------------------------
+   Offer somewhere to go. Never a dead end. */
+
+.empty {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  margin-top: 44px;
+  padding: 26px 32px;
+  border-radius: var(--radius-block);
+  background: var(--surface);
+}
+
+.empty__title {
+  font-size: 21px;
+  line-height: 1.25;
+}
+
+.empty__text {
+  font-size: 15px;
+  line-height: 1.6;
+  color: var(--muted);
+}
+
+/* Phone ------------------------------------------------------------------ */
+
+@media (max-width: 639px) {
+  .page-head {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: var(--space-4);
+    padding-top: 32px;
+  }
+
+  .page-head__aside {
+    padding-bottom: 0;
+  }
+
+  .year-rail {
+    gap: 6px;
+    padding-top: var(--space-4);
+  }
+
+  .page-section {
+    padding-top: 34px;
+  }
+
+  .empty {
+    padding: 22px 20px;
+  }
+}

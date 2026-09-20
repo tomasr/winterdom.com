@@ -1,0 +1,42 @@
+{{ define "main" }}
+{{- /*
+  The archive index: the year rail, then the most recent year in full.
+
+  It does not paginate. Each year is its own page and the rail is the way
+  in; repeating a paginated year here would put the same rows at two URLs.
+  The preview is capped so a 273-post year does not turn the index into the
+  long list the archive exists to replace.
+*/ -}}
+{{- $years := (where site.RegularPages "Section" "posts").GroupByDate "2006" -}}
+
+{{ partial "page-head.html" (dict
+  "eyebrow" "Everything, by year"
+  "title" .Title
+  "lede" .Description
+  "link" (dict "text" "Browse by category instead →" "url" ("/categories/" | relURL))
+) }}
+
+{{ partial "year-rail.html" (dict) }}
+
+{{- with index $years 0 }}
+{{- $count := len .Pages }}
+{{- $preview := first 20 .Pages }}
+{{- $url := (printf "/archive/%s/" .Key) | relURL }}
+<section class="page-section">
+  <div class="section-head">
+    <h2 class="section-head__title">{{ .Key }}</h2>
+    <span class="section-head__note">{{ $count }} post{{ if ne $count 1 }}s{{ end }}</span>
+  </div>
+
+  <div class="post-list">
+    {{- range $preview }}
+    {{ partial "post-row.html" (dict "page" . "variant" "compact" "dateFormat" "2 Jan") }}
+    {{- end }}
+  </div>
+
+  {{- if gt $count (len $preview) }}
+  <a class="page-section__more" href="{{ $url }}">All of {{ .Key }} &rarr;</a>
+  {{- end }}
+</section>
+{{- end }}
+{{ end }}

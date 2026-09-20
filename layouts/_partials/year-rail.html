@@ -1,0 +1,20 @@
+{{- /*
+  Every year that holds a post, newest first, each linking to its own page.
+
+  The years come from the posts rather than from the pages under /archive/,
+  so a year page with nothing in it could never appear in the rail. The two
+  sets are built from the same thing in practice -- see
+  content/archive/_content.gotmpl.
+
+  Parameters (dict):
+    current  optional, the year to mark as the page being looked at
+*/ -}}
+{{- $current := .current | default "" -}}
+{{- $groups := (where site.RegularPages "Section" "posts").GroupByDate "2006" -}}
+<nav class="year-rail" aria-label="Years">
+  {{- range $groups }}
+  <a class="year-rail__year{{ if eq .Key $current }} is-current{{ end }}"
+     href="{{ (printf "/archive/%s/" .Key) | relURL }}"
+     {{- if eq .Key $current }} aria-current="page"{{ end }}>{{ .Key }}</a>
+  {{- end }}
+</nav>

@@ -1,0 +1,30 @@
+{{- /*
+  The head of any page that is not an article: eyebrow, title, lede, and an
+  optional link off to the side. Archive, categories, tags, about, 404.
+
+  The title is 44px here, not the 50px SPEC.md lists for a page title. Every
+  comp that draws a page title other than the home hero -- Archive.html,
+  Categories.html, About.html -- sets 44/1.12, and 50 belongs to the hero
+  alone. See .page-head__title in assets/css/pages.css.
+
+  Parameters (dict):
+    eyebrow    optional, mono uppercase accent above the title
+    title      required
+    titleClass optional extra class, for the mono "#tag" heading
+    lede       optional, one or two sentences under the title
+    link       optional dict of "text" and "url", set to the right
+*/ -}}
+<header class="page-head">
+  <div class="page-head__text">
+    {{- with .eyebrow }}
+    <span class="page-head__eyebrow">{{ . }}</span>
+    {{- end }}
+    <h1 class="page-head__title{{ with .titleClass }} {{ . }}{{ end }}">{{ .title }}</h1>
+    {{- with .lede }}
+    <p class="page-head__lede">{{ . }}</p>
+    {{- end }}
+  </div>
+  {{- with .link }}
+  <a class="page-head__aside" href="{{ .url }}">{{ .text }}</a>
+  {{- end }}
+</header>
