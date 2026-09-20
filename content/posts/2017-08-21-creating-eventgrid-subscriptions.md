@@ -1,6 +1,7 @@
 ---
-layout: post
-category: Azure
+slug: "creating-eventgrid-subscriptions"
+categories:
+- Azure
 title: Creating Event Grid Subscriptions
 tags:
 - Azure
@@ -8,7 +9,7 @@ tags:
 - EventGrid
 comments: []
 ---
-A [few days ago]({% post_url 2017-08-17-eventgrid-webhook-arm-template %}), I wrote about using
+A [few days ago]({{< relref "2017-08-17-eventgrid-webhook-arm-template.md" >}}), I wrote about using
 Azure Resource Manager (ARM) templates to deploy Azure [Event Grid](https://docs.microsoft.com/en-us/azure/event-grid/overview).
 That sample showed how to create a new Event Grid Topic resource. This basically gives you
 an URL you can publish custom events to and have them routed to one or more event subscribers.

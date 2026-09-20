@@ -1,0 +1,4 @@
+{{- $d := .Date.Day -}}
+{{- .Date.Format "January" }}
+{{ $d }}{{ if or (eq $d 1) (eq $d 21) (eq $d 31) }}st{{ else if or (eq $d 2) (eq $d 22) }}nd{{ else if or (eq $d 3) (eq $d 23) }}rd{{ else }}th{{ end }},
+{{ .Date.Format "2006" -}}

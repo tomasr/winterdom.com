@@ -1,6 +1,7 @@
 ---
-layout: post
-category: Azure
+slug: "importing-keyvault-certificates-api"
+categories:
+- Azure
 title: Importing Certificates into Azure Key Vault using the API
 tags:
 - Azure

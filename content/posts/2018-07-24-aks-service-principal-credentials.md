@@ -1,6 +1,7 @@
 ---
-layout: post
-category: Azure
+slug: "aks-service-principal-credentials"
+categories:
+- Azure
 title: AKS Service Principal Credentials
 tags:
 - Azure

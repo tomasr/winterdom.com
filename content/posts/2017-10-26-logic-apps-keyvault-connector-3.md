@@ -1,6 +1,7 @@
 ---
-layout: post
-category: Azure
+slug: "logic-apps-keyvault-connector-3"
+categories:
+- Azure
 title: Logic Apps KeyVault Connector - Part 3
 tags:
 - Azure
@@ -10,8 +11,8 @@ comments: []
 ---
 This is part 3 of my series of articles on implementing a custom
 [Logic Apps connector](https://docs.microsoft.com/en-us/azure/logic-apps/custom-connector-overview).
-Read [part 1]({% post_url 2017-10-15-logic-apps-keyvault-connector-1 %}) and
-[part 2]({% post_url 2017-10-24-logic-apps-keyvault-connector-2 %}). 
+Read [part 1]({{< relref "2017-10-15-logic-apps-keyvault-connector-1.md" >}}) and
+[part 2]({{< relref "2017-10-24-logic-apps-keyvault-connector-2.md" >}}). 
 
 By this point, I've implemented and deployed the WebApi application that implements
 the custom connector, and configured the necessary applications and permissions

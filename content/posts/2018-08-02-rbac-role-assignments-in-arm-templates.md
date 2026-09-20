@@ -1,6 +1,7 @@
 ---
-layout: post
-category: Azure
+slug: "rbac-role-assignments-in-arm-templates"
+categories:
+- Azure
 title: Defining RBAC Role Assignments in ARM Templates
 tags:
 - Azure

@@ -1,6 +1,6 @@
 ---
-layout: post
-category:
+slug: "vscode-arm-extensions"
+categories:
   - Visual Studio
 title: ARM Extensions for Visual Studio Code
 tags:

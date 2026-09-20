@@ -1,6 +1,7 @@
 ---
-layout: post
-category: Azure
+slug: "api-management-set-body-querystring"
+categories:
+- Azure
 title: Azure API Management - Getting Query String Values in set-body
 tags:
 - Azure

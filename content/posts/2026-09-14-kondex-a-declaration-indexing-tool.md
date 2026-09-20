@@ -1,6 +1,7 @@
 ---
-layout: post
-category: Tools
+slug: "kondex-a-declaration-indexing-tool"
+categories:
+- Tools
 title: 'Kondex: A declaration indexing tool'
 tags:
 - Claude

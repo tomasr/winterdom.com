@@ -1,6 +1,6 @@
 ---
-layout: post
-category:
+slug: "sfstreaming"
+categories:
 - Visual Studio
 title: Service Fabric Streaming Trace Viewer
 tags:

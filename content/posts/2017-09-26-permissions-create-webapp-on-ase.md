@@ -1,6 +1,7 @@
 ---
-layout: post
-category: Azure
+slug: "permissions-create-webapp-on-ase"
+categories:
+- Azure
 title: Permissions needed to create a Web App on an ASE
 tags:
 - Azure

@@ -1,0 +1,51 @@
+{{ define "main" }}
+{{ $paginator := .Paginate (where site.RegularPages "Section" "posts") }}
+
+{{ range $paginator.Pages }}
+
+<article class="home">
+
+  <span class="post-date">
+    {{ partial "postdate.html" . }}
+  </span>
+
+  <h2>
+    <a href="{{ .RelPermalink }}">{{ .Title }}</a>
+  </h2>
+
+  <div>
+    {{ $w := split .Plain " " }}{{ if gt (len $w) 50 }}{{ delimit (first 50 $w) " " | safeHTML }}...{{ else }}{{ .Plain | safeHTML }}{{ end }}
+  </div>
+
+</article>
+{{ end }}
+<hr/>
+
+<ul class="pager">
+
+  {{ with $paginator.Prev }}
+  <li class="previous">
+    <a href="{{ .URL }}">&larr; Newer</a>
+  </li>
+  {{ else }}
+  <li class="previous disabled">
+    <a>&larr; Newer</a>
+  </li>
+  {{ end }}
+
+  <li>
+    <span class="page_number">Page: {{ $paginator.PageNumber }} of {{ $paginator.TotalPages }}</span>
+  </li>
+
+  {{ with $paginator.Next }}
+  <li class="next">
+    <a href="{{ .URL }}">Older &rarr;</a>
+  </li>
+  {{ else }}
+  <li class="next disabled">
+    <a>Older &rarr;</a>
+  </li>
+  {{ end }}
+
+</ul>
+{{ end }}

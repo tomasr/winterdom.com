@@ -1,6 +1,7 @@
 ---
-layout: post
-category: Azure
+slug: "create-webapp-using-nodejs"
+categories:
+- Azure
 title: Creating an Azure WebApp through ARM and Node.js
 tags:
 - Azure
@@ -8,7 +9,7 @@ tags:
 - Node.js
 comments: []
 ---
-I recently [posted an article]({% post_url 2017-08-01-aiarm %}) on how to create
+I recently [posted an article]({{< relref "2017-08-01-aiarm.md" >}}) on how to create
 an Azure WebApp on AppService with an associated Application Insights resource
 using Azure Resource Manager (ARM) templates.
 

@@ -1,6 +1,7 @@
 ---
-layout: post
-category: Azure
+slug: "apimanagement-groups"
+categories:
+- Azure
 title: API Management Groups
 tags:
 - Azure

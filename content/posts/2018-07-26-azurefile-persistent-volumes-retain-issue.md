@@ -1,6 +1,7 @@
 ---
-layout: post
-category: Azure
+slug: "azurefile-persistent-volumes-retain-issue"
+categories:
+- Azure
 title: AzureFile Persistent Volumes Retain Issue
 tags:
 - Azure
@@ -9,7 +10,7 @@ tags:
 comments: []
 ---
 
-A bit ago, I [posted]({% post_url 2018-07-23-aks-azure-files-permissions %}) about some issues around permissions
+A bit ago, I [posted]({{< relref "2018-07-23-aks-azure-files-permissions.md" >}}) about some issues around permissions
 when using static provisioning of Azure File volumes in Azure Kubernetes Service (AKS). In there, I mentioned that the
 workaround was to use explicit Persistent Volumes so that the right mount options could be created.
 

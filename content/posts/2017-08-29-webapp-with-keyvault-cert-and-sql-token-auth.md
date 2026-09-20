@@ -1,6 +1,7 @@
 ---
-layout: post
-category: Azure
+slug: "webapp-with-keyvault-cert-and-sql-token-auth"
+categories:
+- Azure
 title: Token authentication to SQL Azure with a Key Vault Certificate
 tags:
 - Azure
@@ -10,7 +11,7 @@ tags:
 - KeyVault
 comments: []
 ---
-In a [previous post]({% post_url 2017-08-28-azure-ad-service-principal-with-keyvault-cert %}),
+In a [previous post]({{< relref "2017-08-28-azure-ad-service-principal-with-keyvault-cert.md" >}}),
 I presented a PowerShell script to create a new Service Principal in Azure Active Directory,
 using a self-signed certificate generated directly in Azure Key Vault for authentication.
 

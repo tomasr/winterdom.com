@@ -1,6 +1,7 @@
 ---
-layout: post
-category: Azure
+slug: "aks-node-troubles"
+categories:
+- Azure
 title: AKS Node Troubles
 tags:
 - Azure

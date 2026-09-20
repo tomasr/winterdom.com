@@ -1,6 +1,7 @@
 ---
-layout: post
-category: Visual Studio
+slug: "viasfora-updates"
+categories:
+- Visual Studio
 title: Viasfora v4.0 Update
 tags:
 - VisualStudio

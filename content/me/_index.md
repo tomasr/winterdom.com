@@ -1,7 +1,4 @@
 ---
-layout: page
-status: publish
-published: true
 title: About
 author:
   display_name: Tomas Restrepo
@@ -15,8 +12,6 @@ wordpress_id: 2
 wordpress_url: http://winterdom.com/?page_id=2
 date: '2009-04-27 01:00:10 +0000'
 date_gmt: '2009-04-27 01:00:10 +0000'
-categories:
-- Uncategorized
 tags: []
 ---
 My name is Tomas Restrepo and I'm software develope located in Colombia, South America.

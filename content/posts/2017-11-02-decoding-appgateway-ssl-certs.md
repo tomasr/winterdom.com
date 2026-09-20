@@ -1,6 +1,7 @@
 ---
-layout: post
-category: Azure
+slug: "decoding-appgateway-ssl-certs"
+categories:
+- Azure
 title: Decoding Application Gateway Certificates
 tags:
 - Azure

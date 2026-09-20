@@ -1,6 +1,7 @@
 ---
-layout: post
-category: Azure
+slug: "logic-apps-keyvault-connector-1"
+categories:
+- Azure
 title: Logic Apps KeyVault Connector - Part 1
 tags:
 - Azure

@@ -1,6 +1,7 @@
 ---
-layout: post
-category: Azure
+slug: "apimanager-signin-tenant"
+categories:
+- Azure
 title: API Management Sign-in Tenant
 tags:
 - Azure

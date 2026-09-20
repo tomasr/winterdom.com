@@ -1,6 +1,7 @@
 ---
-layout: post
-category: Azure
+slug: "azure-ad-service-principal-with-keyvault-cert"
+categories:
+- Azure
 title: Azure AD Service Principal with a Key Vault Certificate 
 tags:
 - Azure

@@ -1,6 +1,7 @@
 ---
-layout: post
-category: Tools
+slug: "kondex-teaching-claude-to-use-it"
+categories:
+- Tools
 title: 'Kondex: Teaching Claude to use it'
 tags:
 - Claude

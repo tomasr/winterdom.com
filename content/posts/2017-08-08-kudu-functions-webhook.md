@@ -1,6 +1,7 @@
 ---
-layout: post
-category: Azure
+slug: "kudu-functions-webhook"
+categories:
+- Azure
 title: Using Azure Functions to create AppInsights release annotations
 tags:
 - Azure

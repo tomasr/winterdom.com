@@ -1,6 +1,7 @@
 ---
-layout: post
-category: Azure
+slug: "azure-sql-auth-with-msi"
+categories:
+- Azure
 title: Azure SQL authentication with a Managed Service Identity 
 tags:
 - Azure
@@ -9,7 +10,7 @@ tags:
 - ManagedServiceIdentity
 comments: []
 ---
-On a [previous article]({% post_url 2017-08-31-token-delegation-azure-sql %}) I
+On a [previous article]({{< relref "2017-08-31-token-delegation-azure-sql.md" >}}) I
 discussed how to use a certificate stored in Key Vault to provide authentication
 to Azure Active Directory from a Web Application deployed in AppService so that
 we could authenticate to an Azure SQL database.

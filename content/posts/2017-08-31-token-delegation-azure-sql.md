@@ -1,6 +1,7 @@
 ---
-layout: post
-category: Azure
+slug: "token-delegation-azure-sql"
+categories:
+- Azure
 title: Authenticating to SQL Azure with delegated tokens
 tags:
 - Azure
@@ -10,7 +11,7 @@ tags:
 - KeyVault
 comments: []
 ---
-In a previous [post]({% post_url 2017-08-29-webapp-with-keyvault-cert-and-sql-token-auth %}),
+In a previous [post]({{< relref "2017-08-29-webapp-with-keyvault-cert-and-sql-token-auth.md" >}}),
 I discussed how to authenticate to an Azure SQL database from a Web Application
 (running in Azure App Service) using an Azure Active Directory Service Principal.
 For this I used a certificate stored in Key Vault to authenticate the principal

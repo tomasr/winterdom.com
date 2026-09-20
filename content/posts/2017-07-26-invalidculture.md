@@ -1,6 +1,7 @@
 ---
-layout: post
-category: Troubleshooting
+slug: "invalidculture"
+categories:
+- Troubleshooting
 title: Culture is not supported
 comments: []
 ---

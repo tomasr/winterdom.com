@@ -1,6 +1,7 @@
 ---
-layout: post
-category: Azure
+slug: "azure-sql-tde-protector-keyvault"
+categories:
+- Azure
 title: Deploying a Key Vault-based TDE protector for Azure SQL
 tags:
 - Azure

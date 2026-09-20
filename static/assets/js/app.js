@@ -18,7 +18,9 @@
      * Tags & categories tab activation based on hash value. If hash is undefined then first tab is activated.
      */
     function activateTab() {
-      if(['/tags', '/categories'].indexOf(window.location.pathname) > -1) {
+      // Hugo emits pretty URLs with a trailing slash (/categories/), so normalise.
+      var path = window.location.pathname.replace(/\/+$/, '');
+      if(['/tags', '/categories'].indexOf(path) > -1) {
         var hash = window.location.hash;
         if(hash)
           $('.tab-pane').length && $('a[href="' + hash + '"]').tab('show');

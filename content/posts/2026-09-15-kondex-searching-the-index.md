@@ -1,6 +1,7 @@
 ---
-layout: post
-category: Tools
+slug: "kondex-searching-the-index"
+categories:
+- Tools
 title: 'Kondex: Searching the index'
 tags:
 - Claude

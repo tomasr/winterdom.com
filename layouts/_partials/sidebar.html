@@ -1,0 +1,77 @@
+<!-- sidebar.html -->
+<header class="sidebar-header" role="banner">
+	<a href="{{ "" | relURL }}">
+		<img src="https://www.gravatar.com/avatar/{{ site.Params.author.email_md5 }}?s=150" class="img-circle" />
+	</a>
+	<h3 class="title">
+		<a href="{{ "" | relURL }}">{{ site.Title }}</a>
+	</h3>
+</header>
+
+{{ with site.Params.author.description }}
+<div id="bio" class="text-center">
+	{{ . }}
+</div>
+{{ end }}
+
+<div id="contact-list" class="text-center">
+	<ul class="list-unstyled list-inline">
+		{{ with site.Params.author.github }}
+		<li>
+			<a class="btn btn-default btn-sm" href="https://github.com/{{ . }}">
+				<i class="fa fa-github-alt fa-lg"></i>
+			</a>
+		</li>
+		{{ end }}
+		{{ with site.Params.author.twitter }}
+		<li>
+			<a class="btn btn-default btn-sm" href="https://twitter.com/{{ . }}">
+				<i class="fa fa-twitter fa-lg"></i>
+			</a>
+		</li>
+		{{ end }}
+		{{ with index site.Params.author "500px" }}
+		<li>
+			<a class="btn btn-default btn-sm" href="https://500px.com/{{ . }}">
+				<i class="fa fa-500px fa-lg"></i>
+			</a>
+		</li>
+		{{ end }}
+		{{ with site.Params.author.flickr }}
+		<li>
+			<a class="btn btn-default btn-sm" href="https://www.flickr.com/photos/{{ . }}">
+				<i class="fa fa-flickr fa-lg"></i>
+			</a>
+		</li>
+		{{ end }}
+		{{ with site.Params.author.email }}
+		<li>
+			<a class="btn btn-default btn-sm" href="mailto:{{ . }}">
+				<i class="fa fa-envelope fa-lg"></i>
+			</a>
+		</li>
+		{{ end }}
+	</ul>
+	<ul class="list-unstyled list-inline">
+		{{ with site.Params.author.pinterest }}
+		<li>
+			<a class="btn btn-default btn-sm" href="https://pinterest.com/{{ . }}">
+				<i class="fa fa-pinterest fa-lg"></i>
+			</a>
+		</li>
+		{{ end }}
+		{{ with site.Params.author.linkedin }}
+		<li>
+			<a class="btn btn-default btn-sm" href="https://linkedin.com/in/{{ . }}">
+				<i class="fa fa-linkedin fa-lg"></i>
+			</a>
+		</li>
+		{{ end }}
+		<li>
+			<a class="btn btn-default btn-sm" href="{{ "feed.xml" | relURL }}">
+				<i class="fa fa-rss fa-lg"></i>
+			</a>
+		</li>
+	</ul>
+</div>
+<!-- sidebar.html end -->

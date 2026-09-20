@@ -1,0 +1,82 @@
+baseURL: "https://winterdom.com/"
+locale: "en-us"
+title: "Winterdom"
+
+# Jekyll wrote every post date with a +0000 offset and built under UTC, so the
+# :year/:month/:day permalink components must be resolved in UTC or 69 posts
+# shift back a day and their URLs break.
+timeZone: "UTC"
+
+# Jekyll preserved filename case in URLs; one post slug carries a capital
+# ("kubernetes-azureFile-dynamic-volumes-deleting") and the live URL 404s
+# without it. Hugo lowercases paths unless this is set.
+disablePathToLower: true
+
+# The 52 markdown posts carry no `date` field at all -- Jekyll derived their
+# date from the filename. `date` first keeps the time-of-day on the 1117 HTML
+# posts (230 days have more than one post, so ordering depends on it).
+frontmatter:
+  date: ["date", ":filename"]
+
+# Matches Jekyll's `permalink: /:year/:month/:day/:title`, where Jekyll's
+# :title is the filename slug, not the title field. Every post carries an
+# explicit `slug:` injected from its filename.
+permalinks:
+  posts: "/:year/:month/:day/:slug"
+
+pagination:
+  pagerSize: 10
+
+taxonomies:
+  category: "categories"
+  tag: "tags"
+
+# The old feed lived at /feed.xml, not Hugo's default /index.xml.
+outputFormats:
+  RSS:
+    baseName: "feed"
+
+outputs:
+  home: ["HTML", "RSS"]
+  section: ["HTML"]
+  taxonomy: ["HTML"]
+  term: ["HTML"]
+  page: ["HTML"]
+
+markup:
+  goldmark:
+    renderer:
+      # kramdown allowed raw HTML in markdown; Goldmark strips it by default.
+      unsafe: true
+  highlight:
+    # assets/css/monokai.css already carries the Pygments class names that
+    # Chroma emits, so reuse it instead of inlining styles.
+    noClasses: false
+    style: "monokai"
+    lineNos: false
+
+params:
+  description: "by dæmons be driven - a site by Tomas Restrepo"
+  images_base: "https://static.winterdom.com/images"
+  author:
+    name: "Tomas Restrepo"
+    email: "tomas@winterdom.com"
+    email_md5: "d2cb495ec8c6975874403030a4865a33"
+    github: "tomasr"
+    twitter: "tomasrestrepo"
+    linkedin: "tomasr"
+    500px: "tomasr"
+    bio: "Software developer located in Colombia."
+    description: "by dæmons be driven - a site by Tomas Restrepo"
+
+services:
+  rss:
+    limit: 10
+
+security:
+  # Hugo 0.166 refuses text/html content files by default. This site is a
+  # WordPress-era archive: 1117 of its 1169 posts are HTML authored by the
+  # site owner and committed to this repo, so the policy has to allow them.
+  allowContent:
+    - '^text/html$'
+    - '^text/markdown$'

@@ -1,6 +1,7 @@
 ---
-layout: post
-category: Azure
+slug: "unable-to-locate-registry-entry-for-adalsql"
+categories:
+- Azure
 title: Unable to locate registry entry for adalsql.dll file path
 tags:
 - AzureSQL

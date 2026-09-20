@@ -1,6 +1,7 @@
 ---
-layout: post
-category: Azure
+slug: "eventgrid-webhook-arm-template"
+categories:
+- Azure
 title: Deploying an Event Grid + WebHook with ARM
 tags:
 - Azure

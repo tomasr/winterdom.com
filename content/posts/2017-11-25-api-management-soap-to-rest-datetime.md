@@ -1,6 +1,7 @@
 ---
-layout: post
-category: Azure
+slug: "api-management-soap-to-rest-datetime"
+categories:
+- Azure
 title: Azure API Management - SOAP-to-REST date/time handling
 tags:
 - Azure

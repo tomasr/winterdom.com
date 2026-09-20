@@ -1,13 +1,14 @@
 ---
-layout: post
-category: Azure
+slug: "aad-b2c-api-management"
+categories:
+- Azure
 title: Using Azure AD B2C with API Management
 tags:
 - Azure
 - APIManagement
 comments: []
 ---
-In a previous [post]({% post_url 2017-11-09-oauth2-apimanagement %}), I discussed
+In a previous [post]({{< relref "2017-11-09-oauth2-apimanagement.md" >}}), I discussed
 how to setup OAuth2 authorization in API Management using Azure Active Directory.
 This time I'd like to show something very similar, but using
 [Azure AD B2C](https://docs.microsoft.com/en-us/azure/active-directory-b2c/active-directory-b2c-overview) instead.

@@ -1,13 +1,14 @@
 ---
-layout: post
-category: Azure
+slug: "azure-sq-db-principal-not-in-aad"
+categories:
+- Azure
 title: Azure SQL Database Service Principal not present in AAD
 tags:
 - Azure
 - AAD
 comments: []
 ---
-A while ago, I wrote a [post]({% post_url 2017-08-31-token-delegation-azure-sql %}) about enabling
+A while ago, I wrote a [post]({{< relref "2017-08-31-token-delegation-azure-sql.md" >}}) about enabling
 authentication to Azure SQL Database using delegated token credentials. A kind reader reported the
 following issue:
 

@@ -1,6 +1,7 @@
 ---
-layout: post
-category: Azure
+slug: "recreating-apim-subscription"
+categories:
+- Azure
 title: Re-creating a subscription in Azure API Management
 tags:
 - Azure

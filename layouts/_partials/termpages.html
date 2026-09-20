@@ -1,0 +1,3 @@
+{{- /* Returns the pages for a taxonomy term, or an empty slice. */ -}}
+{{- $t := site.GetPage (printf "/%s/%s" .taxonomy (urlize .term)) -}}
+{{- with $t }}{{ return .Pages }}{{ else }}{{ return slice }}{{ end -}}

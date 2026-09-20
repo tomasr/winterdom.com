@@ -1,6 +1,7 @@
 ---
-layout: post
-category: Azure
+slug: "managed-service-identity-library"
+categories:
+- Azure
 title: Azure Managed Service Identity Library 
 tags:
 - Azure

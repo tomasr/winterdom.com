@@ -1,6 +1,7 @@
 ---
-layout: post
-category: Azure
+slug: "aicohorts"
+categories:
+- Azure
 title: Using Application Insights Cohorts
 tags:
 - Viasfora

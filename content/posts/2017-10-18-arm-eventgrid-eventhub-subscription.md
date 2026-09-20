@@ -1,6 +1,7 @@
 ---
-layout: post
-category: Azure
+slug: "arm-eventgrid-eventhub-subscription"
+categories:
+- Azure
 title: Creating an Event Hub destination using Event Grid in ARM
 tags:
 - Azure
@@ -9,7 +10,7 @@ tags:
 - EventHubs
 comments: []
 ---
-In a previous [post]({% post_url 2017-08-21-creating-eventgrid-subscriptions %}), I presented a
+In a previous [post]({{< relref "2017-08-21-creating-eventgrid-subscriptions.md" >}}), I presented a
 few ways to create [Azure Event Grid](https://docs.microsoft.com/en-us/azure/event-grid/overview)
 resources using Azure Resource Manager (ARM) templates.
 

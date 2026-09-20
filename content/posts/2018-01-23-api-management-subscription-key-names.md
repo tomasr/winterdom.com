@@ -1,6 +1,7 @@
 ---
-layout: post
-category: Azure
+slug: "api-management-subscription-key-names"
+categories:
+- Azure
 title: Azure API Management - Changing the Subscription Key header or query string names 
 tags:
 - Azure

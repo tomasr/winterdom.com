@@ -1,6 +1,7 @@
 ---
-layout: post
-category: Azure
+slug: "aks-azure-files-permissions"
+categories:
+- Azure
 title: AKS and Azure Files Permissions
 tags:
 - Azure
@@ -127,7 +128,7 @@ deploy it. This is just cumbersome.
 I wish you could just adjust default permissions directly when creating the volume, but alas,
 apparently this is not possible with the Kubernetes model (or simply unsupported by the Azure Files plugin).
 
-__Update:__ Posted some additional findings [here]({% post_url 2018-07-26-azurefile-persistent-volumes-retain-issue %})
+__Update:__ Posted some additional findings [here]({{< relref "2018-07-26-azurefile-persistent-volumes-retain-issue.md" >}})
 
 ## Getting fixed!
 

@@ -1,6 +1,7 @@
 ---
-layout: post
-category: Azure
+slug: "oauth2-apimanagement"
+categories:
+- Azure
 title: Protecting APIs with OAuth2 in API Management
 tags:
 - Azure

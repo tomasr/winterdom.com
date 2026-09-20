@@ -1,13 +1,14 @@
 ---
-layout: post
-category: Azure
+slug: "openid-connect-api-management"
+categories:
+- Azure
 title: Protecting APIs with OpenId Connect in API Management
 tags:
 - Azure
 - APIManagement
 comments: []
 ---
-In my last [post]({% post_url 2017-11-09-oauth2-apimanagement %}), I outlined a customer scenario for
+In my last [post]({{< relref "2017-11-09-oauth2-apimanagement.md" >}}), I outlined a customer scenario for
 protecting an API through OAuth2 in Azure API Management. I mentioned in it that I had been
 unsuccessful at using OpenId Connect, rather than raw OAuth2.
 

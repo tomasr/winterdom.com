@@ -1,6 +1,7 @@
 ---
-layout: post
-category: Azure
+slug: "azure-files-and-billing-transparency"
+categories:
+- Azure
 title: Azure File Storage and Billing Transparency
 tags:
 - Azure

@@ -1,6 +1,7 @@
 ---
-layout: post
-category: Blogging
+slug: "moved-to-jekyll"
+categories:
+- Blogging
 title: Moved to Jekyll
 comments: []
 ---

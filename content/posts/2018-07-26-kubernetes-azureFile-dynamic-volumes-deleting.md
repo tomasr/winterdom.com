@@ -1,6 +1,7 @@
 ---
-layout: post
-category: Azure
+slug: "kubernetes-azureFile-dynamic-volumes-deleting"
+categories:
+- Azure
 title: Issues when deleting azureFile dynamic volumes in Kubernetes
 tags:
 - Azure

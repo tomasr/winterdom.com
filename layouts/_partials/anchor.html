@@ -1,0 +1,8 @@
+{{- /*
+  Builds the in-page anchor id for a taxonomy term. Both the taxonomy page
+  (which owns the id) and the post footer (which links to it) must agree, so
+  the normalisation lives here rather than being repeated. Note that `urlize`
+  is NOT usable: it honours `disablePathToLower`, which this site sets, so it
+  would preserve case on one side and not the other.
+*/ -}}
+{{- return (printf "%s-ref" (. | lower | replaceRE "[^a-z0-9]+" "-" | replaceRE "-+$" "")) -}}

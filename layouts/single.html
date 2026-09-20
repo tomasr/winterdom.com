@@ -1,0 +1,87 @@
+{{ define "main" }}
+<div class="page-header">
+  <h1>{{ .Title }}{{ with .Params.tagline }} <small>{{ . }}</small>{{ end }}</h1>
+</div>
+
+<article>
+
+	<div class="col-sm-10">
+	 <span class="post-date">
+	   {{ partial "postdate.html" . }}
+	 </span>
+	  <div class="article_body">
+	  {{ .Content }}
+	  </div>
+
+		{{ with .Params.categories }}
+		<ul class="tag_box list-unstyled list-inline">
+		  <li><i class="fa fa-folder-open"></i></li>
+		  {{ range . }}
+			<li><a href="{{ printf "categories/#%s" (partial "anchor.html" .) | relURL }}">
+				{{ . }} <span>({{ len (partial "termpages.html" (dict "taxonomy" "categories" "term" .)) }})</span>
+			</a></li>
+		  {{ end }}
+		</ul>
+		{{ end }}
+
+		{{ with .Params.tags }}
+		<ul class="list-inline">
+		  <li><i class="fa fa-tags"></i></li>
+		  {{ range . }}
+			<li>
+				<a href="{{ printf "tags/#%s" (partial "anchor.html" .) | relURL }}">
+				{{ . }} <span>({{ len (partial "termpages.html" (dict "taxonomy" "tags" "term" .)) }})</span>
+				</a>
+			</li>
+		  {{ end }}
+		</ul>
+		{{ end }}
+
+		<hr>
+
+		<div>
+      <section class="share col-sm-6">
+        <h4 class="section-title">Share Post</h4>
+        <a class="btn btn-default btn-sm twitter" href="https://twitter.com/share?text={{ .Title | urlquery }}{{ with site.Params.author.twitter }}&via={{ . }}{{ end }}"
+           onclick="window.open(this.href, 'twitter-share', 'width=550,height=235');return false;">
+          <i class="fa fa-twitter fa-lg"></i>
+          Twitter
+        </a>
+        <a class="btn btn-default btn-sm facebook" href="https://www.facebook.com/sharer/sharer.php"
+           onclick="window.open(this.href, 'facebook-share','width=580,height=296');return false;">
+          <i class="fa fa-facebook fa-lg"></i>
+          Facebook
+        </a>
+      </section>
+
+      <section class="col-sm-6 author">
+        <img src="https://www.gravatar.com/avatar/{{ site.Params.author.email_md5 }}" class="img-rounded author-image" />
+        <h4 class="section-title author-name">{{ site.Params.author.name }}</h4>
+        <p class="author-bio">{{ site.Params.author.bio }}</p>
+      </section>
+    </div>
+
+    <div class="clearfix"></div>
+
+		<ul class="pager">
+		  {{ with .PrevInSection }}
+		  <li class="previous"><a href="{{ .RelPermalink }}" title="{{ .Title }}">&larr; Previous</a></li>
+		  {{ else }}
+		  <li class="previous disabled"><a>&larr; Previous</a></li>
+		  {{ end }}
+		  {{ with .NextInSection }}
+		  <li class="next"><a href="{{ .RelPermalink }}" title="{{ .Title }}">Next &rarr;</a></li>
+		  {{ else }}
+		  <li class="next disabled"><a>Next &rarr;</a></li>
+		  {{ end }}
+		</ul>
+
+		<hr>
+	</div>
+
+	<div class="col-sm-2 sidebar-2">
+
+	</div>
+</article>
+<div class="clearfix"></div>
+{{ end }}
