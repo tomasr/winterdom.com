@@ -1,0 +1,143 @@
+/* ---------------------------------------------------------------------------
+   Home — winterdom.com, 2026 redesign.
+   Source of truth: design/SPEC.md. Comps: Main.html, MobileHome.html.
+
+   Hero, the recent-posts list and the projects band. The rows themselves
+   are the shared partial; the section headers are the shared component.
+   What is left is this page's own spacing and the project cards.
+--------------------------------------------------------------------------- */
+
+.hero {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  padding-top: var(--space-6);
+}
+
+.hero__eyebrow {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  line-height: var(--lh-eyebrow);
+  letter-spacing: var(--tr-upper);
+  text-transform: uppercase;
+  color: var(--accent);
+}
+
+/* The h1 already carries the page-title size from base.css. It is held
+   short of the band so the two lines break where the comp breaks them. */
+.hero__title {
+  max-width: 780px;
+}
+
+.hero__lede {
+  max-width: 620px;
+  font-size: 18px;
+  line-height: 1.65;
+  color: var(--muted);
+}
+
+.home-section {
+  padding-top: 60px;
+}
+
+/* Phones only -- see home.html. */
+.home-archive {
+  display: none;
+}
+
+/* Projects ----------------------------------------------------------------
+   Three cards, one per project. A card with no url is plain text: better a
+   card that does not pretend to be a link than one that goes nowhere. */
+
+.project-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: var(--space-4);
+  margin: 0;
+  padding-top: var(--space-4);
+  list-style: none;
+}
+
+.project {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  padding: 22px;
+  border-radius: var(--radius);
+  background: var(--surface);
+}
+
+.project__kind {
+  font-family: var(--font-mono);
+  font-size: var(--fs-eyebrow);
+  line-height: var(--lh-eyebrow);
+  letter-spacing: var(--tr-upper-tight);
+  text-transform: uppercase;
+  color: var(--accent);
+}
+
+.project__name {
+  font-size: 21px;
+  line-height: 1.25;
+}
+
+.project__name a {
+  color: var(--ink-strong);
+}
+
+.project__name a:hover {
+  color: var(--accent);
+  text-decoration: none;
+}
+
+.project__desc {
+  font-size: 15px;
+  line-height: 1.6;
+  color: var(--muted);
+}
+
+/* Three cards need the full band; below it they pair up, then stack. */
+@media (max-width: 899px) {
+  .project-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 639px) {
+  .hero {
+    gap: 14px;
+    padding-top: 32px;
+  }
+
+  .hero__lede {
+    font-size: var(--fs-small);
+  }
+
+  .home-section {
+    padding-top: 34px;
+  }
+
+  .project-grid {
+    grid-template-columns: minmax(0, 1fr);
+    padding-top: 20px;
+  }
+
+  .home-archive {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 44px;
+    margin-top: 26px;
+    padding: 14px;
+    border: 1px solid var(--rule);
+    border-radius: var(--radius);
+    font-size: 15px;
+    color: var(--ink-strong);
+  }
+
+  .home-archive:hover {
+    border-color: var(--ink-strong);
+    color: var(--ink-strong);
+    text-decoration: none;
+  }
+}

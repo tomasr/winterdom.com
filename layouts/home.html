@@ -1,38 +1,65 @@
 {{ define "main" }}
-{{ $paginator := .Paginate (where site.RegularPages "Section" "posts") }}
+{{- /*
+  Home. Hero, the most recent handful of posts, then the projects band.
 
-<div class="post-list">
-{{ range $paginator.Pages }}
-  {{ partial "post-row.html" (dict "page" . "level" 2) }}
-{{ end }}
-</div>
-<hr/>
+  It does not paginate -- that is what the archive is for. The count lives
+  here rather than in hugo.yaml because it is a layout decision: six rows is
+  what fits above the projects band without the page turning into a list.
 
-<ul class="pager">
+  The hero copy and the project cards are site params. See hugo.yaml.
+*/ -}}
+{{- $recent := first 6 (where site.RegularPages "Section" "posts") -}}
+{{- $archive := "/archive/" | relURL -}}
 
-  {{ with $paginator.Prev }}
-  <li class="previous">
-    <a href="{{ .URL }}">&larr; Newer</a>
-  </li>
-  {{ else }}
-  <li class="previous disabled">
-    <a>&larr; Newer</a>
-  </li>
-  {{ end }}
+<section class="hero">
+  {{- with site.Params.home.eyebrow }}
+  <span class="hero__eyebrow">{{ . }}</span>
+  {{- end }}
+  <h1 class="hero__title">{{ site.Params.home.title | default site.Title }}</h1>
+  {{- with site.Params.home.lede }}
+  <p class="hero__lede">{{ . }}</p>
+  {{- end }}
+</section>
 
-  <li>
-    <span class="page_number">Page: {{ $paginator.PageNumber }} of {{ $paginator.TotalPages }}</span>
-  </li>
+<section class="home-section">
+  <div class="section-head">
+    <h2 class="section-head__title">Latest writing</h2>
+    <a class="section-head__link" href="{{ $archive }}">Full archive &rarr;</a>
+  </div>
 
-  {{ with $paginator.Next }}
-  <li class="next">
-    <a href="{{ .URL }}">Older &rarr;</a>
-  </li>
-  {{ else }}
-  <li class="next disabled">
-    <a>Older &rarr;</a>
-  </li>
-  {{ end }}
+  <div class="post-list">
+    {{- range $recent }}
+    {{ partial "post-row.html" (dict "page" . "level" 3) }}
+    {{- end }}
+  </div>
 
-</ul>
+  {{- /* Shown on phones only: at 390px the link up in the section head is
+         a long way back up the page by the time you reach the last row. */}}
+  <a class="home-archive" href="{{ $archive }}">Browse the full archive</a>
+</section>
+
+{{- with site.Params.projects }}
+<section class="home-section">
+  <div class="section-head">
+    <h2 class="section-head__title">Things I build</h2>
+  </div>
+
+  <ul class="project-grid">
+    {{- range . }}
+    {{- $p := . }}
+    <li class="project">
+      {{- with $p.kind }}
+      <span class="project__kind">{{ . }}</span>
+      {{- end }}
+      <h3 class="project__name">
+        {{- with $p.url }}<a href="{{ . }}">{{ $p.name }}</a>{{ else }}{{ $p.name }}{{ end -}}
+      </h3>
+      {{- with $p.description }}
+      <p class="project__desc">{{ . }}</p>
+      {{- end }}
+    </li>
+    {{- end }}
+  </ul>
+</section>
+{{- end }}
 {{ end }}

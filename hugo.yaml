@@ -70,6 +70,30 @@ params:
     bio: "Software developer located in Colombia."
     description: "by dæmons be driven - a site by Tomas Restrepo"
 
+  # The home page hero. Copy, not markup: change it here rather than in
+  # layouts/home.html. How many posts the home page shows is a template
+  # decision and lives there.
+  home:
+    eyebrow: "by dæmons be driven"
+    title: "Software, tools, and notes from the workbench."
+    lede: "I'm Tomas Restrepo — a software developer in Colombia and CTO at CData. I build developer tools and write about what I learn doing it."
+
+  # The "Things I build" band on the home page. A project with no `url`
+  # renders as plain text rather than a dead link; kondex has no public
+  # repository yet.
+  projects:
+    - name: "Viasfora"
+      kind: "Visual Studio"
+      url: "https://github.com/tomasr/viasfora"
+      description: "Rainbow braces, keyword colouring and text obfuscation for Visual Studio. Over 200K downloads."
+    - name: "kondex"
+      kind: "CLI"
+      description: "A declaration indexing tool that helps language models find their way around a codebase."
+    - name: "PipelineTesting"
+      kind: "Library"
+      url: "https://github.com/tomasr/pipelinetesting"
+      description: "A unit testing library for BizTalk Server pipelines, plus the Application Insights WCF SDK."
+
 services:
   rss:
     limit: 10
