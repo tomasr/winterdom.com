@@ -380,7 +380,7 @@
 
 .about__main {
   flex-shrink: 0;
-  max-width: 700px;
+  max-width: var(--measure);
 }
 
 .about__aside {
