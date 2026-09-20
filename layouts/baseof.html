@@ -5,15 +5,13 @@
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<script>document.documentElement.classList.remove("no-js");</script>
 
-	<title>{{ .Title | default site.Title }}</title>
-	{{ with .Params.description | default site.Params.description }}
-	<meta name="description" content="{{ . }}">
-	{{ end }}
-	<meta name="author" content="{{ site.Params.author.name }}">
+	<title>{{ if .IsHome }}{{ site.Title }}{{ else }}{{ .Title }} &middot; {{ site.Title }}{{ end }}</title>
 
+	{{ partial "head-meta.html" . }}
 	{{ partial "head-assets.html" . }}
 
-	{{ with .OutputFormats.Get "rss" }}
+	{{- /* Every page advertises the one feed, not just the home page. */}}
+	{{ with site.Home.OutputFormats.Get "rss" }}
 	<link rel="alternate" type="application/rss+xml" title="{{ site.Title }}" href="{{ .Permalink }}">
 	{{ end }}
 </head>

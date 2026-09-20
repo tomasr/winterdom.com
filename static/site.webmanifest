@@ -1,0 +1,17 @@
+{
+  "name": "Winterdom",
+  "short_name": "Winterdom",
+  "description": "by dæmons be driven - a site by Tomas Restrepo",
+  "start_url": "/",
+  "display": "minimal-ui",
+  "background_color": "#FFFFFF",
+  "theme_color": "#3C6E71",
+  "icons": [
+    {
+      "src": "/favicon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    }
+  ]
+}
