@@ -150,24 +150,42 @@
 .article-body ul ul { list-style: circle; }
 .article-body ol ol { list-style: lower-alpha; }
 
-/* Quotes ----------------------------------------------------------------- */
+/* Quotes ------------------------------------------------------------------
+   SPEC.md draws a blockquote as a pull quote: Newsreader italic at 21px.
+   Nothing in this repo is one. Every blockquote in the 15 markdown posts
+   that use them opens "__Note:__ ..." and every one in the 32 legacy posts
+   is a passage quoted from somewhere else -- several paragraphs, lists,
+   inline code. Set as a pull quote, an aside ends up larger than the body
+   it is an aside from, and italic is the wrong face for a sentence
+   carrying four code spans.
+
+   So a blockquote is body copy marked as quoted by the accent rule, and
+   the designed treatment is opt-in below. */
 
 .article-body blockquote {
   margin: 0;
-  padding: 4px 0 4px 26px;
+  padding: 2px 0 2px 26px;
   border-left: 2px solid var(--accent);
+  color: var(--ink);
+}
+
+/* A blockquote carries paragraphs, lists and code of its own. The owl
+   selector above only reaches the body's own children, so without this
+   every block inside a quote runs into the next. */
+.article-body blockquote > * + * {
+  margin-top: 16px;
+}
+
+/* The pull quote SPEC.md specifies, for where one is actually wanted:
+   <blockquote class="pullquote">. Newsreader's italic is used here and
+   nowhere else on the site. */
+.article-body blockquote.pullquote {
+  padding-block: 4px;
   font-family: var(--font-display);
   font-size: var(--fs-quote);
   line-height: var(--lh-quote);
   font-style: italic;
   color: var(--ink-strong);
-}
-
-/* Legacy quotes carry their own paragraphs; the type is set on the
-   blockquote so that a bare text node gets it too. */
-.article-body blockquote p {
-  font-size: inherit;
-  line-height: inherit;
 }
 
 .article-body blockquote code,
