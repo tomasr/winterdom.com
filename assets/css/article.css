@@ -118,7 +118,9 @@
 
 .article-body ul,
 .article-body ol {
-  margin-block: 0;
+  /* margin-top is left alone on purpose: the rule at the top of this
+     sheet owns vertical rhythm, and a shorthand here would outrank it. */
+  margin-bottom: 0;
   padding-left: 22px;
 }
 
@@ -159,13 +161,19 @@
    it is an aside from, and italic is the wrong face for a sentence
    carrying four code spans.
 
-   So a blockquote is body copy marked as quoted by the accent rule, and
-   the designed treatment is opt-in below. */
+   So a blockquote is an aside: the body face, italic, one step down from
+   the body it interrupts rather than two steps up. The accent rule marks
+   it as quoted. The designed pull quote is opt-in below. */
 
 .article-body blockquote {
-  margin: 0;
+  /* Sides and bottom only -- see the note on the list rule above. */
+  margin-inline: 0;
+  margin-bottom: 0;
   padding: 2px 0 2px 26px;
   border-left: 2px solid var(--accent);
+  font-size: var(--fs-small);
+  line-height: 1.65;
+  font-style: italic;
   color: var(--ink);
 }
 
@@ -206,7 +214,8 @@
 }
 
 .article-body figure {
-  margin: 0;
+  margin-inline: 0;
+  margin-bottom: 0;
 }
 
 .article-body img {
