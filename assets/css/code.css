@@ -34,7 +34,7 @@
 :root {
   --syn-string: #2A5254;
   --syn-comment: #6A706D;
-  --syn-number: #7A3B2A;
+  --syn-warm: #7A3B2A;
   --syn-add-fg: #2A5254;
   --syn-add-bg: #E6EFEA;
   --syn-del-fg: #7A3B2A;
@@ -45,7 +45,7 @@
   :root:not([data-theme="light"]) {
     --syn-string: #5CB6A6;
     --syn-comment: #8A918E;
-    --syn-number: #D9A18C;
+    --syn-warm: #D9A18C;
     --syn-add-fg: #9FCFC4;
     --syn-add-bg: #1E2A26;
     --syn-del-fg: #D9A18C;
@@ -56,7 +56,7 @@
 :root[data-theme="dark"] {
   --syn-string: #5CB6A6;
   --syn-comment: #8A918E;
-  --syn-number: #D9A18C;
+  --syn-warm: #D9A18C;
   --syn-add-fg: #9FCFC4;
   --syn-add-bg: #1E2A26;
   --syn-del-fg: #D9A18C;
@@ -192,8 +192,8 @@
 }
 
 /* The token map --------------------------------------------------------
-   Seven roles, and still no new colour: the warm tone for literals is the
-   one the diff pair already uses, so the palette is the same size it was.
+   Seven roles, and still no new colour: the warm tone is the one the diff
+   pair already uses, so the palette is the same size it was.
 
    The first cut named sixteen Chroma classes. Counting what the built site
    actually emits showed why that read as three colours: .n (575), .nx
@@ -209,8 +209,9 @@
    change does more for depth than any extra hue.
 
    A plain identifier stays at --ink. Only names a line DECLARES -- tags,
-   attributes, functions, classes, decorators -- step up to --ink-strong.
-   Colouring every identifier is what makes a theme look busy.
+   functions, classes, decorators -- step up to --ink-strong, and attribute
+   names take the warm tone. Colouring every identifier is what makes a
+   theme look busy.
 
    JSON keys land on .nt and read as --ink-strong; its colons land on .err,
    which is why that is grouped with punctuation rather than left red. */
@@ -253,7 +254,6 @@
 }
 
 /* Names a line declares or marks up, as against names it merely uses. */
-.article-body .na,
 .article-body .nc,
 .article-body .nd,
 .article-body .ne,
@@ -262,7 +262,14 @@
 .article-body .nt,
 .article-body .fm { color: var(--ink-strong); }
 
-/* Literals, numbers, constants and builtins. */
+/* The warm tone: literals, numbers, constants, builtins -- and attribute
+   names, which is what rescues XML. Chroma gives an XML document three
+   things: .nt for a tag, .na for an attribute and .s for a value. With
+   .na sitting on --ink-strong beside the tags, a policy document was two
+   colours: white for all the structure and green for the quoted values.
+   Warm separates the attribute from the tag by lightness and from the
+   value by hue, which is the pair a reader is actually scanning for. */
+.article-body .na,
 .article-body .l,
 .article-body .ld,
 .article-body .m,
@@ -274,7 +281,7 @@
 .article-body .il,
 .article-body .no,
 .article-body .nb,
-.article-body .bp { color: var(--syn-number); }
+.article-body .bp { color: var(--syn-warm); }
 
 /* Identifiers a line uses: variables, namespaces, properties, output. */
 .article-body .n,
@@ -370,7 +377,7 @@
 .article-body pre .Number,
 .article-body pre .Float,
 .article-body pre .Boolean,
-.article-body pre .Constant { color: var(--syn-number); }
+.article-body pre .Constant { color: var(--syn-warm); }
 
 /* Structure recedes here too, so a Vim export and a Chroma block read the
    same way. */
