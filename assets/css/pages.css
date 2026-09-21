@@ -418,14 +418,38 @@
 .about__links {
   display: flex;
   flex-direction: column;
-  gap: 10px;
+  gap: 2px;
   margin: 0;
   padding: 0;
   list-style: none;
 }
 
+/* Icon and name together, unlike the footer, which has only the icons and
+   an aria-label. 40px rows plus the 2px gap put every target at 42, and
+   the rule below takes them to 44 where that matters. */
 .about__links a {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-height: 40px;
   font-size: 15px;
+}
+
+/* The glyph stays muted while the name takes the link colour, so the row
+   reads as a label with a marker rather than as two links. */
+.about__links .icon {
+  flex-shrink: 0;
+  color: var(--muted);
+}
+
+.about__links a:hover .icon {
+  color: var(--ink-strong);
+}
+
+@media (pointer: coarse) {
+  .about__links a {
+    min-height: 44px;
+  }
 }
 
 @media (max-width: 899px) {

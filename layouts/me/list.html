@@ -29,11 +29,20 @@
          alt="{{ $a.name }}">
     {{- end }}
 
+    {{- /* The same six links the footer draws as icons, here with the
+           icon AND the name. The footer row is compact because it repeats
+           on every page; this is the one place that can afford to say
+           what each one is. */}}
     <div class="about__block">
       <h2 class="about__label">Elsewhere</h2>
       <ul class="about__links">
         {{- range $social }}
-        <li><a href="{{ .url }}">{{ .label | default .title }}</a></li>
+        <li>
+          <a href="{{ .url }}">
+            {{- partial "icon.html" (dict "name" .icon "size" 18) }}
+            <span>{{ .label | default .title }}</span>
+          </a>
+        </li>
         {{- end }}
       </ul>
     </div>
