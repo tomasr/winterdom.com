@@ -11,7 +11,10 @@
   (resources.Get "js/copy.js")
   | resources.Concat "js/site.js"
 -}}
+{{- /* Fingerprinted in development too; see the note in head-assets.html. */ -}}
 {{- if hugo.IsProduction -}}
   {{- $js = $js | minify | fingerprint -}}
+{{- else -}}
+  {{- $js = $js | fingerprint -}}
 {{- end -}}
 <script defer src="{{ $js.RelPermalink }}"{{ with $js.Data.Integrity }} integrity="{{ . }}"{{ end }}></script>
