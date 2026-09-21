@@ -17,10 +17,10 @@
    Chroma and Vim with the same set of roles.
 --------------------------------------------------------------------------- */
 
-/* Seven roles, six colours. --deep and --ink-strong already carry the
-   keyword and name values in both themes; the string and comment greens
-   and greys do not exist elsewhere, so they live here. Every pairing below
-   clears 4.5:1 against its own --surface.
+/* Eight roles, seven colours. --deep carries the keyword blue in both
+   themes; the string green, the comment grey, the warm tone and the name
+   violet do not exist elsewhere in the design, so they live here. Every
+   pairing below clears 4.5:1 against its own --surface.
 
    The dark string is #5CB6A6, not the #9FCFC4 SPEC.md lists. Measured
    against the body text it sits on, every other role separates by 1.6 to
@@ -35,6 +35,7 @@
   --syn-string: #2A5254;
   --syn-comment: #6A706D;
   --syn-warm: #7A3B2A;
+  --syn-name: #6A4C93;
   --syn-add-fg: #2A5254;
   --syn-add-bg: #E6EFEA;
   --syn-del-fg: #7A3B2A;
@@ -46,6 +47,7 @@
     --syn-string: #5CB6A6;
     --syn-comment: #8A918E;
     --syn-warm: #D9A18C;
+    --syn-name: #B49BE0;
     --syn-add-fg: #9FCFC4;
     --syn-add-bg: #1E2A26;
     --syn-del-fg: #D9A18C;
@@ -57,6 +59,7 @@
   --syn-string: #5CB6A6;
   --syn-comment: #8A918E;
   --syn-warm: #D9A18C;
+  --syn-name: #B49BE0;
   --syn-add-fg: #9FCFC4;
   --syn-add-bg: #1E2A26;
   --syn-del-fg: #D9A18C;
@@ -209,11 +212,13 @@
    change does more for depth than any extra hue.
 
    A plain identifier stays at --ink. Only names a line DECLARES -- tags,
-   functions, classes, decorators -- step up to --ink-strong, and attribute
-   names take the warm tone. Colouring every identifier is what makes a
-   theme look busy.
+   functions, classes, decorators -- take the violet, and attribute names
+   take the warm tone. Colouring every identifier is what makes a theme
+   look busy.
 
-   JSON keys land on .nt and read as --ink-strong; its colons land on .err,
+   JSON keys land on .nt, so they take the violet too. SPEC.md has them at
+   --ink-strong, which is what the comps show; six colours turned out to be
+   one too few once real documents went through it. Colons land on .err,
    which is why that is grouped with punctuation rather than left red. */
 
 /* Keywords, declarations, types, and the word operators (in, and, not). */
@@ -253,14 +258,18 @@
   font-style: italic;
 }
 
-/* Names a line declares or marks up, as against names it merely uses. */
+/* Names a line declares or marks up, as against names it merely uses.
+   Violet, not --ink-strong: a near-white on a dark ground is a brightness
+   nudge, not a colour. Against the body text a tag sat beside, it
+   separated by 1.27 -- the weakest pair in the map, and the reason an XML
+   document read as one colour. This separates by 1.73, and by hue. */
 .article-body .nc,
 .article-body .nd,
 .article-body .ne,
 .article-body .nf,
 .article-body .nl,
 .article-body .nt,
-.article-body .fm { color: var(--ink-strong); }
+.article-body .fm { color: var(--syn-name); }
 
 /* The warm tone: literals, numbers, constants, builtins -- and attribute
    names, which is what rescues XML. Chroma gives an XML document three
@@ -368,7 +377,7 @@
 .article-body .codebg .Tag,
 .article-body pre .Function,
 .article-body pre .Identifier,
-.article-body pre .Tag { color: var(--ink-strong); }
+.article-body pre .Tag { color: var(--syn-name); }
 
 .article-body .codebg .Number,
 .article-body .codebg .Float,
@@ -424,7 +433,8 @@
   font-style: italic;
 }
 
-.article-body pre .html,
-.article-body pre .attr { color: var(--ink-strong); }
+.article-body pre .html { color: var(--syn-name); }
+
+.article-body pre .attr { color: var(--syn-warm); }
 
 .article-body pre .op { color: var(--muted); }
