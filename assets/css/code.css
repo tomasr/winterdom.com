@@ -14,10 +14,10 @@
 
    The old static/assets/css/code.css and monokai.css coloured 2 and 3 with a
    dark Monokai palette on a white page. Both are gone; the map below covers
-   Chroma and Vim with the same six colours.
+   Chroma and Vim with the same set of roles.
 --------------------------------------------------------------------------- */
 
-/* Six colours, not twenty. --deep and --ink-strong already carry the
+/* Seven roles, six colours. --deep and --ink-strong already carry the
    keyword and name values in both themes; the string and comment greens
    and greys do not exist elsewhere, so they live here. Every pairing below
    clears 4.5:1 against its own --surface. */
@@ -25,6 +25,7 @@
 :root {
   --syn-string: #2A5254;
   --syn-comment: #6A706D;
+  --syn-number: #7A3B2A;
   --syn-add-fg: #2A5254;
   --syn-add-bg: #E6EFEA;
   --syn-del-fg: #7A3B2A;
@@ -35,6 +36,7 @@
   :root:not([data-theme="light"]) {
     --syn-string: #9FCFC4;
     --syn-comment: #8A918E;
+    --syn-number: #D9A18C;
     --syn-add-fg: #9FCFC4;
     --syn-add-bg: #1E2A26;
     --syn-del-fg: #D9A18C;
@@ -45,6 +47,7 @@
 :root[data-theme="dark"] {
   --syn-string: #9FCFC4;
   --syn-comment: #8A918E;
+  --syn-number: #D9A18C;
   --syn-add-fg: #9FCFC4;
   --syn-add-bg: #1E2A26;
   --syn-del-fg: #D9A18C;
@@ -179,43 +182,118 @@
   background: var(--surface-2);
 }
 
-/* The token map. Anything not named here inherits plain text -- that is the
-   point of six colours. JSON keys land on .nt and read as --ink-strong,
-   which is intended and is what the comps show. */
+/* The token map --------------------------------------------------------
+   Seven roles, and still no new colour: the warm tone for literals is the
+   one the diff pair already uses, so the palette is the same size it was.
 
+   The first cut named sixteen Chroma classes. Counting what the built site
+   actually emits showed why that read as three colours: .n (575), .nx
+   (227), .nv (163), .err (41), .l (32), .py (29), .si (28) and .kc (22)
+   were not among them, so about eleven hundred tokens -- the single
+   largest group after punctuation -- fell through to plain body colour.
+   The map below covers the classes Chroma emits rather than a tidy subset.
+
+   Two decisions worth keeping:
+
+   Punctuation and operators RECEDE to --muted rather than sitting at body
+   colour. Structure should be quieter than what it holds, and that one
+   change does more for depth than any extra hue.
+
+   A plain identifier stays at --ink. Only names a line DECLARES -- tags,
+   attributes, functions, classes, decorators -- step up to --ink-strong.
+   Colouring every identifier is what makes a theme look busy.
+
+   JSON keys land on .nt and read as --ink-strong; its colons land on .err,
+   which is why that is grouped with punctuation rather than left red. */
+
+/* Keywords, declarations, types, and the word operators (in, and, not). */
 .article-body .k,
+.article-body .kc,
 .article-body .kd,
 .article-body .kn,
+.article-body .kp,
 .article-body .kr,
-.article-body .kt { color: var(--deep); }
+.article-body .kt,
+.article-body .ow { color: var(--deep); }
 
+/* Strings, including escapes, interpolation, heredocs and regexes. */
 .article-body .s,
+.article-body .sa,
+.article-body .sb,
+.article-body .sc,
+.article-body .dl,
+.article-body .sd,
 .article-body .s1,
 .article-body .s2,
-.article-body .sb,
-.article-body .sd { color: var(--syn-string); }
+.article-body .se,
+.article-body .sh,
+.article-body .si,
+.article-body .sr,
+.article-body .ss,
+.article-body .sx { color: var(--syn-string); }
 
 .article-body .c,
-.article-body .c1,
+.article-body .ch,
 .article-body .cm,
+.article-body .cp,
+.article-body .cpf,
+.article-body .c1,
 .article-body .cs {
   color: var(--syn-comment);
   font-style: italic;
 }
 
+/* Names a line declares or marks up, as against names it merely uses. */
 .article-body .na,
-.article-body .nt,
+.article-body .nc,
+.article-body .nd,
+.article-body .ne,
 .article-body .nf,
-.article-body .nc { color: var(--ink-strong); }
+.article-body .nl,
+.article-body .nt,
+.article-body .fm { color: var(--ink-strong); }
 
+/* Literals, numbers, constants and builtins. */
+.article-body .l,
+.article-body .ld,
 .article-body .m,
-.article-body .mi,
+.article-body .mb,
 .article-body .mf,
+.article-body .mh,
+.article-body .mi,
+.article-body .mo,
+.article-body .il,
 .article-body .no,
-.article-body .nb { color: var(--muted); }
+.article-body .nb,
+.article-body .bp { color: var(--syn-number); }
 
+/* Identifiers a line uses: variables, namespaces, properties, output. */
+.article-body .n,
+.article-body .ni,
+.article-body .nn,
+.article-body .nv,
+.article-body .nx,
+.article-body .py,
+.article-body .vc,
+.article-body .vg,
+.article-body .vi,
+.article-body .vm,
+.article-body .go { color: var(--ink); }
+
+/* Structure recedes. .err is here because Chroma files a JSON colon under
+   it, and a colon is punctuation, not an error. */
 .article-body .o,
-.article-body .p { color: var(--ink); }
+.article-body .p,
+.article-body .err { color: var(--muted); }
+
+/* Generic tokens, from diff and REPL output. */
+.article-body .gh,
+.article-body .gu { color: var(--ink-strong); font-weight: 600; }
+.article-body .gs { font-weight: 600; }
+.article-body .ge { font-style: italic; }
+.article-body .gp { color: var(--muted); }
+.article-body .gr,
+.article-body .gt { color: var(--syn-del-fg); }
 
 .article-body .gi {
   color: var(--syn-add-fg);
@@ -283,7 +361,16 @@
 .article-body pre .Number,
 .article-body pre .Float,
 .article-body pre .Boolean,
-.article-body pre .Constant { color: var(--muted); }
+.article-body pre .Constant { color: var(--syn-number); }
+
+/* Structure recedes here too, so a Vim export and a Chroma block read the
+   same way. */
+.article-body .codebg .Operator,
+.article-body .codebg .Delimiter,
+.article-body .codebg .Special,
+.article-body pre .Operator,
+.article-body pre .Delimiter,
+.article-body pre .Special { color: var(--muted); }
 
 /* Legacy line breaks ------------------------------------------------------
    Every line in a legacy code block ends with a <br> AND a newline: the
@@ -303,3 +390,25 @@
 .article-body .codebg br + br {
   display: none;
 }
+
+/* Legacy CodeHTMLer -------------------------------------------------------
+   A third highlighter in the archive: Windows Live Writer's Insert Code
+   plugin, which wrote <pre class="csharpcode"> with its own five names.
+   Four posts, five selectors, and they land on the same roles as
+   everything above. */
+
+.article-body pre .kwrd,
+.article-body pre .asp { color: var(--deep); }
+
+.article-body pre .str { color: var(--syn-string); }
+
+.article-body pre .rem,
+.article-body pre .preproc {
+  color: var(--syn-comment);
+  font-style: italic;
+}
+
+.article-body pre .html,
+.article-body pre .attr { color: var(--ink-strong); }
+
+.article-body pre .op { color: var(--muted); }
