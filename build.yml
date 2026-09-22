@@ -1,0 +1,32 @@
+# Default branch here is master, not main.
+trigger:
+  branches:
+    include:
+    - master
+
+pool:
+  name: Default
+
+variables:
+  site.path: '/data/www/winterdom/htdocs/win'
+  hugo.version: '0.166.0'
+
+steps:
+- bash: |
+   set -e
+   if [ ! -x ~/hugo/$(hugo.version)/hugo ]; then
+     mkdir -p ~/hugo/$(hugo.version)
+     curl -fsSL https://github.com/gohugoio/hugo/releases/download/v$(hugo.version)/hugo_extended_$(hugo.version)_linux-amd64.tar.gz \
+       | tar -xz -C ~/hugo/$(hugo.version) hugo
+   fi
+  displayName: 'install hugo'
+
+- bash: |
+   set -e
+   ~/hugo/$(hugo.version)/hugo --gc --cleanDestinationDir
+  displayName: 'hugo build'
+
+- bash: |
+   rm -r -f $(site.path)
+   cp -r ./public $(site.path)
+  displayName: deploy
