@@ -1,0 +1,31 @@
+{{- /*
+  Markdown tables, wrapped so a wide one scrolls inside its own container
+  instead of pushing the measure out. The container carries a --rule on the
+  right edge as the affordance; see assets/css/article.css.
+
+  Only new content passes through here. The four legacy posts holding raw
+  <table> markup get the element styles but no wrapper -- there is no hook
+  for HTML that was committed as HTML.
+*/ -}}
+<div class="table-wrap">
+  <table>
+    <thead>
+      {{- range .THead }}
+      <tr>
+        {{- range . }}
+        <th{{ with .Alignment }} style="text-align: {{ . }}"{{ end }}>{{ .Text }}</th>
+        {{- end }}
+      </tr>
+      {{- end }}
+    </thead>
+    <tbody>
+      {{- range .TBody }}
+      <tr>
+        {{- range . }}
+        <td{{ with .Alignment }} style="text-align: {{ . }}"{{ end }}>{{ .Text }}</td>
+        {{- end }}
+      </tr>
+      {{- end }}
+    </tbody>
+  </table>
+</div>

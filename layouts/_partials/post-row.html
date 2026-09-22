@@ -1,0 +1,87 @@
+{{- /*
+  One row in a list of posts. Source of truth: design/SPEC.md, "Post list
+  row", and the comps: Main.html (full), Archive.html and Pages.html
+  (compact), MobileHome.html (the phone collapse).
+
+  Two shapes, one partial, because Pages.html says so in as many words:
+  build the row once and the list pages are configuration, not design.
+
+    full     date | category eyebrow, title, excerpt, tag pills
+             The home page and anywhere a row has room to breathe.
+
+    compact  date, title, category -- the whole row is one link
+             Archive years, single tag, single category. Dense lists where
+             an excerpt per row would drown the titles.
+
+  Parameters (dict):
+    page        required, the page to render
+    variant     "full" (default) or "compact"
+    dateFormat  Go layout, default "2 Jan 2006". Pass "2 Jan" on a page
+                that already states the year, as the archive years do.
+    category    false to drop the category. A category's own term page
+                already says which category you are looking at.
+    level       heading level for the title in the full variant, default 3.
+                The compact title is a span -- a dense list of links is not
+                a heading outline.
+*/ -}}
+
+{{- $p := .page -}}
+{{- $compact := eq (.variant | default "full") "compact" -}}
+{{- $format := .dateFormat | default "2 Jan 2006" -}}
+{{- $level := .level | default 3 -}}
+{{- $showCategory := true -}}
+{{- if isset . "category" -}}{{- $showCategory = .category -}}{{- end -}}
+
+{{- /* The primary category: first alphabetically, and only that one.
+       WordPress wrote a post's categories in arbitrary order, so an
+       unsorted pick can change between builds. 267 posts hold more than
+       one; the article meta line is where all of them appear. */ -}}
+{{- $category := false -}}
+{{- if $showCategory -}}
+  {{- with $p.GetTerms "categories" -}}
+    {{- $sorted := .ByTitle -}}
+    {{- $category = index $sorted 0 -}}
+  {{- end -}}
+{{- end -}}
+
+{{- /* No post carries a summary, so most rows fall back to Hugo's, which
+       on a WordPress-era post is the first 70 words of raw HTML. Flatten
+       it to one line of text here and let CSS clamp it to one line of
+       pixels. */ -}}
+{{- $excerpt := "" -}}
+{{- with $p.Description | default $p.Params.summary | default $p.Summary -}}
+  {{- $excerpt = truncate 220 (strings.Trim (. | plainify | htmlUnescape | replaceRE `[[:space:]]+` " ") " ") -}}
+{{- end -}}
+
+{{- /* The date column is sized to its contents: a format carrying a year
+       needs the wider one. Every row in a list shares a format, so the
+       column stays straight. */ -}}
+{{- $narrowDate := not (strings.Contains $format "2006") -}}
+
+{{- if $compact -}}
+<a class="post-row post-row--compact" href="{{ $p.RelPermalink }}">
+  <time class="post-row__date{{ if $narrowDate }} post-row__date--narrow{{ end }}" datetime="{{ $p.Date.Format "2006-01-02" }}">{{ $p.Date.Format $format }}</time>
+  <span class="post-row__title">{{ $p.Title }}</span>
+  {{- with $category }}
+  <span class="post-row__category">{{ .LinkTitle }}</span>
+  {{- end }}
+</a>
+{{- else -}}
+<article class="post-row post-row--full">
+  <time class="post-row__date" datetime="{{ $p.Date.Format "2006-01-02" }}">{{ $p.Date.Format $format }}</time>
+  {{- with $category }}
+  <a class="post-row__category" href="{{ .RelPermalink }}">{{ .LinkTitle }}</a>
+  {{- end }}
+  <h{{ $level }} class="post-row__title"><a href="{{ $p.RelPermalink }}">{{ $p.Title }}</a></h{{ $level }}>
+  {{- with $excerpt }}
+  <p class="post-row__excerpt">{{ . }}</p>
+  {{- end }}
+  {{- with $p.GetTerms "tags" }}
+  <ul class="post-row__tags tag-list">
+    {{- range . }}
+    <li><a class="tag-pill" href="{{ .RelPermalink }}">{{ .LinkTitle }}</a></li>
+    {{- end }}
+  </ul>
+  {{- end }}
+</article>
+{{- end -}}

@@ -1,0 +1,306 @@
+/* ---------------------------------------------------------------------------
+   Site chrome — header, phone menu, footer.
+   Source of truth: design/SPEC.md, "Components" and "Layout and breakpoints".
+
+   The header rule and the footer rule span the content band, not the
+   viewport: both live on the .band row, so they end where the gutter
+   begins. That is what the comps show.
+--------------------------------------------------------------------------- */
+
+/* Header ---------------------------------------------------------------- */
+
+.site-header {
+  padding-top: var(--space-5);
+}
+
+.site-header__row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-4);
+  padding-bottom: 22px;
+  border-bottom: 1px solid var(--rule);
+}
+
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  color: var(--accent);   /* the mark strokes currentColor */
+  text-decoration: none;
+}
+
+.brand:hover {
+  color: var(--accent-hover);
+  text-decoration: none;
+}
+
+.brand__word {
+  font-family: var(--font-display);
+  font-size: 27px;
+  font-weight: 500;
+  line-height: 1;
+  letter-spacing: -0.02em;
+  text-transform: lowercase;
+  color: var(--ink-strong);
+}
+
+/* Nav ------------------------------------------------------------------- */
+
+.site-nav {
+  display: flex;
+  align-items: center;
+  gap: 22px;
+}
+
+@media (min-width: 1200px) {
+  .site-nav {
+    gap: 30px;
+  }
+}
+
+.site-nav__link {
+  font-size: 15px;
+  line-height: 1.4;
+  color: var(--muted);
+  text-decoration: none;
+  /* Carried by every item so the current one does not grow 5px taller
+     than its neighbours and pull itself off the centre line. */
+  padding-bottom: 3px;
+  border-bottom: 2px solid transparent;
+}
+
+.site-nav__link:hover {
+  color: var(--ink-strong);
+  text-decoration: none;
+}
+
+/* The underline is not enough on its own -- the markup also carries
+   aria-current="page". See header.html. */
+.site-nav__link.is-current {
+  color: var(--ink-strong);
+  border-bottom-color: var(--accent);
+}
+
+.site-nav__rss {
+  display: flex;
+  align-items: center;
+  color: var(--muted);
+  /* 16px icon padded out to a 44px target without moving the row. The
+     bottom margin is 5px shy of the top one, which is exactly the
+     underline slot the text links carry -- without it the icon rides
+     2.5px below their baseline. */
+  padding-block: 14px;
+  margin-top: -14px;
+  margin-bottom: -9px;
+}
+
+.site-nav__rss:hover {
+  color: var(--ink-strong);
+}
+
+/* Menu toggle ----------------------------------------------------------- */
+
+.menu-toggle {
+  display: none;
+  width: 44px;
+  height: 44px;
+  align-items: center;
+  justify-content: center;
+  /* Pulls the glyph out toward the gutter so it optically aligns with the
+     text edge rather than sitting 10px inside it. */
+  margin-right: -10px;
+  padding: 0;
+  background: transparent;
+  border: 0;
+  color: var(--ink-strong);
+}
+
+.menu-toggle__close {
+  display: none;
+}
+
+.menu-toggle[aria-expanded="true"] .menu-toggle__open {
+  display: none;
+}
+
+.menu-toggle[aria-expanded="true"] .menu-toggle__close {
+  display: block;
+}
+
+/* Phone menu ------------------------------------------------------------
+   A panel below the header, not an overlay: no slide-in, no scrim. The
+   page behind it does not scroll -- see .menu-open, set by menu.js. */
+
+.site-menu {
+  border-bottom: 1px solid var(--rule);
+}
+
+.site-menu[hidden] {
+  display: none;
+}
+
+.site-menu__list {
+  display: flex;
+  flex-direction: column;
+}
+
+.site-menu__link {
+  display: flex;
+  align-items: center;
+  min-height: 52px;
+  /* Reaches 12px into the gutter so the current item's accent edge has
+     somewhere to sit without shifting the label. */
+  margin-inline: -12px;
+  padding-inline: 12px;
+  border-bottom: 1px solid var(--rule);
+  font-size: 17px;
+  color: var(--ink-strong);
+  text-decoration: none;
+}
+
+.site-menu__link:hover {
+  color: var(--ink-strong);
+  text-decoration: none;
+}
+
+.site-menu__link.is-current {
+  box-shadow: inset 2px 0 0 var(--accent);
+}
+
+.site-menu__link--feed {
+  font-size: 15px;
+  color: var(--muted);
+  border-bottom: 0;
+}
+
+.site-menu__link--feed:hover {
+  color: var(--ink-strong);
+}
+
+/* Below 900px five items plus the icon and the wordmark stop fitting
+   cleanly, so the row becomes wordmark + hamburger. */
+@media (max-width: 899px) {
+  .site-header {
+    padding-top: var(--space-3);
+  }
+
+  .site-header__row {
+    padding-bottom: var(--space-3);
+  }
+
+  .site-nav {
+    display: none;
+  }
+
+  .menu-toggle {
+    display: flex;
+  }
+
+  .brand {
+    gap: 9px;
+  }
+
+  .brand__word {
+    font-size: 23px;
+  }
+
+  /* One mark in the markup, re-weighted here. The arms shorten a touch at
+     this size in the comps; at 22px that is well under half a pixel. */
+  .site-header .mark {
+    width: 22px;
+    height: 22px;
+    stroke-width: 2;
+  }
+}
+
+/* The panel only exists while the nav is collapsed. */
+@media (min-width: 900px) {
+  .site-menu {
+    display: none;
+  }
+}
+
+/* Footer ---------------------------------------------------------------- */
+
+.site-footer__row {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 60px;
+  padding-top: 44px;
+  padding-bottom: 32px;
+  margin-top: var(--space-6);
+  border-top: 1px solid var(--rule);
+}
+
+.site-footer__about {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  max-width: 520px;
+}
+
+.site-footer__copyright {
+  font-size: 14px;
+  line-height: 1.5;
+  color: var(--ink-strong);
+}
+
+.site-footer__disclaimer {
+  font-size: var(--fs-caption);
+  line-height: var(--lh-caption);
+  color: var(--muted);
+}
+
+/* Icons rather than words -- see footer.html, where each link carries the
+   name it drops as an aria-label. Each one is a 44px square around a 20px
+   glyph, and the row is pulled out by half the difference so the first and
+   last icons sit on the text edge rather than 12px inside it. */
+.site-footer__links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 2px;
+  margin-inline: -12px;
+}
+
+.site-footer__links a {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 44px;
+  height: 44px;
+  color: var(--muted);
+}
+
+.site-footer__links a:hover {
+  color: var(--ink-strong);
+  text-decoration: none;
+}
+
+@media (max-width: 639px) {
+  .site-footer__row {
+    flex-direction: column;
+    gap: var(--space-4);
+  }
+}
+
+/* Set by menu.js while the phone menu is open. */
+.menu-open,
+.menu-open body {
+  overflow: hidden;
+}
+
+/* No script: the toggle can never do anything, so it goes away and the
+   panel stands open as a plain stacked nav. The five links stay reachable
+   on a phone either way. The `no-js` class is removed by an inline script
+   in the head, before first paint. */
+@media (max-width: 899px) {
+  .no-js .menu-toggle {
+    display: none;
+  }
+
+  .no-js .site-menu[hidden] {
+    display: block;
+  }
+}

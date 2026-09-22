@@ -1,266 +1,440 @@
-.Boolean {
-   color: #AE81FF;
-}
-.Character {
-   color: #E6DB74;
-}
-.Number {
-   color: #AE81FF;
-}
-.String {
-   color: #E6DB74;
-}
-.Comment {
-   color: #465457;
-}
-.Conditional {
-   color: #F92672;
-   font-weight: bold;
-}
-.Constant {
-   color: #AE81FF;
-   font-weight: bold;
-}
-.Cursor {
-   color: #000000;
-   background: #F8F8F0;
-}
-.CursorLine {
-   background: #000000;
-}
-.CursorColumn {
-   background: #000000;
-}
-.Debug {
-   color: #BCA3A3;
-   font-weight: bold;
-}
-.Define {
-   color: #66D9EF;
-}
-.Delimiter {
-   color: #8F8F8F;
-}
-.DiffAdd {
-   background: #13354A;
-}
-.DiffChange {
-   color: #89807D;
-   background: #4C4745;
-}
-.DiffDelete {
-   color: #960050;
-   background: #1E0010;
-}
-.DiffText {
-   background: #4C4745;
-   font-style: italic;
-   font-weight: bold;
-}
-.Directory {
-   color: #A6E22E;
-   font-weight: bold;
-}
-.Error {
-   color: #960050;
-   background: #1E0010;
-}
-.ErrorMsg {
-   color: #F92672;
-   background: #232526;
-   font-weight: bold;
-}
-.Exception {
-   color: #A6E22E;
-   font-weight: bold;
-}
-.Float {
-   color: #AE81FF;
-}
-.FoldColumn {
-   color: #465457;
-   background: #000000;
-}
-.Folded {
-   color: #465457;
-   background: #000000;
-}
-.Function {
-   color: #A6E22E;
-}
-.Identifier {
-   color: #FD971F;
-}
-.Ignore {
-   color: #808080;
-}
-.IncSearch {
-   color: #C4BE89;
-   background: #000000;
-}
-.Keyword {
-   color: #F92672;
-   font-weight: bold;
-}
-.Label {
-   color: #E6DB74;
-}
-.Macro {
-   color: #C4BE89;
-   font-style: italic;
-}
-.SpecialKey {
-   color: #66D9EF;
-   font-style: italic;
-}
-.LineNr {
-   color: #BCBCBC;
-   background: #232526;
-}
-.MatchParen {
-   color: #000000;
-   background: #FD971F;
-   font-weight: bold;
-}
-.ModeMsg {
-   color: #E6DB74;
-}
-.MoreMsg {
-   color: #E6DB74;
-}
-.NonText {
-   color: #BCBCBC;
-   background: #232526;
-}
-.Operator {
-   color: #F92672;
-}
-.Pmenu {
-   color: #66D9EF;
-   background: #000000;
-}
-.PmenuSel {
-   background: #808080;
-}
-.PmenuSbar {
-   background: #080808;
-}
-.PmenuThumb {
-   color: #66D9EF;
-}
-.PreCondit {
-   color: #A6E22E;
-   font-weight: bold;
-}
-.PreProc {
-   color: #A6E22E;
-}
-.Question {
-   color: #66D9EF;
-}
-.Repeat {
-   color: #F92672;
-   font-weight: bold;
-}
-.Search {
-   color: #FFFFFF;
-   background: #455354;
-}
-.SignColumn {
-   color: #A6E22E;
-   background: #232526;
-}
-.SpecialChar {
-   color: #F92672;
-   font-weight: bold;
-}
-.SpecialComment {
-   color: #465457;
-   font-weight: bold;
-}
-.Special {
-   color: #66D9EF;
-   font-style: italic;
-}
-.SpecialKey {
-   color: #888A85;
-   font-style: italic;
-}
-.SpellBad {
-}
-.SpellCap {
-}
-.SpellLocal {
-}
-.SpellRare {
-}
-.Statement {
-   color: #F92672;
-   font-weight: bold;
-}
-.StatusLine {
-   color: #455354;
-}
-.StatusLineNC {
-   color: #808080;
-   background: #080808;
-}
-.StorageClass {
-   color: #FD971F;
-   font-style: italic;
-}
-.Structure {
-   color: #66D9EF;
-}
-.Tag {
-   color: #F92672;
-   font-style: italic;
-}
-.Title {
-   color: #ef5939;
-}
-.Todo {
-   color: #080808;
-   background: #66D9EF;
-}
-.Typedef {
-   color: #66D9EF;
-}
-.Type {
-   color: #66D9EF;
-}
-.Underlined {
-   color: #808080;
-   text-decoration: underline;
-}
-.VertSplit {
-   color: #808080;
-   background: #080808;
-   font-weight: bold;
-}
-.VisualNOS {
-   background: #403D3D;
-}
-.Visual {
-   background: #403D3D;
-}
-.WarningMsg {
-   color: #FFFFFF;
-   background: #333333;
-   font-weight: bold;
-}
-.WildMenu {
-   color: #66D9EF;
-   background: #000000;
-}
-.codebg {
-   border-left: solid 1em #303030;
-   padding: 0.8em 0.5em;
-   color: #F8F8F2;
-   background: #1B1D1E;
-}
-code {
-   font-family:  Monaco, Consolas, "DejaVu Sans Mono", "Lucida Console", monospace;
-   font-size: 1.0em;
+/* ---------------------------------------------------------------------------
+   Code blocks and syntax — winterdom.com, 2026 redesign.
+   Source of truth: design/SPEC.md, "Code blocks and syntax". Comps:
+   Elements.html (the token swatches and the highlighted line), Post.html.
+
+   Three kinds of code block have to land in the same box:
+
+     1. Fenced blocks, wrapped by layouts/_markup/render-codeblock.html and
+        tokenised by Chroma into Pygments class names.
+     2. Legacy <pre> blocks -- 81 posts -- committed as raw HTML with no
+        wrapper, no header bar and no token classes at all.
+     3. Legacy <div class="codebg"><code> blocks -- 88 posts -- exported from
+        Vim with its own class names: Identifier, Statement, String, Comment.
+
+   The old static/assets/css/code.css and monokai.css coloured 2 and 3 with a
+   dark Monokai palette on a white page. Both are gone; the map below covers
+   Chroma and Vim with the same set of roles.
+--------------------------------------------------------------------------- */
+
+/* Eight roles, seven colours. --deep carries the keyword blue in both
+   themes; the string green, the comment grey, the warm tone and the name
+   violet do not exist elsewhere in the design, so they live here. Every
+   pairing below clears 4.5:1 against its own --surface.
+
+   The dark string is #5CB6A6, not the #9FCFC4 SPEC.md lists. Measured
+   against the body text it sits on, every other role separates by 1.6 to
+   2.3 in contrast ratio -- comment 2.30, punctuation 1.86, keyword 1.85,
+   number 1.59 -- and #9FCFC4 separated by 1.23. It was the one colour
+   relying on hue alone, which is exactly the token a reader most needs to
+   pick out. The deeper green reads at 1.73 and still clears 6.55:1 on
+   --surface. The light theme needs no equivalent change: there the string
+   already separates better than the keyword does. */
+
+:root {
+  --syn-string: #2A5254;
+  --syn-comment: #6A706D;
+  --syn-warm: #7A3B2A;
+  --syn-name: #6A4C93;
+  --syn-add-fg: #2A5254;
+  --syn-add-bg: #E6EFEA;
+  --syn-del-fg: #7A3B2A;
+  --syn-del-bg: #F6E8E3;
 }
 
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --syn-string: #5CB6A6;
+    --syn-comment: #8A918E;
+    --syn-warm: #D9A18C;
+    --syn-name: #B49BE0;
+    --syn-add-fg: #9FCFC4;
+    --syn-add-bg: #1E2A26;
+    --syn-del-fg: #D9A18C;
+    --syn-del-bg: #2C211E;
+  }
+}
+
+:root[data-theme="dark"] {
+  --syn-string: #5CB6A6;
+  --syn-comment: #8A918E;
+  --syn-warm: #D9A18C;
+  --syn-name: #B49BE0;
+  --syn-add-fg: #9FCFC4;
+  --syn-add-bg: #1E2A26;
+  --syn-del-fg: #D9A18C;
+  --syn-del-bg: #2C211E;
+}
+
+/* The box ----------------------------------------------------------------
+   One surface box, whichever of the three kinds arrives. Scrolls sideways
+   rather than wrapping: code that wraps at a 720px measure is harder to
+   read than code you have to push. */
+
+.codeblock,
+.article-body pre,
+.article-body .codebg {
+  border: 1px solid var(--rule);
+  border-radius: var(--radius-block);
+  background: var(--surface);
+}
+
+.codeblock {
+  /* Keeps the header bar's corners inside the radius. */
+  overflow: hidden;
+}
+
+.article-body pre,
+.article-body .codebg {
+  padding: 18px 20px;
+  overflow-x: auto;
+}
+
+/* Inside the wrapper the box lives on .codeblock, so the pre gives it up. */
+.codeblock pre {
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+}
+
+.article-body pre {
+  font-size: var(--fs-code);
+  line-height: var(--lh-code);
+  color: var(--ink);
+  tab-size: 2;
+}
+
+/* Undoes the inline-code pill from article.css for code inside a block. */
+.article-body pre code,
+.article-body .codebg code {
+  padding: 0;
+  border: 0;
+  border-radius: 0;
+  background: none;
+  color: inherit;
+  font-size: inherit;
+}
+
+.article-body .codebg code {
+  display: block;
+  font-size: var(--fs-code);
+  line-height: var(--lh-code);
+  color: var(--ink);
+}
+
+/* Header bar -------------------------------------------------------------
+   Filename, or the language when the fence gives no filename, and the Copy
+   button that copy.js injects. Omitted entirely when a fence carries
+   neither -- the render hook decides, not this sheet. */
+
+.codeblock__bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-3);
+  padding: 9px 16px;
+  border-bottom: 1px solid var(--rule);
+  background: var(--surface-2);
+}
+
+.codeblock__name {
+  overflow: hidden;
+  font-family: var(--font-mono);
+  font-size: var(--fs-eyebrow);
+  line-height: var(--lh-eyebrow);
+  letter-spacing: var(--tr-upper-tight);
+  text-transform: uppercase;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  color: var(--muted);
+}
+
+.codeblock__copy {
+  flex-shrink: 0;
+  padding: 4px 10px;
+  border: 1px solid var(--rule);
+  border-radius: var(--radius-inline);
+  background: transparent;
+  font-family: var(--font-mono);
+  font-size: var(--fs-eyebrow);
+  letter-spacing: var(--tr-upper-tight);
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+.codeblock__copy:hover {
+  color: var(--ink-strong);
+  border-color: var(--ink-strong);
+}
+
+/* Same trick as the tag pills: reach 44px without growing the bar. */
+@media (pointer: coarse) {
+  .codeblock__bar {
+    position: relative;
+  }
+
+  .codeblock__copy::after {
+    content: "";
+    position: absolute;
+    inset: 0 0 0 auto;
+    width: 60px;
+  }
+}
+
+/* Chroma -----------------------------------------------------------------
+   Line numbers stay off. A highlighted line is a band across the full width
+   of the block, which is why .hl pulls back out through the pre's padding
+   rather than sitting inside it. */
+
+
+.codeblock .hl {
+  display: block;
+  margin-inline: -20px;
+  padding-inline: 20px;
+  background: var(--surface-2);
+}
+
+/* The token map --------------------------------------------------------
+   Seven roles, and still no new colour: the warm tone is the one the diff
+   pair already uses, so the palette is the same size it was.
+
+   The first cut named sixteen Chroma classes. Counting what the built site
+   actually emits showed why that read as three colours: .n (575), .nx
+   (227), .nv (163), .err (41), .l (32), .py (29), .si (28) and .kc (22)
+   were not among them, so about eleven hundred tokens -- the single
+   largest group after punctuation -- fell through to plain body colour.
+   The map below covers the classes Chroma emits rather than a tidy subset.
+
+   Two decisions worth keeping:
+
+   Punctuation and operators RECEDE to --muted rather than sitting at body
+   colour. Structure should be quieter than what it holds, and that one
+   change does more for depth than any extra hue.
+
+   A plain identifier stays at --ink. Only names a line DECLARES -- tags,
+   functions, classes, decorators -- take the violet, and attribute names
+   take the warm tone. Colouring every identifier is what makes a theme
+   look busy.
+
+   JSON keys land on .nt, so they take the violet too. SPEC.md has them at
+   --ink-strong, which is what the comps show; six colours turned out to be
+   one too few once real documents went through it. Colons land on .err,
+   which is why that is grouped with punctuation rather than left red. */
+
+/* Keywords, declarations, types, and the word operators (in, and, not). */
+.article-body .k,
+.article-body .kc,
+.article-body .kd,
+.article-body .kn,
+.article-body .kp,
+.article-body .kr,
+.article-body .kt,
+.article-body .ow { color: var(--deep); }
+
+/* Strings, including escapes, interpolation, heredocs and regexes. */
+.article-body .s,
+.article-body .sa,
+.article-body .sb,
+.article-body .sc,
+.article-body .dl,
+.article-body .sd,
+.article-body .s1,
+.article-body .s2,
+.article-body .se,
+.article-body .sh,
+.article-body .si,
+.article-body .sr,
+.article-body .ss,
+.article-body .sx { color: var(--syn-string); }
+
+.article-body .c,
+.article-body .ch,
+.article-body .cm,
+.article-body .cp,
+.article-body .cpf,
+.article-body .c1,
+.article-body .cs {
+  color: var(--syn-comment);
+  font-style: italic;
+}
+
+/* Names a line declares or marks up, as against names it merely uses.
+   Violet, not --ink-strong: a near-white on a dark ground is a brightness
+   nudge, not a colour. Against the body text a tag sat beside, it
+   separated by 1.27 -- the weakest pair in the map, and the reason an XML
+   document read as one colour. This separates by 1.73, and by hue. */
+.article-body .nc,
+.article-body .nd,
+.article-body .ne,
+.article-body .nf,
+.article-body .nl,
+.article-body .nt,
+.article-body .fm { color: var(--syn-name); }
+
+/* The warm tone: literals, numbers, constants, builtins -- and attribute
+   names, which is what rescues XML. Chroma gives an XML document three
+   things: .nt for a tag, .na for an attribute and .s for a value. With
+   .na sitting on --ink-strong beside the tags, a policy document was two
+   colours: white for all the structure and green for the quoted values.
+   Warm separates the attribute from the tag by lightness and from the
+   value by hue, which is the pair a reader is actually scanning for. */
+.article-body .na,
+.article-body .l,
+.article-body .ld,
+.article-body .m,
+.article-body .mb,
+.article-body .mf,
+.article-body .mh,
+.article-body .mi,
+.article-body .mo,
+.article-body .il,
+.article-body .no,
+.article-body .nb,
+.article-body .bp { color: var(--syn-warm); }
+
+/* Identifiers a line uses: variables, namespaces, properties, output. */
+.article-body .n,
+.article-body .ni,
+.article-body .nn,
+.article-body .nv,
+.article-body .nx,
+.article-body .py,
+.article-body .vc,
+.article-body .vg,
+.article-body .vi,
+.article-body .vm,
+.article-body .go { color: var(--ink); }
+
+/* Structure recedes. .err is here because Chroma files a JSON colon under
+   it, and a colon is punctuation, not an error. */
+.article-body .o,
+.article-body .p,
+.article-body .err { color: var(--muted); }
+
+/* Generic tokens, from diff and REPL output. */
+.article-body .gh,
+.article-body .gu { color: var(--ink-strong); font-weight: 600; }
+.article-body .gs { font-weight: 600; }
+.article-body .ge { font-style: italic; }
+.article-body .gp { color: var(--muted); }
+.article-body .gr,
+.article-body .gt { color: var(--syn-del-fg); }
+
+.article-body .gi {
+  color: var(--syn-add-fg);
+  background: var(--syn-add-bg);
+}
+
+.article-body .gd {
+  color: var(--syn-del-fg);
+  background: var(--syn-del-bg);
+}
+
+/* Legacy Vim exports ------------------------------------------------------
+   88 posts carry code exported by Vim's :TOhtml, which writes its own class
+   names. They are scoped to the two block kinds so a stray .Comment or .Tag
+   somewhere else in twenty years of markup is not repainted by accident.
+
+   Mapped onto exactly the six colours above, not onto a second palette. */
+
+.article-body .codebg .Statement,
+.article-body .codebg .Keyword,
+.article-body .codebg .Conditional,
+.article-body .codebg .Repeat,
+.article-body .codebg .StorageClass,
+.article-body .codebg .Structure,
+.article-body .codebg .Typedef,
+.article-body .codebg .Type,
+.article-body .codebg .Define,
+.article-body .codebg .PreProc,
+.article-body .codebg .Include,
+.article-body .codebg .Exception,
+.article-body pre .Statement,
+.article-body pre .Keyword,
+.article-body pre .Conditional,
+.article-body pre .Repeat,
+.article-body pre .StorageClass,
+.article-body pre .Structure,
+.article-body pre .Typedef,
+.article-body pre .Type,
+.article-body pre .Define,
+.article-body pre .PreProc,
+.article-body pre .Include,
+.article-body pre .Exception { color: var(--deep); }
+
+.article-body .codebg .String,
+.article-body .codebg .Character,
+.article-body pre .String,
+.article-body pre .Character { color: var(--syn-string); }
+
+.article-body .codebg .Comment,
+.article-body .codebg .SpecialComment,
+.article-body pre .Comment,
+.article-body pre .SpecialComment { color: var(--syn-comment); }
+
+.article-body .codebg .Function,
+.article-body .codebg .Identifier,
+.article-body .codebg .Tag,
+.article-body pre .Function,
+.article-body pre .Identifier,
+.article-body pre .Tag { color: var(--syn-name); }
+
+.article-body .codebg .Number,
+.article-body .codebg .Float,
+.article-body .codebg .Boolean,
+.article-body .codebg .Constant,
+.article-body pre .Number,
+.article-body pre .Float,
+.article-body pre .Boolean,
+.article-body pre .Constant { color: var(--syn-warm); }
+
+/* Structure recedes here too, so a Vim export and a Chroma block read the
+   same way. */
+.article-body .codebg .Operator,
+.article-body .codebg .Delimiter,
+.article-body .codebg .Special,
+.article-body pre .Operator,
+.article-body pre .Delimiter,
+.article-body pre .Special { color: var(--muted); }
+
+/* Legacy line breaks ------------------------------------------------------
+   Every line in a legacy code block ends with a <br> AND a newline: the
+   original export wrote the tag, a later migration kept the newline. Inside
+   white-space: pre that is two breaks, so every block has been double
+   spaced since the WordPress days. Suppressing the tag leaves the newline
+   and the whitespace intact; suppressing the newline instead would need a
+   content rewrite.
+
+   In .codebg there is no pre, so the newline collapses and the export's own
+   break and the injected one sit next to each other -- hence br + br. */
+
+.article-body pre br {
+  display: none;
+}
+
+.article-body .codebg br + br {
+  display: none;
+}
+
+/* Legacy CodeHTMLer -------------------------------------------------------
+   A third highlighter in the archive: Windows Live Writer's Insert Code
+   plugin, which wrote <pre class="csharpcode"> with its own five names.
+   Four posts, five selectors, and they land on the same roles as
+   everything above. */
+
+.article-body pre .kwrd,
+.article-body pre .asp { color: var(--deep); }
+
+.article-body pre .str { color: var(--syn-string); }
+
+.article-body pre .rem,
+.article-body pre .preproc {
+  color: var(--syn-comment);
+  font-style: italic;
+}
+
+.article-body pre .html { color: var(--syn-name); }
+
+.article-body pre .attr { color: var(--syn-warm); }
+
+.article-body pre .op { color: var(--muted); }

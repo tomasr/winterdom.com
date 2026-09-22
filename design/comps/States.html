@@ -1,0 +1,161 @@
+<!doctype html>
+<!--
+  States & breakpoints — reference comp, winterdom.com redesign.
+  Static mockup, NOT a Hugo template. Read it for metrics, markup shape and
+  colour values; the rules are written down in ../SPEC.md.
+  Sample post titles, bodies and excerpts are invented placeholders.
+-->
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>States, breakpoints and exports</title>
+
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;0,6..72,600;1,6..72,400&amp;family=IBM+Plex+Sans:wght@400;500;600&amp;family=IBM+Plex+Mono:wght@400;500&amp;display=swap">
+<style>
+body{margin:0;background:#FFFFFF;color:#353535;font-family:'IBM Plex Sans',system-ui,sans-serif;-webkit-font-smoothing:antialiased;}
+a{color:#3C6E71;}
+a:hover{color:#2A5254;}
+h1,h2,h3{font-family:'Newsreader',Georgia,serif;font-weight:500;margin:0;color:#1D1F1F;letter-spacing:-0.012em;}
+p{margin:0;}
+code{font-family:'IBM Plex Mono',ui-monospace,monospace;}
+</style>
+</head>
+<body>
+
+<div style="width: 1280px; height: 1560px; box-sizing: border-box; padding: 52px 80px; background: #FFFFFF; display: flex; flex-direction: column; gap: 32px;">
+
+  <div style="display: flex; align-items: baseline; justify-content: space-between; padding-bottom: 14px; border-bottom: 1px solid #1D1F1F;">
+    <h1 style="font-family: 'IBM Plex Sans', sans-serif; font-size: 12px; font-weight: 600; letter-spacing: 0.18em; text-transform: uppercase; color: #1D1F1F;">States, breakpoints, exports</h1>
+    <span style="font-family: 'IBM Plex Mono', monospace; font-size: 12px; color: #5C605E;">the parts a comp can't show at rest</span>
+  </div>
+
+  <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 40px;">
+
+    <section style="display: flex; flex-direction: column; gap: 18px;">
+      <h2 style="font-family: 'IBM Plex Sans', sans-serif; font-size: 11px; font-weight: 600; letter-spacing: 0.16em; text-transform: uppercase; color: #5C605E;">Interaction states</h2>
+
+      <div style="display: flex; flex-direction: column; gap: 14px; padding: 22px; border: 1px solid #D9D9D9; border-radius: 5px;">
+        <div style="display: flex; align-items: center; gap: 18px;">
+          <span style="font-size: 12.5px; color: #5C605E; width: 92px; flex-shrink: 0;">Link, rest</span>
+          <a href="States.html" style="font-size: 16px; color: #3C6E71; text-decoration: none;">Searching the index</a>
+        </div>
+        <div style="display: flex; align-items: center; gap: 18px;">
+          <span style="font-size: 12.5px; color: #5C605E; width: 92px; flex-shrink: 0;">Hover</span>
+          <a href="States.html" style="font-size: 16px; color: #2A5254; text-decoration: underline; text-underline-offset: 2px;">Searching the index</a>
+        </div>
+        <div style="display: flex; align-items: center; gap: 18px;">
+          <span style="font-size: 12.5px; color: #5C605E; width: 92px; flex-shrink: 0;">Focus</span>
+          <a href="States.html" style="font-size: 16px; color: #3C6E71; text-decoration: none; outline: 2px solid #3C6E71; outline-offset: 2px; border-radius: 2px;">Searching the index</a>
+        </div>
+        <div style="display: flex; align-items: center; gap: 18px;">
+          <span style="font-size: 12.5px; color: #5C605E; width: 92px; flex-shrink: 0;">Visited</span>
+          <a href="States.html" style="font-size: 16px; color: #3C6E71; text-decoration: none;">Searching the index</a>
+        </div>
+      </div>
+
+      <div style="display: flex; flex-direction: column; gap: 16px; padding: 22px; border: 1px solid #D9D9D9; border-radius: 5px;">
+        <div style="display: flex; align-items: center; gap: 12px;">
+          <span style="font-size: 12.5px; color: #5C605E; width: 92px; flex-shrink: 0;">Tag pill</span>
+          <a href="States.html" style="font-family: 'IBM Plex Mono', monospace; font-size: 12px; color: #5C605E; text-decoration: none; padding: 3px 10px; border: 1px solid #D9D9D9; border-radius: 999px;">claude</a>
+          <a href="States.html" style="font-family: 'IBM Plex Mono', monospace; font-size: 12px; color: #1D1F1F; text-decoration: none; padding: 3px 10px; border: 1px solid #1D1F1F; border-radius: 999px;">claude</a>
+          <a href="States.html" style="font-family: 'IBM Plex Mono', monospace; font-size: 12px; color: #5C605E; text-decoration: none; padding: 3px 10px; border: 1px solid #D9D9D9; border-radius: 999px; outline: 2px solid #3C6E71; outline-offset: 2px;">claude</a>
+        </div>
+        <div style="display: flex; align-items: center; gap: 12px;">
+          <span style="font-size: 12.5px; color: #5C605E; width: 92px; flex-shrink: 0;">Button</span>
+          <button type="button" style="font-family: inherit; font-size: 14px; color: #FFFFFF; background: #3C6E71; border: 1px solid #3C6E71; border-radius: 4px; padding: 11px 16px; min-height: 44px; box-sizing: border-box; cursor: pointer;">Copy</button>
+          <button type="button" style="font-family: inherit; font-size: 14px; color: #FFFFFF; background: #2A5254; border: 1px solid #2A5254; border-radius: 4px; padding: 11px 16px; min-height: 44px; box-sizing: border-box; cursor: pointer;">Copy</button>
+          <button type="button" style="font-family: inherit; font-size: 14px; color: #FFFFFF; background: #3C6E71; border: 1px solid #3C6E71; border-radius: 4px; padding: 11px 16px; min-height: 44px; box-sizing: border-box; cursor: pointer; outline: 2px solid #3C6E71; outline-offset: 2px;">Copy</button>
+        </div>
+        <p style="font-size: 13px; line-height: 1.6; color: #5C605E;">Rest · hover · focus, left to right. Focus rings use <code style="font-size: 12.5px; color: #1D1F1F;">:focus-visible</code> only, so a mouse click never shows one.</p>
+      </div>
+
+      <div style="display: flex; flex-direction: column; gap: 10px; padding: 18px 22px; background: #F3F4F3; border-radius: 4px;">
+        <span style="font-family: 'IBM Plex Mono', monospace; font-size: 11px; letter-spacing: 0.16em; text-transform: uppercase; color: #3C6E71;">Skip link</span>
+        <p style="font-size: 14px; line-height: 1.65; color: #353535;">First focusable element on the page, off-screen until focused, then a solid accent chip at the top-left jumping to <code style="font-size: 12.5px; color: #1D1F1F;">#main</code>.</p>
+      </div>
+    </section>
+
+    <section style="display: flex; flex-direction: column; gap: 18px;">
+      <h2 style="font-family: 'IBM Plex Sans', sans-serif; font-size: 11px; font-weight: 600; letter-spacing: 0.16em; text-transform: uppercase; color: #5C605E;">Phone menu, open</h2>
+      <div style="width: 340px; border: 1px solid #D9D9D9; border-radius: 5px; overflow: hidden;">
+        <div style="display: flex; align-items: center; justify-content: space-between; padding: 16px 20px; border-bottom: 1px solid #D9D9D9;">
+          <span style="font-family: 'Newsreader', Georgia, serif; font-size: 22px; font-weight: 500; letter-spacing: -0.02em; color: #1D1F1F;">winterdom</span>
+          <button type="button" aria-label="Close menu" style="width: 44px; height: 44px; margin-right: -10px; display: flex; align-items: center; justify-content: center; background: transparent; border: 0; cursor: pointer; color: #1D1F1F;">
+            <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><path d="M2 2l12 12"/><path d="M14 2L2 14"/></svg>
+          </button>
+        </div>
+        <a href="States.html" style="display: flex; align-items: center; padding: 0 20px; min-height: 52px; font-size: 17px; color: #1D1F1F; text-decoration: none; border-bottom: 1px solid #D9D9D9; border-left: 2px solid #3C6E71;">Writing</a>
+        <a href="States.html" style="display: flex; align-items: center; padding: 0 20px; min-height: 52px; font-size: 17px; color: #1D1F1F; text-decoration: none; border-bottom: 1px solid #D9D9D9;">Archive</a>
+        <a href="States.html" style="display: flex; align-items: center; padding: 0 20px; min-height: 52px; font-size: 17px; color: #1D1F1F; text-decoration: none; border-bottom: 1px solid #D9D9D9;">Categories</a>
+        <a href="States.html" style="display: flex; align-items: center; padding: 0 20px; min-height: 52px; font-size: 17px; color: #1D1F1F; text-decoration: none; border-bottom: 1px solid #D9D9D9;">Tags</a>
+        <a href="States.html" style="display: flex; align-items: center; padding: 0 20px; min-height: 52px; font-size: 17px; color: #1D1F1F; text-decoration: none; border-bottom: 1px solid #D9D9D9;">About</a>
+        <a href="States.html" style="display: flex; align-items: center; padding: 0 20px; min-height: 52px; font-size: 15px; color: #5C605E; text-decoration: none;">RSS feed</a>
+      </div>
+      <p style="font-size: 13px; line-height: 1.6; color: #5C605E; max-width: 340px;">A panel below the header, not an overlay. The current item carries a 2px accent edge. Focus moves in on open and back to the toggle on close; Escape closes it; the page behind does not scroll.</p>
+    </section>
+
+  </div>
+
+  <section style="display: flex; flex-direction: column; gap: 16px;">
+    <h2 style="font-family: 'IBM Plex Sans', sans-serif; font-size: 11px; font-weight: 600; letter-spacing: 0.16em; text-transform: uppercase; color: #5C605E;">Breakpoints</h2>
+    <div style="display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 20px;">
+      <div style="padding: 20px; background: #F3F4F3; border-radius: 4px; display: flex; flex-direction: column; gap: 8px;">
+        <code style="font-size: 13px; color: #3C6E71;">&lt; 640</code>
+        <p style="font-size: 13.5px; line-height: 1.6; color: #353535;">24px gutter, fluid measure, hamburger. Title 33px, body 17px.</p>
+      </div>
+      <div style="padding: 20px; background: #F3F4F3; border-radius: 4px; display: flex; flex-direction: column; gap: 8px;">
+        <code style="font-size: 13px; color: #3C6E71;">640 – 899</code>
+        <p style="font-size: 13.5px; line-height: 1.6; color: #353535;">40px gutter, measure capped at 620. Still hamburger.</p>
+      </div>
+      <div style="padding: 20px; background: #F3F4F3; border-radius: 4px; display: flex; flex-direction: column; gap: 8px;">
+        <code style="font-size: 13px; color: #3C6E71;">900 – 1199</code>
+        <p style="font-size: 13.5px; line-height: 1.6; color: #353535;">56px gutter, band caps at 960, measure 660. Full nav at 22px gaps.</p>
+      </div>
+      <div style="padding: 20px; background: #F3F4F3; border-radius: 4px; display: flex; flex-direction: column; gap: 8px;">
+        <code style="font-size: 13px; color: #3C6E71;">≥ 1200</code>
+        <p style="font-size: 13.5px; line-height: 1.6; color: #353535;">80px gutter, band 1120, measure 720. Nav gaps 30px. Nothing grows past this.</p>
+      </div>
+    </div>
+  </section>
+
+  <section style="display: flex; flex-direction: column; gap: 16px;">
+    <h2 style="font-family: 'IBM Plex Sans', sans-serif; font-size: 11px; font-weight: 600; letter-spacing: 0.16em; text-transform: uppercase; color: #5C605E;">Icon and card exports</h2>
+    <div style="display: flex; gap: 24px; align-items: flex-start;">
+
+      <div style="display: flex; gap: 16px; align-items: flex-end; padding: 22px; border: 1px solid #D9D9D9; border-radius: 5px;">
+        <div style="display: flex; flex-direction: column; align-items: center; gap: 8px;">
+          <div style="width: 64px; height: 64px; border-radius: 14px; background: #3C6E71; display: flex; align-items: center; justify-content: center;"><span style="font-family: 'Newsreader', Georgia, serif; font-size: 39px; line-height: 1; color: #FFFFFF;">æ</span></div>
+          <code style="font-size: 11px; color: #5C605E;">180 · touch</code>
+        </div>
+        <div style="display: flex; flex-direction: column; align-items: center; gap: 8px;">
+          <div style="width: 32px; height: 32px; border-radius: 7px; background: #3C6E71; display: flex; align-items: center; justify-content: center;"><span style="font-family: 'Newsreader', Georgia, serif; font-size: 20px; line-height: 1; color: #FFFFFF;">æ</span></div>
+          <code style="font-size: 11px; color: #5C605E;">32 · svg</code>
+        </div>
+        <div style="display: flex; flex-direction: column; align-items: center; gap: 8px;">
+          <div style="width: 16px; height: 16px; border-radius: 4px; background: #3C6E71; display: flex; align-items: center; justify-content: center;"><span style="font-family: 'Newsreader', Georgia, serif; font-size: 11px; line-height: 1; color: #FFFFFF;">æ</span></div>
+          <code style="font-size: 11px; color: #5C605E;">16 · ico</code>
+        </div>
+      </div>
+
+      <div style="flex-grow: 1; display: flex; flex-direction: column; gap: 8px;">
+        <div style="display: flex; flex-direction: column; justify-content: space-between; height: 152px; box-sizing: border-box; padding: 22px 26px; background: #F3F4F3; border-radius: 5px;">
+          <svg width="30" height="30" viewBox="0 0 32 32" fill="none" stroke="#3C6E71" stroke-width="1.8" stroke-linecap="round" aria-hidden="true">
+            <g><path d="M16 3.5L16 28.5"/><path d="M16 9.2L11.4 6.5"/><path d="M16 9.2L20.6 6.5"/><path d="M16 22.8L11.4 25.5"/><path d="M16 22.8L20.6 25.5"/></g>
+            <g transform="rotate(60 16 16)"><path d="M16 3.5L16 28.5"/><path d="M16 9.2L11.4 6.5"/><path d="M16 9.2L20.6 6.5"/><path d="M16 22.8L11.4 25.5"/><path d="M16 22.8L20.6 25.5"/></g>
+            <g transform="rotate(120 16 16)"><path d="M16 3.5L16 28.5"/><path d="M16 9.2L11.4 6.5"/><path d="M16 9.2L20.6 6.5"/><path d="M16 22.8L11.4 25.5"/><path d="M16 22.8L20.6 25.5"/></g>
+          </svg>
+          <span style="font-family: 'Newsreader', Georgia, serif; font-size: 30px; line-height: 1.15; color: #1D1F1F;">Kondex: Teaching Claude to use it</span>
+          <div style="display: flex; align-items: baseline; gap: 10px; font-family: 'IBM Plex Mono', monospace; font-size: 11px; letter-spacing: 0.14em; text-transform: uppercase; color: #5C605E;">
+            <span>winterdom.com</span><span aria-hidden="true">·</span><span>16 Sep 2026</span>
+          </div>
+        </div>
+        <p style="font-size: 13px; line-height: 1.6; color: #5C605E;">OG card at 1200×630, generated per post. Title in Newsreader over up to three lines; if it runs longer, truncate rather than shrink.</p>
+      </div>
+
+    </div>
+  </section>
+
+</div>
+
+</body>
+</html>

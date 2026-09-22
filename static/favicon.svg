@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" width="32" height="32" role="img" aria-label="winterdom">
+  <!-- The ae monogram, white on the accent, 7px radius. The crystal mark
+       loses legibility below about 20px and the ae does not, which is why
+       the small sizes carry this and not the mark. See design/SPEC.md.
+
+       An SVG favicon does not load webfonts, so Newsreader will not resolve
+       here and Georgia takes it. That is the same fallback stack the
+       Identity comp draws the monogram with. -->
+  <rect width="32" height="32" rx="7" fill="#3C6E71"/>
+  <text x="16" y="16.5" fill="#FFFFFF" font-family="Newsreader,Georgia,'Times New Roman',serif"
+        font-size="21" text-anchor="middle" dominant-baseline="central">æ</text>
+</svg>

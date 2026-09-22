@@ -1,0 +1,76 @@
+{{- /*
+  Site header: mark plus wordmark on the left, five nav items and the RSS
+  icon on the right. Below 900px the nav collapses to a hamburger and the
+  five items move into a panel that opens below the header -- five items
+  plus the icon and the wordmark stop fitting cleanly before that.
+
+  The nav is built once from $nav and rendered twice, so the desktop row
+  and the phone panel can never drift apart.
+*/ -}}
+
+{{- $feed := site.Home.OutputFormats.Get "rss" -}}
+
+{{- /* Which nav item, if any, is the section being looked at. */ -}}
+{{- $current := "" -}}
+{{- if .IsHome -}}
+  {{- $current = "writing" -}}
+{{- else -}}
+  {{- $current = index (dict
+      "posts" "writing"
+      "archive" "archive"
+      "categories" "categories"
+      "tags" "tags"
+      "me" "about") .Section | default "" -}}
+{{- end -}}
+
+{{- $nav := slice
+  (dict "key" "writing"    "title" "Writing"    "url" "/")
+  (dict "key" "archive"    "title" "Archive"    "url" "/archive/")
+  (dict "key" "categories" "title" "Categories" "url" "/categories/")
+  (dict "key" "tags"       "title" "Tags"       "url" "/tags/")
+  (dict "key" "about"      "title" "About"      "url" "/me/")
+-}}
+
+<header class="site-header">
+  <div class="band site-header__row">
+
+    <a class="brand" href="{{ "" | relURL }}">
+      {{- partial "mark.html" (dict "size" 27) }}
+      {{- /* Lowercased in CSS, not here: the authored casing is what a
+             screen reader should read out. */}}
+      <span class="brand__word">{{ site.Title }}</span>
+    </a>
+
+    <nav class="site-nav" aria-label="Main">
+      {{- range $nav }}
+      <a class="site-nav__link{{ if eq .key $current }} is-current{{ end }}"
+         href="{{ .url | relURL }}"{{ if eq .key $current }} aria-current="page"{{ end }}>{{ .title }}</a>
+      {{- end }}
+      {{- with $feed }}
+      <a class="site-nav__rss" href="{{ .RelPermalink }}" aria-label="RSS feed">
+        <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" aria-hidden="true"><path d="M3 12.5h0.01"/><path d="M3 8.5a4.5 4.5 0 0 1 4.5 4.5"/><path d="M3 4.5a8.5 8.5 0 0 1 8.5 8.5"/></svg>
+      </a>
+      {{- end }}
+    </nav>
+
+    <button class="menu-toggle" type="button" aria-expanded="false" aria-controls="site-menu" aria-label="Open menu">
+      <svg class="menu-toggle__open" width="20" height="14" viewBox="0 0 20 14" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><path d="M1 1h18"/><path d="M1 7h18"/><path d="M1 13h12"/></svg>
+      <svg class="menu-toggle__close" width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><path d="M2 2l12 12"/><path d="M14 2L2 14"/></svg>
+    </button>
+
+  </div>
+
+  {{- /* A panel below the header, not an overlay. Hidden until the toggle
+         opens it, and never shown at all once the full nav fits. */}}
+  <div class="site-menu" id="site-menu" hidden>
+    <nav class="band site-menu__list" aria-label="Main, phone">
+      {{- range $nav }}
+      <a class="site-menu__link{{ if eq .key $current }} is-current{{ end }}"
+         href="{{ .url | relURL }}"{{ if eq .key $current }} aria-current="page"{{ end }}>{{ .title }}</a>
+      {{- end }}
+      {{- with $feed }}
+      <a class="site-menu__link site-menu__link--feed" href="{{ .RelPermalink }}">RSS feed</a>
+      {{- end }}
+    </nav>
+  </div>
+</header>

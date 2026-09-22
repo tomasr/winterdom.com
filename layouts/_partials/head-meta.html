@@ -1,0 +1,62 @@
+{{- /*
+  Description, canonical, icons, and the sharing cards.
+
+  Icons: favicon.svg is the whole set for anything modern, and the 2017
+  favicon.ico stays as the raster fallback for what is not. The PNG members
+  SPEC.md lists -- apple-touch-icon.png at 180 and icon-512.png -- are not
+  here yet, and are not referenced, because a <link> to an icon that does
+  not exist is worse than no <link>. They need the SVG rasterised.
+
+  og:image is emitted only when a card exists for the page, for the same
+  reason: a card URL that 404s makes a worse preview than none at all, and
+  the per-post card generation SPEC.md describes needs a font file in the
+  repo to draw with.
+*/ -}}
+
+{{- $desc := .Description | default .Summary | default site.Params.description -}}
+{{- $desc = $desc | plainify | htmlUnescape | replaceRE `[[:space:]]+` " " | truncate 180 -}}
+{{- $isPost := eq .Section "posts" -}}
+{{- $card := resources.Get "img/og-card.png" -}}
+
+<meta name="description" content="{{ $desc }}">
+<meta name="author" content="{{ site.Params.author.name }}">
+<link rel="canonical" href="{{ .Permalink }}">
+
+{{- /* The browser chrome follows the theme the page is actually showing. */}}
+<meta name="theme-color" media="(prefers-color-scheme: light)" content="#FFFFFF">
+<meta name="theme-color" media="(prefers-color-scheme: dark)" content="#17191A">
+
+<link rel="icon" href="{{ "/favicon.svg" | relURL }}" type="image/svg+xml">
+<link rel="icon" href="{{ "/favicon.ico" | relURL }}" sizes="32x32">
+<link rel="manifest" href="{{ "/site.webmanifest" | relURL }}">
+
+<meta property="og:site_name" content="{{ site.Title }}">
+<meta property="og:locale" content="{{ replace site.Language.Lang "-" "_" }}">
+<meta property="og:type" content="{{ cond $isPost "article" "website" }}">
+<meta property="og:url" content="{{ .Permalink }}">
+<meta property="og:title" content="{{ .Title | default site.Title }}">
+<meta property="og:description" content="{{ $desc }}">
+{{- with $card }}
+<meta property="og:image" content="{{ .Permalink }}">
+<meta property="og:image:width" content="{{ .Width }}">
+<meta property="og:image:height" content="{{ .Height }}">
+{{- end }}
+
+{{- if $isPost }}
+<meta property="article:published_time" content="{{ .Date.Format "2006-01-02T15:04:05Z07:00" }}">
+{{- if and (not .Lastmod.IsZero) (ne (.Lastmod.Format "2006-01-02") (.Date.Format "2006-01-02")) }}
+<meta property="article:modified_time" content="{{ .Lastmod.Format "2006-01-02T15:04:05Z07:00" }}">
+{{- end }}
+{{- with .GetTerms "categories" }}
+<meta property="article:section" content="{{ (index .ByTitle 0).LinkTitle }}">
+{{- end }}
+{{- range .GetTerms "tags" }}
+<meta property="article:tag" content="{{ .LinkTitle }}">
+{{- end }}
+{{- end }}
+
+<meta name="twitter:card" content="{{ cond (ne $card nil) "summary_large_image" "summary" }}">
+{{- with site.Params.author.twitter }}
+<meta name="twitter:site" content="@{{ . }}">
+<meta name="twitter:creator" content="@{{ . }}">
+{{- end }}

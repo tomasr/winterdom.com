@@ -1,0 +1,36 @@
+{{ define "main" }}
+{{- /*
+  One category. Compact rows, and no category eyebrow on them: the page
+  already says which category you are looking at.
+
+  Paginated at the config's pagerSize, which SPEC.md keeps at 10 for term
+  pages. The archive's year pages set their own, larger, size.
+*/ -}}
+{{- $posts := .Pages.ByDate.Reverse -}}
+{{- $count := len $posts -}}
+{{- $paginator := .Paginate $posts -}}
+
+{{ partial "page-head.html" (dict
+  "eyebrow" "Category"
+  "title" .LinkTitle
+  "lede" (printf "%d post%s filed in %s." $count (cond (eq $count 1) "" "s") .LinkTitle)
+  "link" (dict "text" "← All categories" "url" ("/categories/" | relURL))
+) }}
+
+{{- if eq $count 0 }}
+<div class="empty">
+  <h2 class="empty__title">No posts here yet</h2>
+  <p class="empty__text">Nothing is filed under this category. The <a href="{{ "/archive/" | relURL }}">archive</a> has everything else.</p>
+</div>
+{{- else }}
+<section class="page-section">
+  <div class="post-list post-list--ruled">
+    {{- range $paginator.Pages }}
+    {{ partial "post-row.html" (dict "page" . "variant" "compact" "category" false) }}
+    {{- end }}
+  </div>
+
+  {{ partial "pagination.html" $paginator }}
+</section>
+{{- end }}
+{{ end }}

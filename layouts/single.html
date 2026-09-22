@@ -1,0 +1,80 @@
+{{ define "main" }}
+{{- /*
+  A post, and nothing wider than the measure: title block, the series box
+  when the front matter names one, the body, the byline, prev/next, and the
+  archived comment threads.
+
+  The element sheet for the body is assets/css/article.css; everything
+  around it is assets/css/post.css.
+*/ -}}
+<article class="article">
+
+  <header class="article__header">
+    <div class="article__meta">
+      <time datetime="{{ .Date.Format "2006-01-02" }}">{{ .Date.Format "2 January 2006" }}</time>
+      {{- with .GetTerms "categories" }}
+      <span aria-hidden="true">·</span>
+      <span>filed in</span>
+      {{- /* Every category a post holds, not just the primary one. The
+             list row upstairs is where the single eyebrow lives. */}}
+      <span class="article__categories">
+        {{- range $i, $c := .ByTitle -}}
+        {{ if $i }}, {{ end }}<a href="{{ $c.RelPermalink }}">{{ $c.LinkTitle }}</a>
+        {{- end -}}
+      </span>
+      {{- end }}
+    </div>
+
+    <h1 class="article__title">{{ .Title }}</h1>
+
+    {{- with .GetTerms "tags" }}
+    <div class="article__tags">
+      <span class="article__tagged">Tagged</span>
+      <ul class="tag-list">
+        {{- range . }}
+        <li><a class="tag-pill" href="{{ .RelPermalink }}">{{ .LinkTitle }}</a></li>
+        {{- end }}
+      </ul>
+    </div>
+    {{- end }}
+  </header>
+
+  {{ partial "series.html" . }}
+
+  {{- /* Twenty years of raw WordPress HTML land in here. The sheet under
+         .article-body styles elements, never classes -- see CLAUDE.md. */}}
+  <div class="article-body">
+    {{ .Content }}
+  </div>
+
+  {{ partial "byline.html" . }}
+
+  <nav class="post-nav" aria-label="More posts">
+    {{- with .PrevInSection }}
+    <a class="post-nav__link post-nav__link--prev" href="{{ .RelPermalink }}">
+      <span class="post-nav__label">&larr; Previous</span>
+      <span class="post-nav__title">{{ .Title }}</span>
+    </a>
+    {{- else }}
+    <div class="post-nav__link post-nav__link--prev is-empty">
+      <span class="post-nav__label">&larr; Previous</span>
+      <span class="post-nav__title">Nothing older</span>
+    </div>
+    {{- end }}
+    {{- with .NextInSection }}
+    <a class="post-nav__link post-nav__link--next" href="{{ .RelPermalink }}">
+      <span class="post-nav__label">Next &rarr;</span>
+      <span class="post-nav__title">{{ .Title }}</span>
+    </a>
+    {{- else }}
+    <div class="post-nav__link post-nav__link--next is-empty">
+      <span class="post-nav__label">Next &rarr;</span>
+      <span class="post-nav__title">Nothing newer yet</span>
+    </div>
+    {{- end }}
+  </nav>
+
+  {{ partial "comments.html" . }}
+
+</article>
+{{ end }}

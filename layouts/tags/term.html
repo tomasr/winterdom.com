@@ -1,0 +1,36 @@
+{{ define "main" }}
+{{- /*
+  One tag. The heading is mono with a hash, because a tag is a string and
+  not a title -- and it is the reason page-head takes a titleClass.
+
+  Rows keep their category eyebrow here: a tag cuts across categories, so
+  which category a post sits in is real information on this page.
+*/ -}}
+{{- $posts := .Pages.ByDate.Reverse -}}
+{{- $count := len $posts -}}
+{{- $paginator := .Paginate $posts -}}
+
+{{ partial "page-head.html" (dict
+  "title" (printf "#%s" .LinkTitle)
+  "titleClass" "page-head__title--tag"
+  "lede" (printf "%d post%s tagged %s." $count (cond (eq $count 1) "" "s") .LinkTitle)
+  "link" (dict "text" "← All tags" "url" ("/tags/" | relURL))
+) }}
+
+{{- if eq $count 0 }}
+<div class="empty">
+  <h2 class="empty__title">No posts here yet</h2>
+  <p class="empty__text">Nothing carries this tag. The <a href="{{ "/archive/" | relURL }}">archive</a> has everything else.</p>
+</div>
+{{- else }}
+<section class="page-section">
+  <div class="post-list post-list--ruled">
+    {{- range $paginator.Pages }}
+    {{ partial "post-row.html" (dict "page" . "variant" "compact") }}
+    {{- end }}
+  </div>
+
+  {{ partial "pagination.html" $paginator }}
+</section>
+{{- end }}
+{{ end }}

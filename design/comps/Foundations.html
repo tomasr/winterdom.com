@@ -1,0 +1,174 @@
+<!doctype html>
+<!--
+  Foundations — reference comp, winterdom.com redesign.
+  Static mockup, NOT a Hugo template. Read it for metrics, markup shape and
+  colour values; the rules are written down in ../SPEC.md.
+  Sample post titles, bodies and excerpts are invented placeholders.
+-->
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Foundations — colour, type and parts</title>
+
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;0,6..72,600;1,6..72,400&amp;family=IBM+Plex+Sans:wght@400;500;600&amp;family=IBM+Plex+Mono:wght@400;500&amp;display=swap">
+<style>
+body{margin:0;background:#FFFFFF;color:#353535;font-family:'IBM Plex Sans',system-ui,sans-serif;-webkit-font-smoothing:antialiased;}
+a{color:#3C6E71;}
+a:hover{color:#2A5254;}
+h1,h2,h3{font-family:'Newsreader',Georgia,serif;font-weight:500;margin:0;color:#1D1F1F;letter-spacing:-0.012em;}
+p{margin:0;}
+pre{margin:0;}
+code,pre{font-family:'IBM Plex Mono',ui-monospace,SFMono-Regular,monospace;}
+input{font-family:inherit;}
+</style>
+</head>
+<body>
+
+<div style="width: 1280px; height: 1540px; box-sizing: border-box; padding: 52px 80px; background: #FFFFFF; display: flex; flex-direction: column; gap: 34px;">
+
+  <div style="display: flex; align-items: baseline; justify-content: space-between; padding-bottom: 14px; border-bottom: 1px solid #1D1F1F;">
+    <h1 style="font-family: 'IBM Plex Sans', sans-serif; font-size: 12px; font-weight: 600; letter-spacing: 0.18em; text-transform: uppercase; color: #1D1F1F;">Foundations</h1>
+    <span style="font-family: 'IBM Plex Mono', monospace; font-size: 12px; color: #5C605E;">charcoal · deep teal · one accent</span>
+  </div>
+
+  <section style="display: flex; flex-direction: column; gap: 14px;">
+    <h2 style="font-family: 'IBM Plex Sans', sans-serif; font-size: 11px; font-weight: 600; letter-spacing: 0.16em; text-transform: uppercase; color: #5C605E;">Colour</h2>
+    <div style="display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 16px;">
+      <div style="display: flex; flex-direction: column; gap: 8px;">
+        <div style="height: 58px; border-radius: 4px; background: #FFFFFF; border: 1px solid #D9D9D9;"></div>
+        <div style="display: flex; flex-direction: column; gap: 2px;"><code style="font-size: 12px; color: #1D1F1F;">--paper #FFFFFF</code><span style="font-size: 12.5px; color: #5C605E;">Page ground</span></div>
+      </div>
+      <div style="display: flex; flex-direction: column; gap: 8px;">
+        <div style="height: 58px; border-radius: 4px; background: #F3F4F3;"></div>
+        <div style="display: flex; flex-direction: column; gap: 2px;"><code style="font-size: 12px; color: #1D1F1F;">--surface #F3F4F3</code><span style="font-size: 12.5px; color: #5C605E;">Cards, code, callouts</span></div>
+      </div>
+      <div style="display: flex; flex-direction: column; gap: 8px;">
+        <div style="height: 58px; border-radius: 4px; background: #D9D9D9;"></div>
+        <div style="display: flex; flex-direction: column; gap: 2px;"><code style="font-size: 12px; color: #1D1F1F;">--rule #D9D9D9</code><span style="font-size: 12.5px; color: #5C605E;">Hairlines, borders</span></div>
+      </div>
+      <div style="display: flex; flex-direction: column; gap: 8px;">
+        <div style="height: 58px; border-radius: 4px; background: #5C605E;"></div>
+        <div style="display: flex; flex-direction: column; gap: 2px;"><code style="font-size: 12px; color: #1D1F1F;">--muted #5C605E</code><span style="font-size: 12.5px; color: #5C605E;">Secondary text · 6.5:1</span></div>
+      </div>
+      <div style="display: flex; flex-direction: column; gap: 8px;">
+        <div style="height: 58px; border-radius: 4px; background: #353535;"></div>
+        <div style="display: flex; flex-direction: column; gap: 2px;"><code style="font-size: 12px; color: #1D1F1F;">--ink #353535</code><span style="font-size: 12.5px; color: #5C605E;">Body text · 11:1</span></div>
+      </div>
+      <div style="display: flex; flex-direction: column; gap: 8px;">
+        <div style="height: 58px; border-radius: 4px; background: #1D1F1F;"></div>
+        <div style="display: flex; flex-direction: column; gap: 2px;"><code style="font-size: 12px; color: #1D1F1F;">--ink-strong #1D1F1F</code><span style="font-size: 12.5px; color: #5C605E;">Headings, wordmark</span></div>
+      </div>
+      <div style="display: flex; flex-direction: column; gap: 8px;">
+        <div style="height: 58px; border-radius: 4px; background: #3C6E71;"></div>
+        <div style="display: flex; flex-direction: column; gap: 2px;"><code style="font-size: 12px; color: #1D1F1F;">--accent #3C6E71</code><span style="font-size: 12.5px; color: #5C605E;">Links, mark, eyebrows · 5.1:1</span></div>
+      </div>
+      <div style="display: flex; flex-direction: column; gap: 8px;">
+        <div style="height: 58px; border-radius: 4px; background: #284B63;"></div>
+        <div style="display: flex; flex-direction: column; gap: 2px;"><code style="font-size: 12px; color: #1D1F1F;">--deep #284B63</code><span style="font-size: 12.5px; color: #5C605E;">Syntax keys, rare emphasis</span></div>
+      </div>
+    </div>
+
+    <div style="display: flex; flex-direction: column; gap: 16px; margin-top: 20px; padding: 22px; background: #17191A; border-radius: 5px;">
+      <div style="display: flex; align-items: baseline; justify-content: space-between;">
+        <span style="font-family: 'IBM Plex Sans', sans-serif; font-size: 11px; font-weight: 600; letter-spacing: 0.16em; text-transform: uppercase; color: #F2F4F3;">Dark</span>
+        <span style="font-family: 'IBM Plex Mono', monospace; font-size: 12px; color: #9BA2A0;">same token names, redefined under prefers-color-scheme</span>
+      </div>
+      <div style="display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 14px;">
+        <div style="display: flex; flex-direction: column; gap: 7px;"><div style="height: 42px; border-radius: 4px; background: #17191A; border: 1px solid #343839;"></div><code style="font-size: 11px; color: #D7DBD9;">--paper #17191A</code></div>
+        <div style="display: flex; flex-direction: column; gap: 7px;"><div style="height: 42px; border-radius: 4px; background: #202324;"></div><code style="font-size: 11px; color: #D7DBD9;">--surface #202324</code></div>
+        <div style="display: flex; flex-direction: column; gap: 7px;"><div style="height: 42px; border-radius: 4px; background: #2A2E2F;"></div><code style="font-size: 11px; color: #D7DBD9;">--surface-2 #2A2E2F</code></div>
+        <div style="display: flex; flex-direction: column; gap: 7px;"><div style="height: 42px; border-radius: 4px; background: #343839;"></div><code style="font-size: 11px; color: #D7DBD9;">--rule #343839</code></div>
+        <div style="display: flex; flex-direction: column; gap: 7px;"><div style="height: 42px; border-radius: 4px; background: #9BA2A0;"></div><code style="font-size: 11px; color: #D7DBD9;">--muted #9BA2A0</code></div>
+        <div style="display: flex; flex-direction: column; gap: 7px;"><div style="height: 42px; border-radius: 4px; background: #D7DBD9;"></div><code style="font-size: 11px; color: #D7DBD9;">--ink #D7DBD9</code></div>
+        <div style="display: flex; flex-direction: column; gap: 7px;"><div style="height: 42px; border-radius: 4px; background: #F2F4F3;"></div><code style="font-size: 11px; color: #D7DBD9;">--ink-strong #F2F4F3</code></div>
+        <div style="display: flex; flex-direction: column; gap: 7px;"><div style="height: 42px; border-radius: 4px; background: #8FBEC0;"></div><code style="font-size: 11px; color: #D7DBD9;">--accent #8FBEC0</code></div>
+        <div style="display: flex; flex-direction: column; gap: 7px;"><div style="height: 42px; border-radius: 4px; background: #A8CFD0;"></div><code style="font-size: 11px; color: #D7DBD9;">--accent-hover #A8CFD0</code></div>
+        <div style="display: flex; flex-direction: column; gap: 7px;"><div style="height: 42px; border-radius: 4px; background: #7FA6C0;"></div><code style="font-size: 11px; color: #D7DBD9;">--deep #7FA6C0</code></div>
+      </div>
+      <p style="font-size: 13px; line-height: 1.6; color: #9BA2A0;">The teal lifts from <code style="font-size: 12.5px; color: #F2F4F3;">#3C6E71</code> to <code style="font-size: 12.5px; color: #F2F4F3;">#8FBEC0</code> — the light accent reaches only 2.2:1 on this ground. Everything here clears 6.7:1 or better.</p>
+    </div>
+  </section>
+
+  <section style="display: flex; flex-direction: column; gap: 14px;">
+    <h2 style="font-family: 'IBM Plex Sans', sans-serif; font-size: 11px; font-weight: 600; letter-spacing: 0.16em; text-transform: uppercase; color: #5C605E;">Type</h2>
+    <div style="display: flex; flex-direction: column;">
+      <div style="display: flex; gap: 32px; align-items: baseline; padding: 14px 0; border-bottom: 1px solid #D9D9D9;">
+        <code style="font-size: 11.5px; color: #5C605E; width: 210px; flex-shrink: 0;">Newsreader 500 · 50/1.1</code>
+        <span style="font-family: 'Newsreader', Georgia, serif; font-size: 44px; font-weight: 500; letter-spacing: -0.02em; color: #1D1F1F;">Notes from the workbench</span>
+      </div>
+      <div style="display: flex; gap: 32px; align-items: baseline; padding: 14px 0; border-bottom: 1px solid #D9D9D9;">
+        <code style="font-size: 11.5px; color: #5C605E; width: 210px; flex-shrink: 0;">Newsreader 500 · 30/1.25</code>
+        <span style="font-family: 'Newsreader', Georgia, serif; font-size: 30px; font-weight: 500; color: #1D1F1F;">Section heading in an article</span>
+      </div>
+      <div style="display: flex; gap: 32px; align-items: baseline; padding: 14px 0; border-bottom: 1px solid #D9D9D9;">
+        <code style="font-size: 11.5px; color: #5C605E; width: 210px; flex-shrink: 0;">Newsreader 400i · 21/1.55</code>
+        <span style="font-family: 'Newsreader', Georgia, serif; font-size: 21px; font-style: italic; color: #1D1F1F;">Pull quotes sit in the italic.</span>
+      </div>
+      <div style="display: flex; gap: 32px; align-items: baseline; padding: 14px 0; border-bottom: 1px solid #D9D9D9;">
+        <code style="font-size: 11.5px; color: #5C605E; width: 210px; flex-shrink: 0;">IBM Plex Sans 400 · 18.5/1.72</code>
+        <span style="font-size: 18.5px; color: #353535; max-width: 700px;">Body copy runs at a 680–720 px measure, about 72 characters a line.</span>
+      </div>
+      <div style="display: flex; gap: 32px; align-items: baseline; padding: 14px 0; border-bottom: 1px solid #D9D9D9;">
+        <code style="font-size: 11.5px; color: #5C605E; width: 210px; flex-shrink: 0;">IBM Plex Sans 400 · 13/1.6</code>
+        <span style="font-size: 13px; color: #5C605E;">Captions, footer, disclaimers — muted, never below 13 px.</span>
+      </div>
+      <div style="display: flex; gap: 32px; align-items: baseline; padding: 14px 0; border-bottom: 1px solid #D9D9D9;">
+        <code style="font-size: 11.5px; color: #5C605E; width: 210px; flex-shrink: 0;">IBM Plex Mono 400 · 13.5/1.75</code>
+        <code style="font-size: 13.5px; color: #353535;">dates, tags, eyebrows, code — 0.16em tracked when upper</code>
+      </div>
+    </div>
+  </section>
+
+  <section style="display: flex; flex-direction: column; gap: 14px;">
+    <h2 style="font-family: 'IBM Plex Sans', sans-serif; font-size: 11px; font-weight: 600; letter-spacing: 0.16em; text-transform: uppercase; color: #5C605E;">Parts</h2>
+    <div style="display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 24px; align-items: start;">
+
+      <div style="display: flex; flex-direction: column; gap: 12px;">
+        <span style="font-size: 12.5px; color: #5C605E;">Category (one) vs tags (many)</span>
+        <a href="Categories.html" style="font-family: 'IBM Plex Mono', monospace; font-size: 11px; letter-spacing: 0.16em; text-transform: uppercase; color: #3C6E71; text-decoration: none;">Tools</a>
+        <div style="display: flex; gap: 8px; flex-wrap: wrap;">
+          <a href="Archive.html" style="font-family: 'IBM Plex Mono', monospace; font-size: 12px; color: #5C605E; text-decoration: none; padding: 3px 10px; border: 1px solid #D9D9D9; border-radius: 999px;">claude</a>
+          <a href="Archive.html" style="font-family: 'IBM Plex Mono', monospace; font-size: 12px; color: #5C605E; text-decoration: none; padding: 3px 10px; border: 1px solid #D9D9D9; border-radius: 999px;">llm</a>
+        </div>
+      </div>
+
+      <div style="display: flex; flex-direction: column; gap: 12px;">
+        <span style="font-size: 12.5px; color: #5C605E;">Buttons</span>
+        <div style="display: flex; gap: 10px; align-items: center;">
+          <button type="button" style="font-family: 'IBM Plex Sans', sans-serif; font-size: 14px; color: #FFFFFF; background: #3C6E71; border: 1px solid #3C6E71; border-radius: 4px; padding: 12px 18px; min-height: 44px; box-sizing: border-box; cursor: pointer;">Subscribe</button>
+          <button type="button" style="font-family: 'IBM Plex Sans', sans-serif; font-size: 14px; color: #1D1F1F; background: transparent; border: 1px solid #D9D9D9; border-radius: 4px; padding: 12px 18px; min-height: 44px; box-sizing: border-box; cursor: pointer;">Copy</button>
+        </div>
+      </div>
+
+      <div style="display: flex; flex-direction: column; gap: 12px;">
+        <label for="fnd-search" style="font-size: 12.5px; color: #5C605E;">Search field</label>
+        <input id="fnd-search" type="search" placeholder="Search posts" style="font-size: 15px; color: #1D1F1F; background: #FFFFFF; border: 1px solid #D9D9D9; border-radius: 4px; padding: 12px 14px; min-height: 44px; box-sizing: border-box; width: 100%;">
+      </div>
+
+      <div style="display: flex; flex-direction: column; gap: 12px;">
+        <span style="font-size: 12.5px; color: #5C605E;">Links &amp; inline code</span>
+        <p style="font-size: 15px; line-height: 1.7; color: #353535;">A <a href="Post.html">text link</a> underlines on hover; <code style="font-size: 0.88em; background: #F3F4F3; padding: 2px 6px; border-radius: 3px; color: #1D1F1F;">inline code</code> takes the surface tint.</p>
+      </div>
+
+    </div>
+  </section>
+
+  <section style="display: flex; flex-direction: column; gap: 14px;">
+    <h2 style="font-family: 'IBM Plex Sans', sans-serif; font-size: 11px; font-weight: 600; letter-spacing: 0.16em; text-transform: uppercase; color: #5C605E;">Spacing &amp; grid</h2>
+    <div style="display: flex; gap: 40px; align-items: flex-start;">
+      <div style="display: flex; align-items: flex-end; gap: 10px;">
+        <div style="display: flex; flex-direction: column; align-items: center; gap: 6px;"><div style="width: 4px; height: 4px; background: #3C6E71;"></div><code style="font-size: 11px; color: #5C605E;">4</code></div>
+        <div style="display: flex; flex-direction: column; align-items: center; gap: 6px;"><div style="width: 8px; height: 8px; background: #3C6E71;"></div><code style="font-size: 11px; color: #5C605E;">8</code></div>
+        <div style="display: flex; flex-direction: column; align-items: center; gap: 6px;"><div style="width: 16px; height: 16px; background: #3C6E71;"></div><code style="font-size: 11px; color: #5C605E;">16</code></div>
+        <div style="display: flex; flex-direction: column; align-items: center; gap: 6px;"><div style="width: 24px; height: 24px; background: #3C6E71;"></div><code style="font-size: 11px; color: #5C605E;">24</code></div>
+        <div style="display: flex; flex-direction: column; align-items: center; gap: 6px;"><div style="width: 40px; height: 40px; background: #3C6E71;"></div><code style="font-size: 11px; color: #5C605E;">40</code></div>
+        <div style="display: flex; flex-direction: column; align-items: center; gap: 6px;"><div style="width: 64px; height: 64px; background: #3C6E71;"></div><code style="font-size: 11px; color: #5C605E;">64</code></div>
+      </div>
+      <p style="font-size: 14px; line-height: 1.7; color: #5C605E; max-width: 560px;">Everything sits on an 8 px rhythm. The page is a single centred column: 1120 px of content inside an 80 px gutter on desktop, 720 px for article text, 24 px gutters on phones. No sidebars, no cards with coloured left borders, no shadows — separation is a 1 px <code style="font-size: 12.5px; color: #1D1F1F;">--rule</code> hairline or a <code style="font-size: 12.5px; color: #1D1F1F;">--surface</code> fill.</p>
+    </div>
+  </section>
+
+</div>
+
+</body>
+</html>

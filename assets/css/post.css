@@ -1,0 +1,297 @@
+/* ---------------------------------------------------------------------------
+   Article furniture — winterdom.com, 2026 redesign.
+   Series box, byline, prev/next, archived comments. The body's own element
+   sheet is article.css; this is everything wrapped around it.
+   Source of truth: design/SPEC.md, "Components". Comp: Post.html.
+--------------------------------------------------------------------------- */
+
+/* Series ------------------------------------------------------------------
+   Directly under the title block, above the body. Rendered only when the
+   front matter names a series and more than one post carries that name --
+   see layouts/_partials/series.html. */
+
+.series {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-top: 28px;
+  padding: 20px 22px;
+  border-radius: var(--radius);
+  background: var(--surface);
+}
+
+.series__eyebrow {
+  font-family: var(--font-mono);
+  font-size: var(--fs-eyebrow);
+  line-height: var(--lh-eyebrow);
+  letter-spacing: var(--tr-upper);
+  text-transform: uppercase;
+  color: var(--accent);
+}
+
+.series__list {
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+  margin: 0;
+  padding-left: 22px;
+}
+
+.series__list li {
+  font-size: 15.5px;
+  line-height: 1.6;
+  color: var(--muted);
+}
+
+.series__list li::marker {
+  font-family: var(--font-mono);
+  color: var(--muted);
+}
+
+/* The part you are reading is not a link, and is the only one in full ink. */
+.series__list .is-current {
+  color: var(--ink-strong);
+}
+
+/* Byline ------------------------------------------------------------------
+   At the foot of the article. The portrait is optional: assets/img/
+   portrait.jpg is not committed yet, and the byline reads correctly as name
+   and bio alone until it is. */
+
+.byline {
+  display: flex;
+  align-items: center;
+  gap: 18px;
+  margin-top: 30px;
+  padding-block: 34px;
+  border-top: 1px solid var(--rule);
+  border-bottom: 1px solid var(--rule);
+}
+
+.byline__portrait {
+  display: block;
+  flex-shrink: 0;
+  width: 56px;
+  height: 56px;
+  border-radius: var(--radius-pill);
+  object-fit: cover;
+}
+
+.byline__text {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+}
+
+.byline__name {
+  font-size: 15px;
+  font-weight: 500;
+  color: var(--ink-strong);
+}
+
+.byline__bio {
+  font-size: 14px;
+  line-height: var(--lh-caption);
+  color: var(--muted);
+}
+
+/* Prev / next -------------------------------------------------------------
+   Two cards. Previous is the older post, next the newer one. An end of the
+   archive is a dashed card in --muted and is not focusable -- a disabled
+   end is text, never a greyed-out link. */
+
+.post-nav {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--space-4);
+  padding-top: 26px;
+}
+
+.post-nav__link {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding: 18px 20px;
+  border: 1px solid var(--rule);
+  border-radius: var(--radius);
+}
+
+.post-nav__link--next {
+  text-align: right;
+}
+
+.post-nav__link.is-empty {
+  border-style: dashed;
+}
+
+.post-nav__label {
+  font-family: var(--font-mono);
+  font-size: var(--fs-eyebrow);
+  line-height: var(--lh-eyebrow);
+  letter-spacing: var(--tr-upper-tight);
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+.post-nav__title {
+  font-family: var(--font-display);
+  font-size: 19px;
+  line-height: 1.3;
+  letter-spacing: var(--tr-title);
+  color: var(--ink-strong);
+}
+
+.post-nav__link.is-empty .post-nav__title {
+  color: var(--muted);
+}
+
+a.post-nav__link:hover {
+  border-color: var(--ink-strong);
+  text-decoration: none;
+}
+
+a.post-nav__link:hover .post-nav__title {
+  color: var(--accent);
+}
+
+/* Comments ----------------------------------------------------------------
+   Archived, flat, read-only. No avatars, no reply button, no form. The
+   section is omitted entirely when a post has none, by the partial. */
+
+.comments {
+  padding-top: 44px;
+}
+
+.comments__list {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  padding-top: 20px;
+}
+
+.comment {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  padding: 20px 22px;
+  border-radius: var(--radius);
+  background: var(--surface);
+}
+
+.comment__meta {
+  display: flex;
+  align-items: baseline;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+.comment__author {
+  font-size: 15px;
+  font-weight: 500;
+  color: var(--ink-strong);
+}
+
+a.comment__author {
+  color: var(--accent);
+}
+
+.comment__date {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  color: var(--muted);
+}
+
+/* Half of these bodies are real WordPress markup and half are plain text
+   with CRLF breaks. The element rules the article sheet applies under
+   .article-body have to be repeated here, because a comment is not one. */
+
+.comment__body {
+  font-size: var(--fs-small);
+  line-height: 1.65;
+  color: var(--ink);
+}
+
+.comment__body > * + * {
+  margin-top: 12px;
+}
+
+.comment__body--plain {
+  white-space: pre-line;
+}
+
+.comment__body ul,
+.comment__body ol {
+  margin-block: 0;
+  padding-left: 22px;
+}
+
+.comment__body li + li {
+  margin-top: 6px;
+}
+
+.comment__body blockquote {
+  margin: 0;
+  padding-left: 16px;
+  border-left: 2px solid var(--rule);
+}
+
+/* The block already sits on --surface, so inline code steps up a shade. */
+.comment__body code,
+.comment__body pre {
+  font-family: var(--font-mono);
+}
+
+.comment__body code {
+  padding: 2px 6px;
+  border-radius: var(--radius-inline);
+  background: var(--surface-2);
+  font-size: 0.88em;
+  color: var(--ink-strong);
+}
+
+.comment__body pre {
+  padding: 14px 16px;
+  border-radius: var(--radius);
+  background: var(--surface-2);
+  font-size: var(--fs-code);
+  line-height: var(--lh-code);
+  overflow-x: auto;
+}
+
+.comment__body pre code {
+  padding: 0;
+  background: none;
+  font-size: inherit;
+}
+
+/* Phone ------------------------------------------------------------------ */
+
+@media (max-width: 639px) {
+  .series {
+    margin-top: 22px;
+    padding: 18px 20px;
+  }
+
+  .byline {
+    padding-block: 26px;
+  }
+
+  /* Two cards at 390px leave four words a line. One column, and the newer
+     post reads left to right like everything else. */
+  .post-nav {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 12px;
+  }
+
+  .post-nav__link--next {
+    text-align: left;
+  }
+
+  .comments {
+    padding-top: 34px;
+  }
+
+  .comment {
+    padding: 18px 20px;
+  }
+}

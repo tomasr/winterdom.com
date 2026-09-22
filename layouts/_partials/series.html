@@ -1,0 +1,35 @@
+{{- /*
+  The series box. Sits directly under the article title block, above the
+  body: a surface box with a mono eyebrow reading "Part 2 of 3 · kondex",
+  then every part in order with the current one unlinked.
+
+  Driven by a `series` key in front matter, which is just a string:
+
+      series: kondex
+
+  Ordered by date, oldest first, so part one is part one. A series of one
+  renders nothing -- there is no navigation to offer.
+*/ -}}
+{{- with .Params.series -}}
+  {{- $series := . -}}
+  {{- $parts := (where site.RegularPages "Params.series" $series).ByDate -}}
+  {{- if gt (len $parts) 1 -}}
+    {{- $current := $.RelPermalink -}}
+    {{- $n := 0 -}}
+    {{- range $i, $p := $parts -}}
+      {{- if eq $p.RelPermalink $current }}{{ $n = add $i 1 }}{{ end -}}
+    {{- end }}
+<aside class="series" aria-label="Series">
+  <span class="series__eyebrow">Part {{ $n }} of {{ len $parts }} &middot; {{ $series }}</span>
+  <ol class="series__list">
+    {{- range $parts }}
+    {{- if eq .RelPermalink $current }}
+    <li class="is-current" aria-current="page">{{ .Title }}</li>
+    {{- else }}
+    <li><a href="{{ .RelPermalink }}">{{ .Title }}</a></li>
+    {{- end }}
+    {{- end }}
+  </ol>
+</aside>
+  {{- end -}}
+{{- end -}}

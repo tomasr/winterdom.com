@@ -1,0 +1,30 @@
+{{- /*
+  One page per year under /archive/.
+
+  Hugo cannot build these from the posts themselves: a content adapter runs
+  while content is being assembled, so site.RegularPages is not available to
+  it yet. The years are read off the filenames instead, which is safe here --
+  the YYYY-MM-DD- prefix is load-bearing on this site and drives the
+  permalink, so a filename year and a post year cannot disagree. See
+  CLAUDE.md.
+
+  A new year needs no new file; the first post of it creates the page.
+*/ -}}
+{{- $years := slice -}}
+{{- range os.ReadDir "content/posts" -}}
+  {{- $y := substr .Name 0 4 -}}
+  {{- if findRE `^[0-9]{4}$` $y -}}
+    {{- if not (in $years $y) -}}
+      {{- $years = $years | append $y -}}
+    {{- end -}}
+  {{- end -}}
+{{- end -}}
+{{- range $years -}}
+  {{- $.AddPage (dict
+    "path" .
+    "kind" "section"
+    "title" .
+    "layout" "year"
+    "params" (dict "archiveYear" .)
+  ) -}}
+{{- end -}}

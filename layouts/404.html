@@ -1,0 +1,12 @@
+{{ define "main" }}
+{{- /* Never a dead end: the archive is the best place to start looking. */ -}}
+<div class="notfound">
+  {{ partial "mark.html" (dict "size" 84) }}
+  <h1 class="notfound__title">Nothing here.</h1>
+  <p class="notfound__text">Twenty years of moving things around will do that. The archive is the best place to start looking.</p>
+  <div class="notfound__actions">
+    <a class="button button--primary" href="{{ "" | relURL }}">Home</a>
+    <a class="button" href="{{ "/archive/" | relURL }}">Archive</a>
+  </div>
+</div>
+{{ end }}

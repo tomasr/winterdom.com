@@ -1,0 +1,38 @@
+{{- /*
+  Fonts and stylesheets for the 2026 redesign.
+
+  Three families in one Google Fonts request -- the decision in SPEC.md is
+  CDN, no self-hosting and no subsetting step. Newsreader is variable with an
+  optical-size axis; opsz is deliberately not pinned so it tracks the font
+  size on its own.
+
+  The sheets are concatenated in cascade order: tokens, then bare elements,
+  then components. Later steps add to the slice; nothing here needs to
+  change when they do.
+*/ -}}
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;0,6..72,600;1,6..72,400&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap">
+
+{{- $sheets := slice
+  (resources.Get "css/tokens.css")
+  (resources.Get "css/base.css")
+  (resources.Get "css/chrome.css")
+  (resources.Get "css/lists.css")
+  (resources.Get "css/article.css")
+  (resources.Get "css/code.css")
+  (resources.Get "css/post.css")
+  (resources.Get "css/home.css")
+  (resources.Get "css/pages.css")
+-}}
+{{- $css := $sheets | resources.Concat "css/main.css" -}}
+{{- /* Fingerprinted in development too, and only minified in production.
+       Without the hash the URL is /css/main.css forever, so a browser that
+       has cached it goes on serving the old stylesheet through a rebuild
+       and the edit looks like it did nothing. Readable CSS, busted cache. */ -}}
+{{- if hugo.IsProduction -}}
+  {{- $css = $css | minify | fingerprint -}}
+{{- else -}}
+  {{- $css = $css | fingerprint -}}
+{{- end -}}
+<link rel="stylesheet" href="{{ $css.RelPermalink }}"{{ with $css.Data.Integrity }} integrity="{{ . }}"{{ end }}>

@@ -1,0 +1,22 @@
+{{- /*
+  Returns the author's links elsewhere, as a slice of dicts:
+
+    title  short name, and the accessible name of the footer's icon link
+    label  longer form where there is room -- the About page shows the
+           address itself rather than the word "Email"
+    icon   glyph name for icon.html
+    url
+
+  Driven by site.Params.author, so a key removed from the config drops its
+  link rather than leaving a dead one. Used by the footer, which draws the
+  icons, and by About, which lists the titles as text.
+*/ -}}
+{{- $a := site.Params.author -}}
+{{- $social := slice -}}
+{{- with $a.github }}{{ $social = $social | append (dict "title" "GitHub" "icon" "github" "url" (printf "https://github.com/%s" .)) }}{{ end -}}
+{{- with $a.linkedin }}{{ $social = $social | append (dict "title" "LinkedIn" "icon" "linkedin" "url" (printf "https://linkedin.com/in/%s" .)) }}{{ end -}}
+{{- with $a.twitter }}{{ $social = $social | append (dict "title" "X" "icon" "x" "url" (printf "https://x.com/%s" .)) }}{{ end -}}
+{{- with $a.instagram }}{{ $social = $social | append (dict "title" "Instagram" "icon" "instagram" "url" (printf "https://www.instagram.com/%s" .)) }}{{ end -}}
+{{- with $a.email }}{{ $social = $social | append (dict "title" "Email" "label" . "icon" "mail" "url" (printf "mailto:%s" .)) }}{{ end -}}
+{{- with site.Home.OutputFormats.Get "rss" }}{{ $social = $social | append (dict "title" "RSS" "label" "RSS feed" "icon" "rss" "url" .RelPermalink) }}{{ end -}}
+{{- return $social -}}

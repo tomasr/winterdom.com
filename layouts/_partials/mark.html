@@ -1,0 +1,47 @@
+{{- /*
+  The winterdom mark: three strokes crossing at 60 degrees with branch ticks,
+  on a 32x32 viewBox. Inlined rather than loaded from a file so it inherits
+  the theme colour -- the stroke is currentColor, and whatever wraps it sets
+  `color`.
+
+  Params:
+    size    px, required in practice; defaults to the header's 27
+    weight  stroke width override. Left out, it comes from the size.
+    label   accessible name. Left out, the mark is aria-hidden, which is
+            what you want whenever it sits next to the wordmark.
+
+  Stroke weight grows as the mark shrinks, and the arms pull in with it so
+  the round caps stay inside the box. Below 20px the branch ticks are
+  dropped entirely -- they turn to mud -- and only the three arms remain.
+
+  The 24px mark standing on its own takes weight 2.6; pass it explicitly.
+*/ -}}
+
+{{- $size := .size | default 27 -}}
+{{- $label := .label -}}
+{{- $weight := .weight -}}
+
+{{- if not $weight -}}
+  {{- if ge $size 60 -}}{{- $weight = 1.5 -}}
+  {{- else if ge $size 40 -}}{{- $weight = 1.8 -}}
+  {{- else if ge $size 25 -}}{{- $weight = 1.7 -}}
+  {{- else if ge $size 20 -}}{{- $weight = 2.0 -}}
+  {{- else -}}{{- $weight = 3.4 -}}
+  {{- end -}}
+{{- end -}}
+
+{{- $arm := "M16 3.5L16 28.5" -}}
+{{- $ticks := slice "M16 9.2L11.4 6.5" "M16 9.2L20.6 6.5" "M16 22.8L11.4 25.5" "M16 22.8L20.6 25.5" -}}
+{{- if lt $size 20 -}}
+  {{- $arm = "M16 5L16 27" -}}
+  {{- $ticks = slice -}}
+{{- else if lt $size 25 -}}
+  {{- $arm = "M16 4L16 28" -}}
+  {{- $ticks = slice "M16 9.6L11.6 7" "M16 9.6L20.4 7" "M16 22.4L11.6 25" "M16 22.4L20.4 25" -}}
+{{- end -}}
+
+<svg class="mark" width="{{ $size }}" height="{{ $size }}" viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="{{ $weight }}" stroke-linecap="round" {{ with $label }}role="img" aria-label="{{ . }}"{{ else }}aria-hidden="true"{{ end }}>
+  {{- range $deg := slice 0 60 120 }}
+  <g{{ if $deg }} transform="rotate({{ $deg }} 16 16)"{{ end }}><path d="{{ $arm }}"/>{{ range $ticks }}<path d="{{ . }}"/>{{ end }}</g>
+  {{- end }}
+</svg>

@@ -1,0 +1,340 @@
+/* ---------------------------------------------------------------------------
+   Section headers, post list rows and tag pills — winterdom.com, 2026.
+   Source of truth: design/SPEC.md, "Post list row" and "Category versus tag".
+   Comps: Main.html and MobileHome.html (full), Archive.html and Pages.html
+   (compact), States.html (pill states).
+
+   Two row shapes, one partial: layouts/_partials/post-row.html.
+
+   Rows carry a hairline underneath and none above. Every list in the design
+   sits under a section header that already draws its own rule, so a row's
+   top hairline would double it. A list that ever appears without one adds
+   a border-top to .post-list rather than changing the row.
+--------------------------------------------------------------------------- */
+
+/* Section header ---------------------------------------------------------
+   The label-and-rule that opens every block on the site: "Latest writing"
+   on the home page, "Tags" on the archive, "3 Comments" on an article. Sans
+   rather than mono, small, uppercase, over a rule in --ink-strong -- darker
+   than a --rule hairline, because it opens a section rather than separating
+   two rows. The note or link on the right is optional. */
+
+.section-head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: var(--space-4);
+  padding-bottom: 14px;
+  border-bottom: 1px solid var(--ink-strong);
+}
+
+.section-head__title {
+  font-family: var(--font-body);
+  font-size: 12px;
+  line-height: var(--lh-eyebrow);
+  font-weight: 600;
+  letter-spacing: var(--tr-upper);
+  text-transform: uppercase;
+  color: var(--ink-strong);
+}
+
+.section-head__note {
+  flex-shrink: 0;
+  font-family: var(--font-mono);
+  font-size: 12px;
+  color: var(--muted);
+}
+
+.section-head__link {
+  flex-shrink: 0;
+  font-size: 14px;
+}
+
+@media (max-width: 639px) {
+  .section-head {
+    padding-bottom: 12px;
+  }
+
+  .section-head__title {
+    font-size: 11px;
+  }
+
+  .section-head__note,
+  .section-head__link {
+    font-size: 13px;
+  }
+}
+
+.post-list {
+  display: flex;
+  flex-direction: column;
+}
+
+.post-row {
+  padding-block: 26px;
+  border-bottom: 1px solid var(--rule);
+}
+
+/* Full row ---------------------------------------------------------------
+   Date in its own 96px column, everything else stacked beside it. The date
+   is placed explicitly at 1/1 and the rest auto-flows down column two, so
+   a row with no category, no excerpt or no tags simply loses that line. */
+
+.post-row--full {
+  display: grid;
+  grid-template-columns: 96px minmax(0, 1fr);
+  column-gap: var(--space-5);
+  row-gap: var(--space-2);
+}
+
+.post-row--full > * {
+  grid-column: 2;
+}
+
+.post-row--full > .post-row__date {
+  grid-column: 1;
+  grid-row: 1;
+  /* Mono at 13px sits slightly high against the 11px eyebrow beside it. */
+  padding-top: 2px;
+}
+
+.post-row__date {
+  font-family: var(--font-mono);
+  font-size: var(--fs-meta);
+  line-height: var(--lh-eyebrow);
+  color: var(--muted);
+  white-space: nowrap;
+}
+
+/* The category, never a pill: mono, uppercase, accent, no border. Uppercase
+   comes from text-transform so a screen reader still gets ".NET", not
+   ". N E T". Do not author it uppercase in front matter. */
+.post-row__category {
+  justify-self: start;
+  font-family: var(--font-mono);
+  font-size: var(--fs-eyebrow);
+  line-height: var(--lh-eyebrow);
+  letter-spacing: var(--tr-upper);
+  text-transform: uppercase;
+  color: var(--accent);
+}
+
+a.post-row__category:hover {
+  color: var(--accent-hover);
+  text-decoration: underline;
+}
+
+.post-row--full .post-row__title {
+  font-family: var(--font-display);
+  font-size: var(--fs-list-title);
+  line-height: var(--lh-list-title);
+  font-weight: 500;
+  letter-spacing: var(--tr-title);
+}
+
+.post-row--full .post-row__title a {
+  color: var(--ink-strong);
+}
+
+/* A 25px serif title underlines badly, and the colour shift is the clearer
+   signal at that size. */
+.post-row--full .post-row__title a:hover {
+  color: var(--accent);
+  text-decoration: none;
+}
+
+/* One line, always. No post carries a summary, so most rows fall back to a
+   truncation of the body; two ragged lines of it read worse than one. */
+.post-row__excerpt {
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 1;
+  line-clamp: 1;
+  overflow: hidden;
+  max-width: 640px;
+  font-size: var(--fs-small);
+  line-height: var(--lh-small);
+  color: var(--muted);
+}
+
+.post-row__tags {
+  padding-top: var(--space-1);
+}
+
+/* Compact row ------------------------------------------------------------
+   One link across the whole row: date, title, category. Used where the list
+   is long enough that an excerpt per row would drown the titles. */
+
+.post-row--compact {
+  display: flex;
+  align-items: baseline;
+  gap: 28px;
+  padding-block: 18px;
+  color: inherit;
+}
+
+.post-row--compact:hover {
+  text-decoration: none;
+}
+
+.post-row--compact .post-row__date {
+  width: 78px;
+  flex-shrink: 0;
+}
+
+/* A year page already states the year, so its rows drop it and the column
+   narrows to match. post-row.html picks this from the date format. */
+.post-row--compact .post-row__date--narrow {
+  width: 56px;
+}
+
+.post-row--compact .post-row__title {
+  flex-grow: 1;
+  font-family: var(--font-display);
+  font-size: 22px;
+  line-height: 1.3;
+  letter-spacing: var(--tr-title);
+  color: var(--ink-strong);
+}
+
+.post-row--compact:hover .post-row__title {
+  color: var(--accent);
+}
+
+.post-row--compact .post-row__category {
+  flex-shrink: 0;
+}
+
+/* Tag pills --------------------------------------------------------------
+   All of a post's tags, unlike the category. Hover darkens both the text
+   and the border; see States.html. */
+
+.tag-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+/* Tags are rendered exactly as authored. SPEC.md says tags stay lowercase,
+   and the comps show lowercase pills, but every tag in this repo is
+   CamelCase -- APIManagement, AzureFunctions, EventGrid -- and
+   text-transform: lowercase turns those into apimanagement and
+   azurefunctions. Normalising the front matter is a content change, not a
+   CSS one. */
+.tag-pill {
+  display: inline-block;
+  font-family: var(--font-mono);
+  font-size: 12px;
+  line-height: 1.5;
+  color: var(--muted);
+  padding: 3px 10px;
+  border: 1px solid var(--rule);
+  border-radius: var(--radius-pill);
+}
+
+.tag-pill:hover {
+  color: var(--ink-strong);
+  border-color: var(--ink-strong);
+  text-decoration: none;
+}
+
+/* A pill is about 22px tall, which is fine under a mouse and not under a
+   thumb. The hit area is padded out to 44px with a pseudo-element rather
+   than by making the pill taller, and the rows are spaced far enough apart
+   that two targets never overlap. */
+@media (pointer: coarse) {
+  .tag-list {
+    row-gap: 22px;
+  }
+
+  .tag-pill {
+    position: relative;
+  }
+
+  .tag-pill::after {
+    content: "";
+    position: absolute;
+    inset: -11px 0;
+  }
+}
+
+/* Phone ------------------------------------------------------------------
+   The columns collapse: date and category share one line above the title,
+   separated by a middot. Everything else spans the full width. */
+
+@media (max-width: 639px) {
+  .post-row {
+    padding-block: 20px;
+  }
+
+  .post-row--full {
+    grid-template-columns: max-content minmax(0, 1fr);
+    column-gap: 7px;
+    row-gap: 7px;
+  }
+
+  .post-row--full > * {
+    grid-column: 1 / -1;
+  }
+
+  .post-row--full > .post-row__date {
+    grid-column: 1;
+    padding-top: 0;
+  }
+
+  .post-row--full > .post-row__category {
+    grid-column: 2;
+    grid-row: 1;
+  }
+
+  .post-row__date,
+  .post-row--full .post-row__category {
+    font-size: 11.5px;
+  }
+
+  /* Only drawn when there is a category to separate from. */
+  .post-row--full .post-row__category::before {
+    content: "\00B7";
+    margin-right: 7px;
+    letter-spacing: 0;
+    color: var(--muted);
+  }
+
+  .post-row--full .post-row__title {
+    font-size: 22px;
+  }
+
+  .post-row__excerpt {
+    font-size: 15px;
+  }
+
+  .tag-list {
+    column-gap: 7px;
+  }
+
+  .tag-pill {
+    font-size: 11.5px;
+    padding: 3px 9px;
+  }
+
+  /* Date and category keep the top line; the title drops below them. */
+  .post-row--compact {
+    flex-wrap: wrap;
+    gap: 7px 12px;
+  }
+
+  .post-row--compact .post-row__title {
+    order: 3;
+    flex-basis: 100%;
+  }
+}
+
+/* A list with no section header above it draws its own top hairline, so a
+   single row still gets both. The term pages are the only place this
+   happens -- everywhere else the header rule does the job. */
+.post-list--ruled {
+  border-top: 1px solid var(--rule);
+}
