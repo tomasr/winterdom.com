@@ -1,4 +1,13 @@
 RewriteEngine On
+
+# Year pages live at /archive/YYYY/. A bare /YYYY/ has never been a page here,
+# but it is the obvious URL to guess, so send it to the year's archive page.
+RewriteRule ^(\d\d\d\d)/?$ /archive/$1/ [R=301,L]
+
+# Strips a leading prefix off old WordPress-era links (/blog/2008/... ->
+# /2008/...). The pattern is unanchored and also matches /archive/2018/, which
+# it would bounce to /2018/ -- a directory with no index -- so exclude it.
+RewriteCond %{REQUEST_URI} !^/archive/
 RewriteRule ([^/]+)/(\d\d\d\d)/(.*)  /$2/$3   [R]
 
 RewriteCond %{THE_REQUEST} /([^.]+)\.html [NC]
