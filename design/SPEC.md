@@ -166,7 +166,7 @@ The phone menu, when open, is a full-width panel below the header: the five nav 
 
 ## Components
 
-**Header.** Mark at 27px plus the wordmark at 27px Newsreader 500, 12px apart, linking home. Nav on the right: Writing, Archive, Categories, Tags, About, then the RSS icon. The current section gets `--ink-strong` text and a 2px `--accent` underline 3px below the baseline; the rest are `--muted`. A 1px `--rule` under the whole header, 22px below the row.
+**Header.** Mark at 34px plus the wordmark at 31px Newsreader 500, 12px apart (27px and 26px below 900px), linking home. Nav on the right: Writing, Archive, Categories, Tags, About, then the RSS icon. The current section gets `--ink-strong` text and a 2px `--accent` underline 3px below the baseline; the rest are `--muted`. A 1px `--rule` under the whole header, 22px below the row.
 
 **Footer.** 1px `--rule` above, then copyright and the disclaimer on the left at 14px and 13px, social links on the right at 14px `--muted`. The disclaimer text is fixed and appears on every page.
 

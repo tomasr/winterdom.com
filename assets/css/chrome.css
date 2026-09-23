@@ -37,7 +37,7 @@
 
 .brand__word {
   font-family: var(--font-display);
-  font-size: 27px;
+  font-size: 31px;
   font-weight: 500;
   line-height: 1;
   letter-spacing: -0.02em;
@@ -202,15 +202,14 @@
   }
 
   .brand__word {
-    font-size: 23px;
+    font-size: 26px;
   }
 
-  /* One mark in the markup, re-weighted here. The arms shorten a touch at
-     this size in the comps; at 22px that is well under half a pixel. */
+  /* One mark in the markup, re-sized here. At 27px it keeps the desktop
+     stroke weight; below 25px it would want mark.html's heavier stroke. */
   .site-header .mark {
-    width: 22px;
-    height: 22px;
-    stroke-width: 2;
+    width: 27px;
+    height: 27px;
   }
 }
 
